@@ -1,0 +1,11 @@
+/home/mostafaatwa/My Computer/Programming/Full-stack projects/Courses/API/Domain/bin/Debug/net10.0/Domain.deps.json
+/home/mostafaatwa/My Computer/Programming/Full-stack projects/Courses/API/Domain/bin/Debug/net10.0/Domain.dll
+/home/mostafaatwa/My Computer/Programming/Full-stack projects/Courses/API/Domain/bin/Debug/net10.0/Domain.pdb
+/home/mostafaatwa/My Computer/Programming/Full-stack projects/Courses/API/Domain/obj/Debug/net10.0/Domain.GeneratedMSBuildEditorConfig.editorconfig
+/home/mostafaatwa/My Computer/Programming/Full-stack projects/Courses/API/Domain/obj/Debug/net10.0/Domain.AssemblyInfoInputs.cache
+/home/mostafaatwa/My Computer/Programming/Full-stack projects/Courses/API/Domain/obj/Debug/net10.0/Domain.AssemblyInfo.cs
+/home/mostafaatwa/My Computer/Programming/Full-stack projects/Courses/API/Domain/obj/Debug/net10.0/Domain.csproj.CoreCompileInputs.cache
+/home/mostafaatwa/My Computer/Programming/Full-stack projects/Courses/API/Domain/obj/Debug/net10.0/Domain.dll
+/home/mostafaatwa/My Computer/Programming/Full-stack projects/Courses/API/Domain/obj/Debug/net10.0/refint/Domain.dll
+/home/mostafaatwa/My Computer/Programming/Full-stack projects/Courses/API/Domain/obj/Debug/net10.0/Domain.pdb
+/home/mostafaatwa/My Computer/Programming/Full-stack projects/Courses/API/Domain/obj/Debug/net10.0/ref/Domain.dll
