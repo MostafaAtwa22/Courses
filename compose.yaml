@@ -1,0 +1,31 @@
+# Please refer https://aka.ms/HTTPSinContainer on how to setup an https developer certificate for your ASP.NET Core service.
+
+services:
+  api:
+    image: api
+    container_name: courses.api
+    build:
+      context: .
+      dockerfile: API/Dockerfile
+    ports:
+      - 5296:5296
+      - 7297:7297
+
+  database:
+    image: postgres:latest
+    container_name: courses.database
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: coursesdb
+    volumes:
+      - ./.container/db_data:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+
+  cache:
+    image: redis:latest
+    container_name: courses.cache
+    restart: always
+    ports:
+      - 6379:6379

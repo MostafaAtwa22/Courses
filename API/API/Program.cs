@@ -1,12 +1,13 @@
 using API.Exceptions;
 using Application;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddMediatR(options =>
-{
-    options.RegisterServicesFromAssembly(typeof(IAssemblyMarker).Assembly);
-});
+builder.Services.AddApplication();
+
+builder.Host.UseSerilog((hostingContext, configuration) =>
+    configuration.ReadFrom.Configuration(hostingContext.Configuration));
 
 builder.Services.AddProblemDetails();
 
@@ -20,7 +21,6 @@ builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 var app = builder.Build();
 
 app.UseExceptionHandler();
-
-app.MapGet("/", () => "Hello World!");
+app.UseSerilogRequestLogging();
 
 app.Run();
