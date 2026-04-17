@@ -5,8 +5,8 @@ services:
     image: api
     container_name: courses.api
     build:
-      context: .
-      dockerfile: API/Dockerfile
+      context: ./API
+      dockerfile: Dockerfile
     ports:
       - 5296:5296
       - 7297:7297
@@ -19,7 +19,7 @@ services:
       POSTGRES_PASSWORD: password
       POSTGRES_DB: coursesdb
     volumes:
-      - ./.container/db_data:/var/lib/postgresql/data
+      - ./.container/db_data:/var/lib/postgresql
     ports:
       - 5432:5432
 
