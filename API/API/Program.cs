@@ -1,10 +1,13 @@
 using API.Exceptions;
 using Application;
 using Serilog;
+using Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddApplication();
+builder.Services
+    .AddApplication()
+    .AddInfrastructure(builder.Configuration);
 
 builder.Host.UseSerilog((hostingContext, configuration) =>
     configuration.ReadFrom.Configuration(hostingContext.Configuration));
