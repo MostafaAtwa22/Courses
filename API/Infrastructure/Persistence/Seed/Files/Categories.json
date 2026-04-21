@@ -1,0 +1,40 @@
+{
+    "categories": 
+    [
+        {
+            "id": "3a2b1c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d",
+            "createdAt": "2024-01-15T10:30:00Z",
+            "updatedAt": "2024-01-15T10:30:00Z",
+            "name": "Web Development",
+            "slug": "web-development"
+        },
+        {
+            "id": "4b3c2d5e-6f7a-8b9c-0d1e-2f3a4b5c6d7e",
+            "createdAt": "2024-01-16T11:45:00Z",
+            "updatedAt": "2024-01-20T14:20:00Z",
+            "name": "Data Science",
+            "slug": "data-science"
+        },
+        {
+            "id": "5c4d3e6f-7a8b-9c0d-1e2f-3a4b5c6d7e8f",
+            "createdAt": "2024-01-17T09:15:00Z",
+            "updatedAt": "2024-01-17T09:15:00Z",
+            "name": "Mobile App Development",
+            "slug": "mobile-app-development"
+        },
+        {
+            "id": "6d5e4f7a-8b9c-0d1e-2f3a-4b5c6d7e8f9a",
+            "createdAt": "2024-01-18T13:00:00Z",
+            "updatedAt": "2024-01-22T16:30:00Z",
+            "name": "Cloud Computing",
+            "slug": "cloud-computing"
+        },
+        {
+            "id": "7e6f5a8b-9c0d-1e2f-3a4b-5c6d7e8f9a0b",
+            "createdAt": "2024-01-19T08:20:00Z",
+            "updatedAt": "2024-01-19T08:20:00Z",
+            "name": "DevOps",
+            "slug": "devops"
+        }
+    ]
+}

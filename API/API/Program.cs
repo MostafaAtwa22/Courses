@@ -1,7 +1,8 @@
-using API.Exceptions;
 using Application;
 using Serilog;
-using Infrastructure;
+using HealthChecks.UI.Client;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using API.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,17 +14,26 @@ builder.Host.UseSerilog((hostingContext, configuration) =>
     configuration.ReadFrom.Configuration(hostingContext.Configuration));
 
 builder.Services.AddProblemDetails();
-
-builder.Services.AddExceptionHandler<ValidationExceptionHandler>();
-builder.Services.AddExceptionHandler<NotFoundExceptionHandler>();
-builder.Services.AddExceptionHandler<ConflictExceptionHandler>();
-builder.Services.AddExceptionHandler<ForbiddenExceptionHandler>();
-builder.Services.AddExceptionHandler<UnauthorizedExceptionHandler>(); 
-builder.Services.AddExceptionHandler<GlobalExceptionHandler>();      
+builder.Services.AddApplicationServices();
+builder.Services.AddSwaggerervices();
 
 var app = builder.Build();
 
 app.UseExceptionHandler();
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
+app.UseHttpsRedirection();
+
+app.MapHealthChecks("health", new HealthCheckOptions
+{
+    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+});
+
 app.UseSerilogRequestLogging();
 
 app.Run();

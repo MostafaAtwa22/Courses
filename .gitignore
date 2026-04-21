@@ -1,0 +1,19 @@
+# Container data
+.container/
+
+# IDE
+.vs/
+.vscode/
+
+# Build output
+**/bin/
+**/obj/
+
+# Node
+**/node_modules/
+**/npm-debug.log
+
+# Environment
+**/.env
+**/secrets.dev.yaml
+**/values.dev.yaml
