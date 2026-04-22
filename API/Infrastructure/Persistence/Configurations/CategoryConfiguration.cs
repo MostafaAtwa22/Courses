@@ -13,6 +13,12 @@ namespace Infrastructure.Persistence.Configurations
             builder.Property(c => c.Slug)
                 .IsRequired()
                 .HasMaxLength(100);
+
+            builder.HasIndex(c => c.Slug)
+                .IsUnique();
+
+            builder.HasIndex(c => c.Name)
+                .IsUnique();
         }
     }
 }

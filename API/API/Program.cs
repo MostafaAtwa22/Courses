@@ -3,6 +3,7 @@ using Serilog;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using API.Extensions;
+using Carter;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,22 +11,16 @@ builder.Services
     .AddApplication()
     .AddInfrastructure(builder.Configuration);
 
+builder.Services.AddApplicationServices();
+
+
 builder.Host.UseSerilog((hostingContext, configuration) =>
     configuration.ReadFrom.Configuration(hostingContext.Configuration));
-
-builder.Services.AddProblemDetails();
-builder.Services.AddApplicationServices();
-builder.Services.AddSwaggerervices();
 
 var app = builder.Build();
 
 app.UseExceptionHandler();
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
 
 app.UseHttpsRedirection();
 
@@ -35,5 +30,7 @@ app.MapHealthChecks("health", new HealthCheckOptions
 });
 
 app.UseSerilogRequestLogging();
+
+app.MapCarter();
 
 app.Run();
