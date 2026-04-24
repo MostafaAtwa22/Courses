@@ -11,10 +11,12 @@ public static class DependencyInjection
         this IServiceCollection services,
         IConfiguration config)
     {
+        Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
         var connectionString = config.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Default connection string is not configured");
 
         services.AddDbContext<ApplicationDbContext>(options =>
-            options.UseNpgsql(connectionString));
+            options.UseNpgsql(connectionString)
+                   .UseSnakeCaseNamingConvention());
 
         services.AddScoped<IDbConnectionFactory, DbConnectionFactory>();
         services.AddScoped<ICategoryRepository, CategoryRepository>();
@@ -24,7 +26,7 @@ public static class DependencyInjection
                 name: "PostgreSQL",
                 failureStatus: HealthStatus.Unhealthy,
                 tags: new[] { "db", "sql", "postgresql" })
-            .AddRedis(connectionString,
+            .AddRedis(config.GetConnectionString("Cache") ?? "",
                 name: "Redis",
                 failureStatus: HealthStatus.Unhealthy,
                 tags: new[] { "db", "redis" });

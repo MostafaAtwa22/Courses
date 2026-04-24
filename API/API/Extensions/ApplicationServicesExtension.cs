@@ -13,6 +13,7 @@ namespace API.Extensions
             services.AddExceptionHandler<ConflictExceptionHandler>();
             services.AddExceptionHandler<ForbiddenExceptionHandler>();
             services.AddExceptionHandler<UnauthorizedExceptionHandler>();
+            services.AddExceptionHandler<PostgresExceptionHandler>();
             services.AddExceptionHandler<GlobalExceptionHandler>();
 
             services.AddCarter();

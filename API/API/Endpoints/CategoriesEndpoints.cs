@@ -1,3 +1,4 @@
+using Application.Common.Models;
 using Application.DTOs.Category;
 using Application.Features.Categories.Commands.Create;
 using Application.Features.Categories.Commands.Delete;
@@ -19,7 +20,7 @@ namespace API.Endpoints
 
             group.MapGet("/", GetAll)
                 .WithName(nameof(GetAll))
-                .Produces(StatusCodes.Status200OK)
+                .Produces<PaginatedResult<CategoryResponseDto>>(StatusCodes.Status200OK)
                 .Produces(StatusCodes.Status400BadRequest);
 
             group.MapGet("/{id:guid}", GetById)
@@ -43,11 +44,12 @@ namespace API.Endpoints
                 .Produces(StatusCodes.Status404NotFound);
         }
 
-        public static async Task<Results<Ok<IReadOnlyList<CategoryResponseDto>>, BadRequest>> GetAll(
+        public static async Task<Results<Ok<PaginatedResult<CategoryResponseDto>>, BadRequest>> GetAll(
+            [AsParameters] QueryParams queryParams,
             IMediator mediator)
         {
-            var categories = await mediator.Send(new GetCategoriesQuery());
-            return TypedResults.Ok(categories);
+            var result = await mediator.Send(new GetCategoriesQuery(queryParams));
+            return TypedResults.Ok(result);
         }
 
         public static async Task<Results<Ok<CategoryResponseDto>, NotFound>> GetById(
@@ -65,8 +67,9 @@ namespace API.Endpoints
             CategoryCreateDto request, IMediator mediator)
         {
             var id = await mediator.Send(new CreateCategoryCommand(request));
+            var category = await mediator.Send(new GetCategoryByIdQuery(id));
             
-            return TypedResults.CreatedAtRoute(new CategoryResponseDto { Id = id }, nameof(GetById), new { id });
+            return TypedResults.CreatedAtRoute(category!, nameof(GetById), new { id });
         }
 
         public static async Task<Results<NoContent, NotFound>> Update(

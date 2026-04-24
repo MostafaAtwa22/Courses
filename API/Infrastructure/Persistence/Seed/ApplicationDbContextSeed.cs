@@ -6,6 +6,12 @@ namespace Infrastructure.Persistence.Seed
 {
     public static class ApplicationDbContextSeed
     {
+        private static readonly JsonSerializerOptions _options = new()
+        {
+            PropertyNameCaseInsensitive = true,
+            Converters = { new System.Text.Json.Serialization.JsonStringEnumConverter() }
+        };
+
         public static async Task SeedAsync(ApplicationDbContext context, 
             ILoggerFactory loggerFactory)
         {
@@ -24,8 +30,10 @@ namespace Infrastructure.Persistence.Seed
         {
             var path = GetSeedPath("Categories.json");
             var categoryData = await File.ReadAllTextAsync(path);
-            var categories = JsonSerializer.Deserialize<List<Category>>(categoryData)
-                ?? [];
+            
+            using var document = JsonDocument.Parse(categoryData);
+            var categoriesElement = document.RootElement.GetProperty("categories");
+            var categories = categoriesElement.Deserialize<List<Category>>(_options) ?? [];
 
             foreach (var category in categories)
                 context.Categories.Add(category);
@@ -38,8 +46,10 @@ namespace Infrastructure.Persistence.Seed
         {
             var path = GetSeedPath("Courses.json");
             var courseData = await File.ReadAllTextAsync(path);
-            var courses = JsonSerializer.Deserialize<List<Course>>(courseData)
-                ?? [];
+            
+            using var document = JsonDocument.Parse(courseData);
+            var coursesElement = document.RootElement.GetProperty("courses");
+            var courses = coursesElement.Deserialize<List<Course>>(_options) ?? [];
 
             foreach (var course in courses)
                 context.Courses.Add(course);
@@ -51,7 +61,7 @@ namespace Infrastructure.Persistence.Seed
         private static string GetSeedPath (string fileName)
         {
             var basePath = AppDomain.CurrentDomain.BaseDirectory;
-            return Path.Combine(basePath, "Seed", "Files", fileName);
+            return Path.Combine(basePath, "Persistence", "Seed", "Files", fileName);
         }
     }
 }

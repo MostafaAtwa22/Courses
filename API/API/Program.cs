@@ -19,8 +19,11 @@ builder.Host.UseSerilog((hostingContext, configuration) =>
 
 var app = builder.Build();
 
+await app.UseAutoMigrationAsync();
+
 app.UseExceptionHandler();
 
+app.UseSerilogRequestLogging();
 
 app.UseHttpsRedirection();
 
@@ -28,8 +31,6 @@ app.MapHealthChecks("health", new HealthCheckOptions
 {
     ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
 });
-
-app.UseSerilogRequestLogging();
 
 app.MapCarter();
 

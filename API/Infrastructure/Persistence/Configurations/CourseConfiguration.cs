@@ -6,7 +6,9 @@ namespace Infrastructure.Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<Course> builder)
         {
-            builder.ToTable("Courses");
+            builder.ToTable("courses");
+            
+            builder.HasKey(c => c.Id);
             
             builder.Property(c => c.Title)
                 .IsRequired()
