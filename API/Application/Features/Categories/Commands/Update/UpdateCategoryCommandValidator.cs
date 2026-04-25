@@ -1,13 +1,13 @@
-using Application.DTOs.Category;
+using Application.Features.Categories.Commands.Update;
 using FluentValidation;
 
 namespace Application.Features.Categories.Commands.Update
 {
-    public class UpdateCategoryCommandValidator : AbstractValidator<CategoryUpdateDto>
+    public class UpdateCategoryCommandValidator : AbstractValidator<UpdateCategoryCommand>
     {
         public UpdateCategoryCommandValidator()
         {
-            RuleFor(x => x.Name)
+            RuleFor(x => x.Dto.Name)
                 .NotEmpty()
                 .WithMessage("Name is required.")
                 .MaximumLength(100)
@@ -15,7 +15,7 @@ namespace Application.Features.Categories.Commands.Update
                 .MinimumLength(3)
                 .WithMessage("Name must be at least 3 characters long.");
 
-            RuleFor(x => x.Slug)
+            RuleFor(x => x.Dto.Slug)
                 .NotEmpty()
                 .WithMessage("Slug is required.")
                 .MaximumLength(100)

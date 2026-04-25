@@ -35,3 +35,5 @@ app.MapHealthChecks("health", new HealthCheckOptions
 app.MapCarter();
 
 app.Run();
+
+public partial class Program { }
