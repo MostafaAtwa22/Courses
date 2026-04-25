@@ -1,7 +1,6 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Infrastructure.Persistence.Data;
-using Application.Common.Interfaces;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Infrastructure.Repositories;
 
@@ -20,7 +19,8 @@ public static class DependencyInjection
 
         services.AddScoped<IDbConnectionFactory, DbConnectionFactory>();
         services.AddScoped<ICategoryRepository, CategoryRepository>();
-        
+        services.AddScoped<ICourseRepository, CourseRepository>();
+
         services.AddHealthChecks()
             .AddNpgSql(connectionString, 
                 name: "PostgreSQL",

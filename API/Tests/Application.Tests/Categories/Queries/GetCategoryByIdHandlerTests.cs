@@ -19,7 +19,7 @@ namespace Application.Tests.Categories.Queries
         }
 
         [Fact]
-        public async Task Handle_Returns_Category_When_Category_Exists()
+        public async Task Handle_ReturnsCategory_WhenCategoryExists()
         {
             // Arrange
             var categoryId = Guid.NewGuid();
@@ -36,7 +36,7 @@ namespace Application.Tests.Categories.Queries
         }
 
         [Fact]
-        public async Task Handle_Returns_Null_When_Category_Does_Not_Exist()
+        public async Task Handle_ReturnsNull_WhenCategoryDoesNotExist()
         {
             // Arrange
             var categoryId = Guid.NewGuid();

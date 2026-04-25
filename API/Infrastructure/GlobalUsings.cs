@@ -3,3 +3,8 @@ global using Microsoft.EntityFrameworkCore;
 global using Microsoft.EntityFrameworkCore.Metadata.Builders;
 global using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 global using Domain.Entities.Identity;
+global using Application.Common.Interfaces;
+global using Dapper;
+global using Npgsql;
+global using System.Data;
+global using Application.Common.Models;

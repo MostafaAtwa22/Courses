@@ -1,77 +1,28 @@
-using System.Data;
-using Application.Common.Interfaces;
-using Application.Common.Models;
 using Application.DTOs.Category;
-using Dapper;
 
 namespace Infrastructure.Repositories
 {
-    public class CategoryRepository(IDbConnectionFactory _factory) : ICategoryRepository
+    public class CategoryRepository(IDbConnectionFactory factory)
+        : BaseRepository(factory), ICategoryRepository
     {
-        private async Task<IDbConnection> CreateConnectionAsync(CancellationToken ct) =>
-            await _factory.CreateConnectionAsync(ct);
-
-        public async Task<PaginatedResult<CategoryResponseDto>> GetAllAsync(QueryParams queryParams, CancellationToken ct = default)
+        private static readonly Dictionary<string, string> AllowedSortColumns = new(StringComparer.OrdinalIgnoreCase)
         {
-            using var connection = await CreateConnectionAsync(ct);
+            { "name", "name" },
+            { "slug", "slug" },
+            { "created_at", "created_at" },
+            { "updated_at", "updated_at" }
+        };
 
-            var parameters = new DynamicParameters();
-            var conditions = new List<string>();
-
-            int pageNumber = queryParams.PageNumber ?? 1;
-            int pageSize = queryParams.PageSize ?? 10;
-            if (pageSize > 50) pageSize = 50;
-
-            if (!string.IsNullOrWhiteSpace(queryParams.SearchTerm))
-            {
-                conditions.Add("(name ILIKE @SearchTerm OR slug ILIKE @SearchTerm)");
-                parameters.Add("SearchTerm", $"%{queryParams.SearchTerm}%");
-            }
-
-            var whereClause = conditions.Count != 0
-                ? $"WHERE {string.Join(" AND ", conditions)}"
-                : string.Empty;
-
-            parameters.Add("Offset", (pageNumber - 1) * pageSize);
-            parameters.Add("PageSize", pageSize);
-
-            var allowedSortColumns = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
-            {
-                { "name", "name" },
-                { "slug", "slug" },
-                { "created_at", "created_at" },
-                { "updated_at", "updated_at" }
-            };
-
-            var orderByColumn = !string.IsNullOrWhiteSpace(queryParams.SortBy) && allowedSortColumns.TryGetValue(queryParams.SortBy, out var dbColumn)
-                ? dbColumn
-                : "created_at";
-
-            var sortDirection = (queryParams.SortDescending ?? false) ? "DESC" : "ASC";
-
-            var sql = $@"
-                SELECT COUNT(1) 
-                FROM categories 
-                {whereClause};
-
-                SELECT id, name, slug, created_at, updated_at
-                FROM categories
-                {whereClause}
-                ORDER BY {orderByColumn} {sortDirection}
-                LIMIT @PageSize OFFSET @Offset;";
-
-            using var multi = await connection.QueryMultipleAsync(sql, parameters);
-
-            var totalCount = await multi.ReadFirstAsync<int>();
-            var items = (await multi.ReadAsync<CategoryResponseDto>()).AsList();
-
-            return new PaginatedResult<CategoryResponseDto>
-            {
-                Items = items,
-                TotalCount = totalCount,
-                PageNumber = pageNumber,
-                PageSize = pageSize
-            };
+        public Task<PaginatedResult<CategoryResponseDto>> GetAllAsync(QueryParams queryParams, CancellationToken ct = default)
+        {
+            return ExecutePaginatedQueryAsync<CategoryResponseDto>(
+                queryParams,
+                countSql: "SELECT COUNT(1) FROM categories",
+                selectSql: "SELECT id, name, slug, created_at, updated_at FROM categories",
+                allowedSortColumns: AllowedSortColumns,
+                defaultSortColumn: "created_at",
+                searchCondition: "(name ILIKE @SearchTerm OR slug ILIKE @SearchTerm)",
+                ct);
         }
 
         public async Task<CategoryResponseDto?> GetByIdAsync(Guid id, CancellationToken ct = default)

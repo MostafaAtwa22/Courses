@@ -1,6 +1,4 @@
-using Application.Common.Models;
 using Application.DTOs.Category;
-using MediatR;
 
 namespace Application.Features.Categories.Queries.GetAll
 {

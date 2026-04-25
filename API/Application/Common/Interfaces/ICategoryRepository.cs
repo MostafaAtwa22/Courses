@@ -1,4 +1,3 @@
-using Application.Common.Models;
 using Application.DTOs.Category;
 
 namespace Application.Common.Interfaces

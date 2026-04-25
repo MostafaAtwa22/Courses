@@ -5,7 +5,6 @@ using Infrastructure.Repositories;
 using Moq;
 using Moq.Dapper;
 using FluentAssertions;
-using Xunit;
 using Dapper;
 
 namespace Infrastructure.Tests.Repositories

@@ -5,9 +5,6 @@ using Application.Features.Categories.Commands.Delete;
 using Application.Features.Categories.Commands.Update;
 using Application.Features.Categories.Queries.GetAll;
 using Application.Features.Categories.Queries.GetById;
-using Carter;
-using MediatR;
-using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace API.Endpoints
 {
@@ -18,33 +15,33 @@ namespace API.Endpoints
             var group = app.MapGroup("/categories")
                 .WithTags("Categories");
 
-            group.MapGet("/", GetAll)
-                .WithName(nameof(GetAll))
+            group.MapGet("/", GetCategories)
+                .WithName(nameof(GetCategories))
                 .Produces<PaginatedResult<CategoryResponseDto>>(StatusCodes.Status200OK)
                 .Produces(StatusCodes.Status400BadRequest);
 
-            group.MapGet("/{id:guid}", GetById)
-                .WithName(nameof(GetById))
+            group.MapGet("/{id:guid}", GetCategoryById)
+                .WithName(nameof(GetCategoryById))
                 .Produces(StatusCodes.Status200OK)
                 .Produces(StatusCodes.Status404NotFound);
 
-            group.MapPost("/", Create)
-                .WithName(nameof(Create))
+            group.MapPost("/", CreateCategory)
+                .WithName(nameof(CreateCategory))
                 .Produces(StatusCodes.Status201Created)
                 .Produces(StatusCodes.Status400BadRequest);
             
-            group.MapPut("/{id:guid}", Update)
-                .WithName(nameof(Update))
+            group.MapPut("/{id:guid}", UpdateCategory)
+                .WithName(nameof(UpdateCategory))
                 .Produces(StatusCodes.Status204NoContent)
                 .Produces(StatusCodes.Status404NotFound);
             
-            group.MapDelete("/{id:guid}", Delete)
-                .WithName(nameof(Delete))
+            group.MapDelete("/{id:guid}", DeleteCategory)
+                .WithName(nameof(DeleteCategory))
                 .Produces(StatusCodes.Status204NoContent)
                 .Produces(StatusCodes.Status404NotFound);
         }
 
-        public static async Task<Results<Ok<PaginatedResult<CategoryResponseDto>>, BadRequest>> GetAll(
+        public static async Task<Results<Ok<PaginatedResult<CategoryResponseDto>>, BadRequest>> GetCategories(
             [AsParameters] QueryParams queryParams,
             IMediator mediator)
         {
@@ -52,27 +49,24 @@ namespace API.Endpoints
             return TypedResults.Ok(result);
         }
 
-        public static async Task<Results<Ok<CategoryResponseDto>, NotFound>> GetById(
+        public static async Task<Results<Ok<CategoryResponseDto>, NotFound>> GetCategoryById(
             Guid id, IMediator mediator)
         {
-            var category = await mediator.Send(new GetCategoryByIdQuery(id));
+            var result = await mediator.Send(new GetCategoryByIdQuery(id));
 
-            if (category is null)
-                return TypedResults.NotFound();
-
-            return TypedResults.Ok(category);
+            return result is not null ? TypedResults.Ok(result) : TypedResults.NotFound();
         }
 
-        public static async Task<Results<CreatedAtRoute<CategoryResponseDto>, BadRequest>> Create(
+        public static async Task<Results<CreatedAtRoute<CategoryResponseDto>, BadRequest>> CreateCategory(
             CategoryCreateDto request, IMediator mediator)
         {
             var id = await mediator.Send(new CreateCategoryCommand(request));
             var category = await mediator.Send(new GetCategoryByIdQuery(id));
             
-            return TypedResults.CreatedAtRoute(category!, nameof(GetById), new { id });
+            return TypedResults.CreatedAtRoute(category!, "GetCategoryById", new { id });
         }
 
-        public static async Task<Results<NoContent, NotFound>> Update(
+        public static async Task<Results<NoContent, NotFound>> UpdateCategory(
             Guid id, CategoryUpdateDto request, IMediator mediator)
         {
             await mediator.Send(new UpdateCategoryCommand(id, request));
@@ -80,7 +74,7 @@ namespace API.Endpoints
             return TypedResults.NoContent();
         }
 
-        public static async Task<Results<NoContent, NotFound>> Delete(
+        public static async Task<Results<NoContent, NotFound>> DeleteCategory(
             Guid id, IMediator mediator)
         {
             await mediator.Send(new DeleteCategoryCommand(id));
