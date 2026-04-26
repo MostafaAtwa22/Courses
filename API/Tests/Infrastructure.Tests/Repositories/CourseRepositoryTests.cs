@@ -70,5 +70,56 @@ namespace Infrastructure.Tests.Repositories
             // Assert
             result.Should().BeNull();
         }
+        [Fact]
+        public async Task CreateAsync_ShouldReturnNewGuid()
+        {
+            // Arrange
+            var createDto = new CourseCreateDto { Title = "Test" };
+            
+            _connectionMock
+                .SetupDapperAsync(c => c.ExecuteAsync(It.IsAny<string>(), It.IsAny<object>(), null, null, null))
+                .ReturnsAsync(1);
+
+            // Act
+            var id = await _repository.CreateAsync(createDto);
+
+            // Assert
+            id.Should().NotBeEmpty();
+        }
+
+        [Fact]
+        public async Task UpdateAsync_ShouldExecuteUpdate()
+        {
+            // Arrange
+            var id = Guid.NewGuid();
+            var updateDto = new CourseUpdateDto { Title = "Updated" };
+
+            _connectionMock
+                .SetupDapperAsync(c => c.ExecuteAsync(It.IsAny<string>(), It.IsAny<object>(), null, null, null))
+                .ReturnsAsync(1);
+
+            // Act
+            await _repository.UpdateAsync(id, updateDto);
+
+            // Assert
+            // Assert successful execution
+        }
+
+        [Fact]
+        public async Task DeleteAsync_ShouldExecuteDelete()
+        {
+            // Arrange
+            var id = Guid.NewGuid();
+
+            _connectionMock
+                .SetupDapperAsync(c => c.ExecuteAsync(It.IsAny<string>(), It.IsAny<object>(), null, null, null))
+                .ReturnsAsync(1);
+
+            // Act
+            await _repository.DeleteAsync(id);
+
+            // Assert
+            // Assert successful execution
+        }
     }
 }

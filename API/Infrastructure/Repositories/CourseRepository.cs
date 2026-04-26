@@ -40,5 +40,51 @@ namespace Infrastructure.Repositories
             var sql = $@"SELECT {SelectColumns} {FromClause} WHERE c.id = @Id;";
             return await connection.QueryFirstOrDefaultAsync<CoursesResponseDto>(sql, new { Id = id });
         }
+
+        public async Task<Guid> CreateAsync(CourseCreateDto courseCreateDto, CancellationToken ct = default)
+        {
+            using var connection = await CreateConnectionAsync(ct);
+
+            var sql = @"INSERT INTO courses (id, title, description, picture_url, status, cost, category_id)
+                        VALUES (@id, @Title, @Description, @PictureUrl, @Status, @Cost, @CategoryId)";
+
+            var id = Guid.NewGuid();
+            await connection.ExecuteAsync(sql, new {
+                id,
+                courseCreateDto.Title,
+                courseCreateDto.Description,
+                courseCreateDto.PictureUrl,
+                courseCreateDto.Status,
+                courseCreateDto.Cost,
+                courseCreateDto.CategoryId
+            });
+
+            return id;
+        }
+
+        public async Task UpdateAsync(Guid id, CourseUpdateDto courseUpdateDto, CancellationToken ct = default)
+        {
+            using var connection = await CreateConnectionAsync(ct);
+            
+            var sql = @"UPDATE courses SET title = @Title, description = @Description, picture_url = @PictureUrl, status = @Status, cost = @Cost, category_id = @CategoryId
+                        WHERE id = @Id";
+
+            await connection.ExecuteAsync(sql, new {
+                Id = id,
+                courseUpdateDto.Title,
+                courseUpdateDto.Description,
+                courseUpdateDto.PictureUrl,
+                courseUpdateDto.Status,
+                courseUpdateDto.Cost,
+                courseUpdateDto.CategoryId
+            });
+        }
+
+        public async Task DeleteAsync(Guid id, CancellationToken ct = default)
+        {
+            using var connection = await CreateConnectionAsync(ct);
+            var sql = @"DELETE FROM courses WHERE id = @Id";
+            await connection.ExecuteAsync(sql, new { Id = id });
+        }
     }
 }

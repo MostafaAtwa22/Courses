@@ -1,8 +1,3 @@
-using Application.Common.Exceptions;
-using Application.Common.Interfaces;
-using Domain.Entities;
-using MediatR;
-
 namespace Application.Features.Categories.Commands.Update
 {
     public sealed class UpdateCategoryCommandHandler(ICategoryRepository _repo) : IRequestHandler<UpdateCategoryCommand>

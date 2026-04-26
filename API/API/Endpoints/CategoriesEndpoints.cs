@@ -63,7 +63,7 @@ namespace API.Endpoints
             var id = await mediator.Send(new CreateCategoryCommand(request));
             var category = await mediator.Send(new GetCategoryByIdQuery(id));
             
-            return TypedResults.CreatedAtRoute(category!, "GetCategoryById", new { id });
+            return TypedResults.CreatedAtRoute(category!, nameof(GetCategoryById), new { id });
         }
 
         public static async Task<Results<NoContent, NotFound>> UpdateCategory(
