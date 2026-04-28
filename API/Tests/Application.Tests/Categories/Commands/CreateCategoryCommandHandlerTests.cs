@@ -4,6 +4,7 @@ using Application.Features.Categories.Commands.Create;
 using FluentAssertions;
 using Moq;
 using Xunit;
+using Domain.Entities;
 
 namespace Application.Tests.Categories.Commands
 {
@@ -27,7 +28,7 @@ namespace Application.Tests.Categories.Commands
             var expectedId = Guid.NewGuid();
 
             _categoryRepositoryMock
-                .Setup(repo => repo.CreateAsync(categoryDto, It.IsAny<CancellationToken>()))
+                .Setup(repo => repo.CreateAsync(It.IsAny<Category>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(expectedId);
 
             // Act
@@ -35,7 +36,7 @@ namespace Application.Tests.Categories.Commands
 
             // Assert
             result.Should().Be(expectedId);
-            _categoryRepositoryMock.Verify(repo => repo.CreateAsync(categoryDto, It.IsAny<CancellationToken>()), Times.Once);
+            _categoryRepositoryMock.Verify(repo => repo.CreateAsync(It.IsAny<Category>(), It.IsAny<CancellationToken>()), Times.Once);
         }
     }
 }

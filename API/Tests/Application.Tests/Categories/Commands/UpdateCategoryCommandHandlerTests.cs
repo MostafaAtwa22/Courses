@@ -5,6 +5,7 @@ using Application.Features.Categories.Commands.Update;
 using FluentAssertions;
 using Moq;
 using Xunit;
+using Domain.Entities;
 
 namespace Application.Tests.Categories.Commands
 {
@@ -28,15 +29,15 @@ namespace Application.Tests.Categories.Commands
             var command = new UpdateCategoryCommand(id, dto);
 
             _categoryRepositoryMock
-                .Setup(repo => repo.GetByIdAsync(id, It.IsAny<CancellationToken>()))
-                .ReturnsAsync((CategoryResponseDto)null!);
+                .Setup(repo => repo.GetEntityByIdAsync(id, It.IsAny<CancellationToken>()))
+                .ReturnsAsync((Category?)null);
 
             // Act
             Func<Task> act = async () => await _handler.Handle(command, CancellationToken.None);
 
             // Assert
             await act.Should().ThrowAsync<NotFoundException>();
-            _categoryRepositoryMock.Verify(repo => repo.UpdateAsync(It.IsAny<Guid>(), It.IsAny<CategoryUpdateDto>(), It.IsAny<CancellationToken>()), Times.Never);
+            _categoryRepositoryMock.Verify(repo => repo.UpdateAsync(It.IsAny<Category>(), It.IsAny<CancellationToken>()), Times.Never);
         }
 
         [Fact]
@@ -46,17 +47,17 @@ namespace Application.Tests.Categories.Commands
             var id = Guid.NewGuid();
             var dto = new CategoryUpdateDto { Name = "Updated Name" };
             var command = new UpdateCategoryCommand(id, dto);
-            var existingCategory = new CategoryResponseDto { Id = id, Name = "Old Name" };
+            var existingCategory = new Category { Id = id, Name = "Old Name" };
 
             _categoryRepositoryMock
-                .Setup(repo => repo.GetByIdAsync(id, It.IsAny<CancellationToken>()))
+                .Setup(repo => repo.GetEntityByIdAsync(id, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(existingCategory);
 
             // Act
             await _handler.Handle(command, CancellationToken.None);
 
             // Assert
-            _categoryRepositoryMock.Verify(repo => repo.UpdateAsync(id, dto, It.IsAny<CancellationToken>()), Times.Once);
+            _categoryRepositoryMock.Verify(repo => repo.UpdateAsync(It.IsAny<Category>(), It.IsAny<CancellationToken>()), Times.Once);
         }
     }
 }

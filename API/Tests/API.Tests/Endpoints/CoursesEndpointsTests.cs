@@ -25,7 +25,7 @@ namespace API.Tests.Endpoints
             // Assert
             response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-            var result = await response.Content.ReadFromJsonAsync<PaginatedResult<CoursesResponseDto>>();
+            var result = await response.Content.ReadFromJsonAsync<PaginatedResult<CourseResponseDto>>();
             result.Should().NotBeNull();        
         }
 
@@ -53,21 +53,28 @@ namespace API.Tests.Endpoints
 
             // Arrange
             var title = $"Course_{Guid.NewGuid().ToString().Substring(0, 8)}";
-            var newCourse = new CourseCreateDto
-            {
-                Title = title,
-                Description = "This is a valid long description that is more than 50 characters long so it passes the validation process.",
-                Status = Domain.Enums.CourseStatus.InProgress,
-                Cost = 150,
-                CategoryId = validCatId
-            };
+            using var content = new MultipartFormDataContent();
+            content.Add(new StringContent(title), "Title");
+            content.Add(new StringContent("This is a valid long description that is more than 50 characters long so it passes the validation process."), "Description");
+            content.Add(new StringContent(Domain.Enums.CourseStatus.InProgress.ToString()), "Status");
+            content.Add(new StringContent("150"), "Cost");
+            content.Add(new StringContent(validCatId.ToString()), "CategoryId");
+
+            var fileContent = new ByteArrayContent(new byte[] { 0x01, 0x02, 0x03 });
+            fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("image/jpeg");
+            content.Add(fileContent, "PictureUrl", "test.jpg");
 
             // Act
-            var response = await _client.PostAsJsonAsync("/courses", newCourse);
+            var response = await _client.PostAsync("/courses", content);
 
             // Assert
+            if (response.StatusCode == HttpStatusCode.InternalServerError)
+            {
+                var error = await response.Content.ReadAsStringAsync();
+                throw new Exception($"500 Error: {error}");
+            }
             response.StatusCode.Should().Be(HttpStatusCode.Created);
-            var result = await response.Content.ReadFromJsonAsync<CoursesResponseDto>();
+            var result = await response.Content.ReadFromJsonAsync<CourseResponseDto>();
             result.Should().NotBeNull();
             result!.Id.Should().NotBeEmpty();
             result.Title.Should().Be(title);
@@ -77,14 +84,13 @@ namespace API.Tests.Endpoints
         public async Task Create_ShouldReturnBadRequest()
         {
             // Arrange
-            var invalidCourse = new CourseCreateDto
-            {
-                Title = "", // Invalid name
-                Description = "Too short"
-            };
+            using var content = new MultipartFormDataContent();
+            content.Add(new StringContent(""), "Title");
+            content.Add(new StringContent("Too short"), "Description");
+            // Missing other fields or invalid fields
 
             // Act
-            var response = await _client.PostAsJsonAsync("/courses", invalidCourse);
+            var response = await _client.PostAsync("/courses", content);
 
             // Assert
             response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
@@ -102,43 +108,46 @@ namespace API.Tests.Endpoints
             
             // 1. Create
             var title = $"Lifecycle_Course_{Guid.NewGuid().ToString().Substring(0, 8)}";
-            var createDto = new CourseCreateDto 
-            { 
-                Title = title,
-                Description = "This is a valid long description that is more than 50 characters long so it passes the validation process.",
-                Status = Domain.Enums.CourseStatus.InProgress,
-                Cost = 200,
-                CategoryId = validCatId
-            };
-            var createResponse = await _client.PostAsJsonAsync("/courses", createDto);
-            // Since category id is random, this might fail foreign key constraints if Dapper or actual DB is backing WebApplicationFactory, 
-            // but assuming in-memory or mocks don't strictly enforce it or if they do we catch it. For this test logic:
+            using var createContent = new MultipartFormDataContent();
+            createContent.Add(new StringContent(title), "Title");
+            createContent.Add(new StringContent("This is a valid long description that is more than 50 characters long so it passes the validation process."), "Description");
+            createContent.Add(new StringContent(Domain.Enums.CourseStatus.InProgress.ToString()), "Status");
+            createContent.Add(new StringContent("200"), "Cost");
+            createContent.Add(new StringContent(validCatId.ToString()), "CategoryId");
+            var imageContent = new ByteArrayContent(new byte[] { 0x01 });
+            imageContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("image/jpeg");
+            createContent.Add(imageContent, "PictureUrl", "lifecycle.jpg");
+
+            var createResponse = await _client.PostAsync("/courses", createContent);
+            
             if(createResponse.StatusCode == HttpStatusCode.Created) 
             {
-                var createdCourse = await createResponse.Content.ReadFromJsonAsync<CoursesResponseDto>();
+                var createdCourse = await createResponse.Content.ReadFromJsonAsync<CourseResponseDto>();
                 var id = createdCourse!.Id;
 
                 // 2. Get By Id
                 var getResponse = await _client.GetAsync($"/courses/{id}");
                 getResponse.StatusCode.Should().Be(HttpStatusCode.OK);
-                var getResult = await getResponse.Content.ReadFromJsonAsync<CoursesResponseDto>();
+                var getResult = await getResponse.Content.ReadFromJsonAsync<CourseResponseDto>();
                 getResult!.Title.Should().Be(title);
 
                 // 3. Update
-                var updateDto = new CourseUpdateDto 
-                { 
-                    Title = title + " Updated",
-                    Description = "This is a valid long description that is more than 50 characters long so it passes the validation process.",
-                    Status = Domain.Enums.CourseStatus.Done,
-                    Cost = 250,
-                    CategoryId = createDto.CategoryId
-                };
-                var updateResponse = await _client.PutAsJsonAsync($"/courses/{id}", updateDto);
+                using var updateContent = new MultipartFormDataContent();
+                updateContent.Add(new StringContent(title + " Updated"), "Title");
+                updateContent.Add(new StringContent("This is a valid long description that is more than 50 characters long so it passes the validation process."), "Description");
+                updateContent.Add(new StringContent(Domain.Enums.CourseStatus.Done.ToString()), "Status");
+                updateContent.Add(new StringContent("250"), "Cost");
+                updateContent.Add(new StringContent(validCatId.ToString()), "CategoryId");
+                var updateImage = new ByteArrayContent(new byte[] { 0x02 });
+                updateImage.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("image/jpeg");
+                updateContent.Add(updateImage, "PictureUrl", "updated.jpg");
+
+                var updateResponse = await _client.PutAsync($"/courses/{id}", updateContent);
                 updateResponse.StatusCode.Should().Be(HttpStatusCode.NoContent);
 
                 // 4. Verify Update
                 var getResponseAfterUpdate = await _client.GetAsync($"/courses/{id}");
-                var updatedResult = await getResponseAfterUpdate.Content.ReadFromJsonAsync<CoursesResponseDto>();
+                var updatedResult = await getResponseAfterUpdate.Content.ReadFromJsonAsync<CourseResponseDto>();
                 updatedResult!.Title.Should().Be(title + " Updated");
                 updatedResult.Status.Should().Be(Domain.Enums.CourseStatus.Done);
 

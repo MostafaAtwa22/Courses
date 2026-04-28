@@ -11,12 +11,14 @@ namespace Application.Tests.Courses.Command
     public class UpdateCourseCommandHandlerTests
     {
         private readonly Mock<ICourseRepository> _repoMock;
+        private readonly Mock<IFileService> _fileServiceMock;
         private readonly UpdateCourseCommandHandler _handler;
 
         public UpdateCourseCommandHandlerTests()
         {
             _repoMock = new Mock<ICourseRepository>();
-            _handler = new UpdateCourseCommandHandler(_repoMock.Object);
+            _fileServiceMock = new Mock<IFileService>();
+            _handler = new UpdateCourseCommandHandler(_repoMock.Object, _fileServiceMock.Object);
         }
 
         [Fact]
@@ -26,18 +28,19 @@ namespace Application.Tests.Courses.Command
             var id = Guid.NewGuid();
             var updateDto = new CourseUpdateDto { Title = "Updated" };
             var command = new UpdateCourseCommand(id, updateDto);
+            var course = new Course { Id = id, Title = "Old" };
             
-            _repoMock.Setup(r => r.GetByIdAsync(id, It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new CoursesResponseDto());
+            _repoMock.Setup(r => r.GetEntityByIdAsync(id, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(course);
 
-            _repoMock.Setup(r => r.UpdateAsync(id, updateDto, It.IsAny<CancellationToken>()))
+            _repoMock.Setup(r => r.UpdateAsync(It.IsAny<Course>(), It.IsAny<CancellationToken>()))
                 .Returns(Task.CompletedTask);
 
             // Act
             await _handler.Handle(command, CancellationToken.None);
 
             // Assert
-            _repoMock.Verify(r => r.UpdateAsync(id, updateDto, It.IsAny<CancellationToken>()), Times.Once);
+            _repoMock.Verify(r => r.UpdateAsync(It.IsAny<Course>(), It.IsAny<CancellationToken>()), Times.Once);
         }
 
         [Fact]
@@ -47,15 +50,15 @@ namespace Application.Tests.Courses.Command
             var id = Guid.NewGuid();
             var command = new UpdateCourseCommand(id, new CourseUpdateDto());
 
-            _repoMock.Setup(r => r.GetByIdAsync(id, It.IsAny<CancellationToken>()))
-                .ReturnsAsync((CoursesResponseDto?)null);
+            _repoMock.Setup(r => r.GetEntityByIdAsync(id, It.IsAny<CancellationToken>()))
+                .ReturnsAsync((Course?)null);
 
             // Act
             Func<Task> act = async () => await _handler.Handle(command, CancellationToken.None);
 
             // Assert
             await act.Should().ThrowAsync<NotFoundException>()
-                .WithMessage($"Entity \"Course\" ({id}) was not found.");
+                .WithMessage($"Entity \"Course\" with key \"{id}\" was not found.");
         }
     }
 }

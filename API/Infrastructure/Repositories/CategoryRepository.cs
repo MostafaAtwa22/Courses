@@ -1,4 +1,5 @@
 using Application.DTOs.Category;
+using Domain.Entities;
 
 namespace Infrastructure.Repositories
 {
@@ -34,25 +35,35 @@ namespace Infrastructure.Repositories
             return await connection.QueryFirstOrDefaultAsync<CategoryResponseDto>(sql, new { Id = id });
         }
 
-        public async Task<Guid> CreateAsync(CategoryCreateDto dto, CancellationToken ct = default)
+        public async Task<Category?> GetEntityByIdAsync(Guid id, CancellationToken ct = default)
         {
             using var connection = await CreateConnectionAsync(ct);
-            var sql = @"INSERT INTO categories (id, name, slug, created_at, updated_at)
-                        VALUES (@Id, @Name, @Slug, @CreatedAt, @UpdatedAt)";
-            var id = Guid.NewGuid();
-            var now = DateTime.UtcNow;
-            await connection.ExecuteAsync(sql,
-                new { Id = id, dto.Name, dto.Slug, CreatedAt = now, UpdatedAt = now });
-            return id;
+            var sql = @"SELECT id, name, slug, created_at, updated_at 
+                        FROM categories WHERE id = @Id";
+            return await connection.QueryFirstOrDefaultAsync<Category>(sql, new { Id = id });
         }
 
-        public async Task UpdateAsync(Guid id, CategoryUpdateDto dto, CancellationToken ct = default)
+        public async Task<Guid> CreateAsync(Category category, CancellationToken ct = default)
         {
             using var connection = await CreateConnectionAsync(ct);
+            
+            var sql = @"INSERT INTO categories (id, name, slug, created_at, updated_at)
+                        VALUES (@Id, @Name, @Slug, @CreatedAt, @UpdatedAt)";
+            
+            await connection.ExecuteAsync(sql, category);
+            return category.Id;
+        }
+
+        public async Task UpdateAsync(Category category, CancellationToken ct = default)
+        {
+            using var connection = await CreateConnectionAsync(ct);
+            
             var sql = @"UPDATE categories
                         SET name = @Name, slug = @Slug, updated_at = @UpdatedAt
                         WHERE id = @Id";
-            await connection.ExecuteAsync(sql, new { Id = id, dto.Name, dto.Slug, UpdatedAt = DateTime.UtcNow });
+            
+            category.UpdatedAt = DateTime.UtcNow; 
+            await connection.ExecuteAsync(sql, category);
         }
 
         public async Task DeleteAsync(Guid id, CancellationToken ct = default)

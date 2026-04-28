@@ -25,6 +25,20 @@ namespace Application.Features.Courses.Commands.Create
             RuleFor(x => x.Dto.Status)
                 .IsInEnum()
                 .WithMessage("The Status must be in (In Progress - Completed)");
+
+            RuleFor(x => x.Dto.PictureUrl)
+                .NotNull()
+                .WithMessage("Picture is required.");
+
+            RuleFor(x => x.Dto.PictureUrl.ContentType)
+                .Must(type => type is "image/jpeg" or "image/png" or "image/webp")
+                .When(x => x.Dto.PictureUrl != null)
+                .WithMessage("Only JPEG, PNG, or WebP images are allowed.");
+
+            RuleFor(x => x.Dto.PictureUrl.Length)
+                .LessThanOrEqualTo(5 * 1024 * 1024)
+                .When(x => x.Dto.PictureUrl != null)
+                .WithMessage("Image size must not exceed 5MB.");
         }
     }
 }

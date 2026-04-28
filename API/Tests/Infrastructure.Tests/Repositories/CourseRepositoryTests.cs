@@ -8,6 +8,7 @@ using Moq;
 using Moq.Dapper;
 using FluentAssertions;
 using Dapper;
+using Domain.Entities;
 
 namespace Infrastructure.Tests.Repositories
 {
@@ -37,10 +38,10 @@ namespace Infrastructure.Tests.Repositories
         {
             // Arrange
             var id = Guid.NewGuid();
-            var expected = new CoursesResponseDto { Id = id, Title = "Test Course", Description = "Test" };
+            var expected = new CourseResponseDto { Id = id, Title = "Test Course", Description = "Test" };
 
             _connectionMock
-                .SetupDapperAsync(c => c.QueryFirstOrDefaultAsync<CoursesResponseDto>(
+                .SetupDapperAsync(c => c.QueryFirstOrDefaultAsync<CourseResponseDto>(
                     It.IsAny<string>(), It.IsAny<object>(), null, null, null))
                 .ReturnsAsync(expected);
 
@@ -60,9 +61,9 @@ namespace Infrastructure.Tests.Repositories
             var id = Guid.NewGuid();
 
             _connectionMock
-                .SetupDapperAsync(c => c.QueryFirstOrDefaultAsync<CoursesResponseDto>(
+                .SetupDapperAsync(c => c.QueryFirstOrDefaultAsync<CourseResponseDto>(
                     It.IsAny<string>(), It.IsAny<object>(), null, null, null))
-                .ReturnsAsync((CoursesResponseDto?)null);
+                .ReturnsAsync((CourseResponseDto?)null);
 
             // Act
             var result = await _repository.GetByIdAsync(id);
@@ -74,14 +75,14 @@ namespace Infrastructure.Tests.Repositories
         public async Task CreateAsync_ShouldReturnNewGuid()
         {
             // Arrange
-            var createDto = new CourseCreateDto { Title = "Test" };
+            var course = new Course { Title = "Test" };
             
             _connectionMock
                 .SetupDapperAsync(c => c.ExecuteAsync(It.IsAny<string>(), It.IsAny<object>(), null, null, null))
                 .ReturnsAsync(1);
 
             // Act
-            var id = await _repository.CreateAsync(createDto);
+            var id = await _repository.CreateAsync(course);
 
             // Assert
             id.Should().NotBeEmpty();
@@ -92,14 +93,14 @@ namespace Infrastructure.Tests.Repositories
         {
             // Arrange
             var id = Guid.NewGuid();
-            var updateDto = new CourseUpdateDto { Title = "Updated" };
+            var course = new Course { Id = id, Title = "Updated" };
 
             _connectionMock
                 .SetupDapperAsync(c => c.ExecuteAsync(It.IsAny<string>(), It.IsAny<object>(), null, null, null))
                 .ReturnsAsync(1);
 
             // Act
-            await _repository.UpdateAsync(id, updateDto);
+            await _repository.UpdateAsync(course);
 
             // Assert
             // Assert successful execution

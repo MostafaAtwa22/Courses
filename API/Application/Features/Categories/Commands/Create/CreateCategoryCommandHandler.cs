@@ -1,5 +1,6 @@
 using Application.Common.Interfaces;
 using MediatR;
+using Application.Common.Mappings;
 
 namespace Application.Features.Categories.Commands.Create
 {
@@ -7,7 +8,8 @@ namespace Application.Features.Categories.Commands.Create
     {
         public async Task<Guid> Handle(CreateCategoryCommand request, CancellationToken cancellationToken)
         {
-            return await _repo.CreateAsync(request.Dto, cancellationToken);
+            var category = request.Dto.ToEntity();
+            return await _repo.CreateAsync(category, cancellationToken);
         }
     }
 }

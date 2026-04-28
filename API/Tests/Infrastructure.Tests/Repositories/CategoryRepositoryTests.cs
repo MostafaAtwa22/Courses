@@ -6,6 +6,7 @@ using Moq;
 using Moq.Dapper;
 using FluentAssertions;
 using Dapper;
+using Domain.Entities;
 
 namespace Infrastructure.Tests.Repositories
 {
@@ -69,7 +70,7 @@ namespace Infrastructure.Tests.Repositories
         public async Task CreateAsync_ShouldReturnNewGuid()
         {
             // Arrange
-            var dto = new CategoryCreateDto { Name = "New Category", Slug = "new-category" };
+            var entity = new Category { Name = "New Category", Slug = "new-category" };
             var executeCallCount = 0;
 
             _connectionMock
@@ -82,7 +83,7 @@ namespace Infrastructure.Tests.Repositories
                 });
 
             // Act
-            var result = await _repository.CreateAsync(dto);
+            var result = await _repository.CreateAsync(entity);
 
             // Assert
             result.Should().NotBeEmpty();
@@ -94,7 +95,7 @@ namespace Infrastructure.Tests.Repositories
         {
             // Arrange
             var id = Guid.NewGuid();
-            var dto = new CategoryUpdateDto { Name = "Updated Name", Slug = "updated-name" };
+            var entity = new Category { Id = id, Name = "Updated Name", Slug = "updated-name" };
             var executeCallCount = 0;
 
             _connectionMock
@@ -107,7 +108,7 @@ namespace Infrastructure.Tests.Repositories
                 });
 
             // Act
-            await _repository.UpdateAsync(id, dto);
+            await _repository.UpdateAsync(entity);
 
             // Assert
             executeCallCount.Should().Be(1);

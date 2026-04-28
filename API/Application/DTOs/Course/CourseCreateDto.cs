@@ -1,14 +1,10 @@
 using Domain.Enums;
+using Microsoft.AspNetCore.Http;
 
 namespace Application.DTOs.Course
 {
-    public class CourseCreateDto
+    public class CourseCreateDto : CourseBaseDto
     {
-        public string Title { get; set; } = string.Empty;
-        public string Description { get; set; } = string.Empty;
-        public string PictureUrl { get; set; } = string.Empty;
-        public CourseStatus Status { get; set; } = CourseStatus.InProgress;
-        public int Cost { get; set; }
-        public Guid CategoryId { get; set; }
+        public IFormFile PictureUrl { get; set; } = default!;
     }
 }

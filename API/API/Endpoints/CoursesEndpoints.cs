@@ -4,6 +4,7 @@ using Application.DTOs.Course;
 using Application.Features.Courses.Commands.Create;
 using Application.Features.Courses.Commands.Update;
 using Application.Features.Courses.Commands.Delete;
+using Microsoft.AspNetCore.Mvc;
 
 namespace API.Endpoints
 {
@@ -16,7 +17,7 @@ namespace API.Endpoints
 
             group.MapGet("/", GetCourses)
                 .WithName(nameof(GetCourses))
-                .Produces<PaginatedResult<CoursesResponseDto>>(StatusCodes.Status200OK)
+                .Produces<PaginatedResult<CourseResponseDto>>(StatusCodes.Status200OK)
                 .Produces(StatusCodes.Status400BadRequest);
 
             group.MapGet("/{id:guid}", GetCourseById)
@@ -27,12 +28,14 @@ namespace API.Endpoints
             group.MapPost("/", CreateCourse)
                 .WithName(nameof(CreateCourse))
                 .Produces(StatusCodes.Status201Created)
-                .Produces(StatusCodes.Status400BadRequest);
+                .Produces(StatusCodes.Status400BadRequest)
+                .DisableAntiforgery();
             
             group.MapPut("/{id:guid}", UpdateCourse)
                 .WithName(nameof(UpdateCourse))
                 .Produces(StatusCodes.Status204NoContent)
-                .Produces(StatusCodes.Status404NotFound);
+                .Produces(StatusCodes.Status404NotFound)
+                .DisableAntiforgery();
             
             group.MapDelete("/{id:guid}", DeleteCourse)
                 .WithName(nameof(DeleteCourse))
@@ -40,21 +43,21 @@ namespace API.Endpoints
                 .Produces(StatusCodes.Status404NotFound);
         }
 
-        public static async Task<Results<Ok<PaginatedResult<CoursesResponseDto>>, BadRequest>> GetCourses([AsParameters] QueryParams queryParams, 
+        public static async Task<Results<Ok<PaginatedResult<CourseResponseDto>>, BadRequest>> GetCourses([AsParameters] QueryParams queryParams, 
             IMediator mediator)
         {
             var result = await mediator.Send(new GetCoursesQuery(queryParams));
             return TypedResults.Ok(result);
         }
 
-        public static async Task<Results<Ok<CoursesResponseDto>, NotFound>> GetCourseById(Guid id, IMediator mediator)
+        public static async Task<Results<Ok<CourseResponseDto>, NotFound>> GetCourseById(Guid id, IMediator mediator)
         {
             var result = await mediator.Send(new GetCourseByIdQuery(id));
             return result is not null ? TypedResults.Ok(result) : TypedResults.NotFound();
         }
 
-        public static async Task<Results<CreatedAtRoute<CoursesResponseDto>, BadRequest>> CreateCourse(
-            CourseCreateDto request, IMediator mediator) 
+        public static async Task<Results<CreatedAtRoute<CourseResponseDto>, BadRequest>> CreateCourse(
+            [FromForm] CourseCreateDto request, IMediator mediator) 
         {
             var id = await mediator.Send(new CreateCourseCommand(request));
             var course = await mediator.Send(new GetCourseByIdQuery(id));
@@ -63,7 +66,7 @@ namespace API.Endpoints
         }
 
         public static async Task<Results<NoContent, NotFound>> UpdateCourse(
-            Guid id, CourseUpdateDto request, IMediator mediator)
+            Guid id, [FromForm] CourseUpdateDto request, IMediator mediator)
         {
             await mediator.Send(new UpdateCourseCommand(id, request));
 

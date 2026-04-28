@@ -3,3 +3,7 @@ global using MediatR;
 global using Application.Common.Exceptions;
 global using Application.Common.Interfaces;
 global using Domain.Entities;
+global using Microsoft.AspNetCore.Http;
+global using Application.DTOs.Course;
+global using Application.Common.Mappings;
+global using Domain.Constants;

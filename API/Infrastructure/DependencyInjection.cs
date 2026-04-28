@@ -3,6 +3,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Infrastructure.Persistence.Data;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Infrastructure.Repositories;
+using Infrastructure.Services;
+using Microsoft.EntityFrameworkCore;
+using Application.Common.Interfaces;
 
 public static class DependencyInjection
 {
@@ -20,7 +23,8 @@ public static class DependencyInjection
         services.AddScoped<IDbConnectionFactory, DbConnectionFactory>();
         services.AddScoped<ICategoryRepository, CategoryRepository>();
         services.AddScoped<ICourseRepository, CourseRepository>();
-
+        services.AddScoped<IFileService, FileService>();
+        
         services.AddHealthChecks()
             .AddNpgSql(connectionString, 
                 name: "PostgreSQL",

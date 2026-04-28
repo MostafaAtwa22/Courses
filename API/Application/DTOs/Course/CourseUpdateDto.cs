@@ -1,6 +1,7 @@
 namespace Application.DTOs.Course
 {
-    public class CourseUpdateDto : CourseCreateDto
+    public class CourseUpdateDto : CourseBaseDto
     {
+        public IFormFile PictureUrl { get; set; } = default!;
     }
 }

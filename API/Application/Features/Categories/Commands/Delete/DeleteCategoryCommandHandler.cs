@@ -9,7 +9,7 @@ namespace Application.Features.Categories.Commands.Delete
     {
         public async Task Handle(DeleteCategoryCommand request, CancellationToken cancellationToken)
         {
-            var category = await _repo.GetByIdAsync(request.Id, cancellationToken)
+            var category = await _repo.GetEntityByIdAsync(request.Id, cancellationToken)
                 ?? throw new NotFoundException(nameof(Category), request.Id);
 
             await _repo.DeleteAsync(request.Id, cancellationToken);      

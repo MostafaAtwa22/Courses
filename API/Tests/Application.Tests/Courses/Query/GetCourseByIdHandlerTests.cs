@@ -27,7 +27,7 @@ namespace Application.Tests.Courses.Query
         {
             // Arrange
             var courseId = Guid.NewGuid();
-            var expectedCourse = new CoursesResponseDto
+            var expectedCourse = new CourseResponseDto
             {
                 Id = courseId,
                 Title = "Test Course",
@@ -62,7 +62,7 @@ namespace Application.Tests.Courses.Query
             var courseId = Guid.NewGuid();
 
             _repoMock.Setup(repo => repo.GetByIdAsync(courseId, It.IsAny<CancellationToken>()))
-                     .ReturnsAsync((CoursesResponseDto?)null);
+                     .ReturnsAsync((CourseResponseDto?)null);
 
             var query = new GetCourseByIdQuery(courseId);
 

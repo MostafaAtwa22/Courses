@@ -4,10 +4,11 @@ namespace Application.Common.Interfaces
 {
     public interface ICourseRepository
     {
-        Task<PaginatedResult<CoursesResponseDto>> GetAllAsync(QueryParams queryParams, CancellationToken ct = default!);
-        Task<CoursesResponseDto?> GetByIdAsync(Guid id, CancellationToken ct = default!);
-        Task<Guid> CreateAsync(CourseCreateDto courseCreateDto, CancellationToken ct = default!);
-        Task UpdateAsync(Guid id, CourseUpdateDto courseUpdateDto, CancellationToken ct = default!);
+        Task<PaginatedResult<CourseResponseDto>> GetAllAsync(QueryParams queryParams, CancellationToken ct = default!);
+        Task<CourseResponseDto?> GetByIdAsync(Guid id, CancellationToken ct = default!);
+        Task<Course?> GetEntityByIdAsync(Guid id, CancellationToken ct = default!);
+        Task<Guid> CreateAsync(Course course, CancellationToken ct = default!);
+        Task UpdateAsync(Course course, CancellationToken ct = default!);
         Task DeleteAsync(Guid id, CancellationToken ct = default!);
     }
 }

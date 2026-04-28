@@ -22,9 +22,9 @@ namespace Infrastructure.Repositories
         private const string FromClause =
             "FROM courses c JOIN categories cat ON c.category_id = cat.id";
 
-        public Task<PaginatedResult<CoursesResponseDto>> GetAllAsync(QueryParams queryParams, CancellationToken ct = default)
+        public Task<PaginatedResult<CourseResponseDto>> GetAllAsync(QueryParams queryParams, CancellationToken ct = default)
         {
-            return ExecutePaginatedQueryAsync<CoursesResponseDto>(
+            return ExecutePaginatedQueryAsync<CourseResponseDto>(
                 queryParams,
                 countSql: $"SELECT COUNT(1) {FromClause}",
                 selectSql: $"SELECT {SelectColumns} {FromClause}",
@@ -34,50 +34,48 @@ namespace Infrastructure.Repositories
                 ct);
         }
 
-        public async Task<CoursesResponseDto?> GetByIdAsync(Guid id, CancellationToken ct = default)
+        public async Task<CourseResponseDto?> GetByIdAsync(Guid id, CancellationToken ct = default)
         {
             using var connection = await CreateConnectionAsync(ct);
             var sql = $@"SELECT {SelectColumns} {FromClause} WHERE c.id = @Id;";
-            return await connection.QueryFirstOrDefaultAsync<CoursesResponseDto>(sql, new { Id = id });
+            return await connection.QueryFirstOrDefaultAsync<CourseResponseDto>(sql, new { Id = id });
         }
 
-        public async Task<Guid> CreateAsync(CourseCreateDto courseCreateDto, CancellationToken ct = default)
+        public async Task<Course?> GetEntityByIdAsync(Guid id, CancellationToken ct = default)
+        {
+            using var connection = await CreateConnectionAsync(ct);
+            var sql = "SELECT * FROM courses WHERE id = @Id";
+            return await connection.QueryFirstOrDefaultAsync<Course>(sql, new { Id = id });
+        }
+
+        public async Task<Guid> CreateAsync(Course course, CancellationToken ct = default)
         {
             using var connection = await CreateConnectionAsync(ct);
 
-            var sql = @"INSERT INTO courses (id, title, description, picture_url, status, cost, category_id)
-                        VALUES (@id, @Title, @Description, @PictureUrl, @Status, @Cost, @CategoryId)";
+            var sql = @"INSERT INTO courses (id, title, description, picture_url, status, cost, category_id, created_at, updated_at)
+                        VALUES (@Id, @Title, @Description, @PictureUrl, @Status, @Cost, @CategoryId, @CreatedAt, @UpdatedAt)";
 
-            var id = Guid.NewGuid();
-            await connection.ExecuteAsync(sql, new {
-                id,
-                courseCreateDto.Title,
-                courseCreateDto.Description,
-                courseCreateDto.PictureUrl,
-                courseCreateDto.Status,
-                courseCreateDto.Cost,
-                courseCreateDto.CategoryId
-            });
+            await connection.ExecuteAsync(sql, course);
 
-            return id;
+            return course.Id;
         }
 
-        public async Task UpdateAsync(Guid id, CourseUpdateDto courseUpdateDto, CancellationToken ct = default)
+        public async Task UpdateAsync(Course course, CancellationToken ct = default)
         {
             using var connection = await CreateConnectionAsync(ct);
-            
-            var sql = @"UPDATE courses SET title = @Title, description = @Description, picture_url = @PictureUrl, status = @Status, cost = @Cost, category_id = @CategoryId
+
+            var sql = @"UPDATE courses 
+                        SET title = @Title, 
+                            description = @Description, 
+                            picture_url = @PictureUrl, 
+                            status = @Status, 
+                            cost = @Cost, 
+                            category_id = @CategoryId,
+                            updated_at = @UpdatedAt
                         WHERE id = @Id";
 
-            await connection.ExecuteAsync(sql, new {
-                Id = id,
-                courseUpdateDto.Title,
-                courseUpdateDto.Description,
-                courseUpdateDto.PictureUrl,
-                courseUpdateDto.Status,
-                courseUpdateDto.Cost,
-                courseUpdateDto.CategoryId
-            });
+            course.UpdatedAt = DateTime.UtcNow;
+            await connection.ExecuteAsync(sql, course);
         }
 
         public async Task DeleteAsync(Guid id, CancellationToken ct = default)
