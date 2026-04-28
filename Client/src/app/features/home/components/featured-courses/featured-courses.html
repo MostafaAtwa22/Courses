@@ -1,0 +1,34 @@
+<section class="featured-courses container">
+  <div class="section-header">
+    <h2>Featured Courses</h2>
+    <p>Hand-picked high-quality courses just for you</p>
+  </div>
+  <div class="course-grid">
+    <div class="course-card" *ngFor="let course of courses">
+      <div class="course-img">
+        <img [src]="course.image" [alt]="course.title">
+        <span class="course-tag">{{ course.tag }}</span>
+      </div>
+      <div class="course-info">
+        <h3>{{ course.title }}</h3>
+        <p class="instructor">By {{ course.instructor }}</p>
+        <div class="rating">
+          <span class="stars">
+            <i class="fa-solid fa-star"></i>
+            <i class="fa-solid fa-star"></i>
+            <i class="fa-solid fa-star"></i>
+            <i class="fa-solid fa-star"></i>
+            <i class="fa-solid fa-star-half-stroke"></i>
+          </span>
+          <span class="score">{{ course.rating }}</span>
+          <span class="reviews">({{ course.reviews }})</span>
+        </div>
+        <div class="price-row">
+          <span class="price">\${{ course.price }}</span>
+          <span class="old-price">\${{ course.originalPrice }}</span>
+          <button class="btn-enroll"><i class="fa-solid fa-plus"></i></button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

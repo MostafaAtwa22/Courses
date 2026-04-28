@@ -1,0 +1,29 @@
+<app-header 
+  [isDarkMode]="isDarkMode" 
+  (themeToggled)="toggleTheme()">
+</app-header>
+
+<app-hero 
+  [slides]="slides" 
+  [currentSlide]="currentSlide"
+  (slideChanged)="setSlide($event)"
+  (nextRequested)="nextSlide()"
+  (prevRequested)="prevSlide()">
+</app-hero>
+
+<app-categories 
+  [categories]="categories">
+</app-categories>
+
+<app-featured-courses 
+  [courses]="featuredCourses">
+</app-featured-courses>
+
+<app-why-us></app-why-us>
+
+<app-faq 
+  [faqs]="faqs" 
+  (faqToggled)="toggleFaq($event)">
+</app-faq>
+
+<app-footer></app-footer>

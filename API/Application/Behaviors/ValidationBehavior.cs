@@ -1,4 +1,3 @@
-using MediatR;
 using FluentValidation;
 
 namespace Application.Behaviors
@@ -19,7 +18,7 @@ namespace Application.Behaviors
                 var failures = results.SelectMany(r => r.Errors).Where(f => f is not null).ToList();
             
                 if (failures.Count != 0)
-                    throw new ValidationException(failures);
+                    throw new FluentValidation.ValidationException(failures);
             }
 
             return await next(cancellationToken);

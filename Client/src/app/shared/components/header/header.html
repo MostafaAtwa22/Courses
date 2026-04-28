@@ -1,0 +1,23 @@
+<nav class="navbar">
+  <div class="container nav-content">
+    <div class="logo">
+      <span class="logo-text">EduFocus</span>
+    </div>
+    
+    <div class="nav-links">
+      <a href="#" class="active">Home</a>
+      <a href="#">Courses</a>
+      <a href="#">Categories</a>
+      <a href="#">About Us</a>
+      <a href="#">Contact</a>
+    </div>
+
+    <div class="nav-actions">
+      <button class="theme-toggle" (click)="onThemeToggle()" [title]="isDarkMode ? 'Light Mode' : 'Dark Mode'">
+        <i class="fa-solid" [class.fa-moon]="!isDarkMode" [class.fa-sun]="isDarkMode"></i>
+      </button>
+      <button class="btn-login" routerLink="/auth/login">Log In</button>
+      <button class="btn-primary" routerLink="/auth/register">Sign Up</button>
+    </div>
+  </div>
+</nav>

@@ -1,0 +1,15 @@
+<section class="categories container">
+  <div class="section-header">
+    <h2>Top Categories</h2>
+    <p>Explore our most popular fields of study</p>
+  </div>
+  <div class="category-grid">
+    <div class="category-card" *ngFor="let cat of categories">
+      <div class="cat-icon">
+        <i [class]="cat.icon"></i>
+      </div>
+      <h3>{{ cat.name }}</h3>
+      <span>{{ cat.count }}</span>
+    </div>
+  </div>
+</section>

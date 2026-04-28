@@ -1,0 +1,27 @@
+<header class="hero">
+  <div class="slider-container">
+    <div class="slide" *ngFor="let slide of slides; let i = index" [class.active]="currentSlide === i">
+      <div class="slide-bg" [style.backgroundImage]="'url(' + slide.image + ')'"></div>
+      <div class="slide-overlay"></div>
+      <div class="container slide-content">
+        <h1>{{ slide.title }}</h1>
+        <p>{{ slide.description }}</p>
+        <button class="btn-primary btn-lg">{{ slide.cta }}</button>
+      </div>
+    </div>
+
+    <!-- Navigation Arrows -->
+    <button class="nav-btn prev" (click)="onPrev()" aria-label="Previous Slide">
+      <i class="fa-solid fa-chevron-left"></i>
+    </button>
+    <button class="nav-btn next" (click)="onNext()" aria-label="Next Slide">
+      <i class="fa-solid fa-chevron-right"></i>
+    </button>
+    
+    <div class="slider-dots">
+      <span *ngFor="let dot of slides; let i = index" 
+            [class.active]="currentSlide === i"
+            (click)="onSetSlide(i)"></span>
+    </div>
+  </div>
+</header>
