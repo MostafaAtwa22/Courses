@@ -2,8 +2,11 @@ using Application;
 using Serilog;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using API.RateLimiting;
 using API.Extensions;
 using Application.Common.Options;
+
+using API.Cors;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,17 +15,8 @@ builder.Services
     .AddInfrastructure(builder.Configuration);
 
 builder.Services.AddApplicationServices(builder.Configuration);
-
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("DefaultPolicy", policy =>
-    {
-        policy.WithOrigins(builder.Configuration.GetValue<string>("Urls:Client") ?? "http://localhost:4200")
-              .AllowAnyMethod()
-              .AllowAnyHeader()
-              .AllowCredentials();
-    });
-});
+builder.Services.AddRateLimiter(builder.Configuration);
+builder.Services.AddCors(builder.Configuration);
 
 
 builder.Host.UseSerilog((hostingContext, configuration) =>
@@ -45,6 +39,8 @@ app.MapHealthChecks("health", new HealthCheckOptions
 });
 
 app.UseCors("DefaultPolicy");
+
+app.UseRateLimiter();
 
 app.MapCarter();
 

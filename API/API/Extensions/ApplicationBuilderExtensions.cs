@@ -16,7 +16,7 @@ namespace API.Extensions
             var loggerFactory = services.GetRequiredService<ILoggerFactory>();
 
             await ApplicationDbContextSeed.SeedAsync(context, loggerFactory);
-            
+
             return app;
         }
     }
