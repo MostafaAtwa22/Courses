@@ -7,11 +7,12 @@ using Microsoft.AspNetCore.Mvc.Testing;
 
 namespace API.Tests.Endpoints
 {
-    public class CoursesEndpointsTests : IClassFixture<WebApplicationFactory<Program>>
+    [Collection("Integration Tests")]
+    public class CoursesEndpointsTests
     {
         private readonly HttpClient _client;
 
-        public CoursesEndpointsTests(WebApplicationFactory<Program> factory)
+        public CoursesEndpointsTests(IntegrationTestFactory<Program> factory)
         {
             _client = factory.CreateClient();
         }

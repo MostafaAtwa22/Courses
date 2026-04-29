@@ -7,11 +7,12 @@ using Application.DTOs.Category;
 
 namespace API.Tests.Endpoints
 {
-    public class CategoriesEndpointsTests : IClassFixture<WebApplicationFactory<Program>>
+    [Collection("Integration Tests")]
+    public class CategoriesEndpointsTests
     {
         private readonly HttpClient _client;
 
-        public CategoriesEndpointsTests(WebApplicationFactory<Program> factory)
+        public CategoriesEndpointsTests(IntegrationTestFactory<Program> factory)
         {
             _client = factory.CreateClient();
         }

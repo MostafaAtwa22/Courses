@@ -1,0 +1,136 @@
+<app-header 
+  [isDarkMode]="isDarkMode" 
+  (themeToggled)="toggleTheme()">
+</app-header>
+
+<main class="courses-page">
+  <section class="page-header">
+    <div class="container">
+      <h1 class="page-title">Explore Our Courses</h1>
+      <p class="page-subtitle">Discover world-class learning from industry experts.</p>
+    </div>
+  </section>
+
+  <section class="courses-content">
+    <div class="container">
+      <div class="content-layout">
+        <!-- Sidebar Filters -->
+        <aside class="filters-sidebar" [class.open]="isFilterOpen">
+          <div class="sidebar-header mobile-only">
+            <h3>Filters</h3>
+            <button class="sidebar-close-btn" (click)="isFilterOpen = false">
+              <i class="fa-solid fa-xmark"></i>
+            </button>
+          </div>
+
+          <div class="filter-group">
+            <h3>Categories</h3>
+            <div class="filter-options">
+              <button 
+                *ngFor="let cat of categories" 
+                [class.active]="selectedCategory === cat"
+                (click)="setCategory(cat)">
+                {{ cat }}
+              </button>
+            </div>
+          </div>
+
+          <div class="filter-group">
+            <h3>Price</h3>
+            <div class="checkbox-group">
+              <label><input type="checkbox"> Free</label>
+              <label><input type="checkbox"> Paid</label>
+            </div>
+          </div>
+
+          <div class="filter-group">
+            <h3>Ratings</h3>
+            <div class="radio-group">
+              <label><input type="radio" name="rating"> 4.5 & up</label>
+              <label><input type="radio" name="rating"> 4.0 & up</label>
+            </div>
+          </div>
+
+          <div class="sidebar-footer mobile-only">
+            <button class="btn-primary" (click)="isFilterOpen = false">Show Results</button>
+          </div>
+        </aside>
+
+        <!-- Overlay for mobile sidebar -->
+        <div class="sidebar-overlay" *ngIf="isFilterOpen" (click)="isFilterOpen = false"></div>
+
+        <!-- Main Course List -->
+        <div class="courses-main">
+          <div class="search-sort-bar">
+            <!-- Mobile Filter Toggle Button -->
+            <button class="btn-filter-toggle mobile-tablet-only" (click)="isFilterOpen = true">
+              <i class="fa-solid fa-sliders"></i>
+              <span>Filters</span>
+            </button>
+
+            <div class="search-box">
+              <i class="fa-solid fa-magnifying-glass"></i>
+              <input 
+                type="text" 
+                placeholder="Search for courses..." 
+                (keyup.enter)="onSearch(searchInput.value)" 
+                #searchInput>
+            </div>
+            
+            <div class="sort-box desktop-only">
+              <span>Sort by:</span>
+              <select (change)="onSortChange($event)">
+                <option>Newest</option>
+                <option>Price: Low to High</option>
+                <option>Price: High to Low</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Sort for Mobile -->
+          <div class="mobile-sort mobile-tablet-only">
+            <select (change)="onSortChange($event)">
+              <option>Newest</option>
+              <option>Price: Low to High</option>
+              <option>Price: High to Low</option>
+            </select>
+          </div>
+
+          <div class="courses-grid">
+            <app-course-card 
+              *ngFor="let course of coursesResult.items" 
+              [course]="course">
+            </app-course-card>
+          </div>
+
+          <div class="pagination" *ngIf="coursesResult.totalPages > 1">
+            <button 
+              class="btn-page" 
+              [disabled]="!coursesResult.hasPreviousPage"
+              (click)="onPageChange(params.pageNumber! - 1)">
+              <i class="fa-solid fa-chevron-left"></i>
+            </button>
+            
+            <button 
+              *ngFor="let page of getPagesArray()" 
+              class="btn-page" 
+              [class.active]="params.pageNumber === page"
+              (click)="onPageChange(page)">
+              {{ page }}
+            </button>
+            
+            <button 
+              class="btn-page" 
+              [disabled]="!coursesResult.hasNextPage"
+              (click)="onPageChange(params.pageNumber! + 1)">
+              <i class="fa-solid fa-chevron-right"></i>
+            </button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<app-footer></app-footer>

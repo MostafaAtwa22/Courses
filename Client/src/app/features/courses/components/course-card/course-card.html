@@ -1,0 +1,25 @@
+<div class="course-card">
+  <div class="course-image">
+    <img [src]="course.pictureUrl" [alt]="course.title">
+    <span class="tag">{{ course.category }}</span>
+  </div>
+  <div class="course-content">
+    <div class="course-meta">
+      <span class="instructor">Instructor</span> <!-- Placeholder -->
+      <div class="rating">
+        <i class="fa-solid fa-star"></i>
+        <span>4.9</span> <!-- Placeholder -->
+        <span class="reviews">(1,234)</span> <!-- Placeholder -->
+      </div>
+    </div>
+    <h3 class="course-title">{{ course.title }}</h3>
+    <div class="course-footer">
+      <div class="price-container">
+        <span class="price">${{ course.cost }}</span>
+      </div>
+      <button class="btn-enroll">
+        <i class="fa-solid fa-cart-plus"></i>
+      </button>
+    </div>
+  </div>
+</div>

@@ -7,7 +7,7 @@
             "updatedAt": "2024-03-15T14:30:00Z",
             "title": "Complete React Developer Course",
             "description": "Master React.js including hooks, context API, and Redux. Build real-world applications.",
-            "pictureUrl": "/images/courses/react.png",
+            "pictureUrl": "images/courses/react.png",
             "status": "InProgress",
             "cost": 300,
             "categoryId": "3a2b1c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d"
@@ -18,7 +18,7 @@
             "updatedAt": "2024-03-20T09:45:00Z",
             "title": "Python for Data Science",
             "description": "Learn Python, pandas, numpy, and matplotlib for data analysis and visualization.",
-            "pictureUrl": "/images/courses/python.png",
+            "pictureUrl": "images/courses/python.png",
             "status": "Done",
             "cost": 500,
             "categoryId": "4b3c2d5e-6f7a-8b9c-0d1e-2f3a4b5c6d7e"
@@ -29,7 +29,7 @@
             "updatedAt": "2024-03-10T11:00:00Z",
             "title": "iOS & SwiftUI Masterclass",
             "description": "Build iOS apps from scratch using SwiftUI and Combine framework.",
-            "pictureUrl": "/images/courses/swift.jpeg",
+            "pictureUrl": "images/courses/swift.jpeg",
             "status": "InProgress",
             "cost": 100,
             "categoryId": "5c4d3e6f-7a8b-9c0d-1e2f-3a4b5c6d7e8f"
@@ -40,7 +40,7 @@
             "updatedAt": "2024-03-25T16:20:00Z",
             "title": "AWS Solutions Architect",
             "description": "Comprehensive preparation for AWS Solutions Architect certification exam.",
-            "pictureUrl": "/images/courses/aws.png",
+            "pictureUrl": "images/courses/aws.png",
             "status": "Done",
             "cost": 200,
             "categoryId": "6d5e4f7a-8b9c-0d1e-2f3a-4b5c6d7e8f9a"
@@ -51,7 +51,7 @@
             "updatedAt": "2024-03-05T10:15:00Z",
             "title": "Docker & Kubernetes: The Complete Guide",
             "description": "Learn containerization and orchestration with Docker and Kubernetes.",
-            "pictureUrl": "/images/courses/docker.jpg",
+            "pictureUrl": "images/courses/docker.jpg",
             "status": "InProgress",
             "cost": 300,
             "categoryId": "7e6f5a8b-9c0d-1e2f-3a4b-5c6d7e8f9a0b"
@@ -62,7 +62,7 @@
             "updatedAt": "2024-03-18T12:00:00Z",
             "title": "Advanced JavaScript Concepts",
             "description": "Deep dive into closures, promises, async/await, and design patterns in JavaScript.",
-            "pictureUrl": "/images/courses/js.png",
+            "pictureUrl": "images/courses/js.png",
             "status": "Done",
             "cost": 300,
             "categoryId": "3a2b1c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d"
@@ -73,7 +73,7 @@
             "updatedAt": "2024-03-22T14:45:00Z",
             "title": "Machine Learning with TensorFlow",
             "description": "Build and deploy ML models using TensorFlow and Keras.",
-            "pictureUrl": "/images/courses/ML.jpeg",
+            "pictureUrl": "images/courses/ML.jpeg",
             "status": "InProgress",
             "cost": 649,
             "categoryId": "4b3c2d5e-6f7a-8b9c-0d1e-2f3a4b5c6d7e"
@@ -84,7 +84,7 @@
             "updatedAt": "2024-03-19T13:30:00Z",
             "title": "Android Development with Kotlin",
             "description": "Master Android app development using Kotlin and modern architecture components.",
-            "pictureUrl": "/images/courses/kotlin.jpeg",
+            "pictureUrl": "images/courses/kotlin.jpeg",
             "status": "InProgress",
             "cost": 599,
             "categoryId": "5c4d3e6f-7a8b-9c0d-1e2f-3a4b5c6d7e8f"

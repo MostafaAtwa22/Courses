@@ -4,13 +4,13 @@
   .section-header {
     text-align: center;
     margin-bottom: var(--spacing-lg);
-    h2 { font-size: 2rem; margin-bottom: 8px; }
-    p { color: var(--text-muted); }
+    h2 { font-size: 2.5rem; margin-bottom: 8px; }
+    p { color: var(--text-muted); font-size: 1.1rem; }
   }
 
   .category-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
     gap: var(--spacing-md);
   }
 
@@ -21,11 +21,12 @@
     border: 1px solid var(--border-color);
     text-align: center;
     transition: var(--transition);
+    cursor: pointer;
 
     &:hover {
       border-color: var(--primary-color);
-      transform: translateY(-4px);
-      box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+      transform: translateY(-5px);
+      box-shadow: 0 12px 24px rgba(0,0,0,0.08);
       .cat-icon { color: var(--primary-color); transform: scale(1.1); }
     }
 
@@ -34,16 +35,53 @@
       margin-bottom: var(--spacing-sm);
       color: var(--text-color);
       transition: var(--transition);
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     h3 {
-      font-size: 1.1rem;
+      font-size: 1.25rem;
       margin-bottom: 4px;
     }
 
     span {
-      font-size: 0.9rem;
+      font-size: 0.95rem;
       color: var(--text-muted);
     }
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+  .categories {
+    padding: var(--spacing-lg) 0;
+    .category-grid {
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .categories {
+    .section-header {
+      h2 { font-size: 2rem; }
+      p { font-size: 1rem; }
+    }
+    .category-grid {
+      gap: var(--spacing-sm);
+    }
+    .category-card {
+      padding: var(--spacing-sm);
+      .cat-icon { font-size: 2rem; height: 48px; }
+      h3 { font-size: 1.1rem; }
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .categories .category-grid {
+    grid-template-columns: 1fr 1fr; /* Two columns on very small screens often looks better for categories */
   }
 }

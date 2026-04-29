@@ -13,6 +13,18 @@ builder.Services
 
 builder.Services.AddApplicationServices(builder.Configuration);
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("DefaultPolicy", policy =>
+    {
+        policy.WithOrigins(builder.Configuration.GetValue<string>("Urls:Client") ?? "http://localhost:4200")
+              .AllowAnyMethod()
+              .AllowAnyHeader()
+              .AllowCredentials();
+    });
+});
+
+
 builder.Host.UseSerilog((hostingContext, configuration) =>
     configuration.ReadFrom.Configuration(hostingContext.Configuration));
 
@@ -31,6 +43,8 @@ app.MapHealthChecks("health", new HealthCheckOptions
 {
     ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
 });
+
+app.UseCors("DefaultPolicy");
 
 app.MapCarter();
 

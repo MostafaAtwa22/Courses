@@ -1,12 +1,13 @@
-<nav class="navbar">
+<nav class="navbar" [class.menu-open]="isMenuOpen">
   <div class="container nav-content">
     <div class="logo">
       <span class="logo-text">EduFocus</span>
     </div>
     
-    <div class="nav-links">
-      <a href="#" class="active">Home</a>
-      <a href="#">Courses</a>
+    <!-- Desktop Nav -->
+    <div class="nav-links desktop-only">
+      <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Home</a>
+      <a routerLink="/courses" routerLinkActive="active">Courses</a>
       <a href="#">Categories</a>
       <a href="#">About Us</a>
       <a href="#">Contact</a>
@@ -16,8 +17,31 @@
       <button class="theme-toggle" (click)="onThemeToggle()" [title]="isDarkMode ? 'Light Mode' : 'Dark Mode'">
         <i class="fa-solid" [class.fa-moon]="!isDarkMode" [class.fa-sun]="isDarkMode"></i>
       </button>
-      <button class="btn-login" routerLink="/auth/login">Log In</button>
-      <button class="btn-primary" routerLink="/auth/register">Sign Up</button>
+      
+      <div class="auth-buttons desktop-only">
+        <button class="btn-login" routerLink="/auth/login">Log In</button>
+        <button class="btn-primary" routerLink="/auth/register">Sign Up</button>
+      </div>
+
+      <!-- Mobile Menu Toggle -->
+      <button class="menu-toggle mobile-only" (click)="toggleMenu()" aria-label="Toggle Menu">
+        <i class="fa-solid" [class.fa-bars]="!isMenuOpen" [class.fa-xmark]="isMenuOpen"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Mobile Navigation Overlay -->
+  <div class="mobile-menu" [class.active]="isMenuOpen">
+    <div class="mobile-links">
+      <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" (click)="isMenuOpen = false">Home</a>
+      <a routerLink="/courses" routerLinkActive="active" (click)="isMenuOpen = false">Courses</a>
+      <a href="#" (click)="isMenuOpen = false">Categories</a>
+      <a href="#" (click)="isMenuOpen = false">About Us</a>
+      <a href="#" (click)="isMenuOpen = false">Contact</a>
+    </div>
+    <div class="mobile-actions">
+      <button class="btn-login" routerLink="/auth/login" (click)="isMenuOpen = false">Log In</button>
+      <button class="btn-primary" routerLink="/auth/register" (click)="isMenuOpen = false">Sign Up</button>
     </div>
   </div>
 </nav>

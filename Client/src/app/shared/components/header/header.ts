@@ -13,6 +13,12 @@ export class HeaderComponent {
   @Input() isDarkMode = false;
   @Output() themeToggled = new EventEmitter<void>();
 
+  isMenuOpen = false;
+
+  toggleMenu() {
+    this.isMenuOpen = !this.isMenuOpen;
+  }
+
   onThemeToggle() {
     this.themeToggled.emit();
   }

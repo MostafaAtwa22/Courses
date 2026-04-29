@@ -1,4 +1,7 @@
 /* You can add global styles to this file, and also import other style files */
+@import "bootstrap/dist/css/bootstrap.min.css";
+@import "bootstrap-icons/font/bootstrap-icons.css";
+
 :root {
   --font-heading: 'Manrope', sans-serif;
   --font-body: 'Inter', sans-serif;
@@ -60,7 +63,12 @@ body {
   overflow-x: hidden;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-family: var(--font-heading);
   font-weight: 700;
   color: var(--text-color);
@@ -97,7 +105,7 @@ button {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  
+
   &:hover {
     background-color: var(--primary-dark);
     transform: translateY(-1px);

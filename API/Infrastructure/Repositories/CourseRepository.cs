@@ -17,7 +17,7 @@ namespace Infrastructure.Repositories
         };
 
         private string SelectColumns =>
-            $"c.id, c.title, c.description, CASE WHEN c.picture_url IS NOT NULL THEN CONCAT('{urlsOptions.Value.API}', c.picture_url) ELSE NULL END AS picture_url, c.status, c.cost, cat.name AS category";
+            $"c.id, c.title, c.description, CASE WHEN c.picture_url IS NOT NULL THEN CONCAT('{urlsOptions.Value.API}/', c.picture_url) ELSE NULL END AS picture_url, c.status, c.cost, cat.name AS category";
 
         private const string FromClause =
             "FROM courses c JOIN categories cat ON c.category_id = cat.id";
