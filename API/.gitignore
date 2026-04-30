@@ -486,3 +486,4 @@ bin/
 .vscode/
 obj/
 *.log
+wwwroot/

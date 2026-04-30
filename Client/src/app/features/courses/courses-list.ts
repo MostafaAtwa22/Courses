@@ -27,7 +27,7 @@ export class CoursesListComponent implements OnInit {
 
   isDarkMode = false;
   isFilterOpen = false;
-  
+
   categories: string[] = ['All'];
   selectedCategory = 'All';
 

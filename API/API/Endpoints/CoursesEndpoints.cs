@@ -4,7 +4,6 @@ using Application.DTOs.Course;
 using Application.Features.Courses.Commands.Create;
 using Application.Features.Courses.Commands.Update;
 using Application.Features.Courses.Commands.Delete;
-using Microsoft.AspNetCore.Mvc;
 
 namespace API.Endpoints
 {
@@ -27,18 +26,21 @@ namespace API.Endpoints
 
             group.MapPost("/", CreateCourse)
                 .WithName(nameof(CreateCourse))
+                .RequireRateLimiting(RateLimiterPolicies.InstructorWrite)
                 .Produces(StatusCodes.Status201Created)
                 .Produces(StatusCodes.Status400BadRequest)
                 .DisableAntiforgery();
             
             group.MapPut("/{id:guid}", UpdateCourse)
                 .WithName(nameof(UpdateCourse))
+                .RequireRateLimiting(RateLimiterPolicies.InstructorWrite)
                 .Produces(StatusCodes.Status204NoContent)
                 .Produces(StatusCodes.Status404NotFound)
                 .DisableAntiforgery();
             
             group.MapDelete("/{id:guid}", DeleteCourse)
                 .WithName(nameof(DeleteCourse))
+                .RequireRateLimiting(RateLimiterPolicies.InstructorWrite)
                 .Produces(StatusCodes.Status204NoContent)
                 .Produces(StatusCodes.Status404NotFound);
         }

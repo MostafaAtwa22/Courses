@@ -1,4 +1,3 @@
-using Application.Common.Models;
 using Application.DTOs.Category;
 using Application.Features.Categories.Commands.Create;
 using Application.Features.Categories.Commands.Delete;
