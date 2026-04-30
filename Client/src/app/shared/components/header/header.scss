@@ -21,11 +21,29 @@
     width: 100%;
   }
 
-  .logo-text {
-    font-family: var(--font-heading);
-    font-size: 24px;
-    font-weight: 800;
-    color: var(--primary-color);
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    text-decoration: none;
+
+    .logo-img {
+      height: 42px;
+      width: 42px;
+      object-fit: contain;
+      background: white;
+      padding: 6px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    }
+
+    .logo-text {
+      font-family: var(--font-heading);
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--primary-color);
+    }
   }
 
   .nav-links {

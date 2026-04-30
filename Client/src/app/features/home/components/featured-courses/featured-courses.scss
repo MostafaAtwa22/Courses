@@ -8,11 +8,53 @@
     p { color: var(--text-muted); font-size: 1.1rem; }
   }
 
-  .course-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: var(--spacing-md);
+  .slider-container {
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+    padding: 20px 0;
+
+    &::before, &::after {
+      content: "";
+      height: 100%;
+      position: absolute;
+      width: 100px;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    &::before {
+      left: 0;
+      top: 0;
+      background: linear-gradient(to right, var(--surface), transparent);
+    }
+
+    &::after {
+      right: 0;
+      top: 0;
+      background: linear-gradient(to left, var(--surface), transparent);
+    }
   }
+
+  .slider-track {
+    display: flex;
+    width: max-content;
+    gap: var(--spacing-md);
+    animation: scroll-courses 50s linear infinite;
+
+    &:hover {
+      animation-play-state: paused;
+    }
+
+    app-course-card {
+      flex: 0 0 320px;
+    }
+  }
+}
+
+@keyframes scroll-courses {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(calc(-50% - (var(--spacing-md) / 2))); }
 }
 
 /* Responsive adjustments */

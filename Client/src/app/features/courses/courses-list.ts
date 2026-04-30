@@ -59,8 +59,7 @@ export class CoursesListComponent implements OnInit {
   loadCourses() {
     this.courseService.getAll(this.params).subscribe({
       next: (res) => {
-        // Handle POJO to Class conversion if needed, but here we just need the data
-        this.coursesResult = Object.assign(new PaginatedResultModel<CourseResponse>(), res);
+        this.coursesResult = PaginatedResultModel.fromApi<CourseResponse>(res);
       }
     });
   }
@@ -78,7 +77,7 @@ export class CoursesListComponent implements OnInit {
 
   setCategory(cat: string) {
     this.selectedCategory = cat;
-    this.params.searchTerm = cat === 'All' ? '' : cat;
+    this.params.category = cat === 'All' ? '' : cat;
     this.params.pageNumber = 1;
     this.loadCourses();
   }

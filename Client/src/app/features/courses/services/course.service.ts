@@ -4,7 +4,7 @@ import { environment } from '../../../../environments/environment';
 import { CourseResponse } from '../models/course.models';
 import { PaginatedResultModel } from '../../../shared/models/paginated-result.model';
 import { QueryParams } from '../../../shared/models/query-params.model';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -25,6 +25,9 @@ export class CourseService {
     if (params.searchTerm) {
       httpParams = httpParams.set('searchTerm', params.searchTerm);
     }
+    if (params.category) {
+      httpParams = httpParams.set('category', params.category);
+    }
     if (params.sortBy) {
       httpParams = httpParams.set('sortBy', params.sortBy);
     }
@@ -32,9 +35,9 @@ export class CourseService {
       httpParams = httpParams.set('sortDescending', params.sortDescending.toString());
     }
 
-    return this.http.get<PaginatedResultModel<CourseResponse>>(this.apiUrl, {
-      params: httpParams,
-    });
+    return this.http
+      .get<unknown>(this.apiUrl, { params: httpParams })
+      .pipe(map((res) => PaginatedResultModel.fromApi<CourseResponse>(res)));
   }
 
   getById(id: string): Observable<CourseResponse> {

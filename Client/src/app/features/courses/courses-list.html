@@ -16,7 +16,7 @@
       <div class="content-layout">
         <!-- Sidebar Filters -->
         <aside class="filters-sidebar" [class.open]="isFilterOpen">
-          <div class="sidebar-header mobile-only">
+          <div class="sidebar-header">
             <h3>Filters</h3>
             <button class="sidebar-close-btn" (click)="isFilterOpen = false">
               <i class="fa-solid fa-xmark"></i>
@@ -51,7 +51,7 @@
             </div>
           </div>
 
-          <div class="sidebar-footer mobile-only">
+          <div class="sidebar-footer">
             <button class="btn-primary" (click)="isFilterOpen = false">Show Results</button>
           </div>
         </aside>
@@ -62,8 +62,8 @@
         <!-- Main Course List -->
         <div class="courses-main">
           <div class="search-sort-bar">
-            <!-- Mobile Filter Toggle Button -->
-            <button class="btn-filter-toggle mobile-tablet-only" (click)="isFilterOpen = true">
+            <!-- Filter Toggle Button -->
+            <button class="btn-filter-toggle" (click)="isFilterOpen = true">
               <i class="fa-solid fa-sliders"></i>
               <span>Filters</span>
             </button>

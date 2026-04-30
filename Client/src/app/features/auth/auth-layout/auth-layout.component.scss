@@ -30,9 +30,23 @@
     z-index: 1;
     max-width: 500px;
 
-    .logo {
-      cursor: pointer;
+    .auth-logo {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
       margin-bottom: 40px;
+      cursor: pointer;
+
+      img {
+        height: 50px;
+        width: 50px;
+        object-fit: contain;
+        background: white;
+        padding: 8px;
+        border-radius: 12px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      }
+
       .logo-text {
         font-family: var(--font-heading);
         font-size: 28px;
@@ -68,11 +82,28 @@
     display: none;
     margin-bottom: 40px;
     cursor: pointer;
-    .logo-text {
-      font-family: var(--font-heading);
-      font-size: 28px;
-      font-weight: 800;
-      color: var(--primary-color);
+    
+    .auth-logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+
+      img {
+        height: 44px;
+        width: 44px;
+        object-fit: contain;
+        background: white;
+        padding: 6px;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      }
+
+      .logo-text {
+        font-family: var(--font-heading);
+        font-size: 24px;
+        font-weight: 800;
+        color: var(--primary-color);
+      }
     }
   }
 

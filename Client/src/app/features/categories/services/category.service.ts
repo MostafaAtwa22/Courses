@@ -4,7 +4,7 @@ import { environment } from '../../../../environments/environment';
 import { CategoryRequest, CategoryResponse } from '../models/category.models';
 import { PaginatedResultModel } from '../../../shared/models/paginated-result.model';
 import { QueryParams } from '../../../shared/models/query-params.model';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -32,9 +32,9 @@ export class CategoryService {
       httpParams = httpParams.set('sortDescending', params.sortDescending.toString());
     }
 
-    return this.http.get<PaginatedResultModel<CategoryResponse>>(this.apiUrl, {
-      params: httpParams,
-    });
+    return this.http
+      .get<unknown>(this.apiUrl, { params: httpParams })
+      .pipe(map((res) => PaginatedResultModel.fromApi<CategoryResponse>(res)));
   }
 
   getById(id: string): Observable<CategoryResponse> {

@@ -8,13 +8,47 @@
     p { color: var(--text-muted); font-size: 1.1rem; }
   }
 
-  .category-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  .slider-container {
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+    padding: 20px 0;
+
+    &::before, &::after {
+      content: "";
+      height: 100%;
+      position: absolute;
+      width: 100px;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    &::before {
+      left: 0;
+      top: 0;
+      background: linear-gradient(to right, var(--surface), transparent);
+    }
+
+    &::after {
+      right: 0;
+      top: 0;
+      background: linear-gradient(to left, var(--surface), transparent);
+    }
+  }
+
+  .slider-track {
+    display: flex;
+    width: max-content;
     gap: var(--spacing-md);
+    animation: scroll 30s linear infinite;
+
+    &:hover {
+      animation-play-state: paused;
+    }
   }
 
   .category-card {
+    flex: 0 0 240px;
     padding: var(--spacing-md);
     background: var(--surface);
     border-radius: var(--radius-lg);
@@ -53,12 +87,17 @@
   }
 }
 
+@keyframes scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(calc(-50% - (var(--spacing-md) / 2))); }
+}
+
 /* Responsive adjustments */
 @media (max-width: 1024px) {
   .categories {
     padding: var(--spacing-lg) 0;
-    .category-grid {
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    .category-card {
+      flex: 0 0 200px;
     }
   }
 }
@@ -69,10 +108,11 @@
       h2 { font-size: 2rem; }
       p { font-size: 1rem; }
     }
-    .category-grid {
+    .slider-track {
       gap: var(--spacing-sm);
     }
     .category-card {
+      flex: 0 0 180px;
       padding: var(--spacing-sm);
       .cat-icon { font-size: 2rem; height: 48px; }
       h3 { font-size: 1.1rem; }
@@ -81,7 +121,7 @@
 }
 
 @media (max-width: 480px) {
-  .categories .category-grid {
-    grid-template-columns: 1fr 1fr; /* Two columns on very small screens often looks better for categories */
+  .categories .category-card {
+    flex: 0 0 160px;
   }
 }

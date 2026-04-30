@@ -24,6 +24,13 @@ namespace Infrastructure.Repositories
 
         public Task<PaginatedResult<CourseResponseDto>> GetAllAsync(QueryParams queryParams, CancellationToken ct = default)
         {
+            var extraConditions = new List<string>();
+
+            if (!string.IsNullOrWhiteSpace(queryParams.Category))
+            {
+                extraConditions.Add("cat.name ILIKE @Category");
+            }
+
             return ExecutePaginatedQueryAsync<CourseResponseDto>(
                 queryParams,
                 countSql: $"SELECT COUNT(1) {FromClause}",
@@ -31,6 +38,14 @@ namespace Infrastructure.Repositories
                 allowedSortColumns: AllowedSortColumns,
                 defaultSortColumn: "c.created_at",
                 searchCondition: "(c.title ILIKE @SearchTerm OR c.description ILIKE @SearchTerm)",
+                extraConditions: extraConditions,
+                configureParameters: parameters =>
+                {
+                    if (!string.IsNullOrWhiteSpace(queryParams.Category))
+                    {
+                        parameters.Add("Category", queryParams.Category);
+                    }
+                },
                 ct);
         }
 

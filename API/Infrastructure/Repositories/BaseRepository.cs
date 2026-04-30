@@ -13,6 +13,8 @@ namespace Infrastructure.Repositories
             Dictionary<string, string> allowedSortColumns,
             string defaultSortColumn,
             string? searchCondition,
+            IReadOnlyCollection<string>? extraConditions,
+            Action<DynamicParameters>? configureParameters,
             CancellationToken ct)
         {
             using var connection = await CreateConnectionAsync(ct);
@@ -31,6 +33,13 @@ namespace Infrastructure.Repositories
                 conditions.Add(searchCondition);
                 parameters.Add("SearchTerm", $"%{queryParams.SearchTerm}%");
             }
+
+            if (extraConditions is not null)
+            {
+                conditions.AddRange(extraConditions);
+            }
+
+            configureParameters?.Invoke(parameters);
 
             var whereClause = conditions.Count != 0
                 ? $"WHERE {string.Join(" AND ", conditions)}"

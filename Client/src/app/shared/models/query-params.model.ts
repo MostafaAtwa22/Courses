@@ -2,6 +2,7 @@ export interface QueryParams {
   pageNumber?: number;
   pageSize?: number;
   searchTerm?: string;
+  category?: string;
   sortBy?: string;
   sortDescending?: boolean;
 }
@@ -14,6 +15,7 @@ export function createQueryParams(
     pageSize: 10,
     sortDescending: false,
     searchTerm: '',
+    category: '',
     sortBy: '',
     ...params
   };
