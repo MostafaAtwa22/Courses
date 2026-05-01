@@ -25,19 +25,16 @@ namespace Infrastructure.Repositories
                c.status, c.cost, c.student_count, c.total_reviews, c.average_rate, 
                cat.name AS category,
                (SELECT CONCAT(u.first_name, ' ', u.last_name) 
-                FROM course_instructors ci 
-                JOIN instructors ins ON ci.instructor_id = ins.id 
+                FROM instructors ins 
                 JOIN ""AspNetUsers"" u ON ins.user_id = u.id 
-                WHERE ci.course_id = c.id LIMIT 1) AS instructor_name,
+                WHERE ins.id = c.instructor_id LIMIT 1) AS instructor_name,
                (SELECT CASE WHEN u.profile_picture_url IS NOT NULL THEN CONCAT('{urlsOptions.Value.API}/', u.profile_picture_url) ELSE NULL END 
-                FROM course_instructors ci 
-                JOIN instructors ins ON ci.instructor_id = ins.id 
+                FROM instructors ins 
                 JOIN ""AspNetUsers"" u ON ins.user_id = u.id 
-                WHERE ci.course_id = c.id LIMIT 1) AS instructor_profile_picture,
+                WHERE ins.id = c.instructor_id LIMIT 1) AS instructor_profile_picture,
                (SELECT ins.title 
-                FROM course_instructors ci 
-                JOIN instructors ins ON ci.instructor_id = ins.id 
-                WHERE ci.course_id = c.id LIMIT 1) AS instructor_title";
+                FROM instructors ins 
+                WHERE ins.id = c.instructor_id LIMIT 1) AS instructor_title";
 
         private const string FromClause =
             "FROM courses c JOIN categories cat ON c.category_id = cat.id";
@@ -104,8 +101,8 @@ namespace Infrastructure.Repositories
         {
             using var connection = await CreateConnectionAsync(ct);
 
-            var sql = @"INSERT INTO courses (id, title, description, picture_url, status, cost, student_count, total_reviews, average_rate, category_id, created_at, updated_at)
-                        VALUES (@Id, @Title, @Description, @PictureUrl, @Status, @Cost, @StudentCount, @TotalReviews, @AverageRate, @CategoryId, @CreatedAt, @UpdatedAt)";
+            var sql = @"INSERT INTO courses (id, title, description, picture_url, status, cost, student_count, total_reviews, average_rate, category_id, instructor_id, created_at, updated_at)
+                        VALUES (@Id, @Title, @Description, @PictureUrl, @Status, @Cost, @StudentCount, @TotalReviews, @AverageRate, @CategoryId, @InstructorId, @CreatedAt, @UpdatedAt)";
 
             await connection.ExecuteAsync(sql, course);
 
@@ -126,6 +123,7 @@ namespace Infrastructure.Repositories
                             total_reviews = @TotalReviews,
                             average_rate = @AverageRate,
                             category_id = @CategoryId,
+                            instructor_id = @InstructorId,
                             updated_at = @UpdatedAt
                         WHERE id = @Id";
 
@@ -138,6 +136,20 @@ namespace Infrastructure.Repositories
             using var connection = await CreateConnectionAsync(ct);
             var sql = @"DELETE FROM courses WHERE id = @Id";
             await connection.ExecuteAsync(sql, new { Id = id });
+        }
+
+        public async Task<IEnumerable<string>> GetSuggestionsAsync(string term, CancellationToken ct = default)
+        {
+            using var connection = await CreateConnectionAsync(ct);
+            var sql = @"
+                SELECT title FROM (
+                    SELECT DISTINCT title FROM courses WHERE title ILIKE @Term
+                    UNION
+                    SELECT DISTINCT name FROM categories WHERE name ILIKE @Term
+                ) AS suggestions
+                LIMIT 10";
+            
+            return await connection.QueryAsync<string>(sql, new { Term = $"%{term}%" });
         }
     }
 }

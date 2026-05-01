@@ -1,6 +1,5 @@
 {
-    "courses": 
-    [
+    "courses": [
         {
             "id": "8f7a6b9c-0d1e-2f3a-4b5c-6d7e8f9a0b1c",
             "createdAt": "2024-02-01T10:00:00Z",
@@ -13,7 +12,8 @@
             "studentCount": 0,
             "totalReviews": 0,
             "averageRate": 0.0,
-            "categoryId": "3a2b1c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d"
+            "categoryId": "3a2b1c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d",
+            "instructorId": "f2b2b2b2-b2b2-b2b2-b2b2-b2b2b2b2b2b2"
         },
         {
             "id": "9a8b7c0d-1e2f-3a4b-5c6d-7e8f9a0b1c2d",
@@ -27,7 +27,8 @@
             "studentCount": 0,
             "totalReviews": 0,
             "averageRate": 0.0,
-            "categoryId": "4b3c2d5e-6f7a-8b9c-0d1e-2f3a4b5c6d7e"
+            "categoryId": "4b3c2d5e-6f7a-8b9c-0d1e-2f3a4b5c6d7e",
+            "instructorId": "f4b4b4b4-b4b4-b4b4-b4b4-b4b4b4b4b4b4"
         },
         {
             "id": "0b1c2d3e-4f5a-6b7c-8d9e-0f1a2b3c4d5e",
@@ -41,7 +42,8 @@
             "studentCount": 0,
             "totalReviews": 0,
             "averageRate": 0.0,
-            "categoryId": "5c4d3e6f-7a8b-9c0d-1e2f-3a4b5c6d7e8f"
+            "categoryId": "5c4d3e6f-7a8b-9c0d-1e2f-3a4b5c6d7e8f",
+            "instructorId": "f1b1b1b1-b1b1-b1b1-b1b1-b1b1b1b1b1b1"
         },
         {
             "id": "c1b1b1b1-b1b1-b1b1-b1b1-b1b1b1b1b1b1",
@@ -55,7 +57,8 @@
             "studentCount": 2,
             "totalReviews": 2,
             "averageRate": 4.5,
-            "categoryId": "e1b1b1b1-b1b1-b1b1-b1b1-b1b1b1b1b1b1"
+            "categoryId": "e1b1b1b1-b1b1-b1b1-b1b1-b1b1b1b1b1b1",
+            "instructorId": "f1b1b1b1-b1b1-b1b1-b1b1-b1b1b1b1b1b1"
         },
         {
             "id": "c2b2b2b2-b2b2-b2b2-b2b2-b2b2b2b2b2b2",
@@ -69,7 +72,8 @@
             "studentCount": 1,
             "totalReviews": 1,
             "averageRate": 5.0,
-            "categoryId": "e1b1b1b1-b1b1-b1b1-b1b1-b1b1b1b1b1b1"
+            "categoryId": "e1b1b1b1-b1b1-b1b1-b1b1-b1b1b1b1b1b1",
+            "instructorId": "f1b1b1b1-b1b1-b1b1-b1b1-b1b1b1b1b1b1"
         },
         {
             "id": "c3b3b3b3-b3b3-b3b3-b3b3-b3b3b3b3b3b3",
@@ -83,7 +87,8 @@
             "studentCount": 0,
             "totalReviews": 0,
             "averageRate": 0.0,
-            "categoryId": "e1b1b1b1-b1b1-b1b1-b1b1-b1b1b1b1b1b1"
+            "categoryId": "e1b1b1b1-b1b1-b1b1-b1b1-b1b1b1b1b1b1",
+            "instructorId": "f1b1b1b1-b1b1-b1b1-b1b1-b1b1b1b1b1b1"
         },
         {
             "id": "c4b4b4b4-b4b4-b4b4-b4b4-b4b4b4b4b4b4",
@@ -97,7 +102,8 @@
             "studentCount": 1,
             "totalReviews": 0,
             "averageRate": 0.0,
-            "categoryId": "3a2b1c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d"
+            "categoryId": "3a2b1c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d",
+            "instructorId": "f2b2b2b2-b2b2-b2b2-b2b2-b2b2b2b2b2b2"
         },
         {
             "id": "c5b5b5b5-b5b5-b5b5-b5b5-b5b5b5b5b5b5",
@@ -111,7 +117,8 @@
             "studentCount": 0,
             "totalReviews": 0,
             "averageRate": 0.0,
-            "categoryId": "e3b3b3b3-b3b3-b3b3-b3b3-b3b3b3b3b3b3"
+            "categoryId": "e3b3b3b3-b3b3-b3b3-b3b3-b3b3b3b3b3b3",
+            "instructorId": "f2b2b2b2-b2b2-b2b2-b2b2-b2b2b2b2b2b2"
         },
         {
             "id": "c6b6b6b6-b6b6-b6b6-b6b6-b6b6b6b6b6b6",
@@ -125,7 +132,8 @@
             "studentCount": 1,
             "totalReviews": 0,
             "averageRate": 0.0,
-            "categoryId": "e1b1b1b1-b1b1-b1b1-b1b1-b1b1b1b1b1b1"
+            "categoryId": "e1b1b1b1-b1b1-b1b1-b1b1-b1b1b1b1b1b1",
+            "instructorId": "f4b4b4b4-b4b4-b4b4-b4b4-b4b4b4b4b4b4"
         },
         {
             "id": "c7b7b7b7-b7b7-b7b7-b7b7-b7b7b7b7b7b7",
@@ -139,7 +147,8 @@
             "studentCount": 0,
             "totalReviews": 0,
             "averageRate": 0.0,
-            "categoryId": "3a2b1c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d"
+            "categoryId": "3a2b1c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d",
+            "instructorId": "f2b2b2b2-b2b2-b2b2-b2b2-b2b2b2b2b2b2"
         },
         {
             "id": "1c2d3e4f-5a6b-7c8d-9e0f-1a2b3c4d5e6f",
@@ -153,7 +162,8 @@
             "studentCount": 1,
             "totalReviews": 1,
             "averageRate": 5.0,
-            "categoryId": "6d5e4f7a-8b9c-0d1e-2f3a-4b5c6d7e8f9a"
+            "categoryId": "6d5e4f7a-8b9c-0d1e-2f3a-4b5c6d7e8f9a",
+            "instructorId": "f3b3b3b3-b3b3-b3b3-b3b3-b3b3b3b3b3b3"
         },
         {
             "id": "2d3e4f5a-6b7c-8d9e-0f1a-2b3c4d5e6f7a",
@@ -167,7 +177,8 @@
             "studentCount": 1,
             "totalReviews": 1,
             "averageRate": 4.5,
-            "categoryId": "7e6f5a8b-9c0d-1e2f-3a4b-5c6d7e8f9a0b"
+            "categoryId": "7e6f5a8b-9c0d-1e2f-3a4b-5c6d7e8f9a0b",
+            "instructorId": "f5b5b5b5-b5b5-b5b5-b5b5-b5b5b5b5b5b5"
         },
         {
             "id": "3e4f5a6b-7c8d-9e0f-1a2b-3c4d5e6f7a8b",
@@ -181,7 +192,8 @@
             "studentCount": 1,
             "totalReviews": 1,
             "averageRate": 5.0,
-            "categoryId": "3a2b1c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d"
+            "categoryId": "3a2b1c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d",
+            "instructorId": "f2b2b2b2-b2b2-b2b2-b2b2-b2b2b2b2b2b2"
         },
         {
             "id": "4f5a6b7c-8d9e-0f1a-2b3c-4d5e6f7a8b9c",
@@ -195,7 +207,8 @@
             "studentCount": 1,
             "totalReviews": 0,
             "averageRate": 0.0,
-            "categoryId": "4b3c2d5e-6f7a-8b9c-0d1e-2f3a4b5c6d7e"
+            "categoryId": "4b3c2d5e-6f7a-8b9c-0d1e-2f3a4b5c6d7e",
+            "instructorId": "f2b2b2b2-b2b2-b2b2-b2b2-b2b2b2b2b2b2"
         },
         {
             "id": "5a6b7c8d-9e0f-1a2b-3c4d-5e6f7a8b9c0d",
@@ -209,7 +222,8 @@
             "studentCount": 1,
             "totalReviews": 0,
             "averageRate": 0.0,
-            "categoryId": "5c4d3e6f-7a8b-9c0d-1e2f-3a4b5c6d7e8f"
+            "categoryId": "5c4d3e6f-7a8b-9c0d-1e2f-3a4b5c6d7e8f",
+            "instructorId": "f2b2b2b2-b2b2-b2b2-b2b2-b2b2b2b2b2b2"
         }
     ]
 }

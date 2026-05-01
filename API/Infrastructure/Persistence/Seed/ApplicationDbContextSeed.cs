@@ -26,9 +26,6 @@ namespace Infrastructure.Persistence.Seed
             if (!context.Reviews.Any())
                 await SeedReviewsAsync(context, logger);
 
-            if (!context.CourseInstructors.Any())
-                await SeedCourseInstructorsAsync(context, logger);
-
             if (!context.Enrollments.Any())
                 await SeedEnrollmentsAsync(context, logger);
             
@@ -84,21 +81,6 @@ namespace Infrastructure.Persistence.Seed
             logger.LogInformation("Seeded reviews data.");
         }
 
-        private static async Task SeedCourseInstructorsAsync(ApplicationDbContext context, ILogger logger)
-        {
-            var path = GetSeedPath("CourseInstructors.json");
-            var data = await File.ReadAllTextAsync(path);
-            
-            using var document = JsonDocument.Parse(data);
-            var element = document.RootElement.GetProperty("courseInstructors");
-            var instructors = element.Deserialize<List<CourseInstructor>>(_options) ?? [];
-
-            foreach (var instructor in instructors)
-                context.CourseInstructors.Add(instructor);
-
-            await context.SaveChangesAsync();
-            logger.LogInformation("Seeded course instructors data.");
-        }
 
         private static async Task SeedEnrollmentsAsync(ApplicationDbContext context, ILogger logger)
         {

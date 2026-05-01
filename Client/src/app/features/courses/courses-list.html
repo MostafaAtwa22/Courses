@@ -69,8 +69,25 @@
               <input 
                 type="text" 
                 placeholder="Search for courses..." 
+                [value]="params.searchTerm || ''"
+                (input)="onSearchInput($event)"
                 (keyup.enter)="onSearch(searchInput.value)" 
+                (blur)="showSuggestions = false"
                 #searchInput>
+
+              <button 
+                class="btn-clear-search" 
+                *ngIf="params.searchTerm" 
+                (mousedown)="clearSearch()">
+                <i class="fa-solid fa-xmark"></i>
+              </button>
+              
+              <ul class="suggestions-list" *ngIf="showSuggestions && suggestions.length > 0">
+                <li *ngFor="let suggestion of suggestions" (mousedown)="selectSuggestion(suggestion)">
+                  <i class="fa-solid fa-magnifying-glass"></i>
+                  <span>{{ suggestion }}</span>
+                </li>
+              </ul>
             </div>
             
             <div class="sort-box desktop-only">

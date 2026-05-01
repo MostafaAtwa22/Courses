@@ -1,4 +1,5 @@
 using Application.Features.Courses.Queries.GetAll;
+using Application.Features.Courses.Queries.GetSuggestions;
 using Application.Features.Courses.Queries.GetById;
 using Application.DTOs.Course;
 using Application.Features.Courses.Commands.Create;
@@ -18,6 +19,10 @@ namespace API.Endpoints
                 .WithName(nameof(GetCourses))
                 .Produces<PaginatedResult<CourseResponseDto>>(StatusCodes.Status200OK)
                 .Produces(StatusCodes.Status400BadRequest);
+
+            group.MapGet("/suggestions", GetSuggestions)
+                .WithName(nameof(GetSuggestions))
+                .Produces<IEnumerable<string>>(StatusCodes.Status200OK);
 
             group.MapGet("/{id:guid}", GetCourseById)
                 .WithName(nameof(GetCourseById))
@@ -49,6 +54,12 @@ namespace API.Endpoints
             IMediator mediator)
         {
             var result = await mediator.Send(new GetCoursesQuery(queryParams));
+            return TypedResults.Ok(result);
+        }
+
+        public static async Task<Ok<IEnumerable<string>>> GetSuggestions(string q, IMediator mediator)
+        {
+            var result = await mediator.Send(new GetCourseSuggestionsQuery(q));
             return TypedResults.Ok(result);
         }
 

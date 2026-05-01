@@ -1,5 +1,6 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { debounceTime, distinctUntilChanged, Subject, takeUntil } from 'rxjs';
 import { HeaderComponent } from '../../shared/components/header/header';
 import { FooterComponent } from '../../shared/components/footer/footer';
 import { CourseCardComponent } from './components/course-card/course-card';
@@ -21,9 +22,11 @@ import { CourseResponse } from './models/course.models';
   templateUrl: './courses-list.html',
   styleUrl: './courses-list.scss'
 })
-export class CoursesListComponent implements OnInit {
+export class CoursesListComponent implements OnInit, OnDestroy {
   private courseService = inject(CourseService);
   private categoryService = inject(CategoryService);
+  private destroy$ = new Subject<void>();
+  private searchSubject = new Subject<string>();
 
   isDarkMode = false;
   isFilterOpen = false;
@@ -34,10 +37,34 @@ export class CoursesListComponent implements OnInit {
   coursesResult: PaginatedResultModel<CourseResponse> = new PaginatedResultModel<CourseResponse>();
   params: CourseQueryParams = createCourseQueryParams({ pageSize: 9 });
 
+  suggestions: string[] = [];
+  showSuggestions = false;
+
   ngOnInit() {
     this.initTheme();
     this.loadCategories();
     this.loadCourses();
+
+    this.searchSubject.pipe(
+      debounceTime(300),
+      distinctUntilChanged(),
+      takeUntil(this.destroy$)
+    ).subscribe(term => {
+      if (term.length > 1) {
+        this.courseService.getSuggestions(term).subscribe(res => {
+          this.suggestions = res;
+          this.showSuggestions = true;
+        });
+      } else {
+        this.suggestions = [];
+        this.showSuggestions = false;
+      }
+    });
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   initTheme() {
@@ -92,6 +119,26 @@ export class CoursesListComponent implements OnInit {
   onSearch(term: string) {
     this.params.searchTerm = term;
     this.params.pageNumber = 1;
+    this.showSuggestions = false;
+    this.loadCourses();
+  }
+
+  onSearchInput(event: Event) {
+    const term = (event.target as HTMLInputElement).value;
+    this.searchSubject.next(term);
+  }
+
+  selectSuggestion(suggestion: string) {
+    this.params.searchTerm = suggestion;
+    this.params.pageNumber = 1;
+    this.showSuggestions = false;
+    this.loadCourses();
+  }
+
+  clearSearch() {
+    this.params.searchTerm = '';
+    this.params.pageNumber = 1;
+    this.showSuggestions = false;
     this.loadCourses();
   }
 

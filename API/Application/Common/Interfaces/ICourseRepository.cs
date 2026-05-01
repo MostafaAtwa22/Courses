@@ -10,5 +10,6 @@ namespace Application.Common.Interfaces
         Task<Guid> CreateAsync(Course course, CancellationToken ct = default!);
         Task UpdateAsync(Course course, CancellationToken ct = default!);
         Task DeleteAsync(Guid id, CancellationToken ct = default!);
+        Task<IEnumerable<string>> GetSuggestionsAsync(string term, CancellationToken ct = default!);
     }
 }

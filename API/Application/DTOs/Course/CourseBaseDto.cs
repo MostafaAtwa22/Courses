@@ -9,5 +9,6 @@ namespace Application.DTOs.Course
         public CourseStatus Status { get; set; } = CourseStatus.InProgress;
         public int Cost { get; set; }
         public Guid CategoryId { get; set; }
+        public Guid InstructorId { get; set; }
     }
 }

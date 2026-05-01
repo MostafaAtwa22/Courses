@@ -11,7 +11,8 @@ namespace Application.Common.Mappings
                 PictureUrl = pictureUrl,
                 Status = dto.Status,
                 Cost = dto.Cost,
-                CategoryId = dto.CategoryId
+                CategoryId = dto.CategoryId,
+                InstructorId = dto.InstructorId
             };
         }
 
@@ -22,6 +23,7 @@ namespace Application.Common.Mappings
             course.Status = dto.Status;
             course.Cost = dto.Cost;
             course.CategoryId = dto.CategoryId;
+            course.InstructorId = dto.InstructorId;
             if (pictureUrl is not null)
                 course.PictureUrl = pictureUrl;
         }

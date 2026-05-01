@@ -14,6 +14,6 @@ namespace Domain.Entities.Identity
         public string UserId { get; set; } = string.Empty;
         public ApplicationUser User { get; set; } = null!;
 
-        public ICollection<CourseInstructor> CourseInstructors { get; set; } = new List<CourseInstructor>();
+        public ICollection<Course> Courses { get; set; } = [];
     }
 }

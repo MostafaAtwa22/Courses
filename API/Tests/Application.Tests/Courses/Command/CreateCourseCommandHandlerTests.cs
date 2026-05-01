@@ -30,7 +30,7 @@ namespace Application.Tests.Courses.Command
             fileMock.Setup(f => f.OpenReadStream()).Returns(new MemoryStream());
             fileMock.Setup(f => f.FileName).Returns("test.jpg");
 
-            var createDto = new CourseCreateDto { Title = "Test Course", Description = "Test Desc", Status = CourseStatus.InProgress, Cost = 100, CategoryId = Guid.NewGuid(), PictureUrl = fileMock.Object };
+            var createDto = new CourseCreateDto { Title = "Test Course", Description = "Test Desc", Status = CourseStatus.InProgress, Cost = 100, CategoryId = Guid.NewGuid(), InstructorId = Guid.NewGuid(), PictureUrl = fileMock.Object };
             var command = new CreateCourseCommand(createDto);
             var expectedId = Guid.NewGuid();
 

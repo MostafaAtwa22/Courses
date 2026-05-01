@@ -43,6 +43,11 @@ namespace Infrastructure.Persistence.Configurations
             builder.HasOne(c => c.Category)
                 .WithMany(ca => ca.Courses)
                 .HasForeignKey(c => c.CategoryId);
+
+            builder.HasOne(c => c.Instructor)
+                .WithMany(i => i.Courses)
+                .HasForeignKey(c => c.InstructorId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

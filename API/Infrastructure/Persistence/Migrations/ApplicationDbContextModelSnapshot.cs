@@ -94,6 +94,10 @@ namespace Infrastructure.Persistence.Migrations
                         .HasColumnType("character varying(3000)")
                         .HasColumnName("description");
 
+                    b.Property<Guid>("InstructorId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("instructor_id");
+
                     b.Property<string>("PictureUrl")
                         .IsRequired()
                         .HasMaxLength(500)
@@ -133,42 +137,10 @@ namespace Infrastructure.Persistence.Migrations
                     b.HasIndex("CategoryId")
                         .HasDatabaseName("ix_courses_category_id");
 
-                    b.ToTable("courses", (string)null);
-                });
-
-            modelBuilder.Entity("Domain.Entities.CourseInstructor", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
-                        .HasColumnName("id");
-
-                    b.Property<Guid>("CourseId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("course_id");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("created_at");
-
-                    b.Property<Guid>("InstructorId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("instructor_id");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("updated_at");
-
-                    b.HasKey("Id")
-                        .HasName("pk_course_instructors");
-
-                    b.HasIndex("CourseId")
-                        .HasDatabaseName("ix_course_instructors_course_id");
-
                     b.HasIndex("InstructorId")
-                        .HasDatabaseName("ix_course_instructors_instructor_id");
+                        .HasDatabaseName("ix_courses_instructor_id");
 
-                    b.ToTable("course_instructors", (string)null);
+                    b.ToTable("courses", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.Enrollment", b =>
@@ -633,26 +605,14 @@ namespace Infrastructure.Persistence.Migrations
                         .IsRequired()
                         .HasConstraintName("fk_courses_categories_category_id");
 
-                    b.Navigation("Category");
-                });
-
-            modelBuilder.Entity("Domain.Entities.CourseInstructor", b =>
-                {
-                    b.HasOne("Domain.Entities.Course", "Course")
-                        .WithMany("CourseInstructors")
-                        .HasForeignKey("CourseId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_course_instructors_courses_course_id");
-
                     b.HasOne("Domain.Entities.Identity.Instructor", "Instructor")
-                        .WithMany("CourseInstructors")
+                        .WithMany("Courses")
                         .HasForeignKey("InstructorId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired()
-                        .HasConstraintName("fk_course_instructors_instructors_instructor_id");
+                        .HasConstraintName("fk_courses_instructors_instructor_id");
 
-                    b.Navigation("Course");
+                    b.Navigation("Category");
 
                     b.Navigation("Instructor");
                 });
@@ -787,8 +747,6 @@ namespace Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("Domain.Entities.Course", b =>
                 {
-                    b.Navigation("CourseInstructors");
-
                     b.Navigation("Enrollments");
 
                     b.Navigation("Reviews");
@@ -803,7 +761,7 @@ namespace Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("Domain.Entities.Identity.Instructor", b =>
                 {
-                    b.Navigation("CourseInstructors");
+                    b.Navigation("Courses");
                 });
 
             modelBuilder.Entity("Domain.Entities.Identity.Student", b =>

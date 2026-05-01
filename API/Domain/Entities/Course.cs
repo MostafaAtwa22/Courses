@@ -1,4 +1,5 @@
 using Domain.Enums;
+using Domain.Entities.Identity;
 
 namespace Domain.Entities
 {
@@ -16,7 +17,9 @@ namespace Domain.Entities
         public Guid CategoryId { get; set; }
         public Category Category { get; set; } = default!;
 
-        public ICollection<CourseInstructor> CourseInstructors { get; set; } = [];
+        public Guid InstructorId { get; set; }
+        public Instructor Instructor { get; set; } = default!;
+
         public ICollection<Review> Reviews { get; set; } = [];
         public ICollection<Enrollment> Enrollments { get; set; } = [];
     }

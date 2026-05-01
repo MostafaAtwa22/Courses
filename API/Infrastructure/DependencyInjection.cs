@@ -59,7 +59,10 @@ public static class DependencyInjection
         services.AddScoped<IDbConnectionFactory, DbConnectionFactory>();
         services.AddScoped<ICategoryRepository, CategoryRepository>();
         services.AddScoped<ICourseRepository, CourseRepository>();
+        services.AddScoped<IReviewRepository, ReviewRepository>();
         services.AddScoped<IFileService, FileService>();
+        services.AddHttpContextAccessor();
+        services.AddScoped<ICurrentUserService, CurrentUserService>();
         
         services.AddHealthChecks()
             .AddNpgSql(connectionString, 

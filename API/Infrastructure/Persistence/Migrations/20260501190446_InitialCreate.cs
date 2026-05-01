@@ -178,6 +178,53 @@ namespace Infrastructure.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "instructors",
+                columns: table => new
+                {
+                    id = table.Column<Guid>(type: "uuid", nullable: false),
+                    bio = table.Column<string>(type: "character varying(2000)", maxLength: 2000, nullable: false),
+                    title = table.Column<string>(type: "text", nullable: false),
+                    linked_in_profile_url = table.Column<string>(type: "text", nullable: false),
+                    git_hub_profile_url = table.Column<string>(type: "text", nullable: false),
+                    cv_url = table.Column<string>(type: "text", nullable: false),
+                    status = table.Column<string>(type: "text", nullable: false),
+                    user_id = table.Column<string>(type: "text", nullable: false),
+                    created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    updated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_instructors", x => x.id);
+                    table.ForeignKey(
+                        name: "fk_instructors_users_user_id",
+                        column: x => x.user_id,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "students",
+                columns: table => new
+                {
+                    id = table.Column<Guid>(type: "uuid", nullable: false),
+                    coins = table.Column<int>(type: "integer", nullable: false, defaultValue: 0),
+                    user_id = table.Column<string>(type: "text", nullable: false),
+                    created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    updated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_students", x => x.id);
+                    table.ForeignKey(
+                        name: "fk_students_users_user_id",
+                        column: x => x.user_id,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "courses",
                 columns: table => new
                 {
@@ -187,7 +234,11 @@ namespace Infrastructure.Persistence.Migrations
                     picture_url = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
                     status = table.Column<string>(type: "text", nullable: false),
                     cost = table.Column<int>(type: "integer", nullable: false),
+                    student_count = table.Column<int>(type: "integer", nullable: false, defaultValue: 0),
+                    total_reviews = table.Column<int>(type: "integer", nullable: false, defaultValue: 0),
+                    average_rate = table.Column<decimal>(type: "numeric(3,1)", nullable: false, defaultValue: 0m),
                     category_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    instructor_id = table.Column<Guid>(type: "uuid", nullable: false),
                     created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     updated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
@@ -198,6 +249,69 @@ namespace Infrastructure.Persistence.Migrations
                         name: "fk_courses_categories_category_id",
                         column: x => x.category_id,
                         principalTable: "categories",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "fk_courses_instructors_instructor_id",
+                        column: x => x.instructor_id,
+                        principalTable: "instructors",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "enrollments",
+                columns: table => new
+                {
+                    id = table.Column<Guid>(type: "uuid", nullable: false),
+                    student_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    course_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    updated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_enrollments", x => x.id);
+                    table.ForeignKey(
+                        name: "fk_enrollments_courses_course_id",
+                        column: x => x.course_id,
+                        principalTable: "courses",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "fk_enrollments_students_student_id",
+                        column: x => x.student_id,
+                        principalTable: "students",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "reviews",
+                columns: table => new
+                {
+                    id = table.Column<Guid>(type: "uuid", nullable: false),
+                    headline = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
+                    comment = table.Column<string>(type: "character varying(1000)", maxLength: 1000, nullable: false),
+                    rating = table.Column<decimal>(type: "numeric(3,1)", nullable: false),
+                    course_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    student_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    updated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_reviews", x => x.id);
+                    table.ForeignKey(
+                        name: "fk_reviews_courses_course_id",
+                        column: x => x.course_id,
+                        principalTable: "courses",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "fk_reviews_students_student_id",
+                        column: x => x.student_id,
+                        principalTable: "students",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -255,6 +369,44 @@ namespace Infrastructure.Persistence.Migrations
                 name: "ix_courses_category_id",
                 table: "courses",
                 column: "category_id");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_courses_instructor_id",
+                table: "courses",
+                column: "instructor_id");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_enrollments_course_id",
+                table: "enrollments",
+                column: "course_id");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_enrollments_student_id",
+                table: "enrollments",
+                column: "student_id");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_instructors_user_id",
+                table: "instructors",
+                column: "user_id",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "ix_reviews_course_id",
+                table: "reviews",
+                column: "course_id");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_reviews_student_id_course_id",
+                table: "reviews",
+                columns: new[] { "student_id", "course_id" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "ix_students_user_id",
+                table: "students",
+                column: "user_id",
+                unique: true);
         }
 
         /// <inheritdoc />
@@ -276,16 +428,28 @@ namespace Infrastructure.Persistence.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "courses");
+                name: "enrollments");
+
+            migrationBuilder.DropTable(
+                name: "reviews");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "AspNetUsers");
+                name: "courses");
+
+            migrationBuilder.DropTable(
+                name: "students");
 
             migrationBuilder.DropTable(
                 name: "categories");
+
+            migrationBuilder.DropTable(
+                name: "instructors");
+
+            migrationBuilder.DropTable(
+                name: "AspNetUsers");
         }
     }
 }

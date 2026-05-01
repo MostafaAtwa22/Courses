@@ -60,6 +60,7 @@ namespace API.Tests.Endpoints
             content.Add(new StringContent(Domain.Enums.CourseStatus.InProgress.ToString()), "Status");
             content.Add(new StringContent("150"), "Cost");
             content.Add(new StringContent(validCatId.ToString()), "CategoryId");
+            content.Add(new StringContent("f1b1b1b1-b1b1-b1b1-b1b1-b1b1b1b1b1b1"), "InstructorId");
 
             var fileContent = new ByteArrayContent(new byte[] { 0x01, 0x02, 0x03 });
             fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("image/jpeg");
@@ -115,6 +116,7 @@ namespace API.Tests.Endpoints
             createContent.Add(new StringContent(Domain.Enums.CourseStatus.InProgress.ToString()), "Status");
             createContent.Add(new StringContent("200"), "Cost");
             createContent.Add(new StringContent(validCatId.ToString()), "CategoryId");
+            createContent.Add(new StringContent("f1b1b1b1-b1b1-b1b1-b1b1-b1b1b1b1b1b1"), "InstructorId");
             var imageContent = new ByteArrayContent(new byte[] { 0x01 });
             imageContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("image/jpeg");
             createContent.Add(imageContent, "PictureUrl", "lifecycle.jpg");
@@ -139,6 +141,7 @@ namespace API.Tests.Endpoints
                 updateContent.Add(new StringContent(Domain.Enums.CourseStatus.Done.ToString()), "Status");
                 updateContent.Add(new StringContent("250"), "Cost");
                 updateContent.Add(new StringContent(validCatId.ToString()), "CategoryId");
+                updateContent.Add(new StringContent("f1b1b1b1-b1b1-b1b1-b1b1-b1b1b1b1b1b1"), "InstructorId");
                 var updateImage = new ByteArrayContent(new byte[] { 0x02 });
                 updateImage.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("image/jpeg");
                 updateContent.Add(updateImage, "PictureUrl", "updated.jpg");

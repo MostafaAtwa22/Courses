@@ -50,6 +50,10 @@ export class CourseService {
     return this.http.get<CourseResponse>(`${this.apiUrl}/${id}`);
   }
 
+  getSuggestions(term: string): Observable<string[]> {
+    return this.http.get<string[]>(`${this.apiUrl}/suggestions`, { params: { q: term } });
+  }
+
   create(course: FormData): Observable<string> {
     return this.http.post<string>(this.apiUrl, course);
   }
