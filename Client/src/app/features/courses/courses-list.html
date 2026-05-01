@@ -36,20 +36,16 @@
           </div>
 
           <div class="filter-group">
-            <h3>Price</h3>
-            <div class="checkbox-group">
-              <label><input type="checkbox"> Free</label>
-              <label><input type="checkbox"> Paid</label>
+            <h3>Ratings</h3>
+            <div class="radio-group">
+              <label><input type="radio" name="rating" [checked]="params.minRating === undefined && params.maxRating === undefined" (click)="setRatingFilter(undefined, undefined)"> All</label>
+              <label><input type="radio" name="rating" [checked]="params.minRating === 4 && params.maxRating === undefined" (click)="setRatingFilter(4, undefined)"> 4 & up</label>
+              <label><input type="radio" name="rating" [checked]="params.minRating === 3 && params.maxRating === 4" (click)="setRatingFilter(3, 4)"> 3 - 4</label>
+              <label><input type="radio" name="rating" [checked]="params.minRating === 2 && params.maxRating === 3" (click)="setRatingFilter(2, 3)"> 2 - 3</label>
+              <label><input type="radio" name="rating" [checked]="params.minRating === 1 && params.maxRating === 2" (click)="setRatingFilter(1, 2)"> 1 - 2</label>
             </div>
           </div>
 
-          <div class="filter-group">
-            <h3>Ratings</h3>
-            <div class="radio-group">
-              <label><input type="radio" name="rating"> 4.5 & up</label>
-              <label><input type="radio" name="rating"> 4.0 & up</label>
-            </div>
-          </div>
 
           <div class="sidebar-footer">
             <button class="btn-primary" (click)="isFilterOpen = false">Show Results</button>
@@ -96,11 +92,19 @@
             </select>
           </div>
 
-          <div class="courses-grid">
+          <div class="courses-grid" *ngIf="coursesResult.totalCount > 0">
             <app-course-card 
               *ngFor="let course of coursesResult.items" 
               [course]="course">
             </app-course-card>
+          </div>
+
+          <!-- Empty State -->
+          <div class="no-courses" *ngIf="coursesResult.totalCount === 0">
+            <i class="fa-solid fa-graduation-cap"></i>
+            <h3>No Courses Found</h3>
+            <p>We couldn't find any courses matching your search or filter criteria. Try adjusting your filters or search term.</p>
+            <button class="btn-primary" (click)="resetFilters()">Clear All Filters</button>
           </div>
 
           <div class="pagination" *ngIf="coursesResult.totalPages > 1">

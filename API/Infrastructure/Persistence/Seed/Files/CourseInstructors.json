@@ -1,0 +1,109 @@
+{
+    "courseInstructors": [
+        {
+            "id": "ca1b1b1b-1b1b-1b1b-1b1b-1b1b1b1b1b1b",
+            "courseId": "c1b1b1b1-b1b1-b1b1-b1b1-b1b1b1b1b1b1",
+            "instructorId": "f1b1b1b1-b1b1-b1b1-b1b1-b1b1b1b1b1b1",
+            "createdAt": "2026-05-01T12:00:00Z",
+            "updatedAt": "2026-05-01T12:00:00Z"
+        },
+        {
+            "id": "ca2b2b2b-2b2b-2b2b-2b2b-2b2b1b1b1b1b",
+            "courseId": "c2b2b2b2-b2b2-b2b2-b2b2-b2b2b2b2b2b2",
+            "instructorId": "f1b1b1b1-b1b1-b1b1-b1b1-b1b1b1b1b1b1",
+            "createdAt": "2026-05-01T12:00:00Z",
+            "updatedAt": "2026-05-01T12:00:00Z"
+        },
+        {
+            "id": "ca3b3b3b-3b3b-3b3b-3b3b-3b3b2b2b2b2b",
+            "courseId": "c4b4b4b4-b4b4-b4b4-b4b4-b4b4b4b4b4b4",
+            "instructorId": "f2b2b2b2-b2b2-b2b2-b2b2-b2b2b2b2b2b2",
+            "createdAt": "2026-05-01T12:00:00Z",
+            "updatedAt": "2026-05-01T12:00:00Z"
+        },
+        {
+            "id": "ca4b4b4b-4b4b-4b4b-4b4b-4b4b2b2b2b2b",
+            "courseId": "c5b5b5b5-b5b5-b5b5-b5b5-b5b5b5b5b5b5",
+            "instructorId": "f2b2b2b2-b2b2-b2b2-b2b2-b2b2b2b2b2b2",
+            "createdAt": "2026-05-01T12:00:00Z",
+            "updatedAt": "2026-05-01T12:00:00Z"
+        },
+        {
+            "id": "ca5b5b5b-5b5b-5b5b-5b5b-5b5b5b5b5b5b",
+            "courseId": "1c2d3e4f-5a6b-7c8d-9e0f-1a2b3c4d5e6f",
+            "instructorId": "f3b3b3b3-b3b3-b3b3-b3b3-b3b3b3b3b3b3",
+            "createdAt": "2026-05-01T12:00:00Z",
+            "updatedAt": "2026-05-01T12:00:00Z"
+        },
+        {
+            "id": "ca6b6b6b-6b6b-6b6b-6b6b-6b6b6b6b6b6b",
+            "courseId": "2d3e4f5a-6b7c-8d9e-0f1a-2b3c4d5e6f7a",
+            "instructorId": "f5b5b5b5-b5b5-b5b5-b5b5-b5b5b5b5b5b5",
+            "createdAt": "2026-05-01T12:00:00Z",
+            "updatedAt": "2026-05-01T12:00:00Z"
+        },
+        {
+            "id": "cb6a6a6a-6a6a-6a6a-6a6a-6a6a6a6a6a6a",
+            "courseId": "c6b6b6b6-b6b6-b6b6-b6b6-b6b6b6b6b6b6",
+            "instructorId": "f4b4b4b4-b4b4-b4b4-b4b4-b4b4b4b4b4b4",
+            "createdAt": "2026-05-01T12:00:00Z",
+            "updatedAt": "2026-05-01T12:00:00Z"
+        },
+        {
+            "id": "ca7b7b7b-7b7b-7b7b-7b7b-7b7b7b7b7b7b",
+            "courseId": "3e4f5a6b-7c8d-9e0f-1a2b-3c4d5e6f7a8b",
+            "instructorId": "f2b2b2b2-b2b2-b2b2-b2b2-b2b2b2b2b2b2",
+            "createdAt": "2026-05-01T12:00:00Z",
+            "updatedAt": "2026-05-01T12:00:00Z"
+        },
+        {
+            "id": "ca8b8b8b-8b8b-8b8b-8b8b-8b8b8b8b8b8b",
+            "courseId": "4f5a6b7c-8d9e-0f1a-2b3c-4d5e6f7a8b9c",
+            "instructorId": "f2b2b2b2-b2b2-b2b2-b2b2-b2b2b2b2b2b2",
+            "createdAt": "2026-05-01T12:00:00Z",
+            "updatedAt": "2026-05-01T12:00:00Z"
+        },
+        {
+            "id": "ca9b9b9b-9b9b-9b9b-9b9b-9b9b9b9b9b9b",
+            "courseId": "5a6b7c8d-9e0f-1a2b-3c4d-5e6f7a8b9c0d",
+            "instructorId": "f2b2b2b2-b2b2-b2b2-b2b2-b2b2b2b2b2b2",
+            "createdAt": "2026-05-01T12:00:00Z",
+            "updatedAt": "2026-05-01T12:00:00Z"
+        },
+        {
+            "id": "cb1a1a1a-1a1a-1a1a-1a1a-1a1a1a1a1a1a",
+            "courseId": "8f7a6b9c-0d1e-2f3a-4b5c-6d7e8f9a0b1c",
+            "instructorId": "f2b2b2b2-b2b2-b2b2-b2b2-b2b2b2b2b2b2",
+            "createdAt": "2026-05-01T12:00:00Z",
+            "updatedAt": "2026-05-01T12:00:00Z"
+        },
+        {
+            "id": "cb2a2a2a-2a2a-2a2a-2a2a-2a2a2a2a2a2a",
+            "courseId": "9a8b7c0d-1e2f-3a4b-5c6d-7e8f9a0b1c2d",
+            "instructorId": "f4b4b4b4-b4b4-b4b4-b4b4-b4b4b4b4b4b4",
+            "createdAt": "2026-05-01T12:00:00Z",
+            "updatedAt": "2026-05-01T12:00:00Z"
+        },
+        {
+            "id": "cb3a3a3a-3a3a-3a3a-3a3a-3a3a3a3a3a3a",
+            "courseId": "0b1c2d3e-4f5a-6b7c-8d9e-0f1a2b3c4d5e",
+            "instructorId": "f1b1b1b1-b1b1-b1b1-b1b1-b1b1b1b1b1b1",
+            "createdAt": "2026-05-01T12:00:00Z",
+            "updatedAt": "2026-05-01T12:00:00Z"
+        },
+        {
+            "id": "cb4a4a4a-4a4a-4a4a-4a4a-4a4a4a4a4a4a",
+            "courseId": "c3b3b3b3-b3b3-b3b3-b3b3-b3b3b3b3b3b3",
+            "instructorId": "f1b1b1b1-b1b1-b1b1-b1b1-b1b1b1b1b1b1",
+            "createdAt": "2026-05-01T12:00:00Z",
+            "updatedAt": "2026-05-01T12:00:00Z"
+        },
+        {
+            "id": "cb5a5a5a-5a5a-5a5a-5a5a-5a5a5a5a5a5a",
+            "courseId": "c7b7b7b7-b7b7-b7b7-b7b7-b7b7b7b7b7b7",
+            "instructorId": "f2b2b2b2-b2b2-b2b2-b2b2-b2b2b2b2b2b2",
+            "createdAt": "2026-05-01T12:00:00Z",
+            "updatedAt": "2026-05-01T12:00:00Z"
+        }
+    ]
+}

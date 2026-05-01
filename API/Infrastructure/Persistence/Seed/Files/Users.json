@@ -1,0 +1,124 @@
+{
+    "users": [
+        {
+            "id": "d0b0b0b0-b0b0-b0b0-b0b0-b0b0b0b0b0b0",
+            "userName": "superadmin",
+            "email": "superadmin@edufocus.com",
+            "firstName": "Super",
+            "lastName": "Admin",
+            "gender": "Male",
+            "profilePictureUrl": "images/users/default-male.png",
+            "role": "SuperAdmin"
+        },
+        {
+            "id": "da1b1b1b-b1b1-b1b1-b1b1-b1b1b1b1b1b1",
+            "userName": "admin",
+            "email": "admin@edufocus.com",
+            "firstName": "Site",
+            "lastName": "Admin",
+            "gender": "Female",
+            "profilePictureUrl": "images/users/default-female.png",
+            "role": "Admin"
+        },
+        {
+            "id": "d1b1b1b1-b1b1-b1b1-b1b1-b1b1b1b1b1b1",
+            "userName": "john_instructor",
+            "email": "john@example.com",
+            "firstName": "John",
+            "lastName": "Doe",
+            "gender": "Male",
+            "profilePictureUrl": "images/users/default-male.png",
+            "role": "Instructor"
+        },
+        {
+            "id": "d2b2b2b2-b2b2-b2b2-b2b2-b2b2b2b2b2b2",
+            "userName": "jane_instructor",
+            "email": "jane@example.com",
+            "firstName": "Jane",
+            "lastName": "Smith",
+            "gender": "Female",
+            "profilePictureUrl": "images/users/default-female.png",
+            "role": "Instructor"
+        },
+        {
+            "id": "d3b3b3b3-b3b3-b3b3-b3b3-b3b3b3b3b3b3",
+            "userName": "alice_student",
+            "email": "alice@example.com",
+            "firstName": "Alice",
+            "lastName": "Johnson",
+            "gender": "Female",
+            "profilePictureUrl": "images/users/default-female.png",
+            "role": "Student"
+        },
+        {
+            "id": "d4b4b4b4-b4b4-b4b4-b4b4-b4b4b4b4b4b4",
+            "userName": "bob_student",
+            "email": "bob@example.com",
+            "firstName": "Bob",
+            "lastName": "Wilson",
+            "gender": "Male",
+            "profilePictureUrl": "images/users/default-male.png",
+            "role": "Student"
+        },
+        {
+            "id": "d5b5b5b5-b5b5-b5b5-b5b5-b5b5b5b5b5b5",
+            "userName": "charlie_student",
+            "email": "charlie@example.com",
+            "firstName": "Charlie",
+            "lastName": "Brown",
+            "gender": "Male",
+            "profilePictureUrl": "images/users/default-male.png",
+            "role": "Student"
+        },
+        {
+            "id": "d6b6b6b6-b6b6-b6b6-b6b6-b6b6b6b6b6b6",
+            "userName": "sarah_instructor",
+            "email": "sarah@example.com",
+            "firstName": "Sarah",
+            "lastName": "Connor",
+            "gender": "Female",
+            "profilePictureUrl": "images/users/default-female.png",
+            "role": "Instructor"
+        },
+        {
+            "id": "d7b7b7b7-b7b7-b7b7-b7b7-b7b7b7b7b7b7",
+            "userName": "david_student",
+            "email": "david@example.com",
+            "firstName": "David",
+            "lastName": "Miller",
+            "gender": "Male",
+            "profilePictureUrl": "images/users/default-male.png",
+            "role": "Student"
+        },
+        {
+            "id": "d8b8b8b8-b8b8-b8b8-b8b8-b8b8b8b8b8b8",
+            "userName": "eve_student",
+            "email": "eve@example.com",
+            "firstName": "Eve",
+            "lastName": "Davis",
+            "gender": "Female",
+            "profilePictureUrl": "images/users/default-female.png",
+            "role": "Student"
+        },
+        {
+            "id": "d9b9b9b9-b9b9-b9b9-b9b9-b9b9b9b9b9b9",
+            "userName": "robert_instructor",
+            "email": "robert@example.com",
+            "firstName": "Robert",
+            "lastName": "Martin",
+            "gender": "Male",
+            "profilePictureUrl": "images/users/default-male.png",
+            "role": "Instructor"
+        },
+        {
+            "id": "d10b10b1-b10b-10b1-b10b-10b10b10b10b",
+            "userName": "linus_instructor",
+            "email": "linus@example.com",
+            "firstName": "Linus",
+            "lastName": "Torvalds",
+            "gender": "Male",
+            "profilePictureUrl": "images/users/default-male.png",
+            "role": "Instructor"
+        }
+    ]
+}

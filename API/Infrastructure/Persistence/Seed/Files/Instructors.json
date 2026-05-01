@@ -1,0 +1,64 @@
+{
+    "instructors": [
+        {
+            "id": "f1b1b1b1-b1b1-b1b1-b1b1-b1b1b1b1b1b1",
+            "userId": "d1b1b1b1-b1b1-b1b1-b1b1-b1b1b1b1b1b1",
+            "bio": "Expert in Marketing and Social Media strategies.",
+            "title": "Marketing Specialist",
+            "linkedInProfileUrl": "https://linkedin.com",
+            "gitHubProfileUrl": "https://github.com",
+            "cvUrl": "files/cv/Mostafa Elmahdy (Junior Full-Stack .NET Developer)CV.pdf",
+            "status": "Verfied",
+            "createdAt": "2026-05-01T12:00:00Z",
+            "updatedAt": "2026-05-01T12:00:00Z"
+        },
+        {
+            "id": "f2b2b2b2-b2b2-b2b2-b2b2-b2b2b2b2b2b2",
+            "userId": "d2b2b2b2-b2b2-b2b2-b2b2-b2b2b2b2b2b2",
+            "bio": "Senior Software Engineer with 10 years of experience in .NET and React.",
+            "title": "Senior .NET Developer",
+            "linkedInProfileUrl": "https://linkedin.com/",
+            "gitHubProfileUrl": "https://github.com",
+            "cvUrl": "files/cv/Mostafa Elmahdy (Junior Full-Stack .NET Developer)CV.pdf",
+            "status": "Verfied",
+            "createdAt": "2026-05-01T12:00:00Z",
+            "updatedAt": "2026-05-01T12:00:00Z"
+        },
+        {
+            "id": "f3b3b3b3-b3b3-b3b3-b3b3-b3b3b3b3b3b3",
+            "userId": "d6b6b6b6-b6b6-b6b6-b6b6-b6b6b6b6b6b6",
+            "bio": "Cloud Architect and DevOps specialist. Helping teams scale with AWS and Kubernetes.",
+            "title": "Cloud & DevOps Architect",
+            "linkedInProfileUrl": "https://linkedin.com",
+            "gitHubProfileUrl": "https://github.com",
+            "cvUrl": "files/cv/Mostafa Elmahdy (Junior Full-Stack .NET Developer)CV.pdf",
+            "status": "Verfied",
+            "createdAt": "2026-05-01T12:00:00Z",
+            "updatedAt": "2026-05-01T12:00:00Z"
+        },
+        {
+            "id": "f4b4b4b4-b4b4-b4b4-b4b4-b4b4b4b4b4b4",
+            "userId": "d9b9b9b9-b9b9-b9b9-b9b9-b9b9b9b9b9b9",
+            "bio": "Expert in Software Architecture and Clean Code principles.",
+            "title": "Clean Code Evangelist",
+            "linkedInProfileUrl": "https://linkedin.com",
+            "gitHubProfileUrl": "https://github.com",
+            "cvUrl": "files/cv/Mostafa Elmahdy (Junior Full-Stack .NET Developer)CV.pdf",
+            "status": "Verfied",
+            "createdAt": "2026-05-01T12:00:00Z",
+            "updatedAt": "2026-05-01T12:00:00Z"
+        },
+        {
+            "id": "f5b5b5b5-b5b5-b5b5-b5b5-b5b5b5b5b5b5",
+            "userId": "d10b10b1-b10b-10b1-b10b-10b10b10b10b",
+            "bio": "Creator of Linux and Git. Expert in low-level systems and version control.",
+            "title": "Kernel Overlord",
+            "linkedInProfileUrl": "https://linkedin.com",
+            "gitHubProfileUrl": "https://github.com",
+            "cvUrl": "files/cv/Mostafa Elmahdy (Junior Full-Stack .NET Developer)CV.pdf",
+            "status": "Verfied",
+            "createdAt": "2026-05-01T12:00:00Z",
+            "updatedAt": "2026-05-01T12:00:00Z"
+        }
+    ]
+}

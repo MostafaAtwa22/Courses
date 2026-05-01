@@ -1,0 +1,39 @@
+{
+    "students": [
+        {
+            "id": "e3b3b3b3-b3b3-b3b3-b3b3-b3b3b3b3b3b3",
+            "userId": "d3b3b3b3-b3b3-b3b3-b3b3-b3b3b3b3b3b3",
+            "coins": 100,
+            "createdAt": "2026-05-01T12:00:00Z",
+            "updatedAt": "2026-05-01T12:00:00Z"
+        },
+        {
+            "id": "e4b4b4b4-b4b4-b4b4-b4b4-b4b4b4b4b4b4",
+            "userId": "d4b4b4b4-b4b4-b4b4-b4b4-b4b4b4b4b4b4",
+            "coins": 50,
+            "createdAt": "2026-05-01T12:00:00Z",
+            "updatedAt": "2026-05-01T12:00:00Z"
+        },
+        {
+            "id": "e5b5b5b5-b5b5-b5b5-b5b5-b5b5b5b5b5b5",
+            "userId": "d5b5b5b5-b5b5-b5b5-b5b5-b5b5b5b5b5b5",
+            "coins": 200,
+            "createdAt": "2026-05-01T12:00:00Z",
+            "updatedAt": "2026-05-01T12:00:00Z"
+        },
+        {
+            "id": "e6b6b6b6-b6b6-b6b6-b6b6-b6b6b6b6b6b6",
+            "userId": "d7b7b7b7-b7b7-b7b7-b7b7-b7b7b7b7b7b7",
+            "coins": 150,
+            "createdAt": "2026-05-01T12:00:00Z",
+            "updatedAt": "2026-05-01T12:00:00Z"
+        },
+        {
+            "id": "e7b7b7b7-b7b7-b7b7-b7b7-b7b7b7b7b7b7",
+            "userId": "d8b8b8b8-b8b8-b8b8-b8b8-b8b8b8b8b8b8",
+            "coins": 300,
+            "createdAt": "2026-05-01T12:00:00Z",
+            "updatedAt": "2026-05-01T12:00:00Z"
+        }
+    ]
+}

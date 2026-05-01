@@ -1,0 +1,64 @@
+{
+    "reviews": [
+        {
+            "id": "a1b1b1b1-b1b1-b1b1-b1b1-b1b1b1b1b1b1",
+            "headline": "Great course!",
+            "comment": "Really enjoyed the marketing strategies shared here. Very practical.",
+            "rating": 5.0,
+            "courseId": "c1b1b1b1-b1b1-b1b1-b1b1-b1b1b1b1b1b1",
+            "studentId": "e3b3b3b3-b3b3-b3b3-b3b3-b3b3b3b3b3b3",
+            "createdAt": "2026-05-01T12:00:00Z",
+            "updatedAt": "2026-05-01T12:00:00Z"
+        },
+        {
+            "id": "a2b2b2b2-b2b2-b2b2-b2b2-b2b2b2b2b2b2",
+            "headline": "Helpful",
+            "comment": "Good content, but some sections were a bit slow.",
+            "rating": 4.0,
+            "courseId": "c1b1b1b1-b1b1-b1b1-b1b1-b1b1b1b1b1b1",
+            "studentId": "e4b4b4b4-b4b4-b4b4-b4b4-b4b4b4b4b4b4",
+            "createdAt": "2026-05-01T12:00:00Z",
+            "updatedAt": "2026-05-01T12:00:00Z"
+        },
+        {
+            "id": "a3b3b3b3-b3b3-b3b3-b3b3-b3b3b3b3b3b3",
+            "headline": "Outstanding!",
+            "comment": "The best content strategy course I've ever taken.",
+            "rating": 5.0,
+            "courseId": "c2b2b2b2-b2b2-b2b2-b2b2-b2b2b2b2b2b2",
+            "studentId": "e5b5b5b5-b5b5-b5b5-b5b5-b5b5b5b5b5b5",
+            "createdAt": "2026-05-01T12:00:00Z",
+            "updatedAt": "2026-05-01T12:00:00Z"
+        },
+        {
+            "id": "a4b4b4b4-b4b4-b4b4-b4b4-b4b4b4b4b4b4",
+            "headline": "Highly recommended",
+            "comment": "AWS Cloud Architecting explained simply. Loved it!",
+            "rating": 5.0,
+            "courseId": "1c2d3e4f-5a6b-7c8d-9e0f-1a2b3c4d5e6f",
+            "studentId": "e6b6b6b6-b6b6-b6b6-b6b6-b6b6b6b6b6b6",
+            "createdAt": "2026-05-01T12:00:00Z",
+            "updatedAt": "2026-05-01T12:00:00Z"
+        },
+        {
+            "id": "a5b5b5b5-b5b5-b5b5-b5b5-b5b5b5b5b5b5",
+            "headline": "Great hands-on",
+            "comment": "The Docker and Kubernetes labs were very helpful.",
+            "rating": 4.5,
+            "courseId": "2d3e4f5a-6b7c-8d9e-0f1a-2b3c4d5e6f7a",
+            "studentId": "e7b7b7b7-b7b7-b7b7-b7b7-b7b7b7b7b7b7",
+            "createdAt": "2026-05-01T12:00:00Z",
+            "updatedAt": "2026-05-01T12:00:00Z"
+        },
+        {
+            "id": "a6b6b6b6-b6b6-b6b6-b6b6-b6b6b6b6b6b6",
+            "headline": "Mind-blowing",
+            "comment": "Advanced JS concepts finally clicked for me.",
+            "rating": 5.0,
+            "courseId": "3e4f5a6b-7c8d-9e0f-1a2b-3c4d5e6f7a8b",
+            "studentId": "e3b3b3b3-b3b3-b3b3-b3b3-b3b3b3b3b3b3",
+            "createdAt": "2026-05-01T12:00:00Z",
+            "updatedAt": "2026-05-01T12:00:00Z"
+        }
+    ]
+}

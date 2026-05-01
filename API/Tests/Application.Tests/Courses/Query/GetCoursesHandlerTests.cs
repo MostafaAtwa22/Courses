@@ -24,7 +24,7 @@ namespace Application.Tests.Courses.Query
         public async Task Handle_ShouldReturnPaginatedResults_WhenCalledWithValidParams()
         {
             // Arrange
-            var queryParams = new QueryParams
+            var queryParams = new CourseQueryParams
             {
                 PageNumber = 1,
                 PageSize = 10

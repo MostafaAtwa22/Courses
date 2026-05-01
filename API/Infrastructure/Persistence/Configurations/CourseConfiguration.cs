@@ -21,6 +21,18 @@ namespace Infrastructure.Persistence.Configurations
             builder.Property(c => c.PictureUrl)
                 .HasMaxLength(500);
 
+            builder.Property(c => c.AverageRate)
+                .HasColumnType("numeric(3, 1)")
+                .IsRequired()
+                .HasDefaultValue(0m);
+
+            builder.Property(c => c.TotalReviews)
+                .IsRequired()
+                .HasDefaultValue(0);
+
+            builder.Property(c => c.StudentCount)
+                .IsRequired()
+                .HasDefaultValue(0);
 
             builder.Property(c => c.Status)
                 .HasConversion(

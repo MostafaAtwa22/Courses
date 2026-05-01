@@ -2,9 +2,14 @@ export interface QueryParams {
   pageNumber?: number;
   pageSize?: number;
   searchTerm?: string;
-  category?: string;
   sortBy?: string;
   sortDescending?: boolean;
+}
+
+export interface CourseQueryParams extends QueryParams {
+  category?: string;
+  minRating?: number;
+  maxRating?: number;
 }
 
 export function createQueryParams(
@@ -15,8 +20,19 @@ export function createQueryParams(
     pageSize: 10,
     sortDescending: false,
     searchTerm: '',
-    category: '',
     sortBy: '',
+    ...params
+  };
+}
+
+export function createCourseQueryParams(
+  params?: Partial<CourseQueryParams>
+): CourseQueryParams {
+  return {
+    ...createQueryParams(params),
+    category: '',
+    minRating: undefined,
+    maxRating: undefined,
     ...params
   };
 }

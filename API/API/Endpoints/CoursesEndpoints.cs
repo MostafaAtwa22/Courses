@@ -45,7 +45,7 @@ namespace API.Endpoints
                 .Produces(StatusCodes.Status404NotFound);
         }
 
-        public static async Task<Results<Ok<PaginatedResult<CourseResponseDto>>, BadRequest>> GetCourses([AsParameters] QueryParams queryParams, 
+        public static async Task<Results<Ok<PaginatedResult<CourseResponseDto>>, BadRequest>> GetCourses([AsParameters] CourseQueryParams queryParams, 
             IMediator mediator)
         {
             var result = await mediator.Send(new GetCoursesQuery(queryParams));

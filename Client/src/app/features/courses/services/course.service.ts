@@ -3,7 +3,7 @@ import { inject, Injectable } from '@angular/core';
 import { environment } from '../../../../environments/environment';
 import { CourseResponse } from '../models/course.models';
 import { PaginatedResultModel } from '../../../shared/models/paginated-result.model';
-import { QueryParams } from '../../../shared/models/query-params.model';
+import { CourseQueryParams } from '../../../shared/models/query-params.model';
 import { map, Observable } from 'rxjs';
 
 @Injectable({
@@ -13,7 +13,7 @@ export class CourseService {
   private http = inject(HttpClient);
   private apiUrl = `${environment.apiUrl}/courses`;
 
-  getAll(params: QueryParams): Observable<PaginatedResultModel<CourseResponse>> {
+  getAll(params: CourseQueryParams): Observable<PaginatedResultModel<CourseResponse>> {
     let httpParams = new HttpParams();
 
     if (params.pageNumber) {
@@ -33,6 +33,12 @@ export class CourseService {
     }
     if (params.sortDescending !== undefined) {
       httpParams = httpParams.set('sortDescending', params.sortDescending.toString());
+    }
+    if (params.minRating !== undefined) {
+      httpParams = httpParams.set('minRating', params.minRating.toString());
+    }
+    if (params.maxRating !== undefined) {
+      httpParams = httpParams.set('maxRating', params.maxRating.toString());
     }
 
     return this.http

@@ -12,7 +12,13 @@ export interface CourseResponse extends BaseResponseModel {
     pictureUrl: string;
     status: CourseStatus;
     cost: number;
+    studentCount: number;
+    totalReviews: number;
+    averageRate: number;
     category: string;
+    instructorName: string;
+    instructorProfilePicture: string;
+    instructorTitle: string;
 }
 
 export interface CourseRequest {

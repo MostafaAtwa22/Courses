@@ -9,7 +9,7 @@ namespace Infrastructure.Persistence.Seed
         private static readonly JsonSerializerOptions _options = new()
         {
             PropertyNameCaseInsensitive = true,
-            Converters = { new System.Text.Json.Serialization.JsonStringEnumConverter() }
+            Converters = { new JsonStringEnumConverter() }
         };
 
         public static async Task SeedAsync(ApplicationDbContext context, 
@@ -22,6 +22,15 @@ namespace Infrastructure.Persistence.Seed
                 
             if (!context.Courses.Any())
                 await SeedCoursesAsync(context, logger);
+
+            if (!context.Reviews.Any())
+                await SeedReviewsAsync(context, logger);
+
+            if (!context.CourseInstructors.Any())
+                await SeedCourseInstructorsAsync(context, logger);
+
+            if (!context.Enrollments.Any())
+                await SeedEnrollmentsAsync(context, logger);
             
             logger.LogInformation("Database seeding completed.");
         }
@@ -42,6 +51,7 @@ namespace Infrastructure.Persistence.Seed
             logger.LogInformation("Seeded categories data.");
         }
 
+
         private static async Task SeedCoursesAsync(ApplicationDbContext context, ILogger logger)
         {
             var path = GetSeedPath("Courses.json");
@@ -56,6 +66,54 @@ namespace Infrastructure.Persistence.Seed
 
             await context.SaveChangesAsync();
             logger.LogInformation("Seeded courses data.");
+        }
+
+        private static async Task SeedReviewsAsync(ApplicationDbContext context, ILogger logger)
+        {
+            var path = GetSeedPath("Reviews.json");
+            var reviewData = await File.ReadAllTextAsync(path);
+            
+            using var document = JsonDocument.Parse(reviewData);
+            var reviewsElement = document.RootElement.GetProperty("reviews");
+            var reviews = reviewsElement.Deserialize<List<Review>>(_options) ?? [];
+
+            foreach (var review in reviews)
+                context.Reviews.Add(review);
+
+            await context.SaveChangesAsync();
+            logger.LogInformation("Seeded reviews data.");
+        }
+
+        private static async Task SeedCourseInstructorsAsync(ApplicationDbContext context, ILogger logger)
+        {
+            var path = GetSeedPath("CourseInstructors.json");
+            var data = await File.ReadAllTextAsync(path);
+            
+            using var document = JsonDocument.Parse(data);
+            var element = document.RootElement.GetProperty("courseInstructors");
+            var instructors = element.Deserialize<List<CourseInstructor>>(_options) ?? [];
+
+            foreach (var instructor in instructors)
+                context.CourseInstructors.Add(instructor);
+
+            await context.SaveChangesAsync();
+            logger.LogInformation("Seeded course instructors data.");
+        }
+
+        private static async Task SeedEnrollmentsAsync(ApplicationDbContext context, ILogger logger)
+        {
+            var path = GetSeedPath("Enrollments.json");
+            var data = await File.ReadAllTextAsync(path);
+            
+            using var document = JsonDocument.Parse(data);
+            var element = document.RootElement.GetProperty("enrollments");
+            var enrollments = element.Deserialize<List<Enrollment>>(_options) ?? [];
+
+            foreach (var enrollment in enrollments)
+                context.Enrollments.Add(enrollment);
+
+            await context.SaveChangesAsync();
+            logger.LogInformation("Seeded enrollments data.");
         }
 
         private static string GetSeedPath (string fileName)

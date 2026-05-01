@@ -10,6 +10,9 @@
             "pictureUrl": "images/courses/react.png",
             "status": "InProgress",
             "cost": 300,
+            "studentCount": 0,
+            "totalReviews": 0,
+            "averageRate": 0.0,
             "categoryId": "3a2b1c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d"
         },
         {
@@ -21,6 +24,9 @@
             "pictureUrl": "images/courses/python.png",
             "status": "Done",
             "cost": 500,
+            "studentCount": 0,
+            "totalReviews": 0,
+            "averageRate": 0.0,
             "categoryId": "4b3c2d5e-6f7a-8b9c-0d1e-2f3a4b5c6d7e"
         },
         {
@@ -32,7 +38,108 @@
             "pictureUrl": "images/courses/swift.jpeg",
             "status": "InProgress",
             "cost": 100,
+            "studentCount": 0,
+            "totalReviews": 0,
+            "averageRate": 0.0,
             "categoryId": "5c4d3e6f-7a8b-9c0d-1e2f-3a4b5c6d7e8f"
+        },
+        {
+            "id": "c1b1b1b1-b1b1-b1b1-b1b1-b1b1b1b1b1b1",
+            "createdAt": "2026-05-01T12:00:00Z",
+            "updatedAt": "2026-05-01T12:00:00Z",
+            "title": "Social Media Marketing Masterclass",
+            "description": "Learn how to grow your brand on Instagram, TikTok, and Facebook.",
+            "pictureUrl": "images/courses/marketing1.webp",
+            "status": "InProgress",
+            "cost": 49,
+            "studentCount": 2,
+            "totalReviews": 2,
+            "averageRate": 4.5,
+            "categoryId": "e1b1b1b1-b1b1-b1b1-b1b1-b1b1b1b1b1b1"
+        },
+        {
+            "id": "c2b2b2b2-b2b2-b2b2-b2b2-b2b2b2b2b2b2",
+            "createdAt": "2026-05-01T12:00:00Z",
+            "updatedAt": "2026-05-01T12:00:00Z",
+            "title": "Content Strategy for Beginners",
+            "description": "A step-by-step guide to creating high-converting content.",
+            "pictureUrl": "images/courses/marketing2.jpeg",
+            "status": "InProgress",
+            "cost": 29,
+            "studentCount": 1,
+            "totalReviews": 1,
+            "averageRate": 5.0,
+            "categoryId": "e1b1b1b1-b1b1-b1b1-b1b1-b1b1b1b1b1b1"
+        },
+        {
+            "id": "c3b3b3b3-b3b3-b3b3-b3b3-b3b3b3b3b3b3",
+            "createdAt": "2026-05-01T12:00:00Z",
+            "updatedAt": "2026-05-01T12:00:00Z",
+            "title": "Email Marketing Automation",
+            "description": "Build effective email funnels that turn subscribers into loyal customers.",
+            "pictureUrl": "images/courses/marketing3.png",
+            "status": "InProgress",
+            "cost": 39,
+            "studentCount": 0,
+            "totalReviews": 0,
+            "averageRate": 0.0,
+            "categoryId": "e1b1b1b1-b1b1-b1b1-b1b1-b1b1b1b1b1b1"
+        },
+        {
+            "id": "c4b4b4b4-b4b4-b4b4-b4b4-b4b4b4b4b4b4",
+            "createdAt": "2026-05-01T12:00:00Z",
+            "updatedAt": "2026-05-01T12:00:00Z",
+            "title": ".NET Core Web API Development",
+            "description": "Master building high-performance REST APIs using C# and ASP.NET Core.",
+            "pictureUrl": "images/courses/dotnet.png",
+            "status": "InProgress",
+            "cost": 99,
+            "studentCount": 1,
+            "totalReviews": 0,
+            "averageRate": 0.0,
+            "categoryId": "3a2b1c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d"
+        },
+        {
+            "id": "c5b5b5b5-b5b5-b5b5-b5b5-b5b5b5b5b5b5",
+            "createdAt": "2026-05-01T12:00:00Z",
+            "updatedAt": "2026-05-01T12:00:00Z",
+            "title": "UI/UX Design Essentials",
+            "description": "Learn the principles of user interface design and Figma.",
+            "pictureUrl": "images/courses/uiux.png",
+            "status": "InProgress",
+            "cost": 59,
+            "studentCount": 0,
+            "totalReviews": 0,
+            "averageRate": 0.0,
+            "categoryId": "e3b3b3b3-b3b3-b3b3-b3b3-b3b3b3b3b3b3"
+        },
+        {
+            "id": "c6b6b6b6-b6b6-b6b6-b6b6-b6b6b6b6b6b6",
+            "createdAt": "2026-05-01T12:00:00Z",
+            "updatedAt": "2026-05-01T12:00:00Z",
+            "title": "SEO and SEM Fundamentals",
+            "description": "Master search engine optimization and marketing.",
+            "pictureUrl": "images/courses/seo.png",
+            "status": "InProgress",
+            "cost": 45,
+            "studentCount": 1,
+            "totalReviews": 0,
+            "averageRate": 0.0,
+            "categoryId": "e1b1b1b1-b1b1-b1b1-b1b1-b1b1b1b1b1b1"
+        },
+        {
+            "id": "c7b7b7b7-b7b7-b7b7-b7b7-b7b7b7b7b7b7",
+            "createdAt": "2026-05-01T12:00:00Z",
+            "updatedAt": "2026-05-01T12:00:00Z",
+            "title": "Fullstack Web Development Bootcamp",
+            "description": "Learn HTML, CSS, JS, React, and Node.js.",
+            "pictureUrl": "images/courses/fullstack.jpeg",
+            "status": "InProgress",
+            "cost": 199,
+            "studentCount": 0,
+            "totalReviews": 0,
+            "averageRate": 0.0,
+            "categoryId": "3a2b1c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d"
         },
         {
             "id": "1c2d3e4f-5a6b-7c8d-9e0f-1a2b3c4d5e6f",
@@ -43,6 +150,9 @@
             "pictureUrl": "images/courses/aws.png",
             "status": "Done",
             "cost": 200,
+            "studentCount": 1,
+            "totalReviews": 1,
+            "averageRate": 5.0,
             "categoryId": "6d5e4f7a-8b9c-0d1e-2f3a-4b5c6d7e8f9a"
         },
         {
@@ -54,6 +164,9 @@
             "pictureUrl": "images/courses/docker.jpg",
             "status": "InProgress",
             "cost": 300,
+            "studentCount": 1,
+            "totalReviews": 1,
+            "averageRate": 4.5,
             "categoryId": "7e6f5a8b-9c0d-1e2f-3a4b-5c6d7e8f9a0b"
         },
         {
@@ -65,6 +178,9 @@
             "pictureUrl": "images/courses/js.png",
             "status": "Done",
             "cost": 300,
+            "studentCount": 1,
+            "totalReviews": 1,
+            "averageRate": 5.0,
             "categoryId": "3a2b1c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d"
         },
         {
@@ -76,6 +192,9 @@
             "pictureUrl": "images/courses/ML.jpeg",
             "status": "InProgress",
             "cost": 649,
+            "studentCount": 1,
+            "totalReviews": 0,
+            "averageRate": 0.0,
             "categoryId": "4b3c2d5e-6f7a-8b9c-0d1e-2f3a4b5c6d7e"
         },
         {
@@ -87,6 +206,9 @@
             "pictureUrl": "images/courses/kotlin.jpeg",
             "status": "InProgress",
             "cost": 599,
+            "studentCount": 1,
+            "totalReviews": 0,
+            "averageRate": 0.0,
             "categoryId": "5c4d3e6f-7a8b-9c0d-1e2f-3a4b5c6d7e8f"
         }
     ]

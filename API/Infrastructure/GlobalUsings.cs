@@ -8,3 +8,4 @@ global using Dapper;
 global using Npgsql;
 global using System.Data;
 global using Application.Common.Models;
+global using System.Text.Json.Serialization;

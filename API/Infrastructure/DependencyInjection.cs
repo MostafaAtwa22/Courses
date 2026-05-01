@@ -6,6 +6,9 @@ using Infrastructure.Repositories;
 using Infrastructure.Services;
 using StackExchange.Redis;
 using Infrastructure.Cache;
+using Microsoft.EntityFrameworkCore;
+using Domain.Entities.Identity;
+using Microsoft.AspNetCore.Identity;
 
 public static class DependencyInjection
 {
@@ -20,6 +23,27 @@ public static class DependencyInjection
         services.AddDbContext<ApplicationDbContext>(options =>
             options.UseNpgsql(connectionString)
                    .UseSnakeCaseNamingConvention());
+
+        services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+        {
+            options.Password.RequireDigit = true;
+            options.Password.RequiredLength = 6;
+            options.Password.RequireNonAlphanumeric = true;
+            options.Password.RequireUppercase = true;
+            options.Password.RequireLowercase = true;
+            options.User.RequireUniqueEmail = true;
+            
+            // Confirem email
+            options.SignIn.RequireConfirmedEmail = true;
+            options.Tokens.EmailConfirmationTokenProvider = TokenOptions.DefaultEmailProvider; // make the code as numbers
+            
+            // Lockout settings
+            options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+            options.Lockout.MaxFailedAccessAttempts = 5;
+            options.Lockout.AllowedForNewUsers = true;
+        })
+        .AddEntityFrameworkStores<ApplicationDbContext>()
+        .AddDefaultTokenProviders();
 
         services.AddSingleton<IConnectionMultiplexer>(c => 
         {

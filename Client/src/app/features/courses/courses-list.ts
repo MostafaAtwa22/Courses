@@ -5,7 +5,7 @@ import { FooterComponent } from '../../shared/components/footer/footer';
 import { CourseCardComponent } from './components/course-card/course-card';
 import { CourseService } from './services/course.service';
 import { CategoryService } from '../categories/services/category.service';
-import { createQueryParams, QueryParams } from '../../shared/models/query-params.model';
+import { createCourseQueryParams, createQueryParams, CourseQueryParams } from '../../shared/models/query-params.model';
 import { PaginatedResultModel } from '../../shared/models/paginated-result.model';
 import { CourseResponse } from './models/course.models';
 
@@ -32,7 +32,7 @@ export class CoursesListComponent implements OnInit {
   selectedCategory = 'All';
 
   coursesResult: PaginatedResultModel<CourseResponse> = new PaginatedResultModel<CourseResponse>();
-  params: QueryParams = createQueryParams({ pageSize: 6 });
+  params: CourseQueryParams = createCourseQueryParams({ pageSize: 9 });
 
   ngOnInit() {
     this.initTheme();
@@ -82,6 +82,13 @@ export class CoursesListComponent implements OnInit {
     this.loadCourses();
   }
 
+  setRatingFilter(min?: number, max?: number) {
+    this.params.minRating = min;
+    this.params.maxRating = max;
+    this.params.pageNumber = 1;
+    this.loadCourses();
+  }
+
   onSearch(term: string) {
     this.params.searchTerm = term;
     this.params.pageNumber = 1;
@@ -119,5 +126,11 @@ export class CoursesListComponent implements OnInit {
 
   getPagesArray(): number[] {
     return Array.from({ length: this.coursesResult.totalPages }, (_, i) => i + 1);
+  }
+
+  resetFilters() {
+    this.selectedCategory = 'All';
+    this.params = createCourseQueryParams({ pageSize: 6 });
+    this.loadCourses();
   }
 }

@@ -1,0 +1,74 @@
+{
+    "enrollments": [
+        {
+            "id": "e1e1e1e1-e1e1-e1e1-e1e1-e1e1e1e1e1e1",
+            "studentId": "e3b3b3b3-b3b3-b3b3-b3b3-b3b3b3b3b3b3",
+            "courseId": "c1b1b1b1-b1b1-b1b1-b1b1-b1b1b1b1b1b1",
+            "createdAt": "2026-05-01T12:00:00Z",
+            "updatedAt": "2026-05-01T12:00:00Z"
+        },
+        {
+            "id": "e2e2e2e2-e2e2-e2e2-e2e2-e2e2e2e2e2e2",
+            "studentId": "e4b4b4b4-b4b4-b4b4-b4b4-b4b4b4b4b4b4",
+            "courseId": "c1b1b1b1-b1b1-b1b1-b1b1-b1b1b1b1b1b1",
+            "createdAt": "2026-05-01T12:00:00Z",
+            "updatedAt": "2026-05-01T12:00:00Z"
+        },
+        {
+            "id": "e3e3e3e3-e3e3-e3e3-e3e3-e3e3e3e3e3e3",
+            "studentId": "e5b5b5b5-b5b5-b5b5-b5b5-b5b5b5b5b5b5",
+            "courseId": "c2b2b2b2-b2b2-b2b2-b2b2-b2b2b2b2b2b2",
+            "createdAt": "2026-05-01T12:00:00Z",
+            "updatedAt": "2026-05-01T12:00:00Z"
+        },
+        {
+            "id": "e4e4e4e4-e4e4-e4e4-e4e4-e4e4e4e4e4e4",
+            "studentId": "e3b3b3b3-b3b3-b3b3-b3b3-b3b3b3b3b3b3",
+            "courseId": "c4b4b4b4-b4b4-b4b4-b4b4-b4b4b4b4b4b4",
+            "createdAt": "2026-05-01T12:00:00Z",
+            "updatedAt": "2026-05-01T12:00:00Z"
+        },
+        {
+            "id": "e5e5e5e5-e5e5-e5e5-e5e5-e5e5e5e5e5e5",
+            "studentId": "e4b4b4b4-b4b4-b4b4-b4b4-b4b4b4b4b4b4",
+            "courseId": "c6b6b6b6-b6b6-b6b6-b6b6-b6b6b6b6b6b6",
+            "createdAt": "2026-05-01T12:00:00Z",
+            "updatedAt": "2026-05-01T12:00:00Z"
+        },
+        {
+            "id": "e6e6e6e6-e6e6-e6e6-e6e6-e6e6e6e6e6e6",
+            "studentId": "e6b6b6b6-b6b6-b6b6-b6b6-b6b6b6b6b6b6",
+            "courseId": "1c2d3e4f-5a6b-7c8d-9e0f-1a2b3c4d5e6f",
+            "createdAt": "2026-05-01T12:00:00Z",
+            "updatedAt": "2026-05-01T12:00:00Z"
+        },
+        {
+            "id": "e7e7e7e7-e7e7-e7e7-e7e7-e7e7e7e7e7e7",
+            "studentId": "e7b7b7b7-b7b7-b7b7-b7b7-b7b7b7b7b7b7",
+            "courseId": "2d3e4f5a-6b7c-8d9e-0f1a-2b3c4d5e6f7a",
+            "createdAt": "2026-05-01T12:00:00Z",
+            "updatedAt": "2026-05-01T12:00:00Z"
+        },
+        {
+            "id": "e8e8e8e8-e8e8-e8e8-e8e8-e8e8e8e8e8e8",
+            "studentId": "e3b3b3b3-b3b3-b3b3-b3b3-b3b3b3b3b3b3",
+            "courseId": "4f5a6b7c-8d9e-0f1a-2b3c-4d5e6f7a8b9c",
+            "createdAt": "2026-05-01T12:00:00Z",
+            "updatedAt": "2026-05-01T12:00:00Z"
+        },
+        {
+            "id": "e9e9e9e9-e9e9-e9e9-e9e9-e9e9e9e9e9e9",
+            "studentId": "e5b5b5b5-b5b5-b5b5-b5b5-b5b5b5b5b5b5",
+            "courseId": "5a6b7c8d-9e0f-1a2b-3c4d-5e6f7a8b9c0d",
+            "createdAt": "2026-05-01T12:00:00Z",
+            "updatedAt": "2026-05-01T12:00:00Z"
+        },
+        {
+            "id": "ea1a1a1a-1a1a-1a1a-1a1a-1a1a1a1a1a1a",
+            "studentId": "e3b3b3b3-b3b3-b3b3-b3b3-b3b3b3b3b3b3",
+            "courseId": "3e4f5a6b-7c8d-9e0f-1a2b-3c4d5e6f7a8b",
+            "createdAt": "2026-05-01T12:00:00Z",
+            "updatedAt": "2026-05-01T12:00:00Z"
+        }
+    ]
+}
