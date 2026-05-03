@@ -14,9 +14,9 @@ namespace Infrastructure.Repositories
             { "updated_at", "updated_at" }
         };
 
-        public Task<PaginatedResult<CategoryResponseDto>> GetAllAsync(QueryParams queryParams, CancellationToken ct = default)
+        public async Task<PaginatedResult<CategoryResponseDto>> GetAllAsync(QueryParams queryParams, CancellationToken ct = default)
         {
-            return ExecutePaginatedQueryAsync<CategoryResponseDto>(
+            return await ExecutePaginatedQueryAsync<CategoryResponseDto>(
                 queryParams,
                 countSql: "SELECT COUNT(1) FROM categories",
                 selectSql: "SELECT id, name, slug, created_at, updated_at, (SELECT COUNT(1) FROM courses WHERE category_id = categories.id) as number_of_courses FROM categories",

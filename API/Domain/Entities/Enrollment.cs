@@ -1,6 +1,3 @@
-using System;
-using Domain.Entities.Identity;
-
 namespace Domain.Entities
 {
     public class Enrollment : BaseEntity

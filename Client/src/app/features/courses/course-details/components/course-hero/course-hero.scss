@@ -1,0 +1,31 @@
+.course-hero {
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  position: relative;
+}
+
+.text-primary-light {
+  color: #93b4ff;
+  text-decoration: none;
+  &:hover { color: white; }
+}
+
+.breadcrumb-item + .breadcrumb-item::before {
+  color: rgba(255,255,255,0.5);
+}
+
+.opacity-90 { opacity: 0.9; }
+
+.text-sm {
+  font-size: 0.875rem;
+}
+
+/* Mobile pricing card uses theme vars */
+.mobile-pricing {
+  background-color: var(--surface);
+  border: 1px solid var(--border-color);
+  color: var(--text-color);
+}
+
+.mobile-pricing .price-amount {
+  color: var(--text-color);
+}

@@ -28,6 +28,12 @@ namespace Infrastructure.Persistence.Seed
 
             if (!context.Enrollments.Any())
                 await SeedEnrollmentsAsync(context, logger);
+
+            if (!context.Sections.Any())
+                await SeedSectionsAsync(context, logger);
+
+            if (!context.Contents.Any())
+                await SeedContentsAsync(context, logger);
             
             logger.LogInformation("Database seeding completed.");
         }
@@ -96,6 +102,38 @@ namespace Infrastructure.Persistence.Seed
 
             await context.SaveChangesAsync();
             logger.LogInformation("Seeded enrollments data.");
+        }
+
+        private static async Task SeedSectionsAsync(ApplicationDbContext context, ILogger logger)
+        {
+            var path = GetSeedPath("Sections.json");
+            var data = await File.ReadAllTextAsync(path);
+            
+            using var document = JsonDocument.Parse(data);
+            var element = document.RootElement.GetProperty("sections");
+            var sections = element.Deserialize<List<Section>>(_options) ?? [];
+
+            foreach (var section in sections)
+                context.Sections.Add(section);
+
+            await context.SaveChangesAsync();
+            logger.LogInformation("Seeded sections data.");
+        }
+
+        private static async Task SeedContentsAsync(ApplicationDbContext context, ILogger logger)
+        {
+            var path = GetSeedPath("Contents.json");
+            var data = await File.ReadAllTextAsync(path);
+            
+            using var document = JsonDocument.Parse(data);
+            var element = document.RootElement.GetProperty("contents");
+            var contents = element.Deserialize<List<Content>>(_options) ?? [];
+
+            foreach (var content in contents)
+                context.Contents.Add(content);
+
+            await context.SaveChangesAsync();
+            logger.LogInformation("Seeded contents data.");
         }
 
         private static string GetSeedPath (string fileName)

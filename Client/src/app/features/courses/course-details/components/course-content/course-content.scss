@@ -1,0 +1,37 @@
+.accordion-item {
+  background-color: var(--surface);
+  border: 1px solid var(--border-color) !important;
+}
+
+.accordion-button {
+  background-color: var(--surface-variant);
+  color: var(--text-color);
+  &:not(.collapsed) {
+    background-color: var(--surface-variant);
+    color: var(--text-color);
+    box-shadow: none;
+  }
+  &:focus {
+    box-shadow: none;
+    border-color: var(--border-color);
+  }
+  &::after {
+    filter: var(--accordion-arrow-filter, none);
+  }
+}
+
+.list-group-item {
+  background-color: var(--surface);
+  color: var(--text-color);
+  border-color: var(--border-color);
+  cursor: pointer;
+  &:hover {
+    background-color: var(--surface-variant);
+  }
+}
+
+:host {
+  h3 {
+    color: var(--text-color);
+  }
+}

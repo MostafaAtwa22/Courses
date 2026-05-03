@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Identity;
-using Domain.Enums;
 
 namespace Domain.Entities.Identity
 {

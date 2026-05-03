@@ -1,0 +1,65 @@
+.sticky-sidebar {
+  top: 2rem;
+  z-index: 100;
+}
+
+:host .card {
+  background-color: var(--surface);
+  border: 1px solid var(--border-color);
+  color: var(--text-color);
+}
+
+.card-body {
+  background-color: var(--surface);
+  color: var(--text-color);
+}
+
+.preview-video {
+  cursor: pointer;
+  .overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.3);
+    transition: background 0.3s ease;
+  }
+  &:hover .overlay {
+    background: rgba(0,0,0,0.5);
+  }
+  .play-btn {
+    width: 60px;
+    height: 60px;
+    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+.course-includes i {
+  width: 20px;
+  text-align: center;
+  color: var(--primary-color);
+}
+
+.course-includes span {
+  color: var(--text-color);
+}
+
+.sidebar-link-btn {
+  color: var(--text-muted);
+  &:hover {
+    color: var(--primary-color);
+  }
+}
+
+.sidebar-outline-btn {
+  border: 1px solid var(--border-color);
+  color: var(--text-color);
+  background-color: transparent;
+  &:hover {
+    background-color: var(--surface-variant);
+  }
+}

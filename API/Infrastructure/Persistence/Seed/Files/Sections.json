@@ -1,0 +1,556 @@
+{
+    "sections": [
+        {
+            "id": "775becc1-5752-46a5-b9f7-1d2cbf105772",
+            "title": "Section 1 of Complete React Developer Course",
+            "order": 1,
+            "courseId": "8f7a6b9c-0d1e-2f3a-4b5c-6d7e8f9a0b1c",
+            "createdAt": "2026-05-01T22:05:24.049Z",
+            "updatedAt": "2026-05-01T22:05:24.049Z"
+        },
+        {
+            "id": "fe4d7aba-512b-461e-b770-fd5e2cfc4c3c",
+            "title": "Section 2 of Complete React Developer Course",
+            "order": 2,
+            "courseId": "8f7a6b9c-0d1e-2f3a-4b5c-6d7e8f9a0b1c",
+            "createdAt": "2026-05-01T22:05:24.049Z",
+            "updatedAt": "2026-05-01T22:05:24.049Z"
+        },
+        {
+            "id": "bb277584-9a9e-4f17-8e86-48edaaece642",
+            "title": "Section 3 of Complete React Developer Course",
+            "order": 3,
+            "courseId": "8f7a6b9c-0d1e-2f3a-4b5c-6d7e8f9a0b1c",
+            "createdAt": "2026-05-01T22:05:24.049Z",
+            "updatedAt": "2026-05-01T22:05:24.049Z"
+        },
+        {
+            "id": "c80ccc45-fe7b-47a5-8039-a45713b15a94",
+            "title": "Section 4 of Complete React Developer Course",
+            "order": 4,
+            "courseId": "8f7a6b9c-0d1e-2f3a-4b5c-6d7e8f9a0b1c",
+            "createdAt": "2026-05-01T22:05:24.049Z",
+            "updatedAt": "2026-05-01T22:05:24.049Z"
+        },
+        {
+            "id": "2d6be802-209c-4b9e-992f-7faa633dc537",
+            "title": "Section 5 of Complete React Developer Course",
+            "order": 5,
+            "courseId": "8f7a6b9c-0d1e-2f3a-4b5c-6d7e8f9a0b1c",
+            "createdAt": "2026-05-01T22:05:24.049Z",
+            "updatedAt": "2026-05-01T22:05:24.050Z"
+        },
+        {
+            "id": "9ed2540f-af92-4633-820e-e984653b3cf7",
+            "title": "Section 6 of Complete React Developer Course",
+            "order": 6,
+            "courseId": "8f7a6b9c-0d1e-2f3a-4b5c-6d7e8f9a0b1c",
+            "createdAt": "2026-05-01T22:05:24.050Z",
+            "updatedAt": "2026-05-01T22:05:24.050Z"
+        },
+        {
+            "id": "b8d1f170-459a-49a5-adb6-9ed3254bd0a4",
+            "title": "Section 1 of Python for Data Science",
+            "order": 1,
+            "courseId": "9a8b7c0d-1e2f-3a4b-5c6d-7e8f9a0b1c2d",
+            "createdAt": "2026-05-01T22:05:24.050Z",
+            "updatedAt": "2026-05-01T22:05:24.050Z"
+        },
+        {
+            "id": "db081bc8-1401-457f-8cdf-842cf7c6eb23",
+            "title": "Section 2 of Python for Data Science",
+            "order": 2,
+            "courseId": "9a8b7c0d-1e2f-3a4b-5c6d-7e8f9a0b1c2d",
+            "createdAt": "2026-05-01T22:05:24.050Z",
+            "updatedAt": "2026-05-01T22:05:24.050Z"
+        },
+        {
+            "id": "f33958e7-cb4c-42f0-a862-e01a17710672",
+            "title": "Section 3 of Python for Data Science",
+            "order": 3,
+            "courseId": "9a8b7c0d-1e2f-3a4b-5c6d-7e8f9a0b1c2d",
+            "createdAt": "2026-05-01T22:05:24.050Z",
+            "updatedAt": "2026-05-01T22:05:24.050Z"
+        },
+        {
+            "id": "e47c295b-e5f7-454c-b2a1-fc9d7b71c7e9",
+            "title": "Section 1 of iOS & SwiftUI Masterclass",
+            "order": 1,
+            "courseId": "0b1c2d3e-4f5a-6b7c-8d9e-0f1a2b3c4d5e",
+            "createdAt": "2026-05-01T22:05:24.050Z",
+            "updatedAt": "2026-05-01T22:05:24.050Z"
+        },
+        {
+            "id": "3fe1f330-e833-45c7-9209-1437946658bd",
+            "title": "Section 2 of iOS & SwiftUI Masterclass",
+            "order": 2,
+            "courseId": "0b1c2d3e-4f5a-6b7c-8d9e-0f1a2b3c4d5e",
+            "createdAt": "2026-05-01T22:05:24.050Z",
+            "updatedAt": "2026-05-01T22:05:24.050Z"
+        },
+        {
+            "id": "7f9d3dfa-58e6-464a-8b21-7f783499789f",
+            "title": "Section 3 of iOS & SwiftUI Masterclass",
+            "order": 3,
+            "courseId": "0b1c2d3e-4f5a-6b7c-8d9e-0f1a2b3c4d5e",
+            "createdAt": "2026-05-01T22:05:24.050Z",
+            "updatedAt": "2026-05-01T22:05:24.050Z"
+        },
+        {
+            "id": "629a14c1-7461-4f4a-a3d8-20969eec657e",
+            "title": "Section 4 of iOS & SwiftUI Masterclass",
+            "order": 4,
+            "courseId": "0b1c2d3e-4f5a-6b7c-8d9e-0f1a2b3c4d5e",
+            "createdAt": "2026-05-01T22:05:24.050Z",
+            "updatedAt": "2026-05-01T22:05:24.050Z"
+        },
+        {
+            "id": "7e739f5b-0967-417d-852e-0a9a4abc7060",
+            "title": "Section 5 of iOS & SwiftUI Masterclass",
+            "order": 5,
+            "courseId": "0b1c2d3e-4f5a-6b7c-8d9e-0f1a2b3c4d5e",
+            "createdAt": "2026-05-01T22:05:24.050Z",
+            "updatedAt": "2026-05-01T22:05:24.050Z"
+        },
+        {
+            "id": "a7e36286-254f-4394-8388-517d5b2a0df0",
+            "title": "Section 6 of iOS & SwiftUI Masterclass",
+            "order": 6,
+            "courseId": "0b1c2d3e-4f5a-6b7c-8d9e-0f1a2b3c4d5e",
+            "createdAt": "2026-05-01T22:05:24.050Z",
+            "updatedAt": "2026-05-01T22:05:24.050Z"
+        },
+        {
+            "id": "aa494439-9c29-474e-81f2-8f37e277b26c",
+            "title": "Section 1 of Social Media Marketing Masterclass",
+            "order": 1,
+            "courseId": "c1b1b1b1-b1b1-b1b1-b1b1-b1b1b1b1b1b1",
+            "createdAt": "2026-05-01T22:05:24.050Z",
+            "updatedAt": "2026-05-01T22:05:24.050Z"
+        },
+        {
+            "id": "8324410f-001d-4966-a351-af8d06e7a79f",
+            "title": "Section 2 of Social Media Marketing Masterclass",
+            "order": 2,
+            "courseId": "c1b1b1b1-b1b1-b1b1-b1b1-b1b1b1b1b1b1",
+            "createdAt": "2026-05-01T22:05:24.050Z",
+            "updatedAt": "2026-05-01T22:05:24.050Z"
+        },
+        {
+            "id": "a49515e7-476c-492c-8852-61ad5351590f",
+            "title": "Section 3 of Social Media Marketing Masterclass",
+            "order": 3,
+            "courseId": "c1b1b1b1-b1b1-b1b1-b1b1-b1b1b1b1b1b1",
+            "createdAt": "2026-05-01T22:05:24.051Z",
+            "updatedAt": "2026-05-01T22:05:24.051Z"
+        },
+        {
+            "id": "19fb9650-a523-46b3-a695-81cb296a37b6",
+            "title": "Section 4 of Social Media Marketing Masterclass",
+            "order": 4,
+            "courseId": "c1b1b1b1-b1b1-b1b1-b1b1-b1b1b1b1b1b1",
+            "createdAt": "2026-05-01T22:05:24.051Z",
+            "updatedAt": "2026-05-01T22:05:24.051Z"
+        },
+        {
+            "id": "5290c350-d3aa-48ee-9f08-979c8210c9b9",
+            "title": "Section 1 of Content Strategy for Beginners",
+            "order": 1,
+            "courseId": "c2b2b2b2-b2b2-b2b2-b2b2-b2b2b2b2b2b2",
+            "createdAt": "2026-05-01T22:05:24.051Z",
+            "updatedAt": "2026-05-01T22:05:24.051Z"
+        },
+        {
+            "id": "83c016c6-2586-4c47-af66-70dec3d09c6e",
+            "title": "Section 2 of Content Strategy for Beginners",
+            "order": 2,
+            "courseId": "c2b2b2b2-b2b2-b2b2-b2b2-b2b2b2b2b2b2",
+            "createdAt": "2026-05-01T22:05:24.051Z",
+            "updatedAt": "2026-05-01T22:05:24.051Z"
+        },
+        {
+            "id": "93421038-3e52-4eb5-8047-b0cb912dad19",
+            "title": "Section 3 of Content Strategy for Beginners",
+            "order": 3,
+            "courseId": "c2b2b2b2-b2b2-b2b2-b2b2-b2b2b2b2b2b2",
+            "createdAt": "2026-05-01T22:05:24.051Z",
+            "updatedAt": "2026-05-01T22:05:24.051Z"
+        },
+        {
+            "id": "ec0f03b3-5940-4317-a8b0-fa557361adb0",
+            "title": "Section 4 of Content Strategy for Beginners",
+            "order": 4,
+            "courseId": "c2b2b2b2-b2b2-b2b2-b2b2-b2b2b2b2b2b2",
+            "createdAt": "2026-05-01T22:05:24.051Z",
+            "updatedAt": "2026-05-01T22:05:24.051Z"
+        },
+        {
+            "id": "363cf7a3-8ab9-497d-97e6-d69df015a80b",
+            "title": "Section 5 of Content Strategy for Beginners",
+            "order": 5,
+            "courseId": "c2b2b2b2-b2b2-b2b2-b2b2-b2b2b2b2b2b2",
+            "createdAt": "2026-05-01T22:05:24.051Z",
+            "updatedAt": "2026-05-01T22:05:24.051Z"
+        },
+        {
+            "id": "aebe6314-72c9-4a66-9654-f862354c2389",
+            "title": "Section 6 of Content Strategy for Beginners",
+            "order": 6,
+            "courseId": "c2b2b2b2-b2b2-b2b2-b2b2-b2b2b2b2b2b2",
+            "createdAt": "2026-05-01T22:05:24.051Z",
+            "updatedAt": "2026-05-01T22:05:24.051Z"
+        },
+        {
+            "id": "8678cceb-ae81-4e2a-b4a8-2697c31e782a",
+            "title": "Section 1 of Email Marketing Automation",
+            "order": 1,
+            "courseId": "c3b3b3b3-b3b3-b3b3-b3b3-b3b3b3b3b3b3",
+            "createdAt": "2026-05-01T22:05:24.051Z",
+            "updatedAt": "2026-05-01T22:05:24.051Z"
+        },
+        {
+            "id": "b7f1402d-3389-45aa-9ef0-2304eb5c9715",
+            "title": "Section 2 of Email Marketing Automation",
+            "order": 2,
+            "courseId": "c3b3b3b3-b3b3-b3b3-b3b3-b3b3b3b3b3b3",
+            "createdAt": "2026-05-01T22:05:24.051Z",
+            "updatedAt": "2026-05-01T22:05:24.051Z"
+        },
+        {
+            "id": "9b2357fb-7d61-4c0d-8f1c-a7f15c90686a",
+            "title": "Section 3 of Email Marketing Automation",
+            "order": 3,
+            "courseId": "c3b3b3b3-b3b3-b3b3-b3b3-b3b3b3b3b3b3",
+            "createdAt": "2026-05-01T22:05:24.051Z",
+            "updatedAt": "2026-05-01T22:05:24.051Z"
+        },
+        {
+            "id": "a5c93ded-1861-4351-857a-a2488095280e",
+            "title": "Section 4 of Email Marketing Automation",
+            "order": 4,
+            "courseId": "c3b3b3b3-b3b3-b3b3-b3b3-b3b3b3b3b3b3",
+            "createdAt": "2026-05-01T22:05:24.051Z",
+            "updatedAt": "2026-05-01T22:05:24.051Z"
+        },
+        {
+            "id": "038fe0cd-d7ae-4715-819f-4410c6635522",
+            "title": "Section 1 of .NET Core Web API Development",
+            "order": 1,
+            "courseId": "c4b4b4b4-b4b4-b4b4-b4b4-b4b4b4b4b4b4",
+            "createdAt": "2026-05-01T22:05:24.051Z",
+            "updatedAt": "2026-05-01T22:05:24.051Z"
+        },
+        {
+            "id": "49f94602-fff3-4825-8010-bcbab12cee9d",
+            "title": "Section 2 of .NET Core Web API Development",
+            "order": 2,
+            "courseId": "c4b4b4b4-b4b4-b4b4-b4b4-b4b4b4b4b4b4",
+            "createdAt": "2026-05-01T22:05:24.051Z",
+            "updatedAt": "2026-05-01T22:05:24.051Z"
+        },
+        {
+            "id": "0dddc448-8fea-470f-970e-1dd67a706a43",
+            "title": "Section 3 of .NET Core Web API Development",
+            "order": 3,
+            "courseId": "c4b4b4b4-b4b4-b4b4-b4b4-b4b4b4b4b4b4",
+            "createdAt": "2026-05-01T22:05:24.051Z",
+            "updatedAt": "2026-05-01T22:05:24.051Z"
+        },
+        {
+            "id": "72347550-8245-4d0b-b96b-1c78649fb09e",
+            "title": "Section 1 of UI/UX Design Essentials",
+            "order": 1,
+            "courseId": "c5b5b5b5-b5b5-b5b5-b5b5-b5b5b5b5b5b5",
+            "createdAt": "2026-05-01T22:05:24.051Z",
+            "updatedAt": "2026-05-01T22:05:24.051Z"
+        },
+        {
+            "id": "3f3dfc61-e96d-4d1c-b9d4-a9cba7c001a6",
+            "title": "Section 2 of UI/UX Design Essentials",
+            "order": 2,
+            "courseId": "c5b5b5b5-b5b5-b5b5-b5b5-b5b5b5b5b5b5",
+            "createdAt": "2026-05-01T22:05:24.051Z",
+            "updatedAt": "2026-05-01T22:05:24.051Z"
+        },
+        {
+            "id": "ea7e2a98-7319-4870-888b-e8417f0cdc98",
+            "title": "Section 3 of UI/UX Design Essentials",
+            "order": 3,
+            "courseId": "c5b5b5b5-b5b5-b5b5-b5b5-b5b5b5b5b5b5",
+            "createdAt": "2026-05-01T22:05:24.051Z",
+            "updatedAt": "2026-05-01T22:05:24.051Z"
+        },
+        {
+            "id": "c80903ab-ee31-4405-a643-e4a9ba5af2a4",
+            "title": "Section 4 of UI/UX Design Essentials",
+            "order": 4,
+            "courseId": "c5b5b5b5-b5b5-b5b5-b5b5-b5b5b5b5b5b5",
+            "createdAt": "2026-05-01T22:05:24.051Z",
+            "updatedAt": "2026-05-01T22:05:24.051Z"
+        },
+        {
+            "id": "87e8bd2d-f516-414c-ad47-e15ba9ee3cee",
+            "title": "Section 5 of UI/UX Design Essentials",
+            "order": 5,
+            "courseId": "c5b5b5b5-b5b5-b5b5-b5b5-b5b5b5b5b5b5",
+            "createdAt": "2026-05-01T22:05:24.051Z",
+            "updatedAt": "2026-05-01T22:05:24.051Z"
+        },
+        {
+            "id": "54045524-2264-422d-aa7a-43700162b8a4",
+            "title": "Section 1 of SEO and SEM Fundamentals",
+            "order": 1,
+            "courseId": "c6b6b6b6-b6b6-b6b6-b6b6-b6b6b6b6b6b6",
+            "createdAt": "2026-05-01T22:05:24.051Z",
+            "updatedAt": "2026-05-01T22:05:24.051Z"
+        },
+        {
+            "id": "65e77255-347c-4c26-9677-7c88eb53b2b8",
+            "title": "Section 2 of SEO and SEM Fundamentals",
+            "order": 2,
+            "courseId": "c6b6b6b6-b6b6-b6b6-b6b6-b6b6b6b6b6b6",
+            "createdAt": "2026-05-01T22:05:24.051Z",
+            "updatedAt": "2026-05-01T22:05:24.051Z"
+        },
+        {
+            "id": "d6bd2945-ca64-46ec-ad0b-6e07cb49d0df",
+            "title": "Section 3 of SEO and SEM Fundamentals",
+            "order": 3,
+            "courseId": "c6b6b6b6-b6b6-b6b6-b6b6-b6b6b6b6b6b6",
+            "createdAt": "2026-05-01T22:05:24.051Z",
+            "updatedAt": "2026-05-01T22:05:24.051Z"
+        },
+        {
+            "id": "ca3fe6cd-8bc6-49dc-85c5-6c9de6a29784",
+            "title": "Section 1 of Fullstack Web Development Bootcamp",
+            "order": 1,
+            "courseId": "c7b7b7b7-b7b7-b7b7-b7b7-b7b7b7b7b7b7",
+            "createdAt": "2026-05-01T22:05:24.051Z",
+            "updatedAt": "2026-05-01T22:05:24.051Z"
+        },
+        {
+            "id": "726bc6ed-4330-4cf4-b35b-c4a5ddcb3f5f",
+            "title": "Section 2 of Fullstack Web Development Bootcamp",
+            "order": 2,
+            "courseId": "c7b7b7b7-b7b7-b7b7-b7b7-b7b7b7b7b7b7",
+            "createdAt": "2026-05-01T22:05:24.051Z",
+            "updatedAt": "2026-05-01T22:05:24.051Z"
+        },
+        {
+            "id": "ba97f69e-49cc-455c-bb25-13907881a05c",
+            "title": "Section 3 of Fullstack Web Development Bootcamp",
+            "order": 3,
+            "courseId": "c7b7b7b7-b7b7-b7b7-b7b7-b7b7b7b7b7b7",
+            "createdAt": "2026-05-01T22:05:24.051Z",
+            "updatedAt": "2026-05-01T22:05:24.051Z"
+        },
+        {
+            "id": "6f83bdf7-c6e0-44b3-963b-1e3c62a8ca32",
+            "title": "Section 4 of Fullstack Web Development Bootcamp",
+            "order": 4,
+            "courseId": "c7b7b7b7-b7b7-b7b7-b7b7-b7b7b7b7b7b7",
+            "createdAt": "2026-05-01T22:05:24.051Z",
+            "updatedAt": "2026-05-01T22:05:24.051Z"
+        },
+        {
+            "id": "e78d70ec-895c-49e5-9fa9-670d0a872b4f",
+            "title": "Section 5 of Fullstack Web Development Bootcamp",
+            "order": 5,
+            "courseId": "c7b7b7b7-b7b7-b7b7-b7b7-b7b7b7b7b7b7",
+            "createdAt": "2026-05-01T22:05:24.051Z",
+            "updatedAt": "2026-05-01T22:05:24.051Z"
+        },
+        {
+            "id": "175f5797-5c77-4af1-b9d9-505d12e55a00",
+            "title": "Section 6 of Fullstack Web Development Bootcamp",
+            "order": 6,
+            "courseId": "c7b7b7b7-b7b7-b7b7-b7b7-b7b7b7b7b7b7",
+            "createdAt": "2026-05-01T22:05:24.052Z",
+            "updatedAt": "2026-05-01T22:05:24.052Z"
+        },
+        {
+            "id": "064b5a1e-1b1b-4e46-ac4a-030571a747fe",
+            "title": "Section 1 of AWS Solutions Architect",
+            "order": 1,
+            "courseId": "1c2d3e4f-5a6b-7c8d-9e0f-1a2b3c4d5e6f",
+            "createdAt": "2026-05-01T22:05:24.052Z",
+            "updatedAt": "2026-05-01T22:05:24.052Z"
+        },
+        {
+            "id": "3b22fdd5-2214-4094-abe3-198e5cba0fea",
+            "title": "Section 2 of AWS Solutions Architect",
+            "order": 2,
+            "courseId": "1c2d3e4f-5a6b-7c8d-9e0f-1a2b3c4d5e6f",
+            "createdAt": "2026-05-01T22:05:24.052Z",
+            "updatedAt": "2026-05-01T22:05:24.052Z"
+        },
+        {
+            "id": "6937cb25-42e6-4eaa-bcb1-428ed2c776a7",
+            "title": "Section 3 of AWS Solutions Architect",
+            "order": 3,
+            "courseId": "1c2d3e4f-5a6b-7c8d-9e0f-1a2b3c4d5e6f",
+            "createdAt": "2026-05-01T22:05:24.052Z",
+            "updatedAt": "2026-05-01T22:05:24.052Z"
+        },
+        {
+            "id": "c7f02339-99b4-46b5-ad94-e7c448bc0817",
+            "title": "Section 1 of Docker & Kubernetes: The Complete Guide",
+            "order": 1,
+            "courseId": "2d3e4f5a-6b7c-8d9e-0f1a-2b3c4d5e6f7a",
+            "createdAt": "2026-05-01T22:05:24.052Z",
+            "updatedAt": "2026-05-01T22:05:24.052Z"
+        },
+        {
+            "id": "546a19e5-a730-47ec-9f3f-452caf652975",
+            "title": "Section 2 of Docker & Kubernetes: The Complete Guide",
+            "order": 2,
+            "courseId": "2d3e4f5a-6b7c-8d9e-0f1a-2b3c4d5e6f7a",
+            "createdAt": "2026-05-01T22:05:24.052Z",
+            "updatedAt": "2026-05-01T22:05:24.052Z"
+        },
+        {
+            "id": "036f6449-3a23-4167-a12e-5f2c5bcc4c90",
+            "title": "Section 3 of Docker & Kubernetes: The Complete Guide",
+            "order": 3,
+            "courseId": "2d3e4f5a-6b7c-8d9e-0f1a-2b3c4d5e6f7a",
+            "createdAt": "2026-05-01T22:05:24.052Z",
+            "updatedAt": "2026-05-01T22:05:24.052Z"
+        },
+        {
+            "id": "9dff5aad-ac6b-4050-9bf3-b650eb37464a",
+            "title": "Section 4 of Docker & Kubernetes: The Complete Guide",
+            "order": 4,
+            "courseId": "2d3e4f5a-6b7c-8d9e-0f1a-2b3c4d5e6f7a",
+            "createdAt": "2026-05-01T22:05:24.052Z",
+            "updatedAt": "2026-05-01T22:05:24.052Z"
+        },
+        {
+            "id": "659deed5-9aec-4f3b-8bf0-3315737920c6",
+            "title": "Section 1 of Advanced JavaScript Concepts",
+            "order": 1,
+            "courseId": "3e4f5a6b-7c8d-9e0f-1a2b-3c4d5e6f7a8b",
+            "createdAt": "2026-05-01T22:05:24.052Z",
+            "updatedAt": "2026-05-01T22:05:24.052Z"
+        },
+        {
+            "id": "90fb0369-f078-44f6-8fb5-b871404f245c",
+            "title": "Section 2 of Advanced JavaScript Concepts",
+            "order": 2,
+            "courseId": "3e4f5a6b-7c8d-9e0f-1a2b-3c4d5e6f7a8b",
+            "createdAt": "2026-05-01T22:05:24.052Z",
+            "updatedAt": "2026-05-01T22:05:24.052Z"
+        },
+        {
+            "id": "f09f94d9-c71b-41bc-befb-baa5c716327f",
+            "title": "Section 3 of Advanced JavaScript Concepts",
+            "order": 3,
+            "courseId": "3e4f5a6b-7c8d-9e0f-1a2b-3c4d5e6f7a8b",
+            "createdAt": "2026-05-01T22:05:24.052Z",
+            "updatedAt": "2026-05-01T22:05:24.052Z"
+        },
+        {
+            "id": "90812b05-4a24-4a04-962e-028f33f057df",
+            "title": "Section 4 of Advanced JavaScript Concepts",
+            "order": 4,
+            "courseId": "3e4f5a6b-7c8d-9e0f-1a2b-3c4d5e6f7a8b",
+            "createdAt": "2026-05-01T22:05:24.052Z",
+            "updatedAt": "2026-05-01T22:05:24.052Z"
+        },
+        {
+            "id": "9d3fed45-b42b-4039-9bea-04373d29d201",
+            "title": "Section 5 of Advanced JavaScript Concepts",
+            "order": 5,
+            "courseId": "3e4f5a6b-7c8d-9e0f-1a2b-3c4d5e6f7a8b",
+            "createdAt": "2026-05-01T22:05:24.052Z",
+            "updatedAt": "2026-05-01T22:05:24.052Z"
+        },
+        {
+            "id": "c7ea1b72-ecc6-4f80-905f-e2880624f663",
+            "title": "Section 6 of Advanced JavaScript Concepts",
+            "order": 6,
+            "courseId": "3e4f5a6b-7c8d-9e0f-1a2b-3c4d5e6f7a8b",
+            "createdAt": "2026-05-01T22:05:24.052Z",
+            "updatedAt": "2026-05-01T22:05:24.052Z"
+        },
+        {
+            "id": "3b14a896-1743-40d8-a6e0-ae8d6a3db303",
+            "title": "Section 1 of Machine Learning with TensorFlow",
+            "order": 1,
+            "courseId": "4f5a6b7c-8d9e-0f1a-2b3c-4d5e6f7a8b9c",
+            "createdAt": "2026-05-01T22:05:24.052Z",
+            "updatedAt": "2026-05-01T22:05:24.052Z"
+        },
+        {
+            "id": "57b4969d-c89d-442e-87dc-9f1ccefa0bb8",
+            "title": "Section 2 of Machine Learning with TensorFlow",
+            "order": 2,
+            "courseId": "4f5a6b7c-8d9e-0f1a-2b3c-4d5e6f7a8b9c",
+            "createdAt": "2026-05-01T22:05:24.052Z",
+            "updatedAt": "2026-05-01T22:05:24.052Z"
+        },
+        {
+            "id": "7068c5f6-d789-4215-8423-596d8e724091",
+            "title": "Section 3 of Machine Learning with TensorFlow",
+            "order": 3,
+            "courseId": "4f5a6b7c-8d9e-0f1a-2b3c-4d5e6f7a8b9c",
+            "createdAt": "2026-05-01T22:05:24.052Z",
+            "updatedAt": "2026-05-01T22:05:24.052Z"
+        },
+        {
+            "id": "d4425a54-3775-4cf7-b208-58fc83fb994e",
+            "title": "Section 4 of Machine Learning with TensorFlow",
+            "order": 4,
+            "courseId": "4f5a6b7c-8d9e-0f1a-2b3c-4d5e6f7a8b9c",
+            "createdAt": "2026-05-01T22:05:24.052Z",
+            "updatedAt": "2026-05-01T22:05:24.052Z"
+        },
+        {
+            "id": "5c405d7f-a30a-4a35-8b4f-d39b407c00cb",
+            "title": "Section 5 of Machine Learning with TensorFlow",
+            "order": 5,
+            "courseId": "4f5a6b7c-8d9e-0f1a-2b3c-4d5e6f7a8b9c",
+            "createdAt": "2026-05-01T22:05:24.052Z",
+            "updatedAt": "2026-05-01T22:05:24.052Z"
+        },
+        {
+            "id": "1e4caecd-f769-4214-927d-5a07b9a0b1e7",
+            "title": "Section 6 of Machine Learning with TensorFlow",
+            "order": 6,
+            "courseId": "4f5a6b7c-8d9e-0f1a-2b3c-4d5e6f7a8b9c",
+            "createdAt": "2026-05-01T22:05:24.052Z",
+            "updatedAt": "2026-05-01T22:05:24.052Z"
+        },
+        {
+            "id": "7b3a3128-1da3-4966-b628-c3010d30b028",
+            "title": "Section 1 of Android Development with Kotlin",
+            "order": 1,
+            "courseId": "5a6b7c8d-9e0f-1a2b-3c4d-5e6f7a8b9c0d",
+            "createdAt": "2026-05-01T22:05:24.052Z",
+            "updatedAt": "2026-05-01T22:05:24.052Z"
+        },
+        {
+            "id": "e787aa1c-c4ee-4e1a-a8cf-fad12ede691d",
+            "title": "Section 2 of Android Development with Kotlin",
+            "order": 2,
+            "courseId": "5a6b7c8d-9e0f-1a2b-3c4d-5e6f7a8b9c0d",
+            "createdAt": "2026-05-01T22:05:24.052Z",
+            "updatedAt": "2026-05-01T22:05:24.052Z"
+        },
+        {
+            "id": "0b5a3853-670a-466e-9f9b-77d3d16d9977",
+            "title": "Section 3 of Android Development with Kotlin",
+            "order": 3,
+            "courseId": "5a6b7c8d-9e0f-1a2b-3c4d-5e6f7a8b9c0d",
+            "createdAt": "2026-05-01T22:05:24.052Z",
+            "updatedAt": "2026-05-01T22:05:24.052Z"
+        },
+        {
+            "id": "d5232a2b-053d-4130-87d0-6be6b7bd0b83",
+            "title": "Section 4 of Android Development with Kotlin",
+            "order": 4,
+            "courseId": "5a6b7c8d-9e0f-1a2b-3c4d-5e6f7a8b9c0d",
+            "createdAt": "2026-05-01T22:05:24.052Z",
+            "updatedAt": "2026-05-01T22:05:24.052Z"
+        }
+    ]
+}

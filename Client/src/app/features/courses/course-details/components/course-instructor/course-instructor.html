@@ -1,0 +1,57 @@
+<section class="mt-5 pt-5 border-top">
+  <h3 class="fw-bold mb-4">Instructor</h3>
+  <div class="instructor-profile">
+    <h4 class="fw-bold text-decoration-underline mb-1 cursor-pointer" style="color: var(--primary-color);">
+      {{ course?.instructorName || 'Prof. Sarah Jenkins' }}
+    </h4>
+    <p class="mb-4" style="color: var(--text-muted);">{{ course?.instructorTitle || 'Expert Web Developer & Educator' }}</p>
+    
+    <div class="row align-items-center mb-4">
+      <div class="col-auto">
+        <img [src]="course?.instructorProfilePicture || 'assets/images/instructor-placeholder.png'" 
+             class="rounded-circle shadow-sm" 
+             style="width: 120px; height: 120px; object-fit: cover;">
+      </div>
+      <div class="col">
+        <ul class="list-unstyled mb-0 d-flex flex-column gap-2">
+          <li class="d-flex align-items-center gap-2">
+            <i class="fas fa-star text-warning"></i>
+            <span class="fw-bold" style="color: var(--text-color);">4.8</span>
+            <span class="small" style="color: var(--text-muted);">Instructor Rating</span>
+          </li>
+          <li class="d-flex align-items-center gap-2">
+            <i class="fas fa-certificate" style="color: var(--text-muted);"></i>
+            <span class="fw-bold" style="color: var(--text-color);">{{ course?.totalReviews || 12450 | number }}</span>
+            <span class="small" style="color: var(--text-muted);">Reviews</span>
+          </li>
+          <li class="d-flex align-items-center gap-2">
+            <i class="fas fa-users" style="color: var(--text-muted);"></i>
+            <span class="fw-bold" style="color: var(--text-color);">{{ course?.studentCount || 85000 | number }}</span>
+            <span class="small" style="color: var(--text-muted);">Students</span>
+          </li>
+          <li class="d-flex align-items-center gap-2">
+            <i class="fas fa-play-circle" style="color: var(--text-muted);"></i>
+            <span class="fw-bold" style="color: var(--text-color);">12</span>
+            <span class="small" style="color: var(--text-muted);">Courses</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+    
+    <div class="instructor-bio">
+      <p [class.collapsed]="!isExpanded">
+        {{ course?.instructorBio || 'Sarah Jenkins is a professional full-stack developer with over 10 years of experience in the industry. She has worked with Fortune 500 companies and startups alike, helping them build scalable and robust web applications using modern technologies like React, Node.js, and Cloud Infrastructure.' }}
+      </p>
+      <button class="btn btn-link fw-bold p-0 text-decoration-none" style="color: var(--primary-color);" (click)="isExpanded = !isExpanded">
+        {{ isExpanded ? 'Show less' : 'Show more' }}
+        <i class="fas" [ngClass]="isExpanded ? 'fa-chevron-up' : 'fa-chevron-down'" class="ms-1 small"></i>
+      </button>
+    </div>
+
+    <div class="d-flex gap-3 mt-4">
+      <button class="btn rounded-circle social-btn"><i class="fab fa-linkedin-in"></i></button>
+      <button class="btn rounded-circle social-btn"><i class="fab fa-twitter"></i></button>
+      <button class="btn rounded-circle social-btn"><i class="fas fa-globe"></i></button>
+    </div>
+  </div>
+</section>

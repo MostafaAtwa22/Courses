@@ -1,0 +1,71 @@
+.avatar { 
+  font-size: 1.1rem; 
+  transition: var(--transition);
+}
+
+.review-input {
+  background-color: var(--surface);
+  color: var(--text-color);
+  border-color: transparent !important;
+  
+  &::placeholder {
+    color: var(--text-muted);
+  }
+  
+  &:focus {
+    background-color: var(--surface);
+    color: var(--text-color);
+    box-shadow: none;
+  }
+}
+
+.review-card {
+  background-color: var(--surface);
+  border: 1px solid var(--border-color);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 .5rem 1rem rgba(0,0,0,.08) !important;
+  }
+}
+
+.btn-icon {
+  color: var(--text-muted);
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  
+  &:hover {
+    background-color: var(--surface-variant);
+    color: var(--text-color);
+  }
+}
+
+.btn-action {
+  color: var(--text-muted);
+  transition: var(--transition);
+  
+  &:hover {
+    color: var(--primary-color);
+  }
+}
+
+.see-all-btn {
+  border: 1px solid var(--primary-color);
+  color: var(--primary-color);
+  background-color: transparent;
+  
+  &:hover {
+    background-color: var(--primary-color);
+    color: white;
+  }
+}
+
+:host .card {
+  background-color: var(--surface);
+  border-color: var(--border-color) !important;
+}

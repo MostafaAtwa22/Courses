@@ -1,5 +1,3 @@
-using Domain.Enums;
-
 namespace Domain.Entities.Identity
 {
     public class Instructor : BaseEntity

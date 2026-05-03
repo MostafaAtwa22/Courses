@@ -5,6 +5,34 @@ export enum CourseStatus {
     Done = 1
 }
 
+export enum ContentType {
+    Video = 0,
+    Document = 1,
+    Quiz = 2,
+    Other = 3
+}
+
+export interface ContentResponse extends BaseResponseModel {
+    title: string;
+    type: ContentType;
+    contentUrl: string;
+    order: number;
+    isPreview: boolean;
+}
+
+export interface SectionResponse extends BaseResponseModel {
+    title: string;
+    order: number;
+    contents: ContentResponse[];
+}
+
+export interface ReviewResponse extends BaseResponseModel {
+    headline: string;
+    comment: string;
+    rating: number;
+    studentName: string;
+    studentProfilePicture: string;
+}
 
 export interface CourseResponse extends BaseResponseModel {
     title: string;
@@ -19,6 +47,12 @@ export interface CourseResponse extends BaseResponseModel {
     instructorName: string;
     instructorProfilePicture: string;
     instructorTitle: string;
+    instructorBio?: string;
+    sections?: SectionResponse[];
+    reviews?: ReviewResponse[];
+    lastUpdated?: Date;
+    language?: string;
+    level?: string;
 }
 
 export interface CourseRequest {

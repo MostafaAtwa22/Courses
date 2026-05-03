@@ -1,0 +1,36 @@
+.course-details-page {
+  min-height: 100vh;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.description-content {
+  line-height: 1.7;
+  color: var(--text-color);
+}
+
+.rounded-4 {
+  border-radius: 1rem !important;
+}
+
+/* "What you'll learn" card */
+.learn-card {
+  background-color: var(--surface-variant);
+  border: 1px solid var(--border-color);
+  color: var(--text-color);
+}
+
+/* Requirements & Description sections */
+section h4 {
+  color: var(--text-color);
+}
+
+section ul li {
+  color: var(--text-color);
+}
+
+/* Border overrides for dark mode */
+.border-top {
+  border-color: var(--border-color) !important;
+}

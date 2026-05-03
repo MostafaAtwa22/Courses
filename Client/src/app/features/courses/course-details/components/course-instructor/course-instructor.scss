@@ -1,0 +1,31 @@
+.instructor-bio p {
+  line-height: 1.6;
+  margin-bottom: 0.5rem;
+  color: var(--text-color);
+  &.collapsed {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+}
+
+.social-btn {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border-color);
+  color: var(--text-color);
+  background-color: transparent;
+  &:hover {
+    background-color: var(--surface-variant);
+  }
+}
+
+.cursor-pointer { cursor: pointer; }
+
+:host {
+  h3, h4 { color: var(--text-color); }
+}

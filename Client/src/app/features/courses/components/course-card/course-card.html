@@ -17,9 +17,14 @@
       <div class="price-container">
         <span class="price">${{ course.cost }}</span>
       </div>
-      <button class="btn-enroll">
-        <i class="fa-solid fa-cart-plus"></i>
-      </button>
+      <div class="d-flex gap-2">
+        <button class="btn-enroll" [routerLink]="['/courses', course.id]">
+          <i class="fa-solid fa-eye"></i>
+        </button>
+        <button class="btn-enroll">
+          <i class="fa-solid fa-cart-plus"></i>
+        </button>
+      </div>
     </div>
   </div>
 </div>

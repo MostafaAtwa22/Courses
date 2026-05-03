@@ -29,6 +29,10 @@ export const routes: Routes = [
         loadComponent: () => import('./features/courses/courses-list').then(m => m.CoursesListComponent)
     },
     {
+        path: 'courses/:id',
+        loadComponent: () => import('./features/courses/course-details/course-details').then(m => m.CourseDetailsComponent)
+    },
+    {
         path: '**',
         redirectTo: ''
     }

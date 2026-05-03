@@ -1,0 +1,50 @@
+<section class="mt-5">
+  <h3 class="fw-bold mb-4">Course Content</h3>
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <span style="color: var(--text-muted);" class="small">
+      {{ sections?.length || 0 }} sections • 
+      {{ getTotalLectures() }} lectures • 
+      45h 12m total length
+    </span>
+    <button class="btn btn-link fw-bold text-decoration-none p-0" style="color: var(--primary-color);" (click)="expandAll = !expandAll">
+      {{ expandAll ? 'Collapse all sections' : 'Expand all sections' }}
+    </button>
+  </div>
+
+  <div class="accordion" id="courseContentAccordion">
+    <div class="accordion-item mb-2 rounded shadow-sm overflow-hidden" *ngFor="let section of sections; let i = index">
+      <h2 class="accordion-header">
+        <button class="accordion-button fw-bold" 
+                [class.collapsed]="!expandAll && i !== 0"
+                type="button" 
+                [attr.data-bs-toggle]="'collapse'" 
+                [attr.data-bs-target]="'#section-' + i">
+          <div class="d-flex justify-content-between w-100 me-3">
+            <span>{{ section.title }}</span>
+            <span class="small fw-normal" style="color: var(--text-muted);">{{ section.contents.length }} lectures • 45m</span>
+          </div>
+        </button>
+      </h2>
+      <div [id]="'section-' + i" 
+           class="accordion-collapse collapse" 
+           [class.show]="expandAll || i === 0">
+        <div class="accordion-body p-0">
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item d-flex align-items-center justify-content-between py-3 px-4" *ngFor="let content of section.contents">
+              <div class="d-flex align-items-center gap-3">
+                <i class="fas" [ngClass]="getContentIcon(content.type)" style="opacity: 0.5;"></i>
+                <span [style.color]="content.isPreview ? 'var(--primary-color)' : 'var(--text-color)'" [class.text-decoration-underline]="content.isPreview">
+                  {{ content.title }}
+                </span>
+              </div>
+              <div class="d-flex align-items-center gap-3">
+                <span class="badge px-2 py-1" style="background-color: var(--primary-light); color: var(--primary-color); border: 1px solid var(--primary-color);" *ngIf="content.isPreview">Preview</span>
+                <span class="small" style="color: var(--text-muted);">08:45</span>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

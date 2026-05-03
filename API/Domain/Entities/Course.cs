@@ -1,6 +1,3 @@
-using Domain.Enums;
-using Domain.Entities.Identity;
-
 namespace Domain.Entities
 {
     public class Course : BaseEntity
@@ -22,5 +19,6 @@ namespace Domain.Entities
 
         public ICollection<Review> Reviews { get; set; } = [];
         public ICollection<Enrollment> Enrollments { get; set; } = [];
+        public ICollection<Section> Sections { get; set; } = [];
     }
 }
