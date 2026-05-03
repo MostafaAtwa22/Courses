@@ -16,32 +16,20 @@ namespace Infrastructure.Repositories
                CASE WHEN c.content_url IS NOT NULL 
                     THEN CONCAT('{urlsOptions.Value.API}/', c.content_url) 
                     ELSE NULL END AS content_url,
-               c.order, c.is_preview, c.section_id, c.created_at, c.updated_at";
+               c.""order"", c.is_preview, c.section_id, c.created_at, c.updated_at";
 
         private const string FromClause =
             @"FROM contents c
               JOIN sections s ON c.section_id = s.id";
 
-        public Task<PaginatedResult<ContentResponseDto>> GetBySectionAsync(Guid sectionId, QueryParams queryParams, CancellationToken ct = default)
+        public async Task<IReadOnlyList<ContentResponseDto>> GetBySectionAsync(Guid sectionId, CancellationToken ct = default)
         {
-            return ExecutePaginatedQueryAsync<ContentResponseDto>(
-                queryParams,
-                countSql: $"SELECT COUNT(1) {FromClause} WHERE c.section_id = @SectionId",
-                selectSql: $"SELECT {SelectColumns} {FromClause} WHERE c.section_id = @SectionId",
-                allowedSortColumns: new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
-                {
-                    { "title", "c.title" },
-                    { "order", "c.\"order\"" },
-                    { "created_at", "c.created_at" }
-                },
-                defaultSortColumn: "c.\"order\"",
-                searchCondition: "c.title ILIKE @SearchTerm",
-                extraConditions: null,
-                configureParameters: parameters =>
-                {
-                    parameters.Add("SectionId", sectionId);
-                },
-                ct);
+            using var connection = await CreateConnectionAsync(ct);
+            var sql = $@"SELECT {SelectColumns} {FromClause} 
+                         WHERE c.section_id = @SectionId 
+                         ORDER BY c.""order"" ASC";
+            
+            return (await connection.QueryAsync<ContentResponseDto>(sql, new { SectionId = sectionId })).AsList();
         }
 
         public Task<PaginatedResult<ContentResponseDto>> GetByCourseAsync(Guid courseId, QueryParams queryParams, CancellationToken ct = default)

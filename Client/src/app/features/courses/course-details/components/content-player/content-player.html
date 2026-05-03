@@ -1,0 +1,120 @@
+<div class="udemy-player" [class.dark-mode]="true">
+  <!-- Top Navbar -->
+  <header class="player-navbar d-flex align-items-center justify-content-between px-4">
+    <div class="d-flex align-items-center gap-3">
+      <button class="btn btn-link text-white p-0" (click)="close()">
+        <i class="fas fa-arrow-left"></i>
+      </button>
+      <span class="course-title fw-bold text-truncate">{{ course?.title }}</span>
+    </div>
+    <div class="d-flex align-items-center gap-4">
+      <div class="progress-container d-none d-md-flex align-items-center gap-2">
+        <div class="progress" style="width: 100px; height: 6px; background: #3e4143;">
+            <div class="progress-bar bg-success" [style.width.%]="45"></div>
+        </div>
+        <span class="small fw-bold">45% complete</span>
+      </div>
+      <button class="btn btn-outline-light btn-sm fw-bold px-3">Share</button>
+      <button class="btn-close btn-close-white ms-2" (click)="close()"></button>
+    </div>
+  </header>
+
+  <div class="player-content">
+    <!-- Main Player Area -->
+    <main class="main-area">
+      <div class="player-wrapper">
+        <div *ngIf="loading" class="loading-overlay">
+          <div class="spinner-border text-light" role="status"></div>
+          <span class="mt-2">Loading lecture...</span>
+        </div>
+
+        <div *ngIf="error" class="error-overlay alert alert-danger m-3">
+          {{ error }}
+        </div>
+
+        <ng-container *ngIf="!loading && !error && content">
+          <!-- Video Player -->
+          <div *ngIf="content.type === 0" class="video-container">
+            <video #videoPlayer
+              controls 
+              autoplay 
+              class="w-100 h-100" 
+              [src]="content.contentUrl">
+              Your browser does not support the video tag.
+            </video>
+          </div>
+
+          <!-- File View -->
+          <div *ngIf="content.type === 1 || content.type === 3" class="file-container d-flex flex-column align-items-center justify-content-center h-100 p-5 text-center">
+            <i class="fas fa-file-pdf fa-5x mb-4" style="color: #ec5252;"></i>
+            <h3 class="fw-bold">{{ content.title }}</h3>
+            <p class="text-muted mb-4">This lecture includes a downloadable resource.</p>
+            <div class="d-flex gap-3">
+              <button class="btn btn-primary btn-lg px-5 py-2 fw-bold" (click)="openFile()">
+                View File
+              </button>
+              <a [href]="content.contentUrl" [download]="content.title" class="btn btn-outline-light btn-lg px-4 py-2 fw-bold">
+                Download
+              </a>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+
+      <!-- Footer Navigation -->
+      <footer class="player-footer d-flex align-items-center justify-content-between px-4">
+        <div class="d-flex align-items-center gap-3">
+          <button class="nav-btn" [disabled]="!previousContent" (click)="goToPrevious()">
+            <i class="fas fa-chevron-left"></i>
+          </button>
+          <button class="nav-btn" [disabled]="!nextContent" (click)="goToNext()">
+            <i class="fas fa-chevron-right"></i>
+          </button>
+          <span class="lecture-info fw-bold d-none d-sm-block">{{ content?.title }}</span>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+            <button class="btn btn-sm btn-dark fw-bold border border-secondary" (click)="goToNext()" [disabled]="!nextContent">
+                Next Lecture <i class="fas fa-arrow-right ms-1"></i>
+            </button>
+        </div>
+      </footer>
+    </main>
+
+    <!-- Curriculum Sidebar -->
+    <aside class="curriculum-sidebar">
+      <div class="sidebar-header p-3 border-bottom border-secondary">
+        <h6 class="fw-bold mb-0">Course Content</h6>
+      </div>
+      <div class="sections-list">
+        <div class="section-group" *ngFor="let section of sections">
+          <div class="section-title p-3 d-flex justify-content-between align-items-center" 
+               (click)="toggleSection(section.id)">
+            <div class="d-flex flex-column">
+              <span class="fw-bold small">Section {{ section.order }}: {{ section.title }}</span>
+              <span class="xs-text opacity-75">0 / {{ section.contentsCount }} | 15min</span>
+            </div>
+            <i class="fas" [ngClass]="isSectionExpanded(section.id) ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+          </div>
+          
+          <div class="contents-list" *ngIf="isSectionExpanded(section.id)">
+            <div class="content-item p-2 d-flex align-items-start gap-3" 
+                 *ngFor="let c of section.contents"
+                 [class.active]="c.id === content?.id"
+                 (click)="selectContent(c)">
+              <div class="checkbox-container mt-1">
+                <div class="custom-checkbox" [class.checked]="false"></div>
+              </div>
+              <div class="d-flex flex-column flex-grow-1">
+                <span class="content-title small fw-bold">{{ c.order }}. {{ c.title }}</span>
+                <div class="d-flex align-items-center gap-2 mt-1">
+                  <i class="fas" [ngClass]="getContentIcon(c.type)" style="font-size: 12px;"></i>
+                  <span class="xs-text opacity-75">10:00</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </aside>
+  </div>
+</div>

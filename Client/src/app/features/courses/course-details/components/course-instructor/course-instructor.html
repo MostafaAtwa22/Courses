@@ -8,7 +8,7 @@
     
     <div class="row align-items-center mb-4">
       <div class="col-auto">
-        <img [src]="course?.instructorProfilePicture || 'assets/images/instructor-placeholder.png'" 
+        <img [src]="course?.instructorProfilePicture || 'https://ui-avatars.com/api/?name=' + (course?.instructorName || 'Instructor') + '&background=random'" 
              class="rounded-circle shadow-sm" 
              style="width: 120px; height: 120px; object-fit: cover;">
       </div>

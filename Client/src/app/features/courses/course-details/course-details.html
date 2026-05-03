@@ -29,11 +29,20 @@
           <div class="description-content" [innerHTML]="course?.description || defaultDescription"></div>
         </section>
         
-        <app-course-content [sections]="course?.sections || dummySections"></app-course-content>
+        <app-course-content 
+          [sections]="sections" 
+          [totalSections]="totalSections"
+          [loading]="sectionsLoading"
+          [hasMore]="hasMoreSections"
+          [loadingContentSectionIds]="loadingContentSectionIds"
+          (loadMore)="loadMoreSections()"
+          (sectionOpened)="loadSectionContents($event)"
+          (contentSelected)="handleContentSelected($event)">
+        </app-course-content>
         
         <app-course-instructor [course]="course"></app-course-instructor>
         
-        <app-course-reviews [reviews]="course?.reviews || dummyReviews"></app-course-reviews>
+        <app-course-reviews [reviews]="reviews" [course]="course"></app-course-reviews>
       </div>
 
       <!-- Sticky Sidebar Area (Desktop only) -->
@@ -46,4 +55,7 @@
   </div>
 </div>
 
+
 <app-footer></app-footer>
+
+<router-outlet></router-outlet>

@@ -19,24 +19,17 @@ namespace Application.Tests.Contents.Queries
         }
 
         [Fact]
-        public async Task Handle_ShouldReturnPaginatedContent()
+        public async Task Handle_ShouldReturnContentList()
         {
             var sectionId = Guid.NewGuid();
-            var queryParams = new QueryParams();
-            var expected = new PaginatedResult<ContentResponseDto>
-            {
-                Items = new List<ContentResponseDto>(),
-                TotalCount = 0,
-                PageNumber = 1,
-                PageSize = 10
-            };
+            var expected = new List<ContentResponseDto>();
             
-            _repoMock.Setup(x => x.GetBySectionAsync(sectionId, queryParams, It.IsAny<CancellationToken>()))
+            _repoMock.Setup(x => x.GetBySectionAsync(sectionId, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(expected);
 
-            var result = await _handler.Handle(new GetContentBySectionQuery(sectionId, queryParams), CancellationToken.None);
+            var result = await _handler.Handle(new GetContentBySectionQuery(sectionId), CancellationToken.None);
 
-            result.Should().Be(expected);
+            result.Should().BeEquivalentTo(expected);
         }
     }
 }

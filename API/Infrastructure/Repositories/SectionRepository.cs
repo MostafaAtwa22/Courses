@@ -19,7 +19,9 @@ namespace Infrastructure.Repositories
             return await ExecutePaginatedQueryAsync<SectionResponseDto>(
                 queryParams,
                 countSql: "SELECT COUNT(1) FROM sections",
-                selectSql: "SELECT id, title, \"order\", created_at, updated_at FROM sections",
+                selectSql: @"SELECT id, title, ""order"", created_at, updated_at, 
+                            (SELECT COUNT(1) FROM contents WHERE section_id = sections.id) AS contents_count 
+                            FROM sections",
                 allowedSortColumns: AllowedSortColumns,
                 defaultSortColumn: "\"order\"",
                 searchCondition: "title ILIKE @SearchTerm",
@@ -34,7 +36,9 @@ namespace Infrastructure.Repositories
             return await ExecutePaginatedQueryAsync<SectionResponseDto>(
                 queryParams,
                 countSql: "SELECT COUNT(1) FROM sections",
-                selectSql: "SELECT id, title, \"order\", created_at, updated_at FROM sections",
+                selectSql: @"SELECT id, title, ""order"", created_at, updated_at, 
+                            (SELECT COUNT(1) FROM contents WHERE section_id = sections.id) AS contents_count 
+                            FROM sections",
                 allowedSortColumns: AllowedSortColumns,
                 defaultSortColumn: "\"order\"",
                 searchCondition: "title ILIKE @SearchTerm",
@@ -47,7 +51,8 @@ namespace Infrastructure.Repositories
         public async Task<SectionResponseDto?> GetByIdAsync(Guid id, CancellationToken ct = default)
         {
             using var connection = await CreateConnectionAsync(ct);
-            var sql = @"SELECT id, title, ""order"", created_at, updated_at 
+            var sql = @"SELECT id, title, ""order"", created_at, updated_at,
+                               (SELECT COUNT(1) FROM contents WHERE section_id = sections.id) AS contents_count 
                         FROM sections 
                         WHERE id = @Id";
             return await connection.QueryFirstOrDefaultAsync<SectionResponseDto>(sql, new { Id = id });

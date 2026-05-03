@@ -2,11 +2,10 @@
   <h3 class="fw-bold mb-4">Course Content</h3>
   <div class="d-flex justify-content-between align-items-center mb-3">
     <span style="color: var(--text-muted);" class="small">
-      {{ sections?.length || 0 }} sections • 
-      {{ getTotalLectures() }} lectures • 
-      45h 12m total length
+      {{ totalSections }} sections • 
+      {{ getTotalLectures() }} lectures
     </span>
-    <button class="btn btn-link fw-bold text-decoration-none p-0" style="color: var(--primary-color);" (click)="expandAll = !expandAll">
+    <button class="btn btn-link fw-bold text-decoration-none p-0" style="color: var(--primary-color);" (click)="toggleExpandAll()">
       {{ expandAll ? 'Collapse all sections' : 'Expand all sections' }}
     </button>
   </div>
@@ -15,36 +14,60 @@
     <div class="accordion-item mb-2 rounded shadow-sm overflow-hidden" *ngFor="let section of sections; let i = index">
       <h2 class="accordion-header">
         <button class="accordion-button fw-bold" 
-                [class.collapsed]="!expandAll && i !== 0"
+                [class.collapsed]="!isSectionExpanded(section.id)"
                 type="button" 
-                [attr.data-bs-toggle]="'collapse'" 
-                [attr.data-bs-target]="'#section-' + i">
+                (click)="toggleSection(section)">
           <div class="d-flex justify-content-between w-100 me-3">
             <span>{{ section.title }}</span>
-            <span class="small fw-normal" style="color: var(--text-muted);">{{ section.contents.length }} lectures • 45m</span>
+            <span class="small fw-normal" style="color: var(--text-muted);">{{ section.contentsCount || 0 }} lectures</span>
           </div>
         </button>
       </h2>
-      <div [id]="'section-' + i" 
-           class="accordion-collapse collapse" 
-           [class.show]="expandAll || i === 0">
-        <div class="accordion-body p-0">
-          <ul class="list-group list-group-flush">
-            <li class="list-group-item d-flex align-items-center justify-content-between py-3 px-4" *ngFor="let content of section.contents">
-              <div class="d-flex align-items-center gap-3">
-                <i class="fas" [ngClass]="getContentIcon(content.type)" style="opacity: 0.5;"></i>
-                <span [style.color]="content.isPreview ? 'var(--primary-color)' : 'var(--text-color)'" [class.text-decoration-underline]="content.isPreview">
-                  {{ content.title }}
-                </span>
-              </div>
-              <div class="d-flex align-items-center gap-3">
-                <span class="badge px-2 py-1" style="background-color: var(--primary-light); color: var(--primary-color); border: 1px solid var(--primary-color);" *ngIf="content.isPreview">Preview</span>
-                <span class="small" style="color: var(--text-muted);">08:45</span>
-              </div>
-            </li>
-          </ul>
+      <div *ngIf="isSectionExpanded(section.id)" class="accordion-body p-0">
+        <!-- Loading spinner for content -->
+        <div class="text-center py-4" *ngIf="isSectionLoading(section.id)">
+          <i class="fas fa-spinner fa-spin me-2" style="color: var(--primary-color);"></i>
+          <span class="small" style="color: var(--text-muted);">Loading content...</span>
+        </div>
+
+        <!-- Content list -->
+        <ul class="list-group list-group-flush" *ngIf="!isSectionLoading(section.id) && section.contents && section.contents.length > 0">
+          <li class="list-group-item d-flex align-items-center justify-content-between py-3 px-4" 
+              style="cursor: pointer;"
+              *ngFor="let content of section.contents"
+              (click)="onContentClick(content)">
+            <div class="d-flex align-items-center gap-3">
+              <i class="fas" [ngClass]="getContentIcon(content.type)" style="opacity: 0.5;"></i>
+              <span [style.color]="content.isPreview ? 'var(--primary-color)' : 'var(--text-color)'" [class.text-decoration-underline]="content.isPreview">
+                {{ content.title }}
+              </span>
+            </div>
+            <div class="d-flex align-items-center gap-3">
+              <span class="badge px-2 py-1" style="background-color: var(--primary-light); color: var(--primary-color); border: 1px solid var(--primary-color);" *ngIf="content.isPreview">Preview</span>
+            </div>
+          </li>
+        </ul>
+
+        <!-- Empty state -->
+        <div class="text-center py-3" style="color: var(--text-muted);" *ngIf="!isSectionLoading(section.id) && (!section.contents || section.contents.length === 0)">
+          <span class="small">No content available for this section</span>
         </div>
       </div>
     </div>
+  </div>
+
+  <!-- Load More Button -->
+  <div class="text-center mt-4" *ngIf="hasMore || loading">
+    <button 
+      class="load-more-btn" 
+      (click)="onLoadMore()" 
+      [disabled]="loading">
+      <span *ngIf="loading">
+        <i class="fas fa-spinner fa-spin me-2"></i> Loading...
+      </span>
+      <span *ngIf="!loading">
+        <i class="fas fa-chevron-down me-2"></i> Load More Sections ({{ sections.length }} of {{ totalSections }})
+      </span>
+    </button>
   </div>
 </section>

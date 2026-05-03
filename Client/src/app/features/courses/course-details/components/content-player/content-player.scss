@@ -1,0 +1,173 @@
+.udemy-player {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: #1c1d1f;
+  color: white;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.player-navbar {
+  height: 56px;
+  background: #1c1d1f;
+  border-bottom: 1px solid #3e4143;
+  flex-shrink: 0;
+}
+
+.course-title {
+  max-width: 300px;
+  font-size: 0.9rem;
+}
+
+.player-content {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+}
+
+.main-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: black;
+  overflow: hidden;
+}
+
+.player-wrapper {
+  flex: 1;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.video-container {
+  width: 100%;
+  height: 100%;
+  max-height: calc(100vh - 112px);
+  background: black;
+
+  video {
+    max-height: 100%;
+    outline: none;
+  }
+}
+
+.player-footer {
+  height: 56px;
+  background: #1c1d1f;
+  border-top: 1px solid #3e4143;
+  flex-shrink: 0;
+}
+
+.nav-btn {
+  background: transparent;
+  border: 1px solid #3e4143;
+  color: white;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: all 0.2s;
+
+  &:hover:not(:disabled) {
+    background: #3e4143;
+  }
+
+  &:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+  }
+}
+
+.curriculum-sidebar {
+  width: 350px;
+  background: #1c1d1f;
+  border-left: 1px solid #3e4143;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+
+  @media (max-width: 992px) {
+    display: none; // Hide on tablets/mobile for now
+  }
+}
+
+.sections-list {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.section-group {
+  border-bottom: 1px solid #3e4143;
+}
+
+.section-title {
+  background: #2d2f31;
+  cursor: pointer;
+  transition: background 0.2s;
+
+  &:hover {
+    background: #3e4143;
+  }
+}
+
+.content-item {
+  cursor: pointer;
+  transition: background 0.2s;
+  border-bottom: 1px solid transparent;
+
+  &:hover {
+    background: #2d2f31;
+  }
+
+  &.active {
+    background: #3e4143;
+  }
+}
+
+.xs-text {
+  font-size: 11px;
+}
+
+.custom-checkbox {
+  width: 16px;
+  height: 16px;
+  border: 1px solid #3e4143;
+  background: transparent;
+  
+  &.checked {
+    background: #2d2f31;
+    border-color: #2eb85c;
+  }
+}
+
+.loading-overlay, .error-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.7);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+// Progress Bar
+.progress {
+    border-radius: 0;
+}
+
+.progress-bar {
+    background-color: #2eb85c !important;
+}

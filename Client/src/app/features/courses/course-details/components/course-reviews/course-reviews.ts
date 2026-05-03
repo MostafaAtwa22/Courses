@@ -1,6 +1,6 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReviewResponse } from '../../../models/course.models';
+import { ReviewResponse, CourseResponse } from '../../../models/course.models';
 
 @Component({
   selector: 'app-course-reviews',
@@ -9,11 +9,63 @@ import { ReviewResponse } from '../../../models/course.models';
   templateUrl: './course-reviews.html',
   styleUrl: './course-reviews.scss'
 })
-export class CourseReviewsComponent {
-  @Input() reviews?: ReviewResponse[];
+export class CourseReviewsComponent implements OnChanges {
+  @Input() reviews: ReviewResponse[] = [];
+  @Input() course?: CourseResponse;
+
+  ratingDistribution: { star: number, percentage: number }[] = [
+    { star: 5, percentage: 0 },
+    { star: 4, percentage: 0 },
+    { star: 3, percentage: 0 },
+    { star: 2, percentage: 0 },
+    { star: 1, percentage: 0 }
+  ];
+
+  averageRating = 0;
+  totalCount = 0;
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['reviews'] && this.reviews) {
+      this.calculateFeedback();
+    }
+  }
+
+  calculateFeedback(): void {
+    if (!this.reviews || this.reviews.length === 0) {
+      this.totalCount = 0;
+      this.averageRating = this.course?.averageRate || 0;
+      this.ratingDistribution.forEach(d => d.percentage = 0);
+      return;
+    }
+
+    this.totalCount = this.reviews.length;
+    const sum = this.reviews.reduce((acc, r) => acc + r.rating, 0);
+    this.averageRating = sum / this.totalCount;
+
+    // Calculate distribution
+    const counts = [0, 0, 0, 0, 0]; // 1 to 5 stars
+    this.reviews.forEach(r => {
+      if (r.rating >= 1 && r.rating <= 5) {
+        counts[r.rating - 1]++;
+      }
+    });
+
+    this.ratingDistribution = [5, 4, 3, 2, 1].map(star => ({
+      star: star,
+      percentage: (counts[star - 1] / this.totalCount) * 100
+    }));
+  }
 
   getInitials(name: string): string {
     if (!name) return 'U';
     return name.split(' ').map(n => n[0]).join('').toUpperCase();
+  }
+
+  getStars(rating: number): number[] {
+    return Array(Math.floor(rating)).fill(0);
+  }
+
+  hasHalfStar(rating: number): boolean {
+    return rating % 1 >= 0.5;
   }
 }

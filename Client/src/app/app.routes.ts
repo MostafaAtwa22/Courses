@@ -30,7 +30,13 @@ export const routes: Routes = [
     },
     {
         path: 'courses/:id',
-        loadComponent: () => import('./features/courses/course-details/course-details').then(m => m.CourseDetailsComponent)
+        loadComponent: () => import('./features/courses/course-details/course-details').then(m => m.CourseDetailsComponent),
+        children: [
+            {
+                path: 'content/:contentId',
+                loadComponent: () => import('./features/courses/course-details/components/content-player/content-player').then(m => m.ContentPlayerComponent)
+            }
+        ]
     },
     {
         path: '**',

@@ -93,8 +93,8 @@ namespace API.Tests.Endpoints
             // 3. Get By Section
             var getListResponse = await _client.GetAsync($"/contents/section/{sectionId}");
             getListResponse.StatusCode.Should().Be(HttpStatusCode.OK);
-            var listResult = await getListResponse.Content.ReadFromJsonAsync<PaginatedResult<ContentResponseDto>>();
-            listResult!.Items.Should().Contain(x => x.Id == id);
+            var listResult = await getListResponse.Content.ReadFromJsonAsync<List<ContentResponseDto>>();
+            listResult.Should().Contain(x => x.Id == id);
 
             // 3.1 Get By Course
             var getCourseListResponse = await _client.GetAsync($"/contents/course/{courseId}");

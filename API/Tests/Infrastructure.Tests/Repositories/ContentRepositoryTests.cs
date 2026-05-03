@@ -104,7 +104,7 @@ namespace Infrastructure.Tests.Repositories
             _connectionMock.Setup(c => c.State).Returns(ConnectionState.Open);
             _connectionMock.Setup(c => c.CreateCommand()).Throws(expectedException);
 
-            var act = async () => await _repository.GetBySectionAsync(sectionId, new QueryParams());
+            var act = async () => await _repository.GetBySectionAsync(sectionId);
 
             var ex = await act.Should().ThrowAsync<Exception>();
             ex.WithMessage("DB Hit");

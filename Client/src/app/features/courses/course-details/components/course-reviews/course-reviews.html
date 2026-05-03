@@ -1,39 +1,35 @@
 <section class="mt-5 pt-5 border-top">
   <h3 class="fw-bold mb-4" style="color: var(--text-color);">Student Feedback</h3>
   
-  <div class="row align-items-center mb-5">
+  <div class="row align-items-center mb-5" *ngIf="reviews.length > 0">
     <div class="col-md-3 text-center mb-4 mb-md-0">
-      <h1 class="display-3 fw-bold text-warning mb-0">4.8</h1>
+      <h1 class="display-3 fw-bold text-warning mb-0">{{ averageRating | number:'1.1-1' }}</h1>
       <div class="stars mb-1">
-        <i class="fas fa-star text-warning" *ngFor="let i of [1,2,3,4]"></i>
-        <i class="fas fa-star-half-alt text-warning"></i>
+        <i class="fas fa-star text-warning" *ngFor="let i of getStars(averageRating)"></i>
+        <i class="fas fa-star-half-alt text-warning" *ngIf="hasHalfStar(averageRating)"></i>
+        <i class="far fa-star text-warning" *ngFor="let i of [].constructor(5 - getStars(averageRating).length - (hasHalfStar(averageRating) ? 1 : 0))"></i>
       </div>
       <p class="fw-bold text-warning mb-0">Course Rating</p>
     </div>
     <div class="col-md-9">
       <div class="rating-bars d-flex flex-column gap-2">
-        <div class="d-flex align-items-center gap-3" *ngFor="let star of [5,4,3,2,1]; let i = index">
-          <div class="progress flex-grow-1" style="height: 8px; background-color: var(--surface-variant);">
-            <div class="progress-bar" [style.width]="(100 - i*20) + '%'" style="background-color: var(--text-muted) !important;"></div>
+        <div class="d-flex align-items-center gap-3" *ngFor="let item of ratingDistribution">
+          <div class="progress flex-grow-1" style="height: 8px; background-color: var(--surface-variant); border-radius: 4px;">
+            <div class="progress-bar" [style.width.%]="item.percentage" style="background-color: var(--text-muted) !important; border-radius: 4px;"></div>
           </div>
           <div class="stars d-none d-sm-block" style="width: 100px;">
-            <i class="fas fa-star text-warning" *ngFor="let s of [].constructor(star)"></i>
-            <i class="far fa-star opacity-25" style="color: var(--text-muted);" *ngFor="let s of [].constructor(5 - star)"></i>
+            <i class="fas fa-star text-warning" *ngFor="let s of [].constructor(item.star)"></i>
+            <i class="far fa-star opacity-25" style="color: var(--text-muted);" *ngFor="let s of [].constructor(5 - item.star)"></i>
           </div>
-          <span class="fw-bold small" style="width: 40px; color: var(--primary-color);">{{ 100 - i*15 }}%</span>
+          <span class="fw-bold small" style="width: 40px; color: var(--primary-color);">{{ item.percentage | number:'1.0-0' }}%</span>
         </div>
       </div>
     </div>
   </div>
 
-  <div class="search-reviews mb-4">
-    <div class="input-group shadow-sm rounded-3 overflow-hidden" style="border: 1px solid var(--border-color);">
-      <input type="text" class="form-control py-3 px-4 review-input border-0" placeholder="Search reviews...">
-      <button class="btn btn-primary px-4 border-0"><i class="fas fa-search"></i></button>
-    </div>
-  </div>
+  <!-- Search removed as requested -->
 
-  <div class="review-cards d-flex flex-column gap-4">
+  <div class="review-cards d-flex flex-column gap-4" *ngIf="reviews.length > 0; else noReviews">
     <div class="review-card p-4 rounded-4 shadow-sm" *ngFor="let review of reviews">
       <div class="row">
         <div class="col-auto">
@@ -48,27 +44,25 @@
               <div class="d-flex align-items-center gap-2">
                 <div class="stars small">
                   <i class="fas fa-star text-warning" *ngFor="let s of [].constructor(review.rating)"></i>
+                  <i class="far fa-star text-warning opacity-25" *ngFor="let s of [].constructor(5 - review.rating)"></i>
                 </div>
                 <span class="small" style="color: var(--text-muted);">• {{ review.createdAt | date:'mediumDate' }}</span>
               </div>
             </div>
             <button class="btn btn-sm btn-icon"><i class="fas fa-ellipsis-v"></i></button>
           </div>
-          <p class="mb-4 mt-3" style="color: var(--text-color); line-height: 1.6; font-size: 1.05rem;">{{ review.comment }}</p>
-          <div class="d-flex align-items-center gap-3 border-top pt-3" style="border-color: var(--border-color) !important;">
-            <span class="small fw-semibold" style="color: var(--text-muted);">Helpful?</span>
-            <button class="btn btn-action p-0 d-flex align-items-center gap-2">
-              <i class="far fa-thumbs-up fs-6"></i> <span class="small">Yes</span>
-            </button>
-            <button class="btn btn-action p-0 d-flex align-items-center gap-2">
-              <i class="far fa-thumbs-down fs-6"></i> <span class="small">No</span>
-            </button>
-            <button class="btn btn-action p-0 small ms-auto text-decoration-underline">Report</button>
-          </div>
+          <p class="mb-0 mt-3" style="color: var(--text-color); line-height: 1.6; font-size: 1.05rem;">{{ review.comment }}</p>
         </div>
       </div>
     </div>
+    <button *ngIf="reviews.length > 5" class="btn btn-outline-primary fw-bold w-100 mt-4 py-3 rounded-3 shadow-sm see-all-btn">See all reviews</button>
   </div>
-  
-  <button class="btn btn-outline-primary fw-bold w-100 mt-4 py-3 rounded-3 shadow-sm see-all-btn">See all reviews</button>
+
+  <ng-template #noReviews>
+    <div class="no-reviews-container text-center py-5 rounded-4 border-2 border-dashed" style="border: 2px dashed var(--border-color); background: var(--surface);">
+      <i class="far fa-comment-dots fa-3x mb-3 opacity-25" style="color: var(--text-muted);"></i>
+      <h5 class="fw-bold" style="color: var(--text-color);">No reviews available for this course yet</h5>
+      <p class="text-muted mb-0">Be the first to share your thoughts after starting the course!</p>
+    </div>
+  </ng-template>
 </section>

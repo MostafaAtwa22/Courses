@@ -18,12 +18,15 @@ export interface ContentResponse extends BaseResponseModel {
     contentUrl: string;
     order: number;
     isPreview: boolean;
+    sectionId: string;
 }
 
 export interface SectionResponse extends BaseResponseModel {
     title: string;
     order: number;
-    contents: ContentResponse[];
+    courseId?: string;
+    contentsCount: number;
+    contents?: ContentResponse[];
 }
 
 export interface ReviewResponse extends BaseResponseModel {
@@ -62,4 +65,33 @@ export interface CourseRequest {
     status: CourseStatus;
     cost: number;
     categoryId: string;
+}
+
+export interface ContentCreateRequest {
+    title: string;
+    type: ContentType;
+    file: File;
+    order: number;
+    isPreview: boolean;
+    sectionId: string;
+}
+
+export interface ContentUpdateRequest {
+    title: string;
+    type: ContentType;
+    file?: File;
+    order: number;
+    isPreview: boolean;
+    sectionId: string;
+}
+
+export interface SectionCreateRequest {
+    title: string;
+    order: number;
+    courseId: string;
+}
+
+export interface SectionUpdateRequest {
+    title: string;
+    order: number;
 }

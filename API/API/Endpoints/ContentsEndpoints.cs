@@ -17,7 +17,7 @@ namespace API.Endpoints
 
             group.MapGet("/section/{sectionId:guid}", GetBySection)
                 .WithName(nameof(GetBySection))
-                .Produces<PaginatedResult<ContentResponseDto>>(StatusCodes.Status200OK)
+                .Produces<IEnumerable<ContentResponseDto>>(StatusCodes.Status200OK)
                 .Produces(StatusCodes.Status400BadRequest);
 
             group.MapGet("/course/{courseId:guid}", GetByCourse)
@@ -48,12 +48,11 @@ namespace API.Endpoints
                 .Produces(StatusCodes.Status404NotFound);
         }
 
-        public static async Task<Results<Ok<PaginatedResult<ContentResponseDto>>, BadRequest>> GetBySection(
+        public static async Task<Results<Ok<IReadOnlyList<ContentResponseDto>>, BadRequest>> GetBySection(
             Guid sectionId,
-            [AsParameters] QueryParams queryParams,
             IMediator mediator)
         {
-            var result = await mediator.Send(new GetContentBySectionQuery(sectionId, queryParams));
+            var result = await mediator.Send(new GetContentBySectionQuery(sectionId));
             return TypedResults.Ok(result);
         }
 

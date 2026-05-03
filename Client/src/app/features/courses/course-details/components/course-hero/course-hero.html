@@ -14,31 +14,31 @@
         
         <div class="d-flex flex-wrap align-items-center gap-3 mb-4">
           <div class="badge bg-warning text-dark px-3 py-2">
-            <span class="fw-bold">{{ course?.averageRate || 4.8 }}</span>
+            <span class="fw-bold">{{ course?.averageRate }}</span>
             <i class="fas fa-star ms-1"></i>
           </div>
-          <span class="text-decoration-underline text-primary-light">({{ course?.totalReviews || 12450 | number }} ratings)</span>
-          <span class="opacity-75">{{ course?.studentCount || 85000 | number }} students</span>
+          <span class="text-decoration-underline text-primary-light">({{ course?.totalReviews | number }} ratings)</span>
+          <span class="opacity-75">{{ course?.studentCount | number }} students</span>
         </div>
         
         <div class="d-flex flex-wrap gap-4 text-sm">
           <div class="d-flex align-items-center gap-2">
             <i class="fas fa-user-tie opacity-75"></i>
-            <span>Created by <span class="text-primary-light fw-bold text-decoration-underline">{{ course?.instructorName || 'Prof. Sarah Jenkins' }}</span></span>
+            <span>Created by <span class="text-primary-light fw-bold text-decoration-underline">{{ course?.instructorName }}</span></span>
           </div>
           <div class="d-flex align-items-center gap-2">
             <i class="fas fa-exclamation-circle opacity-75"></i>
-            <span>Last updated {{ (course?.lastUpdated || lastUpdated) | date:'MM/yyyy' }}</span>
+            <span>Last updated {{ (course?.lastUpdated) | date:'MM/yyyy' }}</span>
           </div>
           <div class="d-flex align-items-center gap-2">
             <i class="fas fa-globe opacity-75"></i>
-            <span>{{ course?.language || 'English' }}</span>
+            <span>{{ course?.language }}</span>
           </div>
         </div>
 
         <!-- Mobile Only Pricing -->
         <div class="d-lg-none mt-4 p-4 rounded mobile-pricing shadow-sm">
-          <div class="h2 fw-bold mb-2 price-amount">{{ course?.cost || 89.99 | currency }}</div>
+          <div class="h2 fw-bold mb-2 price-amount">{{ course?.cost }}</div>
           <button class="btn btn-primary w-100 py-3 fw-bold mb-2">Buy Now</button>
           <button class="btn w-100 py-3 fw-bold" style="border: 1px solid var(--border-color); color: var(--text-color);">Add to Cart</button>
         </div>

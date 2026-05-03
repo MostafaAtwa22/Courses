@@ -1,8 +1,11 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { CourseService } from '../services/course.service';
-import { CourseResponse, SectionResponse, ReviewResponse } from '../models/course.models';
+import { SectionService } from '../services/section.service';
+import { ContentService } from '../services/content.service';
+import { ReviewService } from '../services/review.service';
+import { CourseResponse, SectionResponse, ReviewResponse, ContentResponse } from '../models/course.models';
 import { CourseHeroComponent } from './components/course-hero/course-hero';
 import { CourseSidebarComponent } from './components/course-sidebar/course-sidebar';
 import { CourseContentComponent } from './components/course-content/course-content';
@@ -22,17 +25,34 @@ import { FooterComponent } from '../../../shared/components/footer/footer';
     CourseInstructorComponent,
     CourseReviewsComponent,
     HeaderComponent,
-    FooterComponent
+    FooterComponent,
+    RouterModule
   ],
   templateUrl: './course-details.html',
   styleUrl: './course-details.scss'
 })
 export class CourseDetailsComponent implements OnInit {
   private route = inject(ActivatedRoute);
+  private router = inject(Router);
   private courseService = inject(CourseService);
+  private sectionService = inject(SectionService);
+  private contentService = inject(ContentService);
+  private reviewService = inject(ReviewService);
 
   course?: CourseResponse;
+  sections: SectionResponse[] = [];
+  reviews: ReviewResponse[] = [];
+  sectionsLoading = false;
+  hasMoreSections = false;
+  totalSections = 0;
+  currentPage = 1;
+  pageSize = 5;
   isDarkMode = false;
+
+  // Track which sections have had their contents loaded
+  private loadedSectionIds = new Set<string>();
+  // Track which sections are currently loading contents
+  loadingContentSectionIds = new Set<string>();
 
   learningPoints: string[] = [
     'Build enterprise-level applications with modern technologies',
@@ -55,57 +75,6 @@ export class CourseDetailsComponent implements OnInit {
     <p>Throughout the course, you will build multiple projects that demonstrate your ability to handle both frontend and backend challenges, including state management, API design, and database optimization.</p>
   `;
 
-  dummySections: SectionResponse[] = [
-    {
-      id: '1',
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-      title: 'Introduction and Setup',
-      order: 1,
-      contents: [
-        { id: '1-1', createdAt: new Date().toISOString(), updatedAt: new Date().toISOString(), title: 'Course Overview', type: 0, contentUrl: '', order: 1, isPreview: true },
-        { id: '1-2', createdAt: new Date().toISOString(), updatedAt: new Date().toISOString(), title: 'Installing Tools', type: 0, contentUrl: '', order: 2, isPreview: false },
-        { id: '1-3', createdAt: new Date().toISOString(), updatedAt: new Date().toISOString(), title: 'Setting up the Environment', type: 1, contentUrl: '', order: 3, isPreview: false }
-      ]
-    },
-    {
-      id: '2',
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-      title: 'Deep Dive into Architecture',
-      order: 2,
-      contents: [
-        { id: '2-1', createdAt: new Date().toISOString(), updatedAt: new Date().toISOString(), title: 'Understanding Patterns', type: 0, contentUrl: '', order: 1, isPreview: true },
-        { id: '2-2', createdAt: new Date().toISOString(), updatedAt: new Date().toISOString(), title: 'Domain Driven Design', type: 0, contentUrl: '', order: 2, isPreview: false },
-        { id: '2-3', createdAt: new Date().toISOString(), updatedAt: new Date().toISOString(), title: 'Clean Architecture Principles', type: 0, contentUrl: '', order: 3, isPreview: false },
-        { id: '2-4', createdAt: new Date().toISOString(), updatedAt: new Date().toISOString(), title: 'Module Quiz', type: 2, contentUrl: '', order: 4, isPreview: false }
-      ]
-    }
-  ];
-
-  dummyReviews: ReviewResponse[] = [
-    {
-      id: 'r1',
-      createdAt: new Date('2024-03-15').toISOString(),
-      updatedAt: new Date('2024-03-15').toISOString(),
-      headline: 'Excellent Course!',
-      comment: 'This course is truly transformative. The instructor explains complex concepts with ease and the project work is very relevant to real-world scenarios.',
-      rating: 5,
-      studentName: 'Michael Chen',
-      studentProfilePicture: ''
-    },
-    {
-      id: 'r2',
-      createdAt: new Date('2024-03-20').toISOString(),
-      updatedAt: new Date('2024-03-20').toISOString(),
-      headline: 'Highly recommended',
-      comment: 'I learned more in this course than I did in my entire computer science degree. The focus on architecture is exactly what I was looking for.',
-      rating: 5,
-      studentName: 'Emma Watson',
-      studentProfilePicture: ''
-    }
-  ];
-
   ngOnInit(): void {
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme === 'dark') {
@@ -118,36 +87,97 @@ export class CourseDetailsComponent implements OnInit {
       this.courseService.getById(id).subscribe({
         next: (course) => {
           this.course = course;
-          if (!this.course.sections || this.course.sections.length === 0) {
-            this.course.sections = this.dummySections;
-          }
-          if (!this.course.reviews || this.course.reviews.length === 0) {
-            this.course.reviews = this.dummyReviews;
-          }
+          this.loadSections(course.id);
+          this.loadReviews(course.id);
         },
         error: (err) => {
           console.error('Error fetching course:', err);
-          // For demo, just use dummy data even if fetch fails
-          this.course = {
-            id: id,
-            title: 'Advanced Full-Stack Web Development Bootcamp 2024',
-            description: this.defaultDescription,
-            pictureUrl: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085',
-            status: 0,
-            cost: 89.99,
-            studentCount: 85000,
-            totalReviews: 12450,
-            averageRate: 4.8,
-            category: 'Development',
-            instructorName: 'Prof. Sarah Jenkins',
-            instructorProfilePicture: '',
-            instructorTitle: 'Expert Web Developer',
-            sections: this.dummySections,
-            reviews: this.dummyReviews
-          } as CourseResponse;
         }
       });
     }
+  }
+
+  loadSections(courseId: string): void {
+    this.sectionsLoading = true;
+    this.sectionService.getByCourseId(courseId, {
+      pageNumber: this.currentPage,
+      pageSize: this.pageSize,
+      sortBy: 'order'
+    }).subscribe({
+      next: (result) => {
+        const newSections = result.items || [];
+        this.totalSections = result.totalCount;
+
+        // Initialize contents as empty array — will be loaded on click
+        newSections.forEach(section => section.contents = []);
+        this.sections = [...this.sections, ...newSections];
+        this.hasMoreSections = this.sections.length < this.totalSections;
+        this.sectionsLoading = false;
+      },
+      error: (err) => {
+        console.error('Error loading sections:', err);
+        this.sectionsLoading = false;
+      }
+    });
+  }
+
+  loadSectionContents(sectionId: string): void {
+    // Don't reload if already loaded or currently loading
+    if (this.loadedSectionIds.has(sectionId) || this.loadingContentSectionIds.has(sectionId)) {
+      return;
+    }
+
+    // Update loading state with new Set reference for change detection
+    this.loadingContentSectionIds = new Set(this.loadingContentSectionIds).add(sectionId);
+
+    this.contentService.getBySection(sectionId).subscribe({
+      next: (contents) => {
+        const section = this.sections.find(s => s.id === sectionId);
+        if (section) {
+          section.contents = Array.isArray(contents) ? contents : [];
+          // Trigger change detection for child components by updating reference
+          this.sections = [...this.sections];
+        }
+        this.loadedSectionIds.add(sectionId);
+        
+        // Remove from loading state with new reference
+        const nextLoading = new Set(this.loadingContentSectionIds);
+        nextLoading.delete(sectionId);
+        this.loadingContentSectionIds = nextLoading;
+      },
+      error: (err) => {
+        console.error(`Error loading contents for section ${sectionId}:`, err);
+        const nextLoading = new Set(this.loadingContentSectionIds);
+        nextLoading.delete(sectionId);
+        this.loadingContentSectionIds = nextLoading;
+      }
+    });
+  }
+
+  isSectionContentLoading(sectionId: string): boolean {
+    return this.loadingContentSectionIds.has(sectionId);
+  }
+
+  loadReviews(courseId: string): void {
+    this.reviewService.getByCourseId(courseId, {
+      pageNumber: 1,
+      pageSize: 10,
+      sortBy: 'createdAt',
+      sortDescending: true
+    }).subscribe({
+      next: (result) => {
+        this.reviews = result.items || [];
+      },
+      error: (err) => {
+        console.error('Error loading reviews:', err);
+      }
+    });
+  }
+
+  loadMoreSections(): void {
+    if (!this.course || this.sectionsLoading || !this.hasMoreSections) return;
+    this.currentPage++;
+    this.loadSections(this.course.id);
   }
 
   toggleTheme() {
@@ -159,5 +189,10 @@ export class CourseDetailsComponent implements OnInit {
       document.body.classList.remove('dark');
       localStorage.setItem('theme', 'light');
     }
+  }
+
+  handleContentSelected(content: ContentResponse): void {
+    if (!this.course) return;
+    this.router.navigate(['content', content.id], { relativeTo: this.route });
   }
 }
