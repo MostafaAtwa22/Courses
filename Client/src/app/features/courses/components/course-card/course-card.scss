@@ -66,6 +66,18 @@
         i { color: #f59e0b; }
         .reviews { color: var(--text-muted); font-weight: 400; font-size: 0.75rem; }
       }
+
+      .language-badge {
+        font-size: 0.75rem;
+        color: var(--text-muted);
+        background: var(--surface-variant);
+        padding: 2px 8px;
+        border-radius: var(--radius-sm);
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        i { font-size: 0.7rem; }
+      }
     }
 
     .course-title {

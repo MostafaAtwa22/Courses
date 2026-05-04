@@ -54,21 +54,8 @@ export class CourseDetailsComponent implements OnInit {
   // Track which sections are currently loading contents
   loadingContentSectionIds = new Set<string>();
 
-  learningPoints: string[] = [
-    'Build enterprise-level applications with modern technologies',
-    'Understand and implement advanced design patterns',
-    'Optimize performance and accessibility',
-    'Master complex state management strategies',
-    'Deploy and scale applications to the cloud',
-    'Implement robust security and authentication systems'
-  ];
-
-  requirements: string[] = [
-    'Solid understanding of JavaScript/TypeScript',
-    'Basic knowledge of web frameworks',
-    'Experience with HTML and CSS',
-    'A computer with administrative privileges'
-  ];
+  learningPoints: string[] = [];
+  requirements: string[] = [];
 
   defaultDescription = `
     <p>This comprehensive bootcamp is designed to take you from a basic understanding of web development to being a proficient full-stack engineer. We focus on real-world applications and industry-standard practices.</p>
@@ -87,6 +74,8 @@ export class CourseDetailsComponent implements OnInit {
       this.courseService.getById(id).subscribe({
         next: (course) => {
           this.course = course;
+          this.learningPoints = course.whatYouWillLearn || [];
+          this.requirements = course.requirements || [];
           this.loadSections(course.id);
           this.loadReviews(course.id);
         },

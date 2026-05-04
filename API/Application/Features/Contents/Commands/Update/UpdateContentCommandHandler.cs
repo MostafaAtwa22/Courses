@@ -1,9 +1,4 @@
-using Application.Common.Exceptions;
-using Application.Common.Interfaces;
-using Application.Common.Mappings;
-using Domain.Constants;
 using Domain.Enums;
-using MediatR;
 
 namespace Application.Features.Contents.Commands.Update
 {
@@ -15,15 +10,11 @@ namespace Application.Features.Contents.Commands.Update
     {
         public async Task Handle(UpdateContentCommand request, CancellationToken cancellationToken)
         {
-            var content = await _repo.GetEntityByIdAsync(request.Id, cancellationToken);
-            if (content is null)
-                throw new NotFoundException("Content", request.Id);
+            var content = await _repo.GetEntityByIdAsync(request.Id, cancellationToken)
+                ?? throw new NotFoundException("Content", request.Id);
 
-            var section = await _sectionRepo.GetEntityByIdAsync(request.Dto.SectionId, cancellationToken);
-            if (section == null)
-            {
+            if (await _sectionRepo.GetEntityByIdAsync(request.Dto.SectionId, cancellationToken) is null)   
                 throw new NotFoundException("Section", request.Dto.SectionId);
-            }
 
             string? newUrl = null;
             if (request.Dto.File is not null)
@@ -32,7 +23,11 @@ namespace Application.Features.Contents.Commands.Update
                 await _fileService.DeleteAsync(content.ContentUrl);
 
                 // Upload new file
-                var folder = FolderPaths.sectionContent;
+                var folder = request.Dto.Type == ContentType.Video 
+                    ? $"{FolderPaths.sectionContentVideos}" 
+                    : FolderPaths.sectionContentFiles
+                    + $"{request.Dto.SectionId}";
+                
                 newUrl = await _fileService.UploadAsync(request.Dto.File.OpenReadStream(), request.Dto.File.FileName, folder);
             }
 

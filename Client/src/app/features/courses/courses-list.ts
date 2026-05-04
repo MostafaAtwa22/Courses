@@ -8,7 +8,7 @@ import { CourseService } from './services/course.service';
 import { CategoryService } from '../categories/services/category.service';
 import { createCourseQueryParams, createQueryParams, CourseQueryParams } from '../../shared/models/query-params.model';
 import { PaginatedResultModel } from '../../shared/models/paginated-result.model';
-import { CourseResponse } from './models/course.models';
+import { CourseSummary } from './models/course.models';
 
 @Component({
   selector: 'app-courses-list',
@@ -34,7 +34,7 @@ export class CoursesListComponent implements OnInit, OnDestroy {
   categories: string[] = ['All'];
   selectedCategory = 'All';
 
-  coursesResult: PaginatedResultModel<CourseResponse> = new PaginatedResultModel<CourseResponse>();
+  coursesResult: PaginatedResultModel<CourseSummary> = new PaginatedResultModel<CourseSummary>();
   params: CourseQueryParams = createCourseQueryParams({ pageSize: 9 });
 
   suggestions: string[] = [];
@@ -86,7 +86,7 @@ export class CoursesListComponent implements OnInit, OnDestroy {
   loadCourses() {
     this.courseService.getAll(this.params).subscribe({
       next: (res) => {
-        this.coursesResult = PaginatedResultModel.fromApi<CourseResponse>(res);
+        this.coursesResult = res;
       }
     });
   }

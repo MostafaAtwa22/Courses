@@ -1,12 +1,21 @@
 <div class="card shadow-lg border-0 overflow-hidden sticky-sidebar">
   <div class="preview-video position-relative">
-    <img [src]="course?.pictureUrl || 'https://images.unsplash.com/photo-1498050108023-c5249f4df085'" [alt]="course?.title" class="w-100 object-fit-cover" style="height: 200px;">
-    <div class="overlay d-flex align-items-center justify-content-center">
-      <button class="btn btn-light rounded-circle play-btn">
-        <i class="fas fa-play"></i>
+    <div *ngIf="!isPlayingVideo" class="image-preview">
+      <img [src]="course?.pictureUrl || 'https://images.unsplash.com/photo-1498050108023-c5249f4df085'" [alt]="course?.title" class="w-100 object-fit-cover" style="height: 220px;">
+      <div class="overlay d-flex align-items-center justify-content-center">
+        <button class="btn btn-light rounded-circle play-btn" (click)="toggleVideo()">
+          <i class="fas fa-play"></i>
+        </button>
+      </div>
+      <p class="text-white text-center position-absolute bottom-0 w-100 py-2 mb-0 fw-bold bg-dark bg-opacity-50">Preview this course</p>
+    </div>
+    
+    <div *ngIf="isPlayingVideo" class="video-preview">
+      <video [src]="course?.introVideoUrl" controls autoplay class="w-100" style="height: 220px; background: black;"></video>
+      <button class="btn btn-sm btn-dark position-absolute top-0 end-0 m-2" (click)="toggleVideo()">
+        <i class="fas fa-times"></i>
       </button>
     </div>
-    <p class="text-white text-center position-absolute bottom-0 w-100 py-2 mb-0 fw-bold bg-dark bg-opacity-50">Preview this course</p>
   </div>
   
   <div class="card-body p-4">

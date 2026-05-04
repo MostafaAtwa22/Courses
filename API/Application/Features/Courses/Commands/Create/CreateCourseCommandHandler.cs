@@ -12,7 +12,17 @@ namespace Application.Features.Courses.Commands.Create
                 FolderPaths.Courses
             );
 
-            var course = request.Dto.ToEntity(pictureUrl);
+            string introVideoUrl = null!;
+            if (request.Dto.IntroVideo is not null)
+            {
+                introVideoUrl = await _fileService.UploadAsync(
+                    request.Dto.IntroVideo.OpenReadStream(),
+                    request.Dto.IntroVideo.FileName,
+                    FolderPaths.sectionContentVideos + $"{request.Dto.Title.Replace(" ", "_")}_Intro_Video"
+                );
+            }
+
+            var course = request.Dto.ToEntity(pictureUrl, introVideoUrl);
 
             return await _repo.CreateAsync(course, cancellationToken);
         }

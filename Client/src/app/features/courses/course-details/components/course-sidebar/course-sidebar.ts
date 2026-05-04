@@ -11,4 +11,9 @@ import { CourseResponse } from '../../../models/course.models';
 })
 export class CourseSidebarComponent {
   @Input() course?: CourseResponse;
+  isPlayingVideo = false;
+
+  toggleVideo() {
+    this.isPlayingVideo = !this.isPlayingVideo;
+  }
 }

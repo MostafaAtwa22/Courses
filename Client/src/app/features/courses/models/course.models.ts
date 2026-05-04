@@ -37,6 +37,17 @@ export interface ReviewResponse extends BaseResponseModel {
     studentProfilePicture: string;
 }
 
+export interface CourseSummary extends BaseResponseModel {
+    title: string;
+    pictureUrl: string;
+    cost: number;
+    totalReviews: number;
+    averageRate: number;
+    category: string;
+    instructorName: string;
+    language: string;
+}
+
 export interface CourseResponse extends BaseResponseModel {
     title: string;
     description: string;
@@ -53,9 +64,10 @@ export interface CourseResponse extends BaseResponseModel {
     instructorBio?: string;
     sections?: SectionResponse[];
     reviews?: ReviewResponse[];
-    lastUpdated?: Date;
-    language?: string;
-    level?: string;
+    language: string;
+    whatYouWillLearn: string[];
+    requirements: string[];
+    introVideoUrl: string;
 }
 
 export interface CourseRequest {

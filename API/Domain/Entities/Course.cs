@@ -10,6 +10,10 @@ namespace Domain.Entities
         public int StudentCount { get; set; } 
         public int TotalReviews { get; set; } 
         public decimal AverageRate { get; set; }
+        public string Language { get; set; } = "English";
+        public List<string> WhatYouWillLearn { get; set; } = [];
+        public List<string> Requirements { get; set; } = [];
+        public string IntroVideoUrl { get; set; } = string.Empty;
 
         public Guid CategoryId { get; set; }
         public Category Category { get; set; } = default!;

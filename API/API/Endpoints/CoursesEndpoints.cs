@@ -17,7 +17,7 @@ namespace API.Endpoints
 
             group.MapGet("/", GetCourses)
                 .WithName(nameof(GetCourses))
-                .Produces<PaginatedResult<CourseResponseDto>>(StatusCodes.Status200OK)
+                .Produces<PaginatedResult<CourseSummaryDto>>(StatusCodes.Status200OK)
                 .Produces(StatusCodes.Status400BadRequest);
 
             group.MapGet("/suggestions", GetSuggestions)
@@ -50,7 +50,7 @@ namespace API.Endpoints
                 .Produces(StatusCodes.Status404NotFound);
         }
 
-        public static async Task<Results<Ok<PaginatedResult<CourseResponseDto>>, BadRequest>> GetCourses([AsParameters] CourseQueryParams queryParams, 
+        public static async Task<Results<Ok<PaginatedResult<CourseSummaryDto>>, BadRequest>> GetCourses([AsParameters] CourseQueryParams queryParams, 
             IMediator mediator)
         {
             var result = await mediator.Send(new GetCoursesQuery(queryParams));

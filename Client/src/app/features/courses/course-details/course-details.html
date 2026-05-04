@@ -7,21 +7,26 @@
     <div class="row">
       <!-- Main Content Area -->
       <div class="col-12 col-lg-8">
-        <div class="learn-card border-0 mb-5 p-4 rounded-4">
+        <!-- What You'll Learn -->
+        <div class="learn-card border-0 mb-5 p-4 rounded-4 shadow-sm" *ngIf="learningPoints && learningPoints.length > 0">
           <h4 class="fw-bold mb-4">What you'll learn</h4>
           <div class="row g-3">
             <div class="col-md-6 d-flex gap-3" *ngFor="let item of learningPoints">
               <i class="fas fa-check mt-1" style="color: var(--primary-color);"></i>
-              <span>{{ item }}</span>
+              <span class="opacity-90">{{ item }}</span>
             </div>
           </div>
         </div>
 
-        <section class="mb-5">
-          <h4 class="fw-bold mb-3">Requirements</h4>
-          <ul class="d-flex flex-column gap-2 ps-3">
-            <li *ngFor="let req of requirements">{{ req }}</li>
-          </ul>
+        <!-- Requirements -->
+        <section class="mb-5" *ngIf="requirements && requirements.length > 0">
+          <h4 class="fw-bold mb-4">Requirements</h4>
+          <div class="requirements-list">
+            <div class="d-flex align-items-start gap-3 mb-3" *ngFor="let req of requirements">
+              <i class="fas fa-circle mt-2" style="font-size: 6px; color: var(--text-muted);"></i>
+              <span class="opacity-90">{{ req }}</span>
+            </div>
+          </div>
         </section>
 
         <section class="mb-5">

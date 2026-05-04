@@ -1,7 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../../../environments/environment';
-import { CourseResponse } from '../models/course.models';
+import { CourseResponse, CourseSummary } from '../models/course.models';
 import { PaginatedResultModel } from '../../../shared/models/paginated-result.model';
 import { CourseQueryParams } from '../../../shared/models/query-params.model';
 import { map, Observable } from 'rxjs';
@@ -13,7 +13,7 @@ export class CourseService {
   private http = inject(HttpClient);
   private apiUrl = `${environment.apiUrl}/courses`;
 
-  getAll(params: CourseQueryParams): Observable<PaginatedResultModel<CourseResponse>> {
+  getAll(params: CourseQueryParams): Observable<PaginatedResultModel<CourseSummary>> {
     let httpParams = new HttpParams();
 
     if (params.pageNumber) {
@@ -43,7 +43,7 @@ export class CourseService {
 
     return this.http
       .get<unknown>(this.apiUrl, { params: httpParams })
-      .pipe(map((res) => PaginatedResultModel.fromApi<CourseResponse>(res)));
+      .pipe(map((res) => PaginatedResultModel.fromApi<CourseSummary>(res)));
   }
 
   getById(id: string): Observable<CourseResponse> {

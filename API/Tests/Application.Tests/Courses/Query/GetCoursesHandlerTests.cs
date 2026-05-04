@@ -30,12 +30,12 @@ namespace Application.Tests.Courses.Query
                 PageSize = 10
             };
 
-            var expected = new PaginatedResult<CourseResponseDto>
+            var expected = new PaginatedResult<CourseSummaryDto>
             {
-                Items = new List<CourseResponseDto>
+                Items = new List<CourseSummaryDto>
                 {
-                    new CourseResponseDto { Id = Guid.NewGuid(), Title = "Course 1", Cost = 100, Description = "Description 1" , Status = CourseStatus.Done, PictureUrl = "http://example.com/course1.jpg"},
-                    new CourseResponseDto { Id = Guid.NewGuid(), Title = "Course 2", Cost = 100, Description = "Description 1" , Status = CourseStatus.Done, PictureUrl = "http://example.com/course1.jpg"}
+                    new CourseSummaryDto { Id = Guid.NewGuid(), Title = "Course 1", Cost = 100, PictureUrl = "http://example.com/course1.jpg"},
+                    new CourseSummaryDto { Id = Guid.NewGuid(), Title = "Course 2", Cost = 100, PictureUrl = "http://example.com/course1.jpg"}
                 },
                 TotalCount = 2,
                 PageSize = 10,

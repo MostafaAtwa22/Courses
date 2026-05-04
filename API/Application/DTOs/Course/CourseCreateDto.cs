@@ -6,5 +6,6 @@ namespace Application.DTOs.Course
     public class CourseCreateDto : CourseBaseDto
     {
         public IFormFile PictureUrl { get; set; } = default!;
+        public IFormFile IntroVideo { get; set; } = default!;
     }
 }

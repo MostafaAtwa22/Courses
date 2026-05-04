@@ -11,9 +11,8 @@ namespace Application.Features.Contents.Commands.Delete
     {
         public async Task Handle(DeleteContentCommand request, CancellationToken cancellationToken)
         {
-            var content = await _repo.GetEntityByIdAsync(request.Id, cancellationToken);
-            if (content is null)
-                throw new NotFoundException("Content", request.Id);
+            var content = await _repo.GetEntityByIdAsync(request.Id, cancellationToken)
+                ?? throw new NotFoundException("Content", request.Id);
 
             await _fileService.DeleteAsync(content.ContentUrl);
             await _repo.DeleteAsync(request.Id, cancellationToken);

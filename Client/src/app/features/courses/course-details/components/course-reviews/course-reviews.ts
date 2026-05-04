@@ -45,8 +45,9 @@ export class CourseReviewsComponent implements OnChanges {
     // Calculate distribution
     const counts = [0, 0, 0, 0, 0]; // 1 to 5 stars
     this.reviews.forEach(r => {
-      if (r.rating >= 1 && r.rating <= 5) {
-        counts[r.rating - 1]++;
+      const roundedRating = Math.round(r.rating);
+      if (roundedRating >= 1 && roundedRating <= 5) {
+        counts[roundedRating - 1]++;
       }
     });
 
@@ -67,5 +68,11 @@ export class CourseReviewsComponent implements OnChanges {
 
   hasHalfStar(rating: number): boolean {
     return rating % 1 >= 0.5;
+  }
+
+  getEmptyStars(rating: number): number[] {
+    const fullStars = Math.floor(rating);
+    const halfStar = this.hasHalfStar(rating) ? 1 : 0;
+    return Array(5 - fullStars - halfStar).fill(0);
   }
 }

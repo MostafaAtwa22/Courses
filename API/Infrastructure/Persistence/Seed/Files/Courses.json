@@ -11,7 +11,19 @@
             "cost": 300,
             "studentCount": 0,
             "totalReviews": 0,
-            "averageRate": 0.0,
+            "averageRate": 0,
+            "language": "Arabic",
+            "whatYouWillLearn": [
+                "React.js",
+                "Redux",
+                "Context API",
+                "Hooks"
+            ],
+            "requirements": [
+                "A computer with internet access",
+                "Basic knowledge of programming"
+            ],
+            "introVideoUrl": "videos/courses/video.mp4",
             "categoryId": "3a2b1c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d",
             "instructorId": "f2b2b2b2-b2b2-b2b2-b2b2-b2b2b2b2b2b2"
         },
@@ -26,7 +38,19 @@
             "cost": 500,
             "studentCount": 0,
             "totalReviews": 0,
-            "averageRate": 0.0,
+            "averageRate": 0,
+            "language": "Arabic",
+            "whatYouWillLearn": [
+                "Python Programming",
+                "Data Analysis",
+                "Machine Learning",
+                "Data Visualization"
+            ],
+            "requirements": [
+                "A computer with internet access",
+                "Basic knowledge of programming"
+            ],
+            "introVideoUrl": "videos/courses/video.mp4",
             "categoryId": "4b3c2d5e-6f7a-8b9c-0d1e-2f3a4b5c6d7e",
             "instructorId": "f4b4b4b4-b4b4-b4b4-b4b4-b4b4b4b4b4b4"
         },
@@ -41,7 +65,19 @@
             "cost": 100,
             "studentCount": 0,
             "totalReviews": 0,
-            "averageRate": 0.0,
+            "averageRate": 0,
+            "language": "English",
+            "whatYouWillLearn": [
+                "Swift Programming",
+                "SwiftUI Layouts",
+                "Combine Framework",
+                "App Store Deployment"
+            ],
+            "requirements": [
+                "A Mac computer",
+                "Basic understanding of programming"
+            ],
+            "introVideoUrl": "videos/courses/video.mp4",
             "categoryId": "5c4d3e6f-7a8b-9c0d-1e2f-3a4b5c6d7e8f",
             "instructorId": "f1b1b1b1-b1b1-b1b1-b1b1-b1b1b1b1b1b1"
         },
@@ -58,7 +94,19 @@
             "totalReviews": 2,
             "averageRate": 4.5,
             "categoryId": "e1b1b1b1-b1b1-b1b1-b1b1-b1b1b1b1b1b1",
-            "instructorId": "f1b1b1b1-b1b1-b1b1-b1b1-b1b1b1b1b1b1"
+            "instructorId": "f1b1b1b1-b1b1-b1b1-b1b1-b1b1b1b1b1b1",
+            "language": "Arabic",
+            "whatYouWillLearn": [
+                "Social Media Marketing",
+                "Content Creation",
+                "Content Distribution",
+                "Content Analytics"
+            ],
+            "requirements": [
+                "A computer with internet access",
+                "Basic knowledge of marketing"
+            ],
+            "introVideoUrl": "videos/courses/video.mp4"
         },
         {
             "id": "c2b2b2b2-b2b2-b2b2-b2b2-b2b2b2b2b2b2",
@@ -71,9 +119,21 @@
             "cost": 29,
             "studentCount": 1,
             "totalReviews": 1,
-            "averageRate": 5.0,
+            "averageRate": 5,
             "categoryId": "e1b1b1b1-b1b1-b1b1-b1b1-b1b1b1b1b1b1",
-            "instructorId": "f1b1b1b1-b1b1-b1b1-b1b1-b1b1b1b1b1b1"
+            "instructorId": "f1b1b1b1-b1b1-b1b1-b1b1-b1b1b1b1b1b1",
+            "language": "English",
+            "whatYouWillLearn": [
+                "Content Planning",
+                "Content Creation",
+                "Content Distribution",
+                "Content Analytics"
+            ],
+            "requirements": [
+                "A computer with internet access",
+                "Basic knowledge of marketing"
+            ],
+            "introVideoUrl": "videos/courses/video.mp4"
         },
         {
             "id": "c3b3b3b3-b3b3-b3b3-b3b3-b3b3b3b3b3b3",
@@ -86,9 +146,21 @@
             "cost": 39,
             "studentCount": 0,
             "totalReviews": 0,
-            "averageRate": 0.0,
+            "averageRate": 0,
             "categoryId": "e1b1b1b1-b1b1-b1b1-b1b1-b1b1b1b1b1b1",
-            "instructorId": "f1b1b1b1-b1b1-b1b1-b1b1-b1b1b1b1b1b1"
+            "instructorId": "f1b1b1b1-b1b1-b1b1-b1b1-b1b1b1b1b1b1",
+            "language": "Arabic",
+            "whatYouWillLearn": [
+                "Email Marketing",
+                "Automation",
+                "Content Strategy",
+                "Analytics"
+            ],
+            "requirements": [
+                "A computer with internet access",
+                "Basic knowledge of marketing"
+            ],
+            "introVideoUrl": "videos/courses/video.mp4"
         },
         {
             "id": "c4b4b4b4-b4b4-b4b4-b4b4-b4b4b4b4b4b4",
@@ -101,9 +173,21 @@
             "cost": 99,
             "studentCount": 1,
             "totalReviews": 0,
-            "averageRate": 0.0,
+            "averageRate": 0,
             "categoryId": "3a2b1c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d",
-            "instructorId": "f2b2b2b2-b2b2-b2b2-b2b2-b2b2b2b2b2b2"
+            "instructorId": "f2b2b2b2-b2b2-b2b2-b2b2-b2b2b2b2b2b2",
+            "language": "English",
+            "whatYouWillLearn": [
+                "Web APIs",
+                "RESTful Services",
+                "ASP.NET Core",
+                "Entity Framework"
+            ],
+            "requirements": [
+                "A computer with internet access",
+                "Basic understanding of programming"
+            ],
+            "introVideoUrl": "videos/courses/video.mp4"
         },
         {
             "id": "c5b5b5b5-b5b5-b5b5-b5b5-b5b5b5b5b5b5",
@@ -116,9 +200,20 @@
             "cost": 59,
             "studentCount": 0,
             "totalReviews": 0,
-            "averageRate": 0.0,
+            "averageRate": 0,
             "categoryId": "e3b3b3b3-b3b3-b3b3-b3b3-b3b3b3b3b3b3",
-            "instructorId": "f2b2b2b2-b2b2-b2b2-b2b2-b2b2b2b2b2b2"
+            "instructorId": "f2b2b2b2-b2b2-b2b2-b2b2-b2b2b2b2b2b2",
+            "language": "Arabic",
+            "whatYouWillLearn": [
+                "UI Design",
+                "UX Design",
+                "Figma"
+            ],
+            "requirements": [
+                "A computer with internet access",
+                "Basic knowledge of design"
+            ],
+            "introVideoUrl": "videos/courses/video.mp4"
         },
         {
             "id": "c6b6b6b6-b6b6-b6b6-b6b6-b6b6b6b6b6b6",
@@ -131,9 +226,20 @@
             "cost": 45,
             "studentCount": 1,
             "totalReviews": 0,
-            "averageRate": 0.0,
+            "averageRate": 0,
             "categoryId": "e1b1b1b1-b1b1-b1b1-b1b1-b1b1b1b1b1b1",
-            "instructorId": "f4b4b4b4-b4b4-b4b4-b4b4-b4b4b4b4b4b4"
+            "instructorId": "f4b4b4b4-b4b4-b4b4-b4b4-b4b4b4b4b4b4",
+            "language": "English",
+            "whatYouWillLearn": [
+                "SEO",
+                "SEM",
+                "Content Marketing"
+            ],
+            "requirements": [
+                "A computer with internet access",
+                "Basic knowledge of marketing"
+            ],
+            "introVideoUrl": "videos/courses/video.mp4"
         },
         {
             "id": "c7b7b7b7-b7b7-b7b7-b7b7-b7b7b7b7b7b7",
@@ -146,9 +252,21 @@
             "cost": 199,
             "studentCount": 0,
             "totalReviews": 0,
-            "averageRate": 0.0,
+            "averageRate": 0,
             "categoryId": "3a2b1c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d",
-            "instructorId": "f2b2b2b2-b2b2-b2b2-b2b2-b2b2b2b2b2b2"
+            "instructorId": "f2b2b2b2-b2b2-b2b2-b2b2-b2b2b2b2b2b2",
+            "language": "Arabic",
+            "whatYouWillLearn": [
+                "HTML & CSS",
+                "JavaScript & DOM",
+                "React & Redux",
+                "Node.js & Express"
+            ],
+            "requirements": [
+                "A computer with internet access",
+                "Basic knowledge of programming"
+            ],
+            "introVideoUrl": "videos/courses/video.mp4"
         },
         {
             "id": "1c2d3e4f-5a6b-7c8d-9e0f-1a2b3c4d5e6f",
@@ -161,9 +279,21 @@
             "cost": 200,
             "studentCount": 1,
             "totalReviews": 1,
-            "averageRate": 5.0,
+            "averageRate": 5,
             "categoryId": "6d5e4f7a-8b9c-0d1e-2f3a-4b5c6d7e8f9a",
-            "instructorId": "f3b3b3b3-b3b3-b3b3-b3b3-b3b3b3b3b3b3"
+            "instructorId": "f3b3b3b3-b3b3-b3b3-b3b3-b3b3b3b3b3b3",
+            "language": "English",
+            "whatYouWillLearn": [
+                "AWS Architect",
+                "AWS Security",
+                "AWS Storage",
+                "AWS Networking"
+            ],
+            "requirements": [
+                "An AWS account",
+                "Basic understanding of programming"
+            ],
+            "introVideoUrl": "videos/courses/video.mp4"
         },
         {
             "id": "2d3e4f5a-6b7c-8d9e-0f1a-2b3c4d5e6f7a",
@@ -177,6 +307,18 @@
             "studentCount": 1,
             "totalReviews": 1,
             "averageRate": 4.5,
+            "language": "Arabic",
+            "whatYouWillLearn": [
+                "Docker",
+                "Kubernetes",
+                "Containerization",
+                "Orchestration"
+            ],
+            "requirements": [
+                "A computer with internet access",
+                "Basic knowledge of programming"
+            ],
+            "introVideoUrl": "videos/courses/video.mp4",
             "categoryId": "7e6f5a8b-9c0d-1e2f-3a4b-5c6d7e8f9a0b",
             "instructorId": "f5b5b5b5-b5b5-b5b5-b5b5-b5b5b5b5b5b5"
         },
@@ -191,9 +333,21 @@
             "cost": 300,
             "studentCount": 1,
             "totalReviews": 1,
-            "averageRate": 5.0,
+            "averageRate": 5,
             "categoryId": "3a2b1c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d",
-            "instructorId": "f2b2b2b2-b2b2-b2b2-b2b2-b2b2b2b2b2b2"
+            "instructorId": "f2b2b2b2-b2b2-b2b2-b2b2-b2b2b2b2b2b2",
+            "language": "English",
+            "whatYouWillLearn": [
+                "Closures",
+                "Promises",
+                "Async/await",
+                "Design Patterns"
+            ],
+            "requirements": [
+                "A computer with internet access",
+                "Basic knowledge of programming"
+            ],
+            "introVideoUrl": "videos/courses/video.mp4"
         },
         {
             "id": "4f5a6b7c-8d9e-0f1a-2b3c-4d5e6f7a8b9c",
@@ -206,9 +360,21 @@
             "cost": 649,
             "studentCount": 1,
             "totalReviews": 0,
-            "averageRate": 0.0,
+            "averageRate": 0,
             "categoryId": "4b3c2d5e-6f7a-8b9c-0d1e-2f3a4b5c6d7e",
-            "instructorId": "f2b2b2b2-b2b2-b2b2-b2b2-b2b2b2b2b2b2"
+            "instructorId": "f2b2b2b2-b2b2-b2b2-b2b2-b2b2b2b2b2b2",
+            "language": "Arabic",
+            "whatYouWillLearn": [
+                "Machine Learning",
+                "Neural Networks",
+                "TensorFlow",
+                "Keras"
+            ],
+            "requirements": [
+                "A computer with internet access",
+                "Basic knowledge of programming"
+            ],
+            "introVideoUrl": "videos/courses/video.mp4"
         },
         {
             "id": "5a6b7c8d-9e0f-1a2b-3c4d-5e6f7a8b9c0d",
@@ -221,9 +387,21 @@
             "cost": 599,
             "studentCount": 1,
             "totalReviews": 0,
-            "averageRate": 0.0,
+            "averageRate": 0,
             "categoryId": "5c4d3e6f-7a8b-9c0d-1e2f-3a4b5c6d7e8f",
-            "instructorId": "f2b2b2b2-b2b2-b2b2-b2b2-b2b2b2b2b2b2"
+            "instructorId": "f2b2b2b2-b2b2-b2b2-b2b2-b2b2b2b2b2b2",
+            "language": "Arabic",
+            "whatYouWillLearn": [
+                "Android Studio",
+                "Kotlin",
+                "XML Layouts",
+                "App Store Deployment"
+            ],
+            "requirements": [
+                "A computer with internet access",
+                "Basic knowledge of programming"
+            ],
+            "introVideoUrl": "videos/courses/video.mp4"
         }
     ]
 }

@@ -21,25 +21,36 @@ namespace Infrastructure.Repositories
 
         private string SelectColumns =>
             $@"c.id, c.title, c.description, 
-               CASE WHEN c.picture_url IS NOT NULL THEN CONCAT('{urlsOptions.Value.API}/', c.picture_url) ELSE NULL END AS picture_url, 
-               c.status, c.cost, c.student_count, c.total_reviews, c.average_rate, 
-               cat.name AS category,
+               CASE WHEN c.picture_url IS NOT NULL THEN CONCAT('{urlsOptions.Value.API}/', c.picture_url) ELSE NULL END AS PictureUrl, 
+               c.status, c.cost, c.student_count AS StudentCount, c.total_reviews AS TotalReviews, c.average_rate AS AverageRate, 
+               c.language, c.what_you_will_learn AS WhatYouWillLearn, c.requirements AS Requirements,
+               CASE WHEN c.intro_video_url IS NOT NULL THEN CONCAT('{urlsOptions.Value.API}/', c.intro_video_url) ELSE NULL END AS IntroVideoUrl,
+               cat.name AS Category,
                (SELECT CONCAT(u.first_name, ' ', u.last_name) 
                 FROM instructors ins 
                 JOIN ""AspNetUsers"" u ON ins.user_id = u.id 
-                WHERE ins.id = c.instructor_id LIMIT 1) AS instructor_name,
+                WHERE ins.id = c.instructor_id LIMIT 1) AS InstructorName,
                (SELECT CASE WHEN u.profile_picture_url IS NOT NULL THEN CONCAT('{urlsOptions.Value.API}/', u.profile_picture_url) ELSE NULL END 
                 FROM instructors ins 
                 JOIN ""AspNetUsers"" u ON ins.user_id = u.id 
-                WHERE ins.id = c.instructor_id LIMIT 1) AS instructor_profile_picture,
+                WHERE ins.id = c.instructor_id LIMIT 1) AS InstructorProfilePicture,
                (SELECT ins.title 
                 FROM instructors ins 
-                WHERE ins.id = c.instructor_id LIMIT 1) AS instructor_title";
+                WHERE ins.id = c.instructor_id LIMIT 1) AS InstructorTitle";
+
+        private string SummaryColumns =>
+            $@"c.id, c.title, c.cost, c.total_reviews AS TotalReviews, c.average_rate AS AverageRate, c.language,
+               CASE WHEN c.picture_url IS NOT NULL THEN CONCAT('{urlsOptions.Value.API}/', c.picture_url) ELSE NULL END AS PictureUrl,
+               cat.name AS Category,
+               (SELECT CONCAT(u.first_name, ' ', u.last_name) 
+                FROM instructors ins 
+                JOIN ""AspNetUsers"" u ON ins.user_id = u.id 
+                WHERE ins.id = c.instructor_id LIMIT 1) AS InstructorName";
 
         private const string FromClause =
             "FROM courses c JOIN categories cat ON c.category_id = cat.id";
 
-        public Task<PaginatedResult<CourseResponseDto>> GetAllAsync(CourseQueryParams queryParams, CancellationToken ct = default)
+        public Task<PaginatedResult<CourseSummaryDto>> GetAllAsync(CourseQueryParams queryParams, CancellationToken ct = default)
         {
             var extraConditions = new List<string>();
 
@@ -57,10 +68,10 @@ namespace Infrastructure.Repositories
                 extraConditions.Add("c.average_rate <= @MaxRating");
             }
 
-            return ExecutePaginatedQueryAsync<CourseResponseDto>(
+            return ExecutePaginatedQueryAsync<CourseSummaryDto>(
                 queryParams,
                 countSql: $"SELECT COUNT(1) {FromClause}",
-                selectSql: $"SELECT {SelectColumns} {FromClause}",
+                selectSql: $"SELECT {SummaryColumns} {FromClause}",
                 allowedSortColumns: AllowedSortColumns,
                 defaultSortColumn: "c.created_at",
                 searchCondition: "(c.title ILIKE @SearchTerm OR c.description ILIKE @SearchTerm)",
@@ -101,8 +112,8 @@ namespace Infrastructure.Repositories
         {
             using var connection = await CreateConnectionAsync(ct);
 
-            var sql = @"INSERT INTO courses (id, title, description, picture_url, status, cost, student_count, total_reviews, average_rate, category_id, instructor_id, created_at, updated_at)
-                        VALUES (@Id, @Title, @Description, @PictureUrl, @Status, @Cost, @StudentCount, @TotalReviews, @AverageRate, @CategoryId, @InstructorId, @CreatedAt, @UpdatedAt)";
+            var sql = @"INSERT INTO courses (id, title, description, picture_url, status, cost, student_count, total_reviews, average_rate, language, what_you_will_learn, requirements, intro_video_url, category_id, instructor_id, created_at, updated_at)
+                        VALUES (@Id, @Title, @Description, @PictureUrl, @Status, @Cost, @StudentCount, @TotalReviews, @AverageRate, @Language, @WhatYouWillLearn, @Requirements, @IntroVideoUrl, @CategoryId, @InstructorId, @CreatedAt, @UpdatedAt)";
 
             await connection.ExecuteAsync(sql, course);
 
@@ -122,6 +133,10 @@ namespace Infrastructure.Repositories
                             student_count = @StudentCount,
                             total_reviews = @TotalReviews,
                             average_rate = @AverageRate,
+                            language = @Language,
+                            what_you_will_learn = @WhatYouWillLearn,
+                            requirements = @Requirements,
+                            intro_video_url = @IntroVideoUrl,
                             category_id = @CategoryId,
                             instructor_id = @InstructorId,
                             updated_at = @UpdatedAt

@@ -34,6 +34,21 @@ namespace Infrastructure.Persistence.Configurations
                 .IsRequired()
                 .HasDefaultValue(0);
 
+            builder.Property(c => c.Language)
+                .HasMaxLength(50)
+                .IsRequired()
+                .HasDefaultValue("English");
+
+            builder.Property(c => c.WhatYouWillLearn)
+                .IsRequired();
+
+            builder.Property(c => c.Requirements)
+                .IsRequired();
+
+            builder.Property(c => c.IntroVideoUrl)
+                .HasMaxLength(500)
+                .IsRequired();
+
             builder.Property(c => c.Status)
                 .HasConversion(
                     s => s.ToString(),

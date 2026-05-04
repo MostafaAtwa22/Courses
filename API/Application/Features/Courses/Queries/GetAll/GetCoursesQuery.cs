@@ -2,5 +2,5 @@ using Application.DTOs.Course;
 
 namespace Application.Features.Courses.Queries.GetAll
 {
-    public sealed record GetCoursesQuery(CourseQueryParams QueryParams) : IRequest<PaginatedResult<CourseResponseDto>>;
+    public sealed record GetCoursesQuery(CourseQueryParams QueryParams) : IRequest<PaginatedResult<CourseSummaryDto>>;
 }

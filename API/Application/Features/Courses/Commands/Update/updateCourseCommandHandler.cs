@@ -10,7 +10,6 @@ namespace Application.Features.Courses.Commands.Update
                 ?? throw new NotFoundException(nameof(Course), request.Id);
             
             string? pictureUrl = null;
-
             if (request.Dto.PictureUrl is not null)
             {
                 // delete the old one
@@ -24,7 +23,24 @@ namespace Application.Features.Courses.Commands.Update
                 );
             }
 
-            request.Dto.UpdateEntity(course, pictureUrl);
+            string? introVideoUrl = null;
+            if (request.Dto.IntroVideo is not null)
+            {
+                // delete the old one
+                if (!string.IsNullOrEmpty(course.IntroVideoUrl))
+                {
+                    await _fileService.DeleteAsync(course.IntroVideoUrl);
+                }
+
+                // add the new one
+                introVideoUrl = await _fileService.UploadAsync(
+                    request.Dto.IntroVideo.OpenReadStream(),
+                    request.Dto.IntroVideo.FileName,
+                    FolderPaths.sectionContentVideos + $"{request.Dto.Title.Replace(" ", "_")}_Intro_Video"
+                );
+            }
+
+            request.Dto.UpdateEntity(course, pictureUrl, introVideoUrl);
             
             await _repo.UpdateAsync(course, cancellationToken);
         }
