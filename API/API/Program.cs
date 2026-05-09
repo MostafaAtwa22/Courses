@@ -2,9 +2,7 @@ using Application;
 using Serilog;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
-using API.RateLimiting;
 using API.Extensions;
-using Application.Common.Options;
 
 using API.Cors;
 
@@ -28,17 +26,21 @@ await app.UseAutoMigrationAsync();
 
 app.UseExceptionHandler();
 
-app.UseSerilogRequestLogging();
-
 app.UseHttpsRedirection();
 
 app.UseStaticFiles();
+
+app.UseSerilogRequestLogging();
+
 app.MapHealthChecks("health", new HealthCheckOptions
 {
     ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
 });
 
 app.UseCors("DefaultPolicy");
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.UseRateLimiter();
 

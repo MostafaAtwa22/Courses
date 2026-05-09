@@ -1,5 +1,6 @@
 using API.Exceptions;
-using Application.Common.Options;
+using Microsoft.AspNetCore.Identity;
+using System.Text.Json.Serialization;
 
 namespace API.Extensions
 {
@@ -7,18 +8,29 @@ namespace API.Extensions
     {
         public static IServiceCollection AddApplicationServices(this IServiceCollection services, IConfiguration config)
         {
-            services.Configure<UrlsOptions>(config.GetSection("Urls"));
-
+            services.Configure<UrlsOptions>(config.GetSection(UrlsOptions.SectionName));
+            services.Configure<JwtOptions>(config.GetSection(JwtOptions.SectionName));
+            
             services.AddProblemDetails();
             services.AddExceptionHandler<ValidationExceptionHandler>();
             services.AddExceptionHandler<NotFoundExceptionHandler>();
+            services.AddExceptionHandler<BadRequestExceptionHandler>();
             services.AddExceptionHandler<ConflictExceptionHandler>();
             services.AddExceptionHandler<ForbiddenExceptionHandler>();
             services.AddExceptionHandler<UnauthorizedExceptionHandler>();
             services.AddExceptionHandler<PostgresExceptionHandler>();
             services.AddExceptionHandler<GlobalExceptionHandler>();
 
-            services.AddCarter();
+            services.AddAuthentication();
+            services.AddAuthorization();
+            services.Configure<SecurityStampValidatorOptions>(options =>
+            {
+                options.ValidationInterval = TimeSpan.FromMinutes(30);
+            });
+            services.ConfigureHttpJsonOptions(options => {
+                options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
+            });
+            services.AddCarter();   
             return services;
         }
     }

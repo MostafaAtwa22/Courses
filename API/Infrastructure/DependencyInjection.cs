@@ -3,12 +3,17 @@ using Microsoft.Extensions.DependencyInjection;
 using Infrastructure.Persistence.Data;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Infrastructure.Repositories;
+using Infrastructure.Identity;
 using Infrastructure.Services;
 using StackExchange.Redis;
 using Infrastructure.Cache;
+using Microsoft.AspNetCore.Identity;
+using Infrastructure.Email;
+using Application.Common.Interfaces.Email;
+using Application.Common.Interfaces.Identity;
+using Dapper;
 using Microsoft.EntityFrameworkCore;
 using Domain.Entities.Identity;
-using Microsoft.AspNetCore.Identity;
 
 public static class DependencyInjection
 {
@@ -16,14 +21,39 @@ public static class DependencyInjection
         this IServiceCollection services,
         IConfiguration config)
     {
-        Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
         var connectionString = config.GetConnectionString("DefaultConnection") 
             ?? throw new InvalidOperationException("Default connection string is not configured");
 
+        services
+            .AddPersistence(connectionString)
+            .AddIdentityServices()
+            .AddCaching(config)
+            .AddInfrastructureServices()
+            .AddHealthCheckServices(connectionString, config);
+
+        return services;
+    }
+
+    private static IServiceCollection AddPersistence(this IServiceCollection services, string connectionString)
+    {
+        DefaultTypeMap.MatchNamesWithUnderscores = true;
+        
         services.AddDbContext<ApplicationDbContext>(options =>
             options.UseNpgsql(connectionString)
                    .UseSnakeCaseNamingConvention());
 
+        services.AddScoped<IDbConnectionFactory, DbConnectionFactory>();
+        services.AddScoped<ICategoryRepository, CategoryRepository>();
+        services.AddScoped<ICourseRepository, CourseRepository>();
+        services.AddScoped<IReviewRepository, ReviewRepository>();
+        services.AddScoped<ISectionRepository, SectionRepository>();
+        services.AddScoped<IContentRepository, ContentRepository>();
+        
+        return services;
+    }
+
+    private static IServiceCollection AddIdentityServices(this IServiceCollection services)
+    {
         services.AddIdentity<ApplicationUser, IdentityRole>(options =>
         {
             options.Password.RequireDigit = true;
@@ -31,12 +61,16 @@ public static class DependencyInjection
             options.Password.RequireNonAlphanumeric = true;
             options.Password.RequireUppercase = true;
             options.Password.RequireLowercase = true;
-            options.User.RequireUniqueEmail = true;
             
-            // Confirem email
+            // Confirm email
             options.SignIn.RequireConfirmedEmail = true;
-            options.Tokens.EmailConfirmationTokenProvider = TokenOptions.DefaultEmailProvider; // make the code as numbers
+            options.Tokens.EmailConfirmationTokenProvider = TokenOptions.DefaultEmailProvider;
             
+            // user settings
+            options.User.RequireUniqueEmail = true;
+            options.User.AllowedUserNameCharacters =
+                "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
+
             // Lockout settings
             options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
             options.Lockout.MaxFailedAccessAttempts = 5;
@@ -45,27 +79,40 @@ public static class DependencyInjection
         .AddEntityFrameworkStores<ApplicationDbContext>()
         .AddDefaultTokenProviders();
 
+        services.AddScoped<IAuthService, AuthService>();
+        services.AddTransient<IIdentityEmailService, IdentityEmailService>();
+
+        return services;
+    }
+
+    private static IServiceCollection AddCaching(this IServiceCollection services, IConfiguration config)
+    {
         services.AddSingleton<IConnectionMultiplexer>(c => 
         {
             var redis = config.GetConnectionString("Cache") 
                 ?? throw new InvalidOperationException("Redis connection string is not configured");
 
             var configuration = ConfigurationOptions.Parse(redis, true);
-
             return ConnectionMultiplexer.Connect(configuration);
         });
 
         services.AddSingleton<ICacheService, RedisCacheService>();
-        services.AddScoped<IDbConnectionFactory, DbConnectionFactory>();
-        services.AddScoped<ICategoryRepository, CategoryRepository>();
-        services.AddScoped<ICourseRepository, CourseRepository>();
-        services.AddScoped<IReviewRepository, ReviewRepository>();
+        
+        return services;
+    }
+
+    private static IServiceCollection AddInfrastructureServices(this IServiceCollection services)
+    {
         services.AddScoped<IFileService, FileService>();
         services.AddScoped<ICurrentUserService, CurrentUserService>();
-        services.AddScoped<ISectionRepository, SectionRepository>();
-        services.AddScoped<IContentRepository, ContentRepository>();
+        services.AddTransient<IEmailService, EmailService>();
         services.AddHttpContextAccessor();
         
+        return services;
+    }
+
+    private static IServiceCollection AddHealthCheckServices(this IServiceCollection services, string connectionString, IConfiguration config)
+    {
         services.AddHealthChecks()
             .AddNpgSql(connectionString, 
                 name: "PostgreSQL",
@@ -75,6 +122,7 @@ public static class DependencyInjection
                 name: "Redis",
                 failureStatus: HealthStatus.Unhealthy,
                 tags: new[] { "db", "redis" });
+                
         return services;
     }
 }

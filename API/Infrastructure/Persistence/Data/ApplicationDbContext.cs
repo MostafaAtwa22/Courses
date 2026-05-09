@@ -7,8 +7,8 @@ namespace Infrastructure.Persistence.Data
     {
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
             base.OnModelCreating(builder);
+            builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         }
         
         public required DbSet<Course> Courses { get; set; }

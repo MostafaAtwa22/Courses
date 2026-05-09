@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirm Your Email</title>
+    <style>
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f9f9ff;
+            color: #111c2d;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+        .wrapper {
+            background-color: #f9f9ff;
+            padding: 40px 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+        .header {
+            background-color: #2563EB;
+            padding: 40px 20px;
+            text-align: center;
+        }
+        .header h1 {
+            color: #ffffff;
+            margin: 0;
+            font-size: 28px;
+            font-family: 'Manrope', sans-serif;
+            font-weight: 700;
+        }
+        .content {
+            padding: 40px;
+        }
+        .content p {
+            margin-bottom: 24px;
+            font-size: 16px;
+            color: #434655;
+        }
+        .btn-container {
+            text-align: center;
+            margin: 32px 0;
+        }
+        .btn {
+            background-color: #2563EB;
+            color: #ffffff !important;
+            padding: 16px 32px;
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+        }
+        .footer {
+            padding: 20px;
+            text-align: center;
+            font-size: 12px;
+            color: #94a3b8;
+            background-color: #f8fafc;
+        }
+        @media only screen and (max-width: 600px) {
+            .content {
+                padding: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <div class="container">
+            <div class="header">
+                <h1>EduFocus</h1>
+            </div>
+            <div class="content">
+                <p>Hi {{UserName}},</p>
+                <p>Welcome to <strong>EduFocus</strong>! We're excited to have you on board.</p>
+                <p>To get started and verify your account, please click the button below:</p>
+                <div class="btn-container">
+                    <a href="{{ConfirmationLink}}" class="btn">Confirm Email Address</a>
+                </div>
+                <p>If the button doesn't work, you can also copy and paste the following link into your browser:</p>
+                <p style="word-break: break-all; font-size: 14px; color: #2563EB;">{{ConfirmationLink}}</p>
+                <p>If you did not sign up for an account, you can safely ignore this email.</p>
+                <p>Happy learning!<br><strong>The EduFocus Team</strong></p>
+            </div>
+            <div class="footer">
+                <p>&copy; 2026 EduFocus. All rights reserved.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
