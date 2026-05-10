@@ -61,10 +61,15 @@ namespace API.Tests.Endpoints
             content.Add(new StringContent("150"), "Cost");
             content.Add(new StringContent(validCatId.ToString()), "CategoryId");
             content.Add(new StringContent("f1b1b1b1-b1b1-b1b1-b1b1-b1b1b1b1b1b1"), "InstructorId");
+            content.Add(new StringContent("English"), "Language");
 
             var fileContent = new ByteArrayContent(new byte[] { 0x01, 0x02, 0x03 });
             fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("image/jpeg");
             content.Add(fileContent, "PictureUrl", "test.jpg");
+
+            var videoContent = new ByteArrayContent(new byte[] { 0x01, 0x02, 0x03 });
+            videoContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("video/mp4");
+            content.Add(videoContent, "IntroVideo", "test.mp4");
 
             // Act
             var response = await _client.PostAsync("/courses", content);
@@ -76,7 +81,8 @@ namespace API.Tests.Endpoints
                 throw new Exception($"500 Error: {error}");
             }
             response.StatusCode.Should().Be(HttpStatusCode.Created);
-            var result = await response.Content.ReadFromJsonAsync<CourseResponseDto>();
+            var options = new System.Text.Json.JsonSerializerOptions { PropertyNameCaseInsensitive = true, Converters = { new System.Text.Json.Serialization.JsonStringEnumConverter() } };
+            var result = await response.Content.ReadFromJsonAsync<CourseResponseDto>(options);
             result.Should().NotBeNull();
             result!.Id.Should().NotBeEmpty();
             result.Title.Should().Be(title);
@@ -117,21 +123,27 @@ namespace API.Tests.Endpoints
             createContent.Add(new StringContent("200"), "Cost");
             createContent.Add(new StringContent(validCatId.ToString()), "CategoryId");
             createContent.Add(new StringContent("f1b1b1b1-b1b1-b1b1-b1b1-b1b1b1b1b1b1"), "InstructorId");
+            createContent.Add(new StringContent("English"), "Language");
             var imageContent = new ByteArrayContent(new byte[] { 0x01 });
             imageContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("image/jpeg");
             createContent.Add(imageContent, "PictureUrl", "lifecycle.jpg");
+
+            var videoContent = new ByteArrayContent(new byte[] { 0x01, 0x02, 0x03 });
+            videoContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("video/mp4");
+            createContent.Add(videoContent, "IntroVideo", "test.mp4");
 
             var createResponse = await _client.PostAsync("/courses", createContent);
             
             if(createResponse.StatusCode == HttpStatusCode.Created) 
             {
-                var createdCourse = await createResponse.Content.ReadFromJsonAsync<CourseResponseDto>();
+                var options = new System.Text.Json.JsonSerializerOptions { PropertyNameCaseInsensitive = true, Converters = { new System.Text.Json.Serialization.JsonStringEnumConverter() } };
+                var createdCourse = await createResponse.Content.ReadFromJsonAsync<CourseResponseDto>(options);
                 var id = createdCourse!.Id;
 
                 // 2. Get By Id
                 var getResponse = await _client.GetAsync($"/courses/{id}");
                 getResponse.StatusCode.Should().Be(HttpStatusCode.OK);
-                var getResult = await getResponse.Content.ReadFromJsonAsync<CourseResponseDto>();
+                var getResult = await getResponse.Content.ReadFromJsonAsync<CourseResponseDto>(options);
                 getResult!.Title.Should().Be(title);
 
                 // 3. Update
@@ -151,7 +163,7 @@ namespace API.Tests.Endpoints
 
                 // 4. Verify Update
                 var getResponseAfterUpdate = await _client.GetAsync($"/courses/{id}");
-                var updatedResult = await getResponseAfterUpdate.Content.ReadFromJsonAsync<CourseResponseDto>();
+                var updatedResult = await getResponseAfterUpdate.Content.ReadFromJsonAsync<CourseResponseDto>(options);
                 updatedResult!.Title.Should().Be(title + " Updated");
                 updatedResult.Status.Should().Be(Domain.Enums.CourseStatus.Done);
 

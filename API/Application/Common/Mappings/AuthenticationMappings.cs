@@ -13,7 +13,10 @@ namespace Application.Common.Mappings
                 Email = dto.Email,
                 FirstName = dto.FirstName,
                 LastName = dto.LastName,
-                Gender = dto.Gender
+                Gender = dto.Gender,
+                NormalizedEmail = dto.Email.ToUpper(),
+                NormalizedUserName = dto.UserName.ToUpper(),
+                SecurityStamp = Guid.NewGuid().ToString()
             };
         }
     }

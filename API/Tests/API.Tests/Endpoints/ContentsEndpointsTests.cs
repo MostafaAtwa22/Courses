@@ -50,13 +50,19 @@ namespace API.Tests.Endpoints
             content.Add(new StringContent("150"), "Cost");
             content.Add(new StringContent(validCatId.ToString()), "CategoryId");
             content.Add(new StringContent("f1b1b1b1-b1b1-b1b1-b1b1-b1b1b1b1b1b1"), "InstructorId");
+            content.Add(new StringContent("English"), "Language");
 
             var fileContent = new ByteArrayContent(new byte[] { 0x01, 0x02, 0x03 });
             fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("image/jpeg");
             content.Add(fileContent, "PictureUrl", "test.jpg");
 
+            var videoContent = new ByteArrayContent(new byte[] { 0x01, 0x02, 0x03 });
+            videoContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("video/mp4");
+            content.Add(videoContent, "IntroVideo", "test.mp4");
+
+            var options = new System.Text.Json.JsonSerializerOptions { PropertyNameCaseInsensitive = true, Converters = { new System.Text.Json.Serialization.JsonStringEnumConverter() } };
             var courseRes = await _client.PostAsync("/courses", content);
-            var courseObj = await courseRes.Content.ReadFromJsonAsync<Application.DTOs.Course.CourseResponseDto>();
+            var courseObj = await courseRes.Content.ReadFromJsonAsync<Application.DTOs.Course.CourseResponseDto>(options);
             return courseObj!.Id;
         }
 
@@ -81,25 +87,26 @@ namespace API.Tests.Endpoints
             var createResponse = await _client.PostAsync("/contents", createContent);
             createResponse.StatusCode.Should().Be(HttpStatusCode.Created);
             
-            var createdContent = await createResponse.Content.ReadFromJsonAsync<ContentResponseDto>();
+            var options = new System.Text.Json.JsonSerializerOptions { PropertyNameCaseInsensitive = true, Converters = { new System.Text.Json.Serialization.JsonStringEnumConverter() } };
+            var createdContent = await createResponse.Content.ReadFromJsonAsync<ContentResponseDto>(options);
             var id = createdContent!.Id;
 
             // 2. Get By Id
             var getResponse = await _client.GetAsync($"/contents/{id}");
             getResponse.StatusCode.Should().Be(HttpStatusCode.OK);
-            var getResult = await getResponse.Content.ReadFromJsonAsync<ContentResponseDto>();
+            var getResult = await getResponse.Content.ReadFromJsonAsync<ContentResponseDto>(options);
             getResult!.Title.Should().Be("Lifecycle Video");
 
             // 3. Get By Section
             var getListResponse = await _client.GetAsync($"/contents/section/{sectionId}");
             getListResponse.StatusCode.Should().Be(HttpStatusCode.OK);
-            var listResult = await getListResponse.Content.ReadFromJsonAsync<List<ContentResponseDto>>();
+            var listResult = await getListResponse.Content.ReadFromJsonAsync<List<ContentResponseDto>>(options);
             listResult.Should().Contain(x => x.Id == id);
 
             // 3.1 Get By Course
             var getCourseListResponse = await _client.GetAsync($"/contents/course/{courseId}");
             getCourseListResponse.StatusCode.Should().Be(HttpStatusCode.OK);
-            var courseListResult = await getCourseListResponse.Content.ReadFromJsonAsync<PaginatedResult<ContentResponseDto>>();
+            var courseListResult = await getCourseListResponse.Content.ReadFromJsonAsync<PaginatedResult<ContentResponseDto>>(options);
             courseListResult!.Items.Should().Contain(x => x.Id == id);
 
             // 4. Update
@@ -115,7 +122,7 @@ namespace API.Tests.Endpoints
 
             // 5. Verify Update
             var getResponseAfterUpdate = await _client.GetAsync($"/contents/{id}");
-            var updatedResult = await getResponseAfterUpdate.Content.ReadFromJsonAsync<ContentResponseDto>();
+            var updatedResult = await getResponseAfterUpdate.Content.ReadFromJsonAsync<ContentResponseDto>(options);
             updatedResult!.Title.Should().Be("Lifecycle Video Updated");
             updatedResult.Order.Should().Be(2);
 

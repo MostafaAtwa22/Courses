@@ -10,3 +10,5 @@ global using Application.DTOs.Course;
 global using Application.Common.Mappings;
 global using Domain.Constants;
 global using FluentValidation;
+global using Application.DTOs.Authentication;
+global using Domain.Enums;

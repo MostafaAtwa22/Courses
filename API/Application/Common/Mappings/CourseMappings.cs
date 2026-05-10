@@ -14,8 +14,8 @@ namespace Application.Common.Mappings
                 CategoryId = dto.CategoryId,
                 InstructorId = dto.InstructorId,
                 Language = dto.Language,
-                WhatYouWillLearn = dto.WhatYouWillLearn.ToList(),
-                Requirements = dto.Requirements.ToList(),
+                WhatYouWillLearn = dto.WhatYouWillLearn?.ToList() ?? [],
+                Requirements = dto.Requirements?.ToList() ?? [],
                 IntroVideoUrl = introVideoUrl
             };
         }
@@ -29,8 +29,8 @@ namespace Application.Common.Mappings
             course.CategoryId = dto.CategoryId;
             course.InstructorId = dto.InstructorId;
             course.Language = dto.Language;
-            course.WhatYouWillLearn = dto.WhatYouWillLearn.ToList();
-            course.Requirements = dto.Requirements.ToList();
+            course.WhatYouWillLearn = dto.WhatYouWillLearn?.ToList() ?? [];
+            course.Requirements = dto.Requirements?.ToList() ?? [];
             
             if (pictureUrl is not null)
                 course.PictureUrl = pictureUrl;

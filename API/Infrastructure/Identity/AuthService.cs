@@ -1,5 +1,4 @@
 using Application.Common.Interfaces.Identity;
-using Domain.Entities.Identity;
 using Microsoft.AspNetCore.Identity;
 
 namespace Infrastructure.Identity

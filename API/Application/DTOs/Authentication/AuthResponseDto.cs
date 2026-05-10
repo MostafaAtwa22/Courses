@@ -2,16 +2,8 @@ using Domain.Enums;
 
 namespace Application.DTOs.Authentication
 {
-    public class AuthResponseDto
+    public class AuthResponseDto : BaseIdentityResponseDto
     {
-        public string Id { get; set; } = string.Empty;
-        public string FirstName { get; set; } = string.Empty;
-        public string LastName { get; set; } = string.Empty;
-        public string Email { get; set; } = string.Empty;
-        public string UserName { get; set; } = string.Empty;
-        public string PhoneNumber { get; set; } = string.Empty;
-        public string? ProfilePicture { get; set; }
-        public Gender Gender { get; set; }
-        public ICollection<string> Roles { get; set; } = [];
+        public string Token { get; set; } = string.Empty;
     }
 }

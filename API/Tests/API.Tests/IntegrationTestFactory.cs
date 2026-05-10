@@ -11,6 +11,7 @@ namespace API.Tests
     public class IntegrationTestFactory<TProgram> : WebApplicationFactory<TProgram> where TProgram : class
     {
         public Mock<ICurrentUserService> CurrentUserServiceMock { get; } = new();
+        public Mock<Application.Common.Interfaces.Identity.IIdentityEmailService> IdentityEmailServiceMock { get; } = new();
 
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
@@ -24,6 +25,7 @@ namespace API.Tests
             builder.ConfigureTestServices(services =>
             {
                 services.AddSingleton(CurrentUserServiceMock.Object);
+                services.AddSingleton(IdentityEmailServiceMock.Object);
             });
         }
     }

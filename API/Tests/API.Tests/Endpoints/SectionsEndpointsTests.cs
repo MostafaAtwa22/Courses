@@ -25,7 +25,8 @@ namespace API.Tests.Endpoints
             // Assert
             response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-            var result = await response.Content.ReadFromJsonAsync<PaginatedResult<SectionResponseDto>>();
+            var options = new System.Text.Json.JsonSerializerOptions { PropertyNameCaseInsensitive = true, Converters = { new System.Text.Json.Serialization.JsonStringEnumConverter() } };
+            var result = await response.Content.ReadFromJsonAsync<PaginatedResult<SectionResponseDto>>(options);
             result.Should().NotBeNull();
         }
 
@@ -54,7 +55,8 @@ namespace API.Tests.Endpoints
             // Assert
             response.StatusCode.Should().Be(HttpStatusCode.OK);
             
-            var result = await response.Content.ReadFromJsonAsync<PaginatedResult<SectionResponseDto>>();
+            var options = new System.Text.Json.JsonSerializerOptions { PropertyNameCaseInsensitive = true, Converters = { new System.Text.Json.Serialization.JsonStringEnumConverter() } };
+            var result = await response.Content.ReadFromJsonAsync<PaginatedResult<SectionResponseDto>>(options);
             result.Should().NotBeNull();
         }
 
@@ -76,13 +78,19 @@ namespace API.Tests.Endpoints
             content.Add(new StringContent("150"), "Cost");
             content.Add(new StringContent(validCatId.ToString()), "CategoryId");
             content.Add(new StringContent("f1b1b1b1-b1b1-b1b1-b1b1-b1b1b1b1b1b1"), "InstructorId");
+            content.Add(new StringContent("English"), "Language");
 
             var fileContent = new ByteArrayContent(new byte[] { 0x01, 0x02, 0x03 });
             fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("image/jpeg");
             content.Add(fileContent, "PictureUrl", "test.jpg");
 
+            var videoContent = new ByteArrayContent(new byte[] { 0x01, 0x02, 0x03 });
+            videoContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("video/mp4");
+            content.Add(videoContent, "IntroVideo", "test.mp4");
+
+            var options = new System.Text.Json.JsonSerializerOptions { PropertyNameCaseInsensitive = true, Converters = { new System.Text.Json.Serialization.JsonStringEnumConverter() } };
             var courseRes = await _client.PostAsync("/courses", content);
-            var courseObj = await courseRes.Content.ReadFromJsonAsync<Application.DTOs.Course.CourseResponseDto>();
+            var courseObj = await courseRes.Content.ReadFromJsonAsync<Application.DTOs.Course.CourseResponseDto>(options);
             return courseObj!.Id;
         }
 
@@ -104,7 +112,8 @@ namespace API.Tests.Endpoints
 
             // Assert
             response.StatusCode.Should().Be(HttpStatusCode.Created);
-            var result = await response.Content.ReadFromJsonAsync<SectionResponseDto>();
+            var options = new System.Text.Json.JsonSerializerOptions { PropertyNameCaseInsensitive = true, Converters = { new System.Text.Json.Serialization.JsonStringEnumConverter() } };
+            var result = await response.Content.ReadFromJsonAsync<SectionResponseDto>(options);
             result.Should().NotBeNull();
             result!.Id.Should().NotBeEmpty();
             result.Title.Should().Be("Test Section");
@@ -138,13 +147,14 @@ namespace API.Tests.Endpoints
             var createDto = new SectionCreateDto { Title = "Lifecycle Section", Order = 1, CourseId = validCourseId };
             var createResponse = await _client.PostAsJsonAsync("/sections", createDto);
             createResponse.StatusCode.Should().Be(HttpStatusCode.Created);
-            var createdSection = await createResponse.Content.ReadFromJsonAsync<SectionResponseDto>();
+            var options = new System.Text.Json.JsonSerializerOptions { PropertyNameCaseInsensitive = true, Converters = { new System.Text.Json.Serialization.JsonStringEnumConverter() } };
+            var createdSection = await createResponse.Content.ReadFromJsonAsync<SectionResponseDto>(options);
             var id = createdSection!.Id;
 
             // 2. Get By Id
             var getResponse = await _client.GetAsync($"/sections/{id}");
             getResponse.StatusCode.Should().Be(HttpStatusCode.OK);
-            var getResult = await getResponse.Content.ReadFromJsonAsync<SectionResponseDto>();
+            var getResult = await getResponse.Content.ReadFromJsonAsync<SectionResponseDto>(options);
             getResult!.Title.Should().Be("Lifecycle Section");
 
             // 3. Update
@@ -154,7 +164,7 @@ namespace API.Tests.Endpoints
 
             // 4. Verify Update
             var getResponseAfterUpdate = await _client.GetAsync($"/sections/{id}");
-            var updatedResult = await getResponseAfterUpdate.Content.ReadFromJsonAsync<SectionResponseDto>();
+            var updatedResult = await getResponseAfterUpdate.Content.ReadFromJsonAsync<SectionResponseDto>(options);
             updatedResult!.Title.Should().Be("Lifecycle Section Updated");
             updatedResult!.Order.Should().Be(2);
 
