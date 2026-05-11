@@ -1,10 +1,6 @@
-using Application.Common.Models;
 using Application.DTOs.Account;
 using Application.Features.Account.Queries.GetAll;
 using Application.Features.Account.Queries.GetById;
-using MediatR;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Carter;
 
 namespace API.Endpoints
 {

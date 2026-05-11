@@ -1,6 +1,5 @@
 using Domain.Entities.Identity;
 using Microsoft.AspNetCore.Identity;
-using Application.Common.Interfaces.Identity;
 
 namespace Application.Features.Authentication.Commands.Register
 {

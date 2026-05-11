@@ -17,7 +17,7 @@ namespace Application.Common.Mappings
                 PhoneNumber = user.PhoneNumber ?? string.Empty,
                 ProfilePicture = user.ProfilePictureUrl,
                 Gender = user.Gender,
-                Roles = roles.ToList()
+                Roles = [.. roles]
             };
         }
     }
