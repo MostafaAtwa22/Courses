@@ -9,6 +9,7 @@ using StackExchange.Redis;
 using Infrastructure.Cache;
 using Microsoft.AspNetCore.Identity;
 using Infrastructure.Email;
+using Application.Common.Interfaces;
 using Application.Common.Interfaces.Email;
 using Application.Common.Interfaces.Identity;
 using Dapper;
@@ -106,6 +107,7 @@ public static class DependencyInjection
         services.AddScoped<IFileService, FileService>();
         services.AddScoped<ICurrentUserService, CurrentUserService>();
         services.AddTransient<IEmailService, EmailService>();
+        services.AddSingleton<IUrlProvider, UrlProvider>();
         services.AddHttpContextAccessor();
         
         return services;

@@ -28,7 +28,7 @@ namespace Application.Features.Authentication.Commands.Register
 
             RuleFor(v => v.Dto.Password)
                 .NotEmpty()
-                .MinimumLength(6)
+                .MinimumLength(6).WithMessage("Password must be at least 6 characters long")
                 .Matches(@"[A-Z]").WithMessage("Password must contain at least one uppercase letter")
                 .Matches(@"[a-z]").WithMessage("Password must contain at least one lowercase letter")
                 .Matches(@"\d").WithMessage("Password must contain at least one digit")

@@ -1,4 +1,5 @@
 using Application.Common.Exceptions;
+using Application.Common.Interfaces;
 using Application.Features.Account.Queries.GetById;
 using Domain.Entities.Identity;
 using FluentAssertions;
@@ -12,12 +13,14 @@ namespace Application.Tests.Account.Queries;
 public class GetUserByIdHandlerTests
 {
     private readonly Mock<UserManager<ApplicationUser>> _userManagerMock;
+    private readonly Mock<IUrlProvider> _urlProviderMock;
     private readonly GetUserByIdQueryHandler _handler;
 
     public GetUserByIdHandlerTests()
     {
         _userManagerMock = MockHelpers.MockUserManager<ApplicationUser>();
-        _handler = new GetUserByIdQueryHandler(_userManagerMock.Object);
+        _urlProviderMock = new Mock<IUrlProvider>();
+        _handler = new GetUserByIdQueryHandler(_userManagerMock.Object, _urlProviderMock.Object);
     }
 
     [Fact]
@@ -32,7 +35,7 @@ public class GetUserByIdHandlerTests
 
         _userManagerMock.Setup(x => x.Users).Returns(users);
         _userManagerMock.Setup(x => x.GetRolesAsync(It.IsAny<ApplicationUser>()))
-            .ReturnsAsync(new List<string> { "Instructor" });
+            .ReturnsAsync(["Instructor"]);
 
         var query = new GetUserByIdQuery(userId);
 

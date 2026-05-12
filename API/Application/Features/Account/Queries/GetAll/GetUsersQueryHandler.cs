@@ -4,10 +4,11 @@ using Application.DTOs.Account;
 using Domain.Entities.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Application.Common.Interfaces;
 
 namespace Application.Features.Account.Queries.GetAll
 {
-    public sealed class GetUsersQueryHandler(UserManager<ApplicationUser> _userManager)
+    public sealed class GetUsersQueryHandler(UserManager<ApplicationUser> _userManager, IUrlProvider _urlProvider)
         : IRequestHandler<GetUsersQuery, PaginatedResult<UserResponseDto>>
     {
         public async Task<PaginatedResult<UserResponseDto>> Handle(GetUsersQuery request, CancellationToken cancellationToken)
@@ -30,7 +31,7 @@ namespace Application.Features.Account.Queries.GetAll
             foreach (var user in users)
             {
                 var roles = await _userManager.GetRolesAsync(user);
-                userDtos.Add(user.ToUserResponseDto(roles));
+                userDtos.Add(user.ToUserResponseDto(roles, _urlProvider));
             }
 
             return new PaginatedResult<UserResponseDto>(userDtos, totalCount, pageNumber, pageSize);

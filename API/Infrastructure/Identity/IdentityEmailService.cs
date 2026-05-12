@@ -18,7 +18,7 @@ namespace Infrastructure.Identity
         public async Task SendConfirmationEmailAsync(ApplicationUser user)
         {
             var emailConfirmationToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-            var baseUrl = _urlsOptions.Value.API;
+            var baseUrl = _urlsOptions.Value.Client;
             var encodedToken = Uri.EscapeDataString(emailConfirmationToken);
             var confirmationLink = $"{baseUrl}/authentication/confirm-email?userId={user.Id}&token={encodedToken}";
 

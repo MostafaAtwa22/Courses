@@ -1,3 +1,4 @@
+using Application.Common.Interfaces;
 using Application.Common.Models;
 using Application.Features.Account.Queries.GetAll;
 using Domain.Entities.Identity;
@@ -12,12 +13,14 @@ namespace Application.Tests.Account.Queries;
 public class GetUsersHandlerTests
 {
     private readonly Mock<UserManager<ApplicationUser>> _userManagerMock;
+    private readonly Mock<IUrlProvider> _urlProviderMock;
     private readonly GetUsersQueryHandler _handler;
 
     public GetUsersHandlerTests()
     {
         _userManagerMock = MockHelpers.MockUserManager<ApplicationUser>();
-        _handler = new GetUsersQueryHandler(_userManagerMock.Object);
+        _urlProviderMock = new Mock<IUrlProvider>();
+        _handler = new GetUsersQueryHandler(_userManagerMock.Object, _urlProviderMock.Object);
     }
 
     [Fact]
@@ -32,7 +35,7 @@ public class GetUsersHandlerTests
 
         _userManagerMock.Setup(x => x.Users).Returns(users);
         _userManagerMock.Setup(x => x.GetRolesAsync(It.IsAny<ApplicationUser>()))
-            .ReturnsAsync(new List<string> { "Student" });
+            .ReturnsAsync(["Student"]);
 
         var query = new GetUsersQuery(new UserQueryParams { PageNumber = 1, PageSize = 10 });
 
@@ -59,7 +62,7 @@ public class GetUsersHandlerTests
 
         _userManagerMock.Setup(x => x.Users).Returns(users);
         _userManagerMock.Setup(x => x.GetRolesAsync(It.IsAny<ApplicationUser>()))
-            .ReturnsAsync(new List<string>());
+            .ReturnsAsync([]);
 
         var query = new GetUsersQuery(new UserQueryParams { SearchTerm = "Jane" });
 

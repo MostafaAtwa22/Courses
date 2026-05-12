@@ -17,6 +17,7 @@ namespace API.RateLimiting
             var instructorOpts = configuration.GetSection("RateLimiter:InstructorWrite").Get<InstructorWritePolicyOptions>() ?? new InstructorWritePolicyOptions();
             var reviewOpts = configuration.GetSection("RateLimiter:Review").Get<ReviewPolicyOptions>() ?? new ReviewPolicyOptions();
             var globalOpts = configuration.GetSection("RateLimiter:Global").Get<GlobalPolicyOptions>() ?? new GlobalPolicyOptions();
+            var passwordOpts = configuration.GetSection("RateLimiter:PasswordManagement").Get<PasswordManagementPolicyOptions>() ?? new PasswordManagementPolicyOptions();
 
             services.Configure<AuthPolicyOptions>(configuration.GetSection("RateLimiter:Auth"));
             services.Configure<ForgotPasswordPolicyOptions>(configuration.GetSection("RateLimiter:ForgotPassword"));
@@ -26,6 +27,7 @@ namespace API.RateLimiting
             services.Configure<InstructorWritePolicyOptions>(configuration.GetSection("RateLimiter:InstructorWrite"));
             services.Configure<ReviewPolicyOptions>(configuration.GetSection("RateLimiter:Review"));
             services.Configure<GlobalPolicyOptions>(configuration.GetSection("RateLimiter:Global"));
+            services.Configure<PasswordManagementPolicyOptions>(configuration.GetSection("RateLimiter:PasswordManagement"));
 
             services.AddRateLimiter(options =>
             {
@@ -162,6 +164,22 @@ namespace API.RateLimiting
                             PermitLimit = reviewOpts.PermitLimit,
                             Window = TimeSpan.FromHours(reviewOpts.WindowHours),
                             QueueLimit = reviewOpts.QueueLimit,
+                            AutoReplenishment = true
+                        });
+                });
+
+                options.AddPolicy(RateLimiterPolicies.PasswordManagement, httpContext =>
+                {
+                    var userId = httpContext.User?.FindFirst("sub")?.Value
+                                ?? GetClientIp(httpContext);
+
+                    return RateLimitPartition.GetFixedWindowLimiter(
+                        partitionKey: $"password-mgmt:{userId}",
+                        factory: _ => new FixedWindowRateLimiterOptions
+                        {
+                            PermitLimit = passwordOpts.PermitLimit,
+                            Window = TimeSpan.FromMinutes(passwordOpts.WindowMinutes),
+                            QueueLimit = passwordOpts.QueueLimit,
                             AutoReplenishment = true
                         });
                 });
