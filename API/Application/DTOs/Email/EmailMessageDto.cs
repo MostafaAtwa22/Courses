@@ -1,6 +1,6 @@
 namespace Application.DTOs.Email
 {
-    public class EmailMessageDto
+    public sealed record EmailMessageDto
     {
         public string To { get; set; } = string.Empty;
         public string Subject { get; set; } = string.Empty;

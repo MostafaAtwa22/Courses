@@ -6,5 +6,6 @@ namespace Application.Common.Interfaces.Identity
     {
         Task<bool> IsEmailExistsAsync(string email);
         Task<bool> IsUserNameExistsAsync(string userName);
+        Task<string> CreateTokenAsync(ApplicationUser user);
     }
 }

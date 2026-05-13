@@ -1,10 +1,7 @@
-using System;
-using System.IO;
 using Application.Common.Interfaces.Email;
 using Application.Common.Interfaces.Identity;
 using Application.Common.Options;
 using Application.DTOs.Email;
-using Domain.Entities.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 
@@ -33,6 +30,25 @@ namespace Infrastructure.Identity
             {
                 To = user.Email!,
                 Subject = "Confirm your email",
+                Body = htmlBody
+            };
+
+            await _emailService.SendEmailAsync(emailRequest);
+        }
+
+        public async Task Send2FAEmailAsync(ApplicationUser user, string code)
+        {
+            var templatePath = Path.Combine(AppContext.BaseDirectory, "Email", "Templates", "TwoFactorAuthentication.html");
+            var template = await File.ReadAllTextAsync(templatePath);
+
+            var htmlBody = template
+                .Replace("{{UserName}}", user.UserName)
+                .Replace("{{Otp}}", code);
+
+            var emailRequest = new EmailMessageDto
+            {
+                To = user.Email!,
+                Subject = "Your authentication code",
                 Body = htmlBody
             };
 

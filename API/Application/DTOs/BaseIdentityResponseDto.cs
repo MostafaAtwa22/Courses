@@ -9,6 +9,7 @@ namespace Application.DTOs
         public string UserName { get; set; } = string.Empty;
         public string PhoneNumber { get; set; } = string.Empty;
         public string? ProfilePicture { get; set; }
+        public bool Is2FAEnable { get; set; }
         public Gender Gender { get; set; }
         public ICollection<string> Roles { get; set; } = [];
     }

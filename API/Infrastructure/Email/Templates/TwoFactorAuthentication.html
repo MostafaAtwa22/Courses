@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Authentication Code</title>
+    <style>
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f9f9ff;
+            color: #111c2d;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+        .wrapper {
+            background-color: #f9f9ff;
+            padding: 40px 20px;
+        }
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+        }
+        .header {
+            background-color: #2563EB;
+            padding: 48px 20px;
+            text-align: center;
+            background-image: linear-gradient(135deg, #2563EB 0%, #004ac6 100%);
+        }
+        .header h1 {
+            color: #ffffff;
+            margin: 0;
+            font-size: 32px;
+            font-family: 'Manrope', sans-serif;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+        .content {
+            padding: 48px 40px;
+            text-align: center;
+        }
+        .content h2 {
+            font-family: 'Manrope', sans-serif;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: #111c2d;
+        }
+        .content p {
+            margin-bottom: 32px;
+            font-size: 16px;
+            color: #434655;
+        }
+        .otp-container {
+            background-color: #f1f5f9;
+            border: 2px dashed #cbd5e1;
+            padding: 32px;
+            border-radius: 16px;
+            margin: 32px 0;
+            display: inline-block;
+            min-width: 200px;
+        }
+        .otp-code {
+            font-family: 'Manrope', monospace;
+            font-size: 48px;
+            font-weight: 800;
+            letter-spacing: 12px;
+            color: #2563EB;
+            margin: 0;
+            padding-left: 12px; /* balance the letter spacing */
+        }
+        .security-note {
+            background-color: #fff9f0;
+            border-left: 4px solid #f59e0b;
+            padding: 16px;
+            text-align: left;
+            margin-top: 32px;
+            border-radius: 8px;
+        }
+        .security-note p {
+            margin: 0;
+            font-size: 14px;
+            color: #92400e;
+        }
+        .footer {
+            padding: 32px;
+            text-align: center;
+            font-size: 13px;
+            color: #94a3b8;
+            background-color: #f8fafc;
+            border-top: 1px solid #e2e8f0;
+        }
+        .footer p {
+            margin: 8px 0;
+        }
+        @media only screen and (max-width: 600px) {
+            .content {
+                padding: 32px 24px;
+            }
+            .otp-code {
+                font-size: 36px;
+                letter-spacing: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <div class="container">
+            <div class="header">
+                <h1>EduFocus</h1>
+            </div>
+            <div class="content">
+                <h2>Two-Factor Authentication</h2>
+                <p>Hi {{UserName}},</p>
+                <p>We detected a login attempt to your account. Use the following code to complete your sign-in process. This code will expire in 10 minutes.</p>
+                
+                <div class="otp-container">
+                    <p class="otp-code">{{Otp}}</p>
+                </div>
+
+                <div class="security-note">
+                    <p><strong>Security Warning:</strong> If you didn't request this code, please secure your account immediately or contact our support team.</p>
+                </div>
+                
+                <p style="margin-top: 32px;">Happy learning!<br><strong>The EduFocus Team</strong></p>
+            </div>
+            <div class="footer">
+                <p>&copy; 2026 EduFocus. All rights reserved.</p>
+                <p>You received this email because 2FA is enabled for your account.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

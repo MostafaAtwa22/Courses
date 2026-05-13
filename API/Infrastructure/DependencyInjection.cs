@@ -9,12 +9,9 @@ using StackExchange.Redis;
 using Infrastructure.Cache;
 using Microsoft.AspNetCore.Identity;
 using Infrastructure.Email;
-using Application.Common.Interfaces;
 using Application.Common.Interfaces.Email;
 using Application.Common.Interfaces.Identity;
-using Dapper;
-using Microsoft.EntityFrameworkCore;
-using Domain.Entities.Identity;
+using constant = Domain.Constants;
 
 public static class DependencyInjection
 {
@@ -22,7 +19,7 @@ public static class DependencyInjection
         this IServiceCollection services,
         IConfiguration config)
     {
-        var connectionString = config.GetConnectionString("DefaultConnection") 
+        var connectionString = config.GetConnectionString(constant.IdentityConstants.DefaultConnection) 
             ?? throw new InvalidOperationException("Default connection string is not configured");
 
         services
@@ -66,11 +63,12 @@ public static class DependencyInjection
             // Confirm email
             options.SignIn.RequireConfirmedEmail = true;
             options.Tokens.EmailConfirmationTokenProvider = TokenOptions.DefaultEmailProvider;
-            
+            options.Tokens.ProviderMap[constant.IdentityConstants.EmailOtpProvider] = new TokenProviderDescriptor(
+                typeof(EmailTokenProvider<ApplicationUser>)
+            );
             // user settings
             options.User.RequireUniqueEmail = true;
-            options.User.AllowedUserNameCharacters =
-                "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
+            options.User.AllowedUserNameCharacters = constant.IdentityConstants.AllowedUserNameCharacters;
 
             // Lockout settings
             options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
@@ -78,11 +76,12 @@ public static class DependencyInjection
             options.Lockout.AllowedForNewUsers = true;
         })
         .AddEntityFrameworkStores<ApplicationDbContext>()
-        .AddDefaultTokenProviders();
+        .AddDefaultTokenProviders()
+        .AddTokenProvider<EmailTokenProvider<ApplicationUser>>(constant.IdentityConstants.EmailOtpProvider);
 
         services.AddScoped<IAuthService, AuthService>();
         services.AddTransient<IIdentityEmailService, IdentityEmailService>();
-
+        services.AddTransient<ITwoFactorService, TwoFactorService>();
         return services;
     }
 
@@ -90,7 +89,7 @@ public static class DependencyInjection
     {
         services.AddSingleton<IConnectionMultiplexer>(c => 
         {
-            var redis = config.GetConnectionString("Cache") 
+            var redis = config.GetConnectionString(constant.IdentityConstants.Cache) 
                 ?? throw new InvalidOperationException("Redis connection string is not configured");
 
             var configuration = ConfigurationOptions.Parse(redis, true);

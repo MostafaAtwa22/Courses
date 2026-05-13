@@ -18,6 +18,7 @@ namespace Application.Common.Mappings
                 PhoneNumber = user.PhoneNumber ?? string.Empty,
                 ProfilePicture = urlProvider.GetFullUrl(user.ProfilePictureUrl),
                 Gender = user.Gender,
+                Is2FAEnable = user.TwoFactorEnabled,
                 Roles = [.. roles]
             };
         }
