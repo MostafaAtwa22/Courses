@@ -17,6 +17,8 @@ namespace API.Extensions
             services.AddExceptionHandler<BadRequestExceptionHandler>();
             services.AddExceptionHandler<ConflictExceptionHandler>();
             services.AddExceptionHandler<ForbiddenExceptionHandler>();
+            services.AddExceptionHandler<AccountLockedExceptionHandler>();
+            services.AddExceptionHandler<EmailNotConfirmedExceptionHandler>();
             services.AddExceptionHandler<UnauthorizedExceptionHandler>();
             services.AddExceptionHandler<PostgresExceptionHandler>();
             services.AddExceptionHandler<GlobalExceptionHandler>();

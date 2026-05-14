@@ -10,14 +10,14 @@ namespace Application.Common.Mappings
         {
             return new ApplicationUser
             {
-                UserName = dto.UserName,
-                Email = dto.Email,
-                FirstName = dto.FirstName,
-                LastName = dto.LastName,
-                Gender = dto.Gender,
-                NormalizedEmail = dto.Email.ToUpper(),
+                UserName           = dto.UserName,
+                Email              = dto.Email,
+                FirstName          = dto.FirstName,
+                LastName           = dto.LastName,
+                Gender             = dto.Gender,
+                NormalizedEmail    = dto.Email.ToUpper(),
                 NormalizedUserName = dto.UserName.ToUpper(),
-                SecurityStamp = Guid.NewGuid().ToString()
+                SecurityStamp      = Guid.NewGuid().ToString()
             };
         }
 
@@ -25,16 +25,16 @@ namespace Application.Common.Mappings
         {
             return new AuthResponseDto
             {
-                Id = user.Id,
-                UserName = user.UserName ?? string.Empty,
-                Email = user.Email ?? string.Empty,
-                FirstName = user.FirstName ?? string.Empty,
-                LastName = user.LastName ?? string.Empty,
-                PhoneNumber = user.PhoneNumber ?? string.Empty,
-                Gender = user.Gender,
+                Id             = user.Id,
+                UserName       = user.UserName          ?? string.Empty,
+                Email          = user.Email             ?? string.Empty,
+                FirstName      = user.FirstName         ?? string.Empty,
+                LastName       = user.LastName          ?? string.Empty,
+                PhoneNumber    = user.PhoneNumber       ?? string.Empty,
+                Gender         = user.Gender,
                 ProfilePicture = user.ProfilePictureUrl ?? string.Empty,
-                Is2FAEnable = user.TwoFactorEnabled,
-                Roles = [..roles]
+                Is2FAEnable    = user.TwoFactorEnabled,
+                Roles          = [..roles]
             };
         }
     }

@@ -1,7 +1,12 @@
 using Application.Features.Security.Commands.Disable2FA;
 using Application.Features.Security.Commands.Enable2FA;
 using Application.Features.Security.Commands.Generate2FA;
+using Application.Features.Security.Commands.VerifyTwoFactor;
 using Application.DTOs.Security;
+using Application.DTOs.Authentication;
+using MediatR;
+using Microsoft.AspNetCore.Http.HttpResults;
+using Carter;
 
 namespace API.Endpoints
 {
@@ -33,6 +38,13 @@ namespace API.Endpoints
                 .Produces(StatusCodes.Status204NoContent)
                 .Produces(StatusCodes.Status400BadRequest)
                 .Produces(StatusCodes.Status401Unauthorized);
+
+            group.MapPost("/2fa/verify", VerifyTwoFactor)
+                .WithName(nameof(VerifyTwoFactor))
+                .AllowAnonymous()
+                .Produces<AuthResponseDto>(StatusCodes.Status200OK)
+                .Produces(StatusCodes.Status401Unauthorized)
+                .Produces(StatusCodes.Status400BadRequest);
         }
 
         public static async Task<Results<NoContent, BadRequest, UnauthorizedHttpResult>> Generate2FAToken(
@@ -56,6 +68,13 @@ namespace API.Endpoints
         {
             await mediator.Send(new Disable2FACommand(dto));
             return TypedResults.NoContent();
+        }
+
+        public static async Task<Results<Ok<AuthResponseDto>, UnauthorizedHttpResult, BadRequest>> VerifyTwoFactor(
+            VerifyTwoFactorDto request, IMediator mediator)
+        {
+            var result = await mediator.Send(new VerifyTwoFactorCommand(request));
+            return TypedResults.Ok(result);
         }
     }
 }

@@ -7,7 +7,7 @@ namespace Application.DTOs
         public string LastName { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
         public string UserName { get; set; } = string.Empty;
-        public string PhoneNumber { get; set; } = string.Empty;
+        public string? PhoneNumber { get; set; }
         public string? ProfilePicture { get; set; }
         public bool Is2FAEnable { get; set; }
         public Gender Gender { get; set; }

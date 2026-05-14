@@ -18,11 +18,10 @@ namespace Application.Features.Account.Commands.Lock
             await _userManager.SetLockoutEnabledAsync(user, true);
 
             var lockUntil = request.LockoutUntil.HasValue ? request.LockoutUntil.Value.UtcDateTime : DateTimeOffset.MaxValue.UtcDateTime;
-            await _userManager.SetLockoutEndDateAsync(user, lockUntil);
-
             var result = await _userManager.SetLockoutEndDateAsync(user, lockUntil);
             if (!result.Succeeded)
                 throw new BadRequestException(result.Errors.Select(e => e.Description).FirstOrDefault() ?? "Failed to lock the user account.");
+            await _userManager.ResetAccessFailedCountAsync(user);
         }
     }
 }

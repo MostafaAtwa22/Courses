@@ -1,5 +1,9 @@
 using Application.DTOs.Authentication;
+using Application.Features.Authentication.Commands.Login;
 using Application.Features.Authentication.Commands.Register;
+using MediatR;
+using Microsoft.AspNetCore.Http.HttpResults;
+using Carter;
 
 namespace API.Endpoints
 {
@@ -14,6 +18,12 @@ namespace API.Endpoints
                 .WithName(nameof(Register))
                 .Produces(StatusCodes.Status201Created)
                 .Produces(StatusCodes.Status400BadRequest);
+
+            group.MapPost("/login", Login)
+                .WithName(nameof(Login))
+                .Produces<AuthResponseDto>(StatusCodes.Status200OK)
+                .Produces(StatusCodes.Status401Unauthorized)
+                .Produces(StatusCodes.Status400BadRequest);
         }
 
         public static async Task<Results<Created, BadRequest>> Register(
@@ -21,6 +31,13 @@ namespace API.Endpoints
         {
             await mediator.Send(new CreateRegisterCommand(request));
             return TypedResults.Created();
+        }
+
+        public static async Task<Results<Ok<AuthResponseDto>, UnauthorizedHttpResult, BadRequest>> Login(
+            LoginDto request, IMediator mediator)
+        {
+            var result = await mediator.Send(new CreateLoginCommand(request));
+            return TypedResults.Ok(result);
         }
     }
 }
