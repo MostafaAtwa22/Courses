@@ -4,9 +4,6 @@ using Application.Features.Security.Commands.Generate2FA;
 using Application.Features.Security.Commands.VerifyTwoFactor;
 using Application.DTOs.Security;
 using Application.DTOs.Authentication;
-using MediatR;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Carter;
 
 namespace API.Endpoints
 {

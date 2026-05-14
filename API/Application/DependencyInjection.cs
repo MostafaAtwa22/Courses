@@ -16,6 +16,7 @@ namespace Application
                 options.RegisterServicesFromAssembly(assembly);
                 options.AddOpenBehavior(typeof(ValidationBehavior<,>));
                 options.AddOpenBehavior(typeof(UserContextBehavior<,>));
+                options.AddOpenBehavior(typeof(InstructorOwnershipBehavior<,>));
             });
             
             services.AddValidatorsFromAssembly(assembly);

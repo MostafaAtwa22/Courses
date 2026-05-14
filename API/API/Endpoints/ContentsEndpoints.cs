@@ -34,18 +34,27 @@ namespace API.Endpoints
                 .WithName(nameof(CreateContent))
                 .Produces(StatusCodes.Status201Created)
                 .Produces(StatusCodes.Status400BadRequest)
-                .DisableAntiforgery();
+                .DisableAntiforgery()
+                .RequireAuthorization(policy =>
+                    policy.RequireRole(
+                        Role.Instructor.ToString()));
 
             group.MapPut("/{id:guid}", UpdateContent)
                 .WithName(nameof(UpdateContent))
                 .Produces(StatusCodes.Status204NoContent)
                 .Produces(StatusCodes.Status404NotFound)
-                .DisableAntiforgery();
+                .DisableAntiforgery()
+                .RequireAuthorization(policy =>
+                    policy.RequireRole(
+                        Role.Instructor.ToString()));
 
             group.MapDelete("/{id:guid}", DeleteContent)
                 .WithName(nameof(DeleteContent))
                 .Produces(StatusCodes.Status204NoContent)
-                .Produces(StatusCodes.Status404NotFound);
+                .Produces(StatusCodes.Status404NotFound)
+                .RequireAuthorization(policy =>
+                    policy.RequireRole(
+                        Role.Instructor.ToString()));
         }
 
         public static async Task<Results<Ok<IReadOnlyList<ContentResponseDto>>, BadRequest>> GetBySection(

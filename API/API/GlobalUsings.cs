@@ -5,3 +5,6 @@ global using Application.Common.Models;
 global using Microsoft.AspNetCore.Mvc;
 global using API.RateLimiting;
 global using Application.Common.Options;
+global using Application.Common.Exceptions;
+global using Domain.Entities.Identity;
+global using Domain.Enums.Identity;

@@ -12,8 +12,12 @@ namespace API.Endpoints
         public void AddRoutes(IEndpointRouteBuilder app)
         {
             var group = app.MapGroup("/categories")
-                .WithTags("Categories");
-
+                .WithTags("Categories")
+                .RequireAuthorization(policy =>
+                        policy.RequireRole(
+                            Role.Admin.ToString(),
+                            Role.SuperAdmin.ToString()));
+            
             group.MapGet("/", GetCategories)
                 .WithName(nameof(GetCategories))
                 .Produces<PaginatedResult<CategoryResponseDto>>(StatusCodes.Status200OK)

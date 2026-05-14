@@ -1,4 +1,3 @@
-
 namespace Application.Features.Courses.Commands.Delete
 {
     public sealed class DeleteCourseCommandHandler(

@@ -33,17 +33,26 @@ namespace API.Endpoints
             group.MapPost("/", CreateSection)
                 .WithName(nameof(CreateSection))
                 .Produces(StatusCodes.Status201Created)
-                .Produces(StatusCodes.Status400BadRequest);
+                .Produces(StatusCodes.Status400BadRequest)
+                .RequireAuthorization(policy =>
+                    policy.RequireRole(
+                        Role.Instructor.ToString()));
             
             group.MapPut("/{id:guid}", UpdateSection)
                 .WithName(nameof(UpdateSection))
                 .Produces(StatusCodes.Status204NoContent)
-                .Produces(StatusCodes.Status404NotFound);
+                .Produces(StatusCodes.Status404NotFound)
+                .RequireAuthorization(policy =>
+                    policy.RequireRole(
+                        Role.Instructor.ToString()));
             
             group.MapDelete("/{id:guid}", DeleteSection)
                 .WithName(nameof(DeleteSection))
                 .Produces(StatusCodes.Status204NoContent)
-                .Produces(StatusCodes.Status404NotFound);
+                .Produces(StatusCodes.Status404NotFound)
+                .RequireAuthorization(policy =>
+                    policy.RequireRole(
+                        Role.Instructor.ToString()));
         }
 
         public static async Task<Results<Ok<PaginatedResult<SectionResponseDto>>, BadRequest>> GetSections(

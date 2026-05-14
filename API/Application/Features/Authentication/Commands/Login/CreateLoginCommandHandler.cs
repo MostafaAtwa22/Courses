@@ -22,7 +22,7 @@ namespace Application.Features.Authentication.Commands.Login
             var result = await _signInManager.CheckPasswordSignInAsync(user, request.Dto.Password, true);
             
             if (result.IsLockedOut)
-                throw new AccountLockedException("Account is locked due to multiple failed login attempts. Please try again later.");
+                throw new AccountLockedException("Account is locked. Please try again later.");
 
             if (!result.Succeeded)
                 throw new UnauthorizedException("Invalid email or password.");

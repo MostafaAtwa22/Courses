@@ -1,3 +1,4 @@
+using Application.DTOs.Account;
 using Domain.Entities.Identity;
 
 namespace Application.Common.Interfaces.Identity
@@ -6,5 +7,7 @@ namespace Application.Common.Interfaces.Identity
     {
         Task SendConfirmationEmailAsync(ApplicationUser user);
         Task Send2FAEmailAsync(ApplicationUser user, string code);
+        Task SendAccountLockedEmailAsync(ApplicationUser user, LockUserDto dto);
+        Task SendAccountUnlockedEmailAsync(ApplicationUser user);
     }
 }

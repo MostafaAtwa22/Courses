@@ -4,7 +4,6 @@ using Application.Features.Reviews.Commands.Create;
 using Application.Features.Reviews.Commands.Update;
 using Application.Features.Reviews.Commands.Delete;
 using Application.DTOs.Review;
-using Application.Common.Models;
 
 namespace API.Endpoints
 {
@@ -29,19 +28,28 @@ namespace API.Endpoints
                 .RequireRateLimiting(RateLimiterPolicies.Review)
                 .Produces<Guid>(StatusCodes.Status201Created)
                 .Produces(StatusCodes.Status403Forbidden)
-                .Produces(StatusCodes.Status409Conflict);
+                .Produces(StatusCodes.Status409Conflict)
+                .RequireAuthorization(policy =>
+                    policy.RequireRole(
+                        Role.Student.ToString()));
 
             group.MapPut("/{id:guid}", UpdateReview)
                 .WithName(nameof(UpdateReview))
                 .RequireRateLimiting(RateLimiterPolicies.Review)
                 .Produces(StatusCodes.Status204NoContent)
-                .Produces(StatusCodes.Status404NotFound);
+                .Produces(StatusCodes.Status404NotFound)
+                .RequireAuthorization(policy =>
+                    policy.RequireRole(
+                        Role.Student.ToString()));
 
             group.MapDelete("/{id:guid}", DeleteReview)
                 .WithName(nameof(DeleteReview))
                 .RequireRateLimiting(RateLimiterPolicies.Review)
                 .Produces(StatusCodes.Status204NoContent)
-                .Produces(StatusCodes.Status404NotFound);
+                .Produces(StatusCodes.Status404NotFound)
+                .RequireAuthorization(policy =>
+                    policy.RequireRole(
+                        Role.Student.ToString()));
         }
 
         public static async Task<Ok<PaginatedResult<ReviewResponseDto>>> GetReviewsByCourse(Guid courseId, [AsParameters] QueryParams queryParams, IMediator mediator)

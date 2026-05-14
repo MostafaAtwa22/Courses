@@ -1,6 +1,10 @@
+using Application.Common.Interfaces.Identity;
 using MediatR;
 
 namespace Application.Features.Contents.Commands.Delete
 {
-    public sealed record DeleteContentCommand(Guid Id) : IRequest;
+    public sealed record DeleteContentCommand(Guid Id) : IRequest, IInstructorOwnedRequest
+    {
+        public ResourceType ResourceType => ResourceType.Content;
+    }
 }

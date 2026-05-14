@@ -1,4 +1,6 @@
 using Application.DTOs.Account;
+using Application.Features.Account.Commands.Lock;
+using Application.Features.Account.Commands.UnLock;
 using Application.Features.Account.Queries.GetAll;
 using Application.Features.Account.Queries.GetById;
 
@@ -9,7 +11,11 @@ namespace API.Endpoints
         public void AddRoutes(IEndpointRouteBuilder app)
         {
             var group = app.MapGroup("/account")
-                .WithTags("Account");
+                .WithTags("Account")
+                .RequireAuthorization(policy =>
+                    policy.RequireRole(
+                        Role.Admin.ToString(),
+                        Role.SuperAdmin.ToString()));
 
             group.MapGet("/users", GetUsers)
                 .WithName(nameof(GetUsers))
@@ -20,6 +26,18 @@ namespace API.Endpoints
                 .WithName(nameof(GetUserById))
                 .Produces<UserResponseDto>(StatusCodes.Status200OK)
                 .Produces(StatusCodes.Status404NotFound);
+
+            group.MapPost("/users/{id:guid}/lock", LockUser)
+                .WithName(nameof(LockUser))
+                .Produces(StatusCodes.Status204NoContent)
+                .Produces(StatusCodes.Status404NotFound)
+                .Produces(StatusCodes.Status400BadRequest);
+            
+            group.MapPost("/users/{id:guid}/unlock", UnlockUser)
+                .WithName(nameof(UnlockUser))
+                .Produces(StatusCodes.Status204NoContent)
+                .Produces(StatusCodes.Status404NotFound)
+                .Produces(StatusCodes.Status400BadRequest);
         }
 
         public static async Task<Results<Ok<PaginatedResult<UserResponseDto>>, BadRequest>> GetUsers(
@@ -35,6 +53,20 @@ namespace API.Endpoints
         {
             var result = await mediator.Send(new GetUserByIdQuery(id));
             return result is not null ? TypedResults.Ok(result) : TypedResults.NotFound();
+        }
+
+        public static async Task<Results<NoContent, NotFound, BadRequest>> LockUser(
+            Guid id, LockUserDto request, IMediator mediator)
+        {
+            await mediator.Send(new LockUserCommand(id, request));
+            return TypedResults.NoContent();
+        }
+
+        public static async Task<Results<NoContent, NotFound, BadRequest>> UnlockUser(
+            Guid id, IMediator mediator)
+        {
+            await mediator.Send(new UnLockUserCommand(id));
+            return TypedResults.NoContent();
         }
     }
 }

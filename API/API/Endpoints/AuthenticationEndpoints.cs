@@ -1,9 +1,6 @@
 using Application.DTOs.Authentication;
 using Application.Features.Authentication.Commands.Login;
 using Application.Features.Authentication.Commands.Register;
-using MediatR;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Carter;
 
 namespace API.Endpoints
 {

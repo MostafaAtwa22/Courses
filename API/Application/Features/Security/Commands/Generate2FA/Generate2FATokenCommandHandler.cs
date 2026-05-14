@@ -1,6 +1,3 @@
-using Application.Common.Interfaces.Identity;
-using Domain.Entities.Identity;
-
 namespace Application.Features.Security.Commands.Generate2FA
 {
     public sealed class Generate2FATokenCommandHandler(

@@ -34,20 +34,29 @@ namespace API.Endpoints
                 .RequireRateLimiting(RateLimiterPolicies.InstructorWrite)
                 .Produces(StatusCodes.Status201Created)
                 .Produces(StatusCodes.Status400BadRequest)
-                .DisableAntiforgery();
+                .DisableAntiforgery()
+                .RequireAuthorization(policy =>
+                    policy.RequireRole(
+                        Role.Instructor.ToString()));
             
             group.MapPut("/{id:guid}", UpdateCourse)
                 .WithName(nameof(UpdateCourse))
                 .RequireRateLimiting(RateLimiterPolicies.InstructorWrite)
                 .Produces(StatusCodes.Status204NoContent)
                 .Produces(StatusCodes.Status404NotFound)
-                .DisableAntiforgery();
+                .DisableAntiforgery()
+                .RequireAuthorization(policy =>
+                    policy.RequireRole(
+                        Role.Instructor.ToString()));
             
             group.MapDelete("/{id:guid}", DeleteCourse)
                 .WithName(nameof(DeleteCourse))
                 .RequireRateLimiting(RateLimiterPolicies.InstructorWrite)
                 .Produces(StatusCodes.Status204NoContent)
-                .Produces(StatusCodes.Status404NotFound);
+                .Produces(StatusCodes.Status404NotFound)
+                .RequireAuthorization(policy =>
+                    policy.RequireRole(
+                        Role.Instructor.ToString()));
         }
 
         public static async Task<Results<Ok<PaginatedResult<CourseSummaryDto>>, BadRequest>> GetCourses([AsParameters] CourseQueryParams queryParams, 

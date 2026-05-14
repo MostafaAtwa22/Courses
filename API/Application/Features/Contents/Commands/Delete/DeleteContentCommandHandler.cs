@@ -1,7 +1,3 @@
-using Application.Common.Exceptions;
-using Application.Common.Interfaces;
-using MediatR;
-
 namespace Application.Features.Contents.Commands.Delete
 {
     public sealed class DeleteContentCommandHandler(
