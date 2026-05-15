@@ -19,7 +19,7 @@ namespace Application.Features.Authentication.Commands.Register
                 .Matches(@"^[a-zA-Z0-9\-._@+]+$");
 
             RuleFor(v => v.Dto.Email)
-                .EmailAddress()
+                .EmailAddress().WithMessage("A valid email address is required.")
                 .NotEmpty();
 
             RuleFor(v => v.Dto.Gender)

@@ -1,4 +1,5 @@
 using Application.Common.Exceptions;
+using Application.Common.Interfaces.Identity;
 using Application.DTOs.Profile;
 using Application.Features.Profiles.Commands.ChangePassword;
 using Domain.Entities.Identity;
@@ -10,13 +11,13 @@ namespace Application.Tests.Profiles.Commands;
 
 public class ChangePasswordHandlerTests
 {
-    private readonly Mock<UserManager<ApplicationUser>> _userManagerMock;
+    private readonly Mock<IAuthService> _authServiceMock;
     private readonly ChangePasswordCommandHandler _handler;
 
     public ChangePasswordHandlerTests()
     {
-        _userManagerMock = MockHelpers.MockUserManager<ApplicationUser>();
-        _handler = new ChangePasswordCommandHandler(_userManagerMock.Object);
+        _authServiceMock = new Mock<IAuthService>();
+        _handler = new ChangePasswordCommandHandler(_authServiceMock.Object);
     }
 
     [Fact]
@@ -32,14 +33,15 @@ public class ChangePasswordHandlerTests
         };
         var command = new ChangePasswordCommand(dto) { User = user };
 
-        _userManagerMock.Setup(x => x.ChangePasswordAsync(user, dto.OldPassword, dto.NewPassword))
+        _authServiceMock.Setup(x => x.ChangePasswordAsync(user, dto.OldPassword, dto.NewPassword))
             .ReturnsAsync(IdentityResult.Success);
 
         // Act
         await _handler.Handle(command, CancellationToken.None);
 
         // Assert
-        _userManagerMock.Verify(x => x.ChangePasswordAsync(user, dto.OldPassword, dto.NewPassword), Times.Once);
+        _authServiceMock.Verify(x => x.ChangePasswordAsync(user, dto.OldPassword, dto.NewPassword), Times.Once);
+        _authServiceMock.Verify(x => x.UpdateSecurityStampAsync(user), Times.Once);
     }
 
     [Fact]
@@ -56,7 +58,7 @@ public class ChangePasswordHandlerTests
         var command = new ChangePasswordCommand(dto) { User = user };
 
         var identityError = new IdentityError { Description = "Invalid password" };
-        _userManagerMock.Setup(x => x.ChangePasswordAsync(user, dto.OldPassword, dto.NewPassword))
+        _authServiceMock.Setup(x => x.ChangePasswordAsync(user, dto.OldPassword, dto.NewPassword))
             .ReturnsAsync(IdentityResult.Failed(identityError));
 
         // Act

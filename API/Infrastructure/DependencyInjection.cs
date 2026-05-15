@@ -63,7 +63,7 @@ public static class DependencyInjection
             
             // Confirm email
             options.SignIn.RequireConfirmedEmail = true;
-            options.Tokens.EmailConfirmationTokenProvider = TokenOptions.DefaultEmailProvider;
+            options.Tokens.EmailConfirmationTokenProvider = constant.IdentityConstants.EmailOtpProvider;
             options.Tokens.ProviderMap[constant.IdentityConstants.EmailOtpProvider] = new TokenProviderDescriptor(
                 typeof(EmailTokenProvider<ApplicationUser>)
             );

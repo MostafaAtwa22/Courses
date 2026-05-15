@@ -1,4 +1,5 @@
 using System.Text;
+using Microsoft.AspNetCore.Authentication.BearerToken;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 
@@ -30,6 +31,9 @@ namespace API.Extensions
                         };
                 });
 
+            services.Configure<BearerTokenOptions>(option => {
+                option.BearerTokenExpiration = TimeSpan.FromMinutes(jwtOptions!.LifetimeInMinutes);
+            });
             return services;
         }
     }

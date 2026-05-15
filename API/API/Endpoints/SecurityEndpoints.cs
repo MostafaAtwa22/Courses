@@ -2,6 +2,7 @@ using Application.Features.Security.Commands.Disable2FA;
 using Application.Features.Security.Commands.Enable2FA;
 using Application.Features.Security.Commands.Generate2FA;
 using Application.Features.Security.Commands.VerifyTwoFactor;
+using Application.Features.Security.Commands.ConfirmEmail;
 using Application.DTOs.Security;
 using Application.DTOs.Authentication;
 
@@ -42,6 +43,21 @@ namespace API.Endpoints
                 .Produces<AuthResponseDto>(StatusCodes.Status200OK)
                 .Produces(StatusCodes.Status401Unauthorized)
                 .Produces(StatusCodes.Status400BadRequest);
+
+            group.MapPost("/confirm-email", ConfirmEmail)
+                .WithName(nameof(ConfirmEmail))
+                .AllowAnonymous()
+                .RequireRateLimiting(RateLimiterPolicies.PasswordManagement)
+                .Produces<AuthResponseDto>(StatusCodes.Status200OK)
+                .Produces(StatusCodes.Status401Unauthorized)
+                .Produces(StatusCodes.Status400BadRequest);
+        }
+
+        public static async Task<Results<Ok<AuthResponseDto>, UnauthorizedHttpResult, BadRequest>> ConfirmEmail(
+            ConfirmEmailDto request, IMediator mediator)
+        {
+            var result = await mediator.Send(new ConfirmEmailCommand(request));
+            return TypedResults.Ok(result);
         }
 
         public static async Task<Results<NoContent, BadRequest, UnauthorizedHttpResult>> Generate2FAToken(

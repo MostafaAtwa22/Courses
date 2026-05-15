@@ -6,6 +6,8 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
+using Application.DTOs.Authentication;
+using Application.Common.Mappings;
 
 namespace Infrastructure.Identity
 {
@@ -66,5 +68,69 @@ namespace Infrastructure.Identity
             var tokenHandler = new JwtSecurityTokenHandler();
             return tokenHandler.WriteToken(tokenHandler.CreateToken(tokenDescriptor));
         }
+
+        public async Task<AuthResponseDto> GetAuthResponseAsync(ApplicationUser user)
+        {
+            await _userManager.ResetAccessFailedCountAsync(user);
+
+            var token = await CreateTokenAsync(user);
+            var roles = await _userManager.GetRolesAsync(user);
+
+            var response = user.ToAuthResponseDto(roles);
+            response.Token = token;
+
+            return response;
+        }
+
+        public async Task<ApplicationUser?> FindUserByEmailAsync(string email)
+            => await _userManager.FindByEmailAsync(email);
+
+        public async Task<bool> IsLockedOutAsync(ApplicationUser user)
+            => await _userManager.IsLockedOutAsync(user);
+
+        public async Task RecordFailedAccessAsync(ApplicationUser user)
+            => await _userManager.AccessFailedAsync(user);
+
+        public async Task<bool> ConfirmEmailAsync(ApplicationUser user, string code)
+        {
+            var result = await _userManager.ConfirmEmailAsync(user, code);
+            return result.Succeeded;
+        }
+
+        public async Task<ApplicationUser?> FindUserByIdAsync(string id)
+            => await _userManager.FindByIdAsync(id);
+
+        public async Task<string> GeneratePasswordResetTokenAsync(ApplicationUser user)
+            => await _userManager.GeneratePasswordResetTokenAsync(user);
+
+        public async Task<IdentityResult> ResetPasswordAsync(ApplicationUser user, string token, string newPassword)
+            => await _userManager.ResetPasswordAsync(user, token, newPassword);
+
+        public async Task<IdentityResult> ChangePasswordAsync(ApplicationUser user, string currentPassword, string newPassword)
+            => await _userManager.ChangePasswordAsync(user, currentPassword, newPassword);
+
+        public async Task<IdentityResult> SetPasswordAsync(ApplicationUser user, string newPassword)
+            => await _userManager.AddPasswordAsync(user, newPassword);
+
+        public async Task<bool> HasPasswordAsync(ApplicationUser user)
+            => await _userManager.HasPasswordAsync(user);
+
+        public async Task<IdentityResult> LockUserAsync(ApplicationUser user, DateTimeOffset? lockoutEnd)
+        {
+            await _userManager.SetLockoutEnabledAsync(user, true);
+            return await _userManager.SetLockoutEndDateAsync(user, lockoutEnd);
+        }
+
+        public async Task<IdentityResult> UnLockUserAsync(ApplicationUser user)
+            => await _userManager.SetLockoutEndDateAsync(user, DateTimeOffset.UtcNow.AddSeconds(-1));
+
+        public async Task<bool> IsInRoleAsync(ApplicationUser user, string role)
+            => await _userManager.IsInRoleAsync(user, role);
+
+        public async Task UpdateSecurityStampAsync(ApplicationUser user)
+            => await _userManager.UpdateSecurityStampAsync(user);
+
+        public async Task ResetAccessFailedCountAsync(ApplicationUser user)
+            => await _userManager.ResetAccessFailedCountAsync(user);
     }
 }

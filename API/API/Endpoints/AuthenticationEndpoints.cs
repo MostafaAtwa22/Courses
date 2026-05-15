@@ -13,11 +13,15 @@ namespace API.Endpoints
             
             group.MapPost("/register", Register)
                 .WithName(nameof(Register))
+                .AllowAnonymous()
+                .RequireRateLimiting(RateLimiterPolicies.Auth)
                 .Produces(StatusCodes.Status201Created)
                 .Produces(StatusCodes.Status400BadRequest);
 
             group.MapPost("/login", Login)
                 .WithName(nameof(Login))
+                .AllowAnonymous()
+                .RequireRateLimiting(RateLimiterPolicies.Auth)
                 .Produces<AuthResponseDto>(StatusCodes.Status200OK)
                 .Produces(StatusCodes.Status401Unauthorized)
                 .Produces(StatusCodes.Status400BadRequest);

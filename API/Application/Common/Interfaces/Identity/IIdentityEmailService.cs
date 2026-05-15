@@ -6,8 +6,10 @@ namespace Application.Common.Interfaces.Identity
     public interface IIdentityEmailService
     {
         Task SendConfirmationEmailAsync(ApplicationUser user);
+        Task SendEmailConfirmationEmailAsync(ApplicationUser user, string confirmationLink);
         Task Send2FAEmailAsync(ApplicationUser user, string code);
         Task SendAccountLockedEmailAsync(ApplicationUser user, LockUserDto dto);
         Task SendAccountUnlockedEmailAsync(ApplicationUser user);
+        Task SendPasswordResetEmailAsync(ApplicationUser user, string resetUrl);
     }
 }

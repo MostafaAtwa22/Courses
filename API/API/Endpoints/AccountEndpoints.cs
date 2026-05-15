@@ -3,6 +3,8 @@ using Application.Features.Account.Commands.Lock;
 using Application.Features.Account.Commands.UnLock;
 using Application.Features.Account.Queries.GetAll;
 using Application.Features.Account.Queries.GetById;
+using Application.Features.Account.Commands.ForgetPassword;
+using Application.Features.Account.Commands.ResetPassword;
 
 namespace API.Endpoints
 {
@@ -38,6 +40,34 @@ namespace API.Endpoints
                 .Produces(StatusCodes.Status204NoContent)
                 .Produces(StatusCodes.Status404NotFound)
                 .Produces(StatusCodes.Status400BadRequest);
+
+            group.MapPost("/forget-password", ForgetPassword)
+                .WithName(nameof(ForgetPassword))
+                .AllowAnonymous()
+                .RequireRateLimiting(RateLimiterPolicies.ForgotPassword)
+                .Produces(StatusCodes.Status204NoContent)
+                .Produces(StatusCodes.Status400BadRequest);
+
+            group.MapPost("/reset-password", ResetPassword)
+                .WithName(nameof(ResetPassword))
+                .AllowAnonymous()
+                .RequireRateLimiting(RateLimiterPolicies.PasswordManagement)
+                .Produces(StatusCodes.Status204NoContent)
+                .Produces(StatusCodes.Status400BadRequest);
+        }
+
+        public static async Task<Results<NoContent, BadRequest>> ForgetPassword(
+            ForgetPasswordDto request, IMediator mediator)
+        {
+            await mediator.Send(new ForgetPasswordCommand(request));
+            return TypedResults.NoContent();
+        }
+
+        public static async Task<Results<NoContent, BadRequest>> ResetPassword(
+            ResetPasswordDto request, IMediator mediator)
+        {
+            await mediator.Send(new ResetPasswordCommand(request));
+            return TypedResults.NoContent();
         }
 
         public static async Task<Results<Ok<PaginatedResult<UserResponseDto>>, BadRequest>> GetUsers(

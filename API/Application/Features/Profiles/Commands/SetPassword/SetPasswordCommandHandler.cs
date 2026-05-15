@@ -1,21 +1,20 @@
-using Domain.Entities.Identity;
-using Microsoft.AspNetCore.Identity;
-
 namespace Application.Features.Profiles.Commands.SetPassword
 {
     public sealed class SetPasswordCommandHandler(
-        UserManager<ApplicationUser> _userManager) 
+        IAuthService _authService) 
         : IRequestHandler<SetPasswordCommand>
     {
         public async Task Handle(SetPasswordCommand request, CancellationToken cancellationToken)
         {
             var user = request.User!;
-            if(await _userManager.HasPasswordAsync(user))
+            if(await _authService.HasPasswordAsync(user))
                 throw new BadRequestException("User already has a password");
 
-            var result = await _userManager.AddPasswordAsync(user, request.Dto.NewPassword);
+            var result = await _authService.SetPasswordAsync(user, request.Dto.NewPassword);
             if (!result.Succeeded)
                 throw new BadRequestException(result.Errors.FirstOrDefault()?.Description ?? "Failed to set password");
+
+            await _authService.UpdateSecurityStampAsync(user);
         }
     }
 }

@@ -97,5 +97,43 @@ namespace Infrastructure.Identity
 
             await _emailService.SendEmailAsync(emailRequest);
         }
+
+        public async Task SendPasswordResetEmailAsync(ApplicationUser user, string resetUrl)
+        {
+            var templatePath = Path.Combine(AppContext.BaseDirectory, "Email", "Templates", "ForgetPassword.html");
+            var template = await File.ReadAllTextAsync(templatePath);
+
+            var htmlBody = template
+                .Replace("{{UserName}}", user.UserName)
+                .Replace("{{ResetLink}}", resetUrl);
+
+            var emailRequest = new EmailMessageDto
+            {
+                To = user.Email!,
+                Subject = "Reset Your Password",
+                Body = htmlBody
+            };
+
+            await _emailService.SendEmailAsync(emailRequest);
+        }
+
+        public async Task SendEmailConfirmationEmailAsync(ApplicationUser user, string confirmationLink)
+        {
+            var templatePath = Path.Combine(AppContext.BaseDirectory, "Email", "Templates", "EmailConfirmation.html");
+            var template = await File.ReadAllTextAsync(templatePath);
+
+            var htmlBody = template
+                .Replace("{{UserName}}", user.UserName)
+                .Replace("{{ConfirmationLink}}", confirmationLink);
+
+            var emailRequest = new EmailMessageDto
+            {
+                To = user.Email!,
+                Subject = "Confirm your email",
+                Body = htmlBody
+            };
+
+            await _emailService.SendEmailAsync(emailRequest);
+        }
     }
 }

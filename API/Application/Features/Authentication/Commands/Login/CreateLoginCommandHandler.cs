@@ -38,13 +38,7 @@ namespace Application.Features.Authentication.Commands.Login
                 };
             }
 
-            await _userManager.ResetAccessFailedCountAsync(user);
-
-            var token = await _authService.CreateTokenAsync(user);
-
-            var returnUser = user.ToAuthResponseDto(await _userManager.GetRolesAsync(user));
-            returnUser.Token = token;
-            return returnUser;
+            return await _authService.GetAuthResponseAsync(user);
         }
     }
 }
