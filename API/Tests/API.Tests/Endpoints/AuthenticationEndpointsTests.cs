@@ -40,4 +40,26 @@ public class AuthenticationEndpointsTests
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.Created);
     }
+
+    [Fact]
+    public async Task Login_ShouldReturnOk_WhenCredentialsAreValid()
+    {
+        // Arrange
+        // We assume the user exists from the previous test or seed data
+        // For integration tests, we usually use a seeded user
+        var dto = new LoginDto
+        {
+            Email = "admin@edufocus.com",
+            Password = "P@ssw0rd123!"
+        };
+
+        // Act
+        var response = await _client.PostAsJsonAsync("/authentication/login", dto);
+
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        var result = await response.Content.ReadFromJsonAsync<AuthResponseDto>();
+        result.Should().NotBeNull();
+        result.Token.Should().NotBeNullOrEmpty();
+    }
 }

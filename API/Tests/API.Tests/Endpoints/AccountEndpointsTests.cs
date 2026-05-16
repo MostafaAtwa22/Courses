@@ -45,4 +45,35 @@ public class AccountEndpointsTests
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
+    [Fact]
+    public async Task ForgetPassword_ShouldReturnNoContent()
+    {
+        // Arrange
+        var dto = new ForgetPasswordDto { Email = "admin@edufocus.com" };
+
+        // Act
+        var response = await _client.PostAsJsonAsync("/account/forget-password", dto);
+
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.NoContent);
+    }
+
+    [Fact]
+    public async Task ResetPassword_ShouldReturnBadRequest_WhenTokenIsInvalid()
+    {
+        // Arrange
+        var dto = new ResetPasswordDto 
+        { 
+            Email = "admin@edufocus.com", 
+            Token = "invalid", 
+            NewPassword = "P@ssw0rd123!",
+            ConfirmNewPassword = "P@ssw0rd123!"
+        };
+
+        // Act
+        var response = await _client.PostAsJsonAsync("/account/reset-password", dto);
+
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+    }
 }

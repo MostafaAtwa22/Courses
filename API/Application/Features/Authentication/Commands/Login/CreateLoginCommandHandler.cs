@@ -24,9 +24,6 @@ namespace Application.Features.Authentication.Commands.Login
             if (result.IsLockedOut)
                 throw new AccountLockedException("Account is locked. Please try again later.");
 
-            if (!result.Succeeded)
-                throw new UnauthorizedException("Invalid email or password.");
-
             if (result.RequiresTwoFactor)
             {
                 await _twoFactorService.SendOtpAsync(user);
@@ -37,6 +34,9 @@ namespace Application.Features.Authentication.Commands.Login
                     Provider = Constant.EmailOtpProvider
                 };
             }
+
+            if (!result.Succeeded)
+                throw new UnauthorizedException("Invalid email or password.");
 
             return await _authService.GetAuthResponseAsync(user);
         }

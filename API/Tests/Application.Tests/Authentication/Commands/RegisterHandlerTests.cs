@@ -58,7 +58,8 @@ public class RegisterHandlerTests
         // Assert
         _userManagerMock.Verify(x => x.CreateAsync(It.IsAny<ApplicationUser>(), dto.Password), Times.Once);
         _userManagerMock.Verify(x => x.AddToRoleAsync(It.IsAny<ApplicationUser>(), "Student"), Times.Once);
-        _identityEmailServiceMock.Verify(x => x.SendConfirmationEmailAsync(It.IsAny<ApplicationUser>()), Times.Once);
+        _authServiceMock.Verify(x => x.GenerateEmailConfirmationTokenAsync(It.IsAny<ApplicationUser>()), Times.Once);
+        _identityEmailServiceMock.Verify(x => x.SendEmailConfirmationEmailAsync(It.IsAny<ApplicationUser>(), It.IsAny<string>()), Times.Once);
     }
 
     [Fact]

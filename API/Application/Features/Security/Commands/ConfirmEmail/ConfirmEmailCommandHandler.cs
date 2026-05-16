@@ -1,4 +1,6 @@
 using Application.Common.Exceptions;
+using System.Text;
+using Microsoft.AspNetCore.WebUtilities;
 
 namespace Application.Features.Security.Commands.ConfirmEmail
 {
@@ -12,14 +14,15 @@ namespace Application.Features.Security.Commands.ConfirmEmail
                 ?? throw new UnauthorizedException("Invalid verification attempt.");
 
             if (user.EmailConfirmed)
-            {
                 return await _authService.GetAuthResponseAsync(user);
-            }
 
             if (await _authService.IsLockedOutAsync(user))
                 throw new AccountLockedException("Your account is locked. Please try again later.");
 
-            var succeeded = await _authService.ConfirmEmailAsync(user, request.Dto.Code);
+            var decodedToken = Encoding.UTF8.GetString(
+                WebEncoders.Base64UrlDecode(request.Dto.Code));
+
+            var succeeded = await _authService.ConfirmEmailAsync(user, decodedToken);
             
             if (!succeeded)
             {

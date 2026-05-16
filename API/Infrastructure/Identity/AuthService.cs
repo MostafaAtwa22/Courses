@@ -100,6 +100,9 @@ namespace Infrastructure.Identity
         public async Task<ApplicationUser?> FindUserByIdAsync(string id)
             => await _userManager.FindByIdAsync(id);
 
+        public async Task<string> GenerateEmailConfirmationTokenAsync(ApplicationUser user)
+            => await _userManager.GenerateEmailConfirmationTokenAsync(user);
+
         public async Task<string> GeneratePasswordResetTokenAsync(ApplicationUser user)
             => await _userManager.GeneratePasswordResetTokenAsync(user);
 

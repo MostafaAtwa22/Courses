@@ -1,42 +1,18 @@
+using System.Text;
 using Application.Common.Interfaces.Email;
 using Application.Common.Interfaces.Identity;
 using Application.Common.Options;
 using Application.DTOs.Account;
 using Application.DTOs.Email;
-using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Options;
 
 namespace Infrastructure.Identity
 {
     public class IdentityEmailService(
-        UserManager<ApplicationUser> _userManager,
         IEmailService _emailService,
         IOptions<UrlsOptions> _urlsOptions) : IIdentityEmailService
     {
-        public async Task SendConfirmationEmailAsync(ApplicationUser user)
-        {
-            var emailConfirmationToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-            var baseUrl = _urlsOptions.Value.Client;
-            var encodedToken = Uri.EscapeDataString(emailConfirmationToken);
-            var confirmationLink = $"{baseUrl}/authentication/confirm-email?userId={user.Id}&token={encodedToken}";
-
-            var templatePath = Path.Combine(AppContext.BaseDirectory, "Email", "Templates", "EmailConfirmation.html");
-            var template = await File.ReadAllTextAsync(templatePath);
-            
-            var htmlBody = template
-                .Replace("{{UserName}}", user.UserName)
-                .Replace("{{ConfirmationLink}}", confirmationLink);
-
-            var emailRequest = new EmailMessageDto
-            {
-                To = user.Email!,
-                Subject = "Confirm your email",
-                Body = htmlBody
-            };
-
-            await _emailService.SendEmailAsync(emailRequest);
-        }
-
         public async Task Send2FAEmailAsync(ApplicationUser user, string code)
         {
             var templatePath = Path.Combine(AppContext.BaseDirectory, "Email", "Templates", "TwoFactorAuthentication.html");
@@ -98,14 +74,21 @@ namespace Infrastructure.Identity
             await _emailService.SendEmailAsync(emailRequest);
         }
 
-        public async Task SendPasswordResetEmailAsync(ApplicationUser user, string resetUrl)
+        public async Task SendPasswordResetEmailAsync(ApplicationUser user, string token)
         {
+            var encodedToken = WebEncoders.Base64UrlEncode(
+                Encoding.UTF8.GetBytes(token)
+            );
+
+            var baseUrl = _urlsOptions.Value.Client;
+            var resetLink = $"{baseUrl}/authentication/reset-password?email={user.Email}&token={encodedToken}";
+            
             var templatePath = Path.Combine(AppContext.BaseDirectory, "Email", "Templates", "ForgetPassword.html");
             var template = await File.ReadAllTextAsync(templatePath);
 
             var htmlBody = template
                 .Replace("{{UserName}}", user.UserName)
-                .Replace("{{ResetLink}}", resetUrl);
+                .Replace("{{ResetLink}}", resetLink);
 
             var emailRequest = new EmailMessageDto
             {
@@ -117,8 +100,15 @@ namespace Infrastructure.Identity
             await _emailService.SendEmailAsync(emailRequest);
         }
 
-        public async Task SendEmailConfirmationEmailAsync(ApplicationUser user, string confirmationLink)
+        public async Task SendEmailConfirmationEmailAsync(ApplicationUser user, string token)
         {
+            var encodedToken = WebEncoders.Base64UrlEncode(
+                Encoding.UTF8.GetBytes(token)
+            );
+
+            var baseUrl = _urlsOptions.Value.Client;
+            var confirmationLink = $"{baseUrl}/authentication/confirm-email?email={user.Email}&token={encodedToken}";
+
             var templatePath = Path.Combine(AppContext.BaseDirectory, "Email", "Templates", "EmailConfirmation.html");
             var template = await File.ReadAllTextAsync(templatePath);
 

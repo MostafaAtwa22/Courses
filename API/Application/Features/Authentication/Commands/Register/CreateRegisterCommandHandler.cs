@@ -25,7 +25,8 @@ namespace Application.Features.Authentication.Commands.Register
 
             await _userManager.AddToRoleAsync(user, request.Dto.Role.ToString());
 
-            await _identityEmailService.SendConfirmationEmailAsync(user);
+            var token = await _authService.GenerateEmailConfirmationTokenAsync(user);
+            await _identityEmailService.SendEmailConfirmationEmailAsync(user, token);
         }
     }
 }

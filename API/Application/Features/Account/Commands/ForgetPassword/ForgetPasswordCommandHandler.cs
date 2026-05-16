@@ -1,15 +1,8 @@
-using System.Text;
-using Application.Common.Interfaces;
-using Microsoft.AspNetCore.WebUtilities;
-using Microsoft.Extensions.Options;
-using Application.Common.Options;
-
 namespace Application.Features.Account.Commands.ForgetPassword
 {
     public sealed class ForgetPasswordCommandHandler(
             IAuthService _authService, 
-            IIdentityEmailService _identityEmailService,
-            IOptions<UrlsOptions> _urlsOptions) :
+            IIdentityEmailService _identityEmailService) :
         IRequestHandler<ForgetPasswordCommand>
     {
         public async Task Handle(ForgetPasswordCommand request, CancellationToken cancellationToken)
@@ -19,14 +12,7 @@ namespace Application.Features.Account.Commands.ForgetPassword
 
             var token = await _authService.GeneratePasswordResetTokenAsync(user);
 
-            var encodedToken = WebEncoders.Base64UrlEncode(
-                Encoding.UTF8.GetBytes(token)
-            );
-
-            var baseUrl = _urlsOptions.Value.Client;
-            var resetLink = $"{baseUrl}/authentication/reset-password?email={user.Email}&token={encodedToken}";
-
-            await _identityEmailService.SendPasswordResetEmailAsync(user, resetLink);
+            await _identityEmailService.SendPasswordResetEmailAsync(user, token);
         }
     }
 }
