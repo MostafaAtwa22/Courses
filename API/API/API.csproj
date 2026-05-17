@@ -16,6 +16,7 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Serilog.AspNetCore" Version="10.0.0" />
+    <PackageReference Include="Hangfire.AspNetCore" Version="1.8.23" />
   </ItemGroup>
 
   <PropertyGroup>

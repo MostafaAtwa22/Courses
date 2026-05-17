@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using API.Extensions;
 
 using API.Cors;
+using Hangfire;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -43,7 +44,11 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.UseRateLimiter();
-
+app.UseHangfireDashboard("/hangfire", new DashboardOptions
+{
+    Authorization = new[] { new API.Filters.HangfireDashboardAuthFilter() },
+    DashboardTitle = "EduFocus - Background Jobs"
+});
 app.MapCarter();
 
 app.Run();

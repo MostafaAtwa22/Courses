@@ -1,4 +1,5 @@
 using Application.Common.Interfaces.Email;
+using Hangfire;
 using Application.Common.Options;
 using Application.DTOs.Email;
 using MailKit.Net.Smtp;
@@ -11,6 +12,8 @@ namespace Infrastructure.Email
 {
     public class EmailService(IOptions<EmailOptions> _options) : IEmailService
     {
+        [AutomaticRetry(Attempts = 3, DelaysInSeconds = new[] { 30, 120, 300 })]
+        [Queue("emails")]
         public async Task SendEmailAsync(EmailMessageDto Dto)
         {
             var emailMessage = new MimeMessage();

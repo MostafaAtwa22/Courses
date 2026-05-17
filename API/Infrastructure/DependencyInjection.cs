@@ -1,4 +1,6 @@
 using Microsoft.Extensions.Configuration;
+using Hangfire;
+using Hangfire.Redis.StackExchange;
 using Microsoft.Extensions.DependencyInjection;
 using Infrastructure.Persistence.Data;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
@@ -27,6 +29,7 @@ public static class DependencyInjection
             .AddIdentityServices()
             .AddCaching(config)
             .AddInfrastructureServices()
+            .AddBackgroundJobs(config)
             .AddHealthCheckServices(connectionString, config);
 
         return services;
@@ -106,7 +109,8 @@ public static class DependencyInjection
     {
         services.AddScoped<IFileService, FileService>();
         services.AddScoped<ICurrentUserService, CurrentUserService>();
-        services.AddTransient<IEmailService, EmailService>();
+        services.AddTransient<EmailService>();
+        services.AddTransient<IEmailService, BackgroundEmailService>();
         services.AddSingleton<IUrlProvider, UrlProvider>();
         services.AddHttpContextAccessor();
         
@@ -123,8 +127,39 @@ public static class DependencyInjection
             .AddRedis(config.GetConnectionString("Cache") ?? "",
                 name: "Redis",
                 failureStatus: HealthStatus.Unhealthy,
-                tags: new[] { "db", "redis" });
-                
+                tags: new[] { "db", "redis" })
+            .AddHangfire(options => {
+                options.MinimumAvailableServers = 1;
+            });
+        return services;
+    }
+
+    private static IServiceCollection AddBackgroundJobs(this IServiceCollection services, IConfiguration config)
+    {
+        var redisConnection = config.GetConnectionString(constant.IdentityConstants.Cache) 
+            ?? throw new InvalidOperationException("Redis connection string is not configured");
+
+        services.AddHangfire(configuration =>
+        {
+            configuration
+                .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
+                .UseSimpleAssemblyNameTypeSerializer()
+                .UseRecommendedSerializerSettings()
+                .UseRedisStorage(redisConnection, new RedisStorageOptions
+                {
+                    Prefix = "hangfire:",          // namespace to avoid key collisions with cache
+                    Db = 1,                        // use DB 1 for Hangfire, DB 0 for cache
+                    SucceededListSize = 500,       // keep last 500 succeeded jobs
+                    DeletedListSize = 200,
+                });
+        });
+
+        services.AddHangfireServer(options =>
+        {
+            options.Queues = new[] { "emails", "default" };
+            options.WorkerCount = Environment.ProcessorCount * 2;
+        });
+
         return services;
     }
 }
