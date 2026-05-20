@@ -5,7 +5,8 @@ namespace Application.Behaviors
 {
     public class UserContextBehavior<TRequest, TResponse>(
         ICurrentUserService _currentUserService,
-        UserManager<ApplicationUser> _userManager)
+        UserManager<ApplicationUser> _userManager,
+        Microsoft.AspNetCore.Http.IHttpContextAccessor _httpContextAccessor)
         : IPipelineBehavior<TRequest, TResponse>
         where TRequest : ICurrentUserRequest
     {
@@ -16,6 +17,13 @@ namespace Application.Behaviors
 
             var user = await _userManager.FindByIdAsync(userId)
                 ?? throw new NotFoundException(nameof(ApplicationUser), Guid.Parse(userId));
+
+            if (user.LockoutEnabled && user.LockoutEnd > DateTimeOffset.UtcNow)
+                throw new UnauthorizedException("Your account is locked.");
+
+            var securityStampClaim = _httpContextAccessor.HttpContext?.User?.FindFirst(c => c.Type == "security_stamp")?.Value;
+            if (!string.IsNullOrEmpty(user.SecurityStamp) && user.SecurityStamp != securityStampClaim)
+                throw new UnauthorizedException("Session has been invalidated. Please login again.");
 
             request.User = user;
 

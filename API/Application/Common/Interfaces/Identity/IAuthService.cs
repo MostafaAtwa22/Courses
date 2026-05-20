@@ -9,6 +9,7 @@ namespace Application.Common.Interfaces.Identity
         Task<bool> IsEmailExistsAsync(string email);
         Task<bool> IsUserNameExistsAsync(string userName);
         Task<string> CreateTokenAsync(ApplicationUser user);
+        RefreshToken GenerateRefreshToken();
         Task<AuthResponseDto> GetAuthResponseAsync(ApplicationUser user);
         Task<ApplicationUser?> FindUserByEmailAsync(string email);
         Task<ApplicationUser?> FindUserByIdAsync(string id);

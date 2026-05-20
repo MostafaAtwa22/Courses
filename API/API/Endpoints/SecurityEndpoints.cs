@@ -39,14 +39,13 @@ namespace API.Endpoints
 
             group.MapPost("/2fa/verify", VerifyTwoFactor)
                 .WithName(nameof(VerifyTwoFactor))
-                .AllowAnonymous()
+                .RequireRateLimiting(RateLimiterPolicies.Auth)
                 .Produces<AuthResponseDto>(StatusCodes.Status200OK)
                 .Produces(StatusCodes.Status401Unauthorized)
                 .Produces(StatusCodes.Status400BadRequest);
 
             group.MapPost("/confirm-email", ConfirmEmail)
                 .WithName(nameof(ConfirmEmail))
-                .AllowAnonymous()
                 .RequireRateLimiting(RateLimiterPolicies.PasswordManagement)
                 .Produces<AuthResponseDto>(StatusCodes.Status200OK)
                 .Produces(StatusCodes.Status401Unauthorized)

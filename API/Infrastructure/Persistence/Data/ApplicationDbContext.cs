@@ -19,5 +19,6 @@ namespace Infrastructure.Persistence.Data
         public required DbSet<Enrollment> Enrollments { get; set; }
         public required DbSet<Section> Sections { get; set; }
         public required DbSet<Content> Contents { get; set; }
+        public required DbSet<RefreshToken> RefreshTokens { get; set; }
     }
 }

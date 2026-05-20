@@ -1,10 +1,8 @@
 using Application.Common.Extensions;
-using Application.Common.Mappings;
 using Application.DTOs.Account;
 using Domain.Entities.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Application.Common.Interfaces;
 
 namespace Application.Features.Account.Queries.GetAll
 {

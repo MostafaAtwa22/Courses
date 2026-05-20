@@ -12,5 +12,7 @@ namespace Domain.Entities.Identity
         
         public Student? StudentProfile { get; set; }
         public Instructor? InstructorProfile { get; set; }
+        
+        public virtual ICollection<RefreshToken> RefreshTokens { get; set; } = [];
     }
 }

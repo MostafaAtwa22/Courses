@@ -7,5 +7,6 @@ namespace Application.Common.Options
         public string Issuer { get; set; } = string.Empty;
         public string Audience { get; set; } = string.Empty;
         public int LifetimeInMinutes { get; set; } = 1;
+        public int RefreshTokenLifetimeInDays { get; set; } = 7;
     }
 }

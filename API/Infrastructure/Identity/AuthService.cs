@@ -8,6 +8,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 using Application.DTOs.Authentication;
 using Application.Common.Mappings;
+using System.Security.Cryptography;
 
 namespace Infrastructure.Identity
 {
@@ -41,7 +42,7 @@ namespace Infrastructure.Identity
             var userClaims = await _userManager.GetClaimsAsync(user);
             var roles      = await _userManager.GetRolesAsync(user);
 
-            var claims = new List<Claim>(6 + userClaims.Count + roles.Count) 
+            var claims = new List<Claim>(7 + userClaims.Count + roles.Count) 
             {
                 new(JwtRegisteredClaimNames.Sub,        user.Id),
                 new(JwtRegisteredClaimNames.UniqueName, user.UserName   ?? string.Empty),
@@ -49,6 +50,7 @@ namespace Infrastructure.Identity
                 new(JwtRegisteredClaimNames.Jti,        Guid.NewGuid().ToString()),
                 new(JwtRegisteredClaimNames.GivenName,  user.FirstName  ?? string.Empty),
                 new(JwtRegisteredClaimNames.FamilyName, user.LastName   ?? string.Empty),
+                new("security_stamp",                   user.SecurityStamp ?? string.Empty),
             };
 
             claims.AddRange(userClaims);
@@ -80,6 +82,16 @@ namespace Infrastructure.Identity
             response.Token = token;
 
             return response;
+        }
+
+        public RefreshToken GenerateRefreshToken()
+        {
+            var token = Convert.ToBase64String(RandomNumberGenerator.GetBytes(32));
+            return new RefreshToken 
+            {
+                Token = token, 
+                ExpiryDate = DateTime.UtcNow.AddDays(_jwtOptions.RefreshTokenLifetimeInDays)
+            };
         }
 
         public async Task<ApplicationUser?> FindUserByEmailAsync(string email)

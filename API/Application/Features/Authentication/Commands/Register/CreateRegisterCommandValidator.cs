@@ -40,8 +40,8 @@ namespace Application.Features.Authentication.Commands.Register
                 .NotEmpty();
 
             RuleFor(v => v.Dto.Role)
-                .IsInEnum()
-                .WithMessage("Invalid role value. Allowed values are: SuperAdmin, Admin, Instructor, Student");
+                .Must(r => r == Domain.Enums.Identity.Role.Student || r == Domain.Enums.Identity.Role.Instructor)
+                .WithMessage("Registration is only allowed for Student or Instructor roles.");
         }
     }
 }
