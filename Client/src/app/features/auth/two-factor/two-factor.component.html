@@ -1,0 +1,29 @@
+<div class="auth-card">
+  <div class="auth-header">
+    <h2>Two-Factor Authentication</h2>
+    <p>Please enter the code sent to your email.</p>
+  </div>
+
+  <div *ngIf="errorMessage" class="alert alert-danger mb-4 p-3 rounded" style="background-color: #fee2e2; color: #b91c1c; border: 1px solid #f87171;">
+    {{ errorMessage }}
+  </div>
+
+  <form class="auth-form" [formGroup]="codeForm" (ngSubmit)="onSubmit()">
+    <div class="form-group">
+      <label for="code">Verification Code</label>
+      <div class="input-wrapper">
+        <i class="fa-solid fa-key"></i>
+        <input type="text" id="code" formControlName="code" placeholder="Enter 6-digit code">
+      </div>
+    </div>
+
+    <button type="submit" class="btn-primary btn-block" [disabled]="isLoading">
+      <span *ngIf="isLoading"><i class="fa-solid fa-circle-notch fa-spin"></i> Verifying...</span>
+      <span *ngIf="!isLoading">Verify</span>
+    </button>
+  </form>
+  
+  <div class="auth-footer mt-4 text-center">
+    <p><a routerLink="/auth/login">Back to Login</a></p>
+  </div>
+</div>

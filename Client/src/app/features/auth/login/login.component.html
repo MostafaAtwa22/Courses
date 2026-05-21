@@ -4,12 +4,20 @@
     <p>Please enter your details to sign in.</p>
   </div>
   
-  <form class="auth-form">
+  <div *ngIf="errorMessage" class="alert alert-danger mb-4 p-3 rounded bg-red-100 text-red-700" style="background-color: #fee2e2; color: #b91c1c; border: 1px solid #f87171; border-radius: 4px; padding: 12px; margin-bottom: 16px;">
+    {{ errorMessage }}
+  </div>
+
+  <form class="auth-form" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
     <div class="form-group">
       <label for="email">Email Address</label>
       <div class="input-wrapper">
         <i class="fa-solid fa-envelope"></i>
-        <input type="email" id="email" placeholder="name@company.com">
+        <input type="email" id="email" formControlName="email" placeholder="name@company.com">
+      </div>
+      <div class="text-danger small mt-1" *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched" style="color: #ef4444; font-size: 0.875rem; margin-top: 0.25rem;">
+        <span *ngIf="loginForm.get('email')?.hasError('required')">Email is required</span>
+        <span *ngIf="loginForm.get('email')?.hasError('email')">Please enter a valid email</span>
       </div>
     </div>
     
@@ -17,19 +25,21 @@
       <label for="password">Password</label>
       <div class="input-wrapper">
         <i class="fa-solid fa-lock"></i>
-        <input type="password" id="password" placeholder="••••••••">
+        <input type="password" id="password" formControlName="password" placeholder="••••••••">
+      </div>
+      <div class="text-danger small mt-1" *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched" style="color: #ef4444; font-size: 0.875rem; margin-top: 0.25rem;">
+        <span *ngIf="loginForm.get('password')?.hasError('required')">Password is required</span>
       </div>
     </div>
 
     <div class="form-options">
-      <label class="remember-me">
-        <input type="checkbox">
-        <span>Remember me</span>
-      </label>
-      <a href="#" class="forgot-password">Forgot password?</a>
+      <a routerLink="/auth/forget-password" class="forgot-password">Forgot password?</a>
     </div>
 
-    <button type="submit" class="btn-primary btn-block">Sign In</button>
+    <button type="submit" class="btn-primary btn-block" [disabled]="isLoading">
+      <span *ngIf="isLoading"><i class="fa-solid fa-circle-notch fa-spin"></i> Signing in...</span>
+      <span *ngIf="!isLoading">Sign In</span>
+    </button>
     
     <button type="button" class="btn-outline btn-block btn-google">
       <i class="fa-brands fa-google"></i> Sign in with Google
@@ -37,6 +47,6 @@
   </form>
 
   <div class="auth-footer">
-    <p>Don't have an account? <a routerLink="/auth/register">Sign up for free</a></p>
+    <p>Don't have an account? <a routerLink="/auth/role-select">Sign up for free</a></p>
   </div>
 </div>

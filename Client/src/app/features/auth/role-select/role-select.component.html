@@ -1,0 +1,39 @@
+<div class="role-select-card">
+  <div class="role-header">
+    <h2>Join as a Student or Instructor</h2>
+    <p>Choose how you want to use EduFocus</p>
+  </div>
+
+  <div class="role-options">
+    <div class="role-card" [class.selected]="selectedRole === Role.Student" (click)="selectRole(Role.Student)">
+      <div class="role-radio">
+        <div class="radio-dot" *ngIf="selectedRole === Role.Student"></div>
+      </div>
+      <div class="role-icon">
+        <i class="fa-solid fa-graduation-cap"></i>
+      </div>
+      <h3>I'm a Student</h3>
+      <p>I want to browse courses, learn new skills, and earn certificates.</p>
+    </div>
+
+    <div class="role-card" [class.selected]="selectedRole === Role.Instructor" (click)="selectRole(Role.Instructor)">
+      <div class="role-radio">
+        <div class="radio-dot" *ngIf="selectedRole === Role.Instructor"></div>
+      </div>
+      <div class="role-icon">
+        <i class="fa-solid fa-chalkboard-user"></i>
+      </div>
+      <h3>I'm an Instructor</h3>
+      <p>I want to create courses, share knowledge, and grow my audience.</p>
+    </div>
+  </div>
+
+  <button class="btn-primary btn-block" [disabled]="!selectedRole" (click)="continue()">
+    <span>Create Account</span>
+    <i class="fa-solid fa-arrow-right"></i>
+  </button>
+
+  <div class="role-footer">
+    <p>Already have an account? <a routerLink="/auth/login">Sign in</a></p>
+  </div>
+</div>

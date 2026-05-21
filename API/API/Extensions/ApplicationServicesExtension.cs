@@ -2,6 +2,8 @@ using API.Exceptions;
 using Microsoft.AspNetCore.Identity;
 using System.Text.Json.Serialization;
 
+using Application.Common.Options;
+
 namespace API.Extensions
 {
     public static class ApplicationServicesExtension
@@ -10,6 +12,7 @@ namespace API.Extensions
         {
             services.Configure<UrlsOptions>(config.GetSection(UrlsOptions.SectionName));
             services.Configure<JwtOptions>(config.GetSection(JwtOptions.SectionName));
+            services.Configure<EmailOptions>(config.GetSection(EmailOptions.SectionName));
             
             services.AddProblemDetails();
             services.AddExceptionHandler<ValidationExceptionHandler>();

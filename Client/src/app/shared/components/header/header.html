@@ -20,8 +20,23 @@
       </button>
       
       <div class="auth-buttons desktop-only">
-        <button class="btn-login" routerLink="/auth/login">Log In</button>
-        <button class="btn-primary" routerLink="/auth/register">Sign Up</button>
+        <ng-container *ngIf="!authService.currentUser()">
+          <button class="btn-login" routerLink="/auth/login">Log In</button>
+          <button class="btn-primary" routerLink="/auth/role-select">Sign Up</button>
+        </ng-container>
+        
+        <ng-container *ngIf="authService.currentUser() as user">
+          <div class="user-profile" style="display: flex; align-items: center; gap: 12px; cursor: pointer;">
+            <div class="avatar" style="width: 36px; height: 36px; border-radius: 50%; background: var(--primary-color); color: white; display: flex; align-items: center; justify-content: center; font-weight: 600;">
+              {{ user.firstName[0] }}{{ user.lastName[0] }}
+            </div>
+            <div class="user-info" style="display: flex; flex-direction: column; line-height: 1.2;">
+              <span class="user-name" style="font-weight: 600; font-size: 0.9rem;">{{ user.firstName }} {{ user.lastName }}</span>
+              <span class="user-role" style="font-size: 0.75rem; color: var(--text-secondary);">{{ user.roles?.join(', ') }}</span>
+            </div>
+            <button class="btn-outline ml-3" (click)="logout()" style="padding: 6px 12px; font-size: 0.875rem;">Log Out</button>
+          </div>
+        </ng-container>
       </div>
 
       <!-- Mobile Menu Toggle -->
@@ -41,8 +56,23 @@
       <a href="#" (click)="isMenuOpen = false">Contact</a>
     </div>
     <div class="mobile-actions">
-      <button class="btn-login" routerLink="/auth/login" (click)="isMenuOpen = false">Log In</button>
-      <button class="btn-primary" routerLink="/auth/register" (click)="isMenuOpen = false">Sign Up</button>
+      <ng-container *ngIf="!authService.currentUser()">
+        <button class="btn-login" routerLink="/auth/login" (click)="isMenuOpen = false">Log In</button>
+        <button class="btn-primary" routerLink="/auth/role-select" (click)="isMenuOpen = false">Sign Up</button>
+      </ng-container>
+      
+      <ng-container *ngIf="authService.currentUser() as user">
+        <div class="user-profile mb-3" style="display: flex; align-items: center; gap: 12px;">
+          <div class="avatar" style="width: 40px; height: 40px; border-radius: 50%; background: var(--primary-color); color: white; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 1.2rem;">
+            {{ user.firstName[0] }}{{ user.lastName[0] }}
+          </div>
+          <div class="user-info" style="display: flex; flex-direction: column; line-height: 1.2;">
+            <span class="user-name" style="font-weight: 600; font-size: 1rem; color: var(--text-primary);">{{ user.firstName }} {{ user.lastName }}</span>
+            <span class="user-role" style="font-size: 0.8rem; color: var(--text-secondary);">{{ user.roles?.join(', ') }}</span>
+          </div>
+        </div>
+        <button class="btn-outline w-100" (click)="logout(); isMenuOpen = false;">Log Out</button>
+      </ng-container>
     </div>
   </div>
 </nav>

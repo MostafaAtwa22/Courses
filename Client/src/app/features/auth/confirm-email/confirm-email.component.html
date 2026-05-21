@@ -1,0 +1,29 @@
+<div class="confirm-card">
+
+  <div *ngIf="isLoading" class="state-block">
+    <div class="icon-wrapper loading">
+      <i class="fa-solid fa-circle-notch fa-spin"></i>
+    </div>
+    <h2>Confirming your email...</h2>
+    <p>Please wait while we verify your email address.</p>
+  </div>
+
+  <div *ngIf="!isLoading && isSuccess" class="state-block">
+    <div class="icon-wrapper success">
+      <i class="fa-solid fa-circle-check"></i>
+    </div>
+    <h2>Email Confirmed!</h2>
+    <p>Your email address has been successfully verified. You can now sign in to your account.</p>
+    <a routerLink="/auth/login" class="btn-primary">Go to Login</a>
+  </div>
+
+  <div *ngIf="!isLoading && !isSuccess" class="state-block">
+    <div class="icon-wrapper error">
+      <i class="fa-solid fa-circle-xmark"></i>
+    </div>
+    <h2>Verification Failed</h2>
+    <p>{{ errorMessage }}</p>
+    <a routerLink="/auth/login" class="btn-outline">Back to Login</a>
+  </div>
+
+</div>

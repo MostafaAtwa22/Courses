@@ -12,11 +12,7 @@ namespace API.Endpoints
         public void AddRoutes(IEndpointRouteBuilder app)
         {
             var group = app.MapGroup("/categories")
-                .WithTags("Categories")
-                .RequireAuthorization(policy =>
-                        policy.RequireRole(
-                            Role.Admin.ToString(),
-                            Role.SuperAdmin.ToString()));
+                .WithTags("Categories");
             
             group.MapGet("/", GetCategories)
                 .WithName(nameof(GetCategories))
@@ -31,17 +27,29 @@ namespace API.Endpoints
             group.MapPost("/", CreateCategory)
                 .WithName(nameof(CreateCategory))
                 .Produces(StatusCodes.Status201Created)
-                .Produces(StatusCodes.Status400BadRequest);
+                .Produces(StatusCodes.Status400BadRequest)
+                .RequireAuthorization(policy =>
+                        policy.RequireRole(
+                            Role.Admin.ToString(),
+                            Role.SuperAdmin.ToString()));
             
             group.MapPut("/{id:guid}", UpdateCategory)
                 .WithName(nameof(UpdateCategory))
                 .Produces(StatusCodes.Status204NoContent)
-                .Produces(StatusCodes.Status404NotFound);
+                .Produces(StatusCodes.Status404NotFound)
+                .RequireAuthorization(policy =>
+                        policy.RequireRole(
+                            Role.Admin.ToString(),
+                            Role.SuperAdmin.ToString()));
             
             group.MapDelete("/{id:guid}", DeleteCategory)
                 .WithName(nameof(DeleteCategory))
                 .Produces(StatusCodes.Status204NoContent)
-                .Produces(StatusCodes.Status404NotFound);
+                .Produces(StatusCodes.Status404NotFound)
+                .RequireAuthorization(policy =>
+                        policy.RequireRole(
+                            Role.Admin.ToString(),
+                            Role.SuperAdmin.ToString()));
         }
 
         public static async Task<Results<Ok<PaginatedResult<CategoryResponseDto>>, BadRequest>> GetCategories(
