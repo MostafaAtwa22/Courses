@@ -10,9 +10,7 @@
   align-items: center;
   transition: var(--transition);
 
-  &.menu-open {
-    background-color: var(--surface);
-  }
+  &.menu-open { background-color: var(--surface); }
 
   .nav-content {
     display: flex;
@@ -21,6 +19,7 @@
     width: 100%;
   }
 
+  // ── Logo ──────────────────────────────────────────────────────────────────
   .logo {
     display: flex;
     align-items: center;
@@ -46,6 +45,7 @@
     }
   }
 
+  // ── Desktop nav links ─────────────────────────────────────────────────────
   .nav-links {
     display: flex;
     gap: var(--spacing-md);
@@ -56,8 +56,8 @@
       text-decoration: none;
       position: relative;
       padding: 4px 0;
-      
-      &:after {
+
+      &::after {
         content: '';
         position: absolute;
         bottom: 0;
@@ -70,11 +70,12 @@
 
       &:hover, &.active {
         color: var(--primary-color);
-        &:after { width: 100%; }
+        &::after { width: 100%; }
       }
     }
   }
 
+  // ── Nav actions ───────────────────────────────────────────────────────────
   .nav-actions {
     display: flex;
     align-items: center;
@@ -99,7 +100,7 @@
     color: var(--text-color);
     border: none;
     cursor: pointer;
-    
+
     &:hover {
       background: var(--primary-light);
       color: var(--primary-color);
@@ -115,9 +116,207 @@
     cursor: pointer;
     &:hover { color: var(--primary-color); }
   }
+
+  // ── User menu (avatar + dropdown) ─────────────────────────────────────────
+  .user-menu {
+    position: relative;
+
+    // Avatar button
+    .avatar-btn {
+      position: relative;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 2px solid transparent;
+      padding: 0;
+      cursor: pointer;
+      background: var(--primary-color);
+      transition: border-color 0.2s, box-shadow 0.2s;
+      overflow: visible;
+
+      &:hover, &:focus-visible {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 4px var(--primary-light);
+        outline: none;
+      }
+
+      .avatar-img {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        object-fit: cover;
+        display: block;
+      }
+
+      .avatar-initials {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        font-weight: 700;
+        font-size: 0.85rem;
+        letter-spacing: 0.03em;
+        font-family: var(--font-heading);
+      }
+    }
+
+    // Dropdown panel
+    .dropdown-panel {
+      position: absolute;
+      top: calc(100% + 12px);
+      right: 0;
+      width: 260px;
+      background: var(--surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.12);
+      padding: 8px;
+      z-index: 1000;
+
+      // Hidden by default
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-8px) scale(0.97);
+      transform-origin: top right;
+      transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
+    }
+
+    &.open .dropdown-panel {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0) scale(1);
+    }
+
+    // Header section (avatar + name + email)
+    .dropdown-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 8px 12px;
+
+      .dropdown-avatar {
+        flex-shrink: 0;
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        background: var(--primary-color);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+
+        img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+
+        span {
+          color: #fff;
+          font-weight: 700;
+          font-size: 1rem;
+          font-family: var(--font-heading);
+        }
+      }
+
+      .dropdown-user-info {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        min-width: 0;
+
+        .dropdown-name {
+          font-weight: 700;
+          font-size: 0.9rem;
+          color: var(--text-color);
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        .dropdown-email {
+          font-size: 0.75rem;
+          color: var(--text-muted);
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        .dropdown-role {
+          display: inline-block;
+          margin-top: 3px;
+          padding: 1px 8px;
+          background: var(--primary-light);
+          color: var(--primary-color);
+          border-radius: var(--radius-full);
+          font-size: 0.7rem;
+          font-weight: 600;
+          width: fit-content;
+        }
+      }
+    }
+
+    .dropdown-divider {
+      height: 1px;
+      background: var(--border-color);
+      margin: 4px 0;
+    }
+
+    .dropdown-items {
+      padding: 4px 0;
+    }
+
+    // Shared item style (both <a> and <button>)
+    .dropdown-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+      padding: 9px 10px;
+      border-radius: var(--radius-md);
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--text-color);
+      text-decoration: none;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-family: var(--font-body);
+      transition: background 0.15s, color 0.15s;
+
+      i {
+        width: 18px;
+        text-align: center;
+        color: var(--text-muted);
+        font-size: 0.9rem;
+        transition: color 0.15s;
+      }
+
+      &:hover {
+        background: var(--surface-variant);
+        color: var(--primary-color);
+        i { color: var(--primary-color); }
+      }
+
+      &.logout {
+        margin-top: 4px;
+        color: var(--error);
+        i { color: var(--error); }
+
+        &:hover {
+          background: rgba(186, 26, 26, 0.08);
+          color: var(--error);
+          i { color: var(--error); }
+        }
+      }
+    }
+  }
 }
 
-/* Mobile Menu Overlay */
+// ── Mobile menu ─────────────────────────────────────────────────────────────
 .mobile-menu {
   position: fixed;
   top: 72px;
@@ -145,7 +344,7 @@
     display: flex;
     flex-direction: column;
     gap: var(--spacing-md);
-    
+
     a {
       font-size: 1.25rem;
       font-weight: 600;
@@ -153,7 +352,6 @@
       text-decoration: none;
       padding: 8px 0;
       border-bottom: 1px solid var(--border-color);
-      
       &.active { color: var(--primary-color); }
     }
   }
@@ -163,22 +361,73 @@
     flex-direction: column;
     gap: 12px;
     margin-top: auto;
-    
+
     button { width: 100%; }
+
     .btn-login {
       border: 1px solid var(--border-color);
       border-radius: var(--radius-md);
       padding: 0.75rem;
     }
   }
+
+  // Mobile user info block
+  .mobile-user-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    background: var(--surface-variant);
+    border-radius: var(--radius-md);
+
+    .mobile-avatar {
+      flex-shrink: 0;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--primary-color);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+
+      img { width: 100%; height: 100%; object-fit: cover; }
+
+      span {
+        color: #fff;
+        font-weight: 700;
+        font-size: 1rem;
+        font-family: var(--font-heading);
+      }
+    }
+
+    .mobile-user-name {
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: var(--text-color);
+      margin: 0;
+    }
+
+    .mobile-user-role {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin: 2px 0 0;
+    }
+  }
+
+  .mobile-logout {
+    justify-content: center;
+    border: 1px solid rgba(186, 26, 26, 0.25);
+    border-radius: var(--radius-md);
+  }
 }
 
-/* Responsive Utilities */
-.mobile-only { display: none !important; }
+// ── Responsive utilities ─────────────────────────────────────────────────────
+.mobile-only  { display: none !important; }
 .desktop-only { display: flex !important; }
 
 @media (max-width: 1024px) {
   .desktop-only { display: none !important; }
-  .mobile-only { display: flex !important; }
+  .mobile-only  { display: flex !important; }
   .navbar .nav-content { justify-content: space-between; }
 }

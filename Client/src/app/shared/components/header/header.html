@@ -4,12 +4,11 @@
       <img src="assets/images/logo.png" alt="EduFocus Logo" class="logo-img">
       <span class="logo-text">EduFocus</span>
     </div>
-    
+
     <!-- Desktop Nav -->
     <div class="nav-links desktop-only">
       <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Home</a>
       <a routerLink="/courses" routerLinkActive="active">Courses</a>
-      <a href="#">Categories</a>
       <a href="#">About Us</a>
       <a href="#">Contact</a>
     </div>
@@ -18,23 +17,69 @@
       <button class="theme-toggle" (click)="onThemeToggle()" [title]="isDarkMode ? 'Light Mode' : 'Dark Mode'">
         <i class="fa-solid" [class.fa-moon]="!isDarkMode" [class.fa-sun]="isDarkMode"></i>
       </button>
-      
+
       <div class="auth-buttons desktop-only">
+
+        <!-- Guest -->
         <ng-container *ngIf="!authService.currentUser()">
           <button class="btn-login" routerLink="/auth/login">Log In</button>
           <button class="btn-primary" routerLink="/auth/role-select">Sign Up</button>
         </ng-container>
-        
+
+        <!-- Logged in -->
         <ng-container *ngIf="authService.currentUser() as user">
-          <div class="user-profile" style="display: flex; align-items: center; gap: 12px; cursor: pointer;">
-            <div class="avatar" style="width: 36px; height: 36px; border-radius: 50%; background: var(--primary-color); color: white; display: flex; align-items: center; justify-content: center; font-weight: 600;">
-              {{ user.firstName[0] }}{{ user.lastName[0] }}
+          <div class="user-menu" [class.open]="isDropdownOpen">
+
+            <!-- Avatar trigger -->
+            <button class="avatar-btn" (click)="toggleDropdown()" [attr.aria-expanded]="isDropdownOpen" aria-haspopup="true">
+              <img *ngIf="user.profilePicture" [src]="user.profilePicture" [alt]="user.firstName" class="avatar-img" />
+              <span *ngIf="!user.profilePicture" class="avatar-initials">
+                {{ user.firstName[0] }}{{ user.lastName[0] }}
+              </span>
+            </button>
+
+            <!-- Dropdown panel -->
+            <div class="dropdown-panel" role="menu">
+              <!-- User info header -->
+              <div class="dropdown-header">
+                <div class="dropdown-avatar">
+                  <img *ngIf="user.profilePicture" [src]="user.profilePicture" [alt]="user.firstName" />
+                  <span *ngIf="!user.profilePicture">{{ user.firstName[0] }}{{ user.lastName[0] }}</span>
+                </div>
+                <div class="dropdown-user-info">
+                  <span class="dropdown-name">{{ user.firstName }} {{ user.lastName }}</span>
+                  <span class="dropdown-email">{{ user.email }}</span>
+                  <span class="dropdown-role">{{ user.roles?.[0] }}</span>
+                </div>
+              </div>
+
+              <div class="dropdown-divider"></div>
+
+              <!-- Nav items -->
+              <div class="dropdown-items">
+                <a class="dropdown-item" routerLink="/profile" (click)="isDropdownOpen = false" role="menuitem">
+                  <i class="fa-regular fa-user"></i>
+                  <span>My Profile</span>
+                </a>
+                <a class="dropdown-item" routerLink="/settings" (click)="isDropdownOpen = false" role="menuitem">
+                  <i class="fa-solid fa-gear"></i>
+                  <span>Settings</span>
+                </a>
+                <a class="dropdown-item" routerLink="/courses" (click)="isDropdownOpen = false" role="menuitem">
+                  <i class="fa-solid fa-book-open"></i>
+                  <span>My Courses</span>
+                </a>
+              </div>
+
+              <div class="dropdown-divider"></div>
+
+              <!-- Logout -->
+              <button class="dropdown-item logout" (click)="logout()" role="menuitem">
+                <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                <span>Log Out</span>
+              </button>
             </div>
-            <div class="user-info" style="display: flex; flex-direction: column; line-height: 1.2;">
-              <span class="user-name" style="font-weight: 600; font-size: 0.9rem;">{{ user.firstName }} {{ user.lastName }}</span>
-              <span class="user-role" style="font-size: 0.75rem; color: var(--text-secondary);">{{ user.roles?.join(', ') }}</span>
-            </div>
-            <button class="btn-outline ml-3" (click)="logout()" style="padding: 6px 12px; font-size: 0.875rem;">Log Out</button>
+
           </div>
         </ng-container>
       </div>
@@ -51,7 +96,6 @@
     <div class="mobile-links">
       <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" (click)="isMenuOpen = false">Home</a>
       <a routerLink="/courses" routerLinkActive="active" (click)="isMenuOpen = false">Courses</a>
-      <a href="#" (click)="isMenuOpen = false">Categories</a>
       <a href="#" (click)="isMenuOpen = false">About Us</a>
       <a href="#" (click)="isMenuOpen = false">Contact</a>
     </div>
@@ -60,18 +104,22 @@
         <button class="btn-login" routerLink="/auth/login" (click)="isMenuOpen = false">Log In</button>
         <button class="btn-primary" routerLink="/auth/role-select" (click)="isMenuOpen = false">Sign Up</button>
       </ng-container>
-      
+
       <ng-container *ngIf="authService.currentUser() as user">
-        <div class="user-profile mb-3" style="display: flex; align-items: center; gap: 12px;">
-          <div class="avatar" style="width: 40px; height: 40px; border-radius: 50%; background: var(--primary-color); color: white; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 1.2rem;">
-            {{ user.firstName[0] }}{{ user.lastName[0] }}
+        <div class="mobile-user-info">
+          <div class="mobile-avatar">
+            <img *ngIf="user.profilePicture" [src]="user.profilePicture" [alt]="user.firstName" />
+            <span *ngIf="!user.profilePicture">{{ user.firstName[0] }}{{ user.lastName[0] }}</span>
           </div>
-          <div class="user-info" style="display: flex; flex-direction: column; line-height: 1.2;">
-            <span class="user-name" style="font-weight: 600; font-size: 1rem; color: var(--text-primary);">{{ user.firstName }} {{ user.lastName }}</span>
-            <span class="user-role" style="font-size: 0.8rem; color: var(--text-secondary);">{{ user.roles?.join(', ') }}</span>
+          <div>
+            <p class="mobile-user-name">{{ user.firstName }} {{ user.lastName }}</p>
+            <p class="mobile-user-role">{{ user.roles?.[0] }}</p>
           </div>
         </div>
-        <button class="btn-outline w-100" (click)="logout(); isMenuOpen = false;">Log Out</button>
+        <button class="dropdown-item logout mobile-logout" (click)="logout(); isMenuOpen = false">
+          <i class="fa-solid fa-arrow-right-from-bracket"></i>
+          <span>Log Out</span>
+        </button>
       </ng-container>
     </div>
   </div>

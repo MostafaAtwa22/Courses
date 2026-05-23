@@ -12,18 +12,21 @@ import { AccountService } from '../../account/services/account.service';
   templateUrl: './reset-password.component.html'
 })
 export class ResetPasswordComponent implements OnInit {
-  private fb = inject(FormBuilder);
+  private fb             = inject(FormBuilder);
   private accountService = inject(AccountService);
-  private router = inject(Router);
-  private route = inject(ActivatedRoute);
+  private router         = inject(Router);
+  private route          = inject(ActivatedRoute);
 
-  email = '';
-  token = '';
-  isLoading = false;
+  email        = '';
+  token        = '';
+  isLoading    = false;
   errorMessage = '';
 
+  showPassword        = false;
+  showConfirmPassword = false;
+
   resetForm = this.fb.nonNullable.group({
-    newPassword: ['', [Validators.required, Validators.minLength(8)]],
+    newPassword:        ['', [Validators.required, Validators.minLength(8)]],
     confirmNewPassword: ['', Validators.required]
   }, { validators: this.passwordMatchValidator });
 
@@ -37,10 +40,55 @@ export class ResetPasswordComponent implements OnInit {
     }
   }
 
+  // ── Password strength ──────────────────────────────────────────────────────
+
+  get passwordValue(): string {
+    return this.resetForm.get('newPassword')?.value ?? '';
+  }
+
+  get passwordConditions() {
+    const v = this.passwordValue;
+    return [
+      { label: 'At least 8 characters',       met: v.length >= 8 },
+      { label: 'One uppercase letter (A–Z)',   met: /[A-Z]/.test(v) },
+      { label: 'One lowercase letter (a–z)',   met: /[a-z]/.test(v) },
+      { label: 'One number (0–9)',             met: /\d/.test(v) },
+      { label: 'One special character (!@#…)', met: /[^A-Za-z0-9]/.test(v) },
+    ];
+  }
+
+  get passwordScore(): number {
+    return this.passwordConditions.filter(c => c.met).length;
+  }
+
+  get passwordStrengthLabel(): string {
+    const s = this.passwordScore;
+    if (s === 0) return '';
+    if (s <= 2)  return 'Weak';
+    if (s === 3) return 'Fair';
+    if (s === 4) return 'Good';
+    return 'Strong';
+  }
+
+  get passwordStrengthClass(): string {
+    const s = this.passwordScore;
+    if (s === 0) return '';
+    if (s <= 2)  return 'weak';
+    if (s === 3) return 'fair';
+    if (s === 4) return 'good';
+    return 'strong';
+  }
+
+  get showPasswordStrength(): boolean {
+    return this.passwordValue.length > 0;
+  }
+
+  // ── Validation ─────────────────────────────────────────────────────────────
+
   passwordMatchValidator(control: AbstractControl): ValidationErrors | null {
-    const password = control.get('newPassword');
+    const password        = control.get('newPassword');
     const confirmPassword = control.get('confirmNewPassword');
-    
+
     if (password && confirmPassword && password.value !== confirmPassword.value) {
       confirmPassword.setErrors({ passwordMismatch: true });
       return { passwordMismatch: true };
@@ -48,29 +96,30 @@ export class ResetPasswordComponent implements OnInit {
     return null;
   }
 
+  // ── Submit ─────────────────────────────────────────────────────────────────
+
   onSubmit() {
     if (this.resetForm.invalid) {
       this.resetForm.markAllAsTouched();
       return;
     }
 
-    this.isLoading = true;
+    this.isLoading    = true;
     this.errorMessage = '';
 
     const request = {
-      email: this.email,
-      token: this.token,
-      newPassword: this.resetForm.value.newPassword!,
+      email:              this.email,
+      token:              this.token,
+      newPassword:        this.resetForm.value.newPassword!,
       confirmNewPassword: this.resetForm.value.confirmNewPassword!
     };
 
     this.accountService.resetPassword(request).subscribe({
       next: () => {
-        // Redirect to login on success
         this.router.navigate(['/auth/login'], { queryParams: { reset: 'success' } });
       },
       error: (err) => {
-        this.isLoading = false;
+        this.isLoading    = false;
         this.errorMessage = err.error?.detail || 'Failed to reset password. The link might be expired.';
       }
     });

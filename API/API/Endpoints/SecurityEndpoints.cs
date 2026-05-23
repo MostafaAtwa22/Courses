@@ -47,6 +47,7 @@ namespace API.Endpoints
             group.MapPost("/confirm-email", ConfirmEmail)
                 .WithName(nameof(ConfirmEmail))
                 .RequireRateLimiting(RateLimiterPolicies.PasswordManagement)
+                .AllowAnonymous()
                 .Produces<AuthResponseDto>(StatusCodes.Status200OK)
                 .Produces(StatusCodes.Status401Unauthorized)
                 .Produces(StatusCodes.Status400BadRequest);

@@ -1,10 +1,44 @@
 .auth-card {
+
   .auth-header {
     margin-bottom: 32px;
-    h2 { font-size: 2rem; margin-bottom: 8px; }
+
+    h2 {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+      color: var(--text-color);
+    }
+
     p { color: var(--text-muted); }
   }
 
+  // ── Banners ────────────────────────────────────────────────────────────────
+  .banner {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    border-radius: var(--radius-md);
+    font-size: 0.875rem;
+    margin-bottom: 20px;
+
+    i { flex-shrink: 0; }
+  }
+
+  .success-banner {
+    background: rgba(34, 197, 94, 0.1);
+    border: 1px solid rgba(34, 197, 94, 0.3);
+    color: #15803d;
+  }
+
+  .error-banner {
+    background: rgba(186, 26, 26, 0.08);
+    border: 1px solid rgba(186, 26, 26, 0.25);
+    color: var(--error);
+  }
+
+  // ── Form ───────────────────────────────────────────────────────────────────
   .auth-form {
     display: flex;
     flex-direction: column;
@@ -14,73 +48,160 @@
       display: flex;
       flex-direction: column;
       gap: 8px;
-      
-      label { font-size: 0.9rem; font-weight: 500; }
-      
+
+      label {
+        font-size: 0.9rem;
+        font-weight: 500;
+        color: var(--text-color);
+      }
+
+      // Label row: label left, forgot-password right
+      .label-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        label { margin: 0; }
+
+        .forgot-link {
+          font-size: 0.82rem;
+          font-weight: 600;
+          color: var(--primary-color);
+          text-decoration: none;
+          &:hover { text-decoration: underline; }
+        }
+      }
+
       .input-wrapper {
         position: relative;
-        i {
+
+        .input-icon {
           position: absolute;
           left: 16px;
           top: 50%;
           transform: translateY(-50%);
           color: var(--text-muted);
+          pointer-events: none;
+          font-size: 0.9rem;
         }
+
         input {
           width: 100%;
-          padding: 12px 16px 12px 44px;
+          padding: 12px 44px 12px 44px;
           background: var(--surface-variant);
-          border: 1px solid var(--border-color);
+          border: 1.5px solid var(--border-color);
           border-radius: var(--radius-md);
           color: var(--text-color);
-          transition: var(--transition);
-          
+          font-family: var(--font-body);
+          font-size: 0.95rem;
+          transition: border-color 0.2s, box-shadow 0.2s;
+
+          &::placeholder { color: var(--text-muted); opacity: 0.7; }
+
           &:focus {
             outline: none;
             border-color: var(--primary-color);
             box-shadow: 0 0 0 4px var(--primary-light);
           }
+
+          &.is-invalid {
+            border-color: var(--error);
+          }
+        }
+
+        .toggle-visibility {
+          position: absolute;
+          right: 14px;
+          top: 50%;
+          transform: translateY(-50%);
+          background: none;
+          border: none;
+          padding: 4px;
+          cursor: pointer;
+          color: var(--text-muted);
+          line-height: 1;
+          transition: color 0.2s;
+
+          &:hover { color: var(--primary-color); }
         }
       }
-    }
 
-    .form-options {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 0.85rem;
-
-      .remember-me {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        cursor: pointer;
-      }
-
-      .forgot-password {
-        color: var(--primary-color);
-        text-decoration: none;
-        font-weight: 600;
-        &:hover { text-decoration: underline; }
+      .field-error {
+        font-size: 0.8rem;
+        color: var(--error);
       }
     }
 
-    .btn-block { width: 100%; justify-content: center; padding: 12px; margin-top: 8px; }
-    
-    .btn-google {
+    // ── Submit button ─────────────────────────────────────────────────────────
+    .btn-block {
+      width: 100%;
+      justify-content: center;
+      padding: 12px;
+      gap: 8px;
+      margin-top: 4px;
+      font-size: 0.95rem;
+    }
+
+    // ── Divider ───────────────────────────────────────────────────────────────
+    .divider {
       display: flex;
       align-items: center;
       gap: 12px;
-      background: transparent;
-      i { color: #DB4437; }
+      color: var(--text-muted);
+      font-size: 0.8rem;
+
+      &::before,
+      &::after {
+        content: '';
+        flex: 1;
+        height: 1px;
+        background: var(--border-color);
+      }
+    }
+
+    // ── Google button ─────────────────────────────────────────────────────────
+    .btn-google {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 11px 16px;
+      background: var(--surface);
+      border: 1.5px solid var(--border-color);
+      border-radius: var(--radius-md);
+      color: var(--text-color);
+      font-family: var(--font-body);
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+
+      i {
+        color: #DB4437;
+        font-size: 1rem;
+      }
+
+      &:hover {
+        border-color: var(--primary-color);
+        background: var(--surface-variant);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+      }
     }
   }
 
+  // ── Footer ─────────────────────────────────────────────────────────────────
   .auth-footer {
     margin-top: 32px;
     text-align: center;
     font-size: 0.9rem;
     color: var(--text-muted);
-    a { color: var(--primary-color); text-decoration: none; font-weight: 600; &:hover { text-decoration: underline; } }
+
+    a {
+      color: var(--primary-color);
+      font-weight: 600;
+      text-decoration: none;
+      &:hover { text-decoration: underline; }
+    }
   }
 }

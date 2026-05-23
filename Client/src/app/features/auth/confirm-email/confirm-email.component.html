@@ -1,29 +1,65 @@
 <div class="confirm-card">
 
-  <div *ngIf="isLoading" class="state-block">
-    <div class="icon-wrapper loading">
-      <i class="fa-solid fa-circle-notch fa-spin"></i>
+  <div class="state-block form-block">
+    <div class="icon-wrapper primary">
+      <i class="fa-solid fa-envelope-open-text"></i>
     </div>
-    <h2>Confirming your email...</h2>
-    <p>Please wait while we verify your email address.</p>
-  </div>
+    <h2>Confirm Your Email</h2>
+    <p *ngIf="emailFromRoute">
+      We sent a confirmation code to <strong>{{ emailFromRoute }}</strong>. Paste it below.
+    </p>
+    <p *ngIf="!emailFromRoute">
+      Enter your email address and the confirmation code we sent you.
+    </p>
 
-  <div *ngIf="!isLoading && isSuccess" class="state-block">
-    <div class="icon-wrapper success">
-      <i class="fa-solid fa-circle-check"></i>
-    </div>
-    <h2>Email Confirmed!</h2>
-    <p>Your email address has been successfully verified. You can now sign in to your account.</p>
-    <a routerLink="/auth/login" class="btn-primary">Go to Login</a>
-  </div>
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
 
-  <div *ngIf="!isLoading && !isSuccess" class="state-block">
-    <div class="icon-wrapper error">
-      <i class="fa-solid fa-circle-xmark"></i>
-    </div>
-    <h2>Verification Failed</h2>
-    <p>{{ errorMessage }}</p>
-    <a routerLink="/auth/login" class="btn-outline">Back to Login</a>
+      <!-- Email field: only shown when not pre-filled from route -->
+      <div class="field-group" *ngIf="!emailFromRoute">
+        <label for="email">Email address</label>
+        <input
+          id="email"
+          type="email"
+          formControlName="email"
+          placeholder="you@example.com"
+          autocomplete="email"
+          [class.invalid]="emailControl?.invalid && emailControl?.touched"
+        />
+        <span class="field-error" *ngIf="emailControl?.invalid && emailControl?.touched">
+          Please enter a valid email address.
+        </span>
+      </div>
+
+      <div class="field-group">
+        <label for="code">Confirmation code</label>
+        <input
+          id="code"
+          type="text"
+          formControlName="code"
+          placeholder="Paste your code here"
+          autocomplete="one-time-code"
+          [class.invalid]="codeControl?.invalid && codeControl?.touched"
+        />
+        <span class="field-error" *ngIf="codeControl?.invalid && codeControl?.touched">
+          Please enter the confirmation code.
+        </span>
+      </div>
+
+      <div class="server-error" *ngIf="errorMessage">
+        <i class="fa-solid fa-circle-exclamation"></i>
+        {{ errorMessage }}
+      </div>
+
+      <button type="submit" class="btn-primary" [disabled]="isLoading">
+        <span *ngIf="!isLoading">Verify Email</span>
+        <span *ngIf="isLoading">
+          <i class="fa-solid fa-circle-notch fa-spin"></i> Verifying...
+        </span>
+      </button>
+
+    </form>
+
+    <a routerLink="/auth/login" class="back-link">Back to Login</a>
   </div>
 
 </div>

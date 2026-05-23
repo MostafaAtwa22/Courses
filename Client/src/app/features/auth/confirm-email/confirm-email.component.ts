@@ -1,43 +1,62 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, ActivatedRoute, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { SecurityService } from '../../security/services/security.service';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-confirm-email',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, ReactiveFormsModule],
   styleUrl: './confirm-email.component.scss',
   templateUrl: './confirm-email.component.html'
 })
 export class ConfirmEmailComponent implements OnInit {
   private securityService = inject(SecurityService);
-  private route = inject(ActivatedRoute);
+  private authService     = inject(AuthService);
+  private route           = inject(ActivatedRoute);
+  private router          = inject(Router);
+  private fb              = inject(FormBuilder);
 
-  isLoading = true;
-  isSuccess = false;
+  form!: FormGroup;
+  isLoading    = false;
   errorMessage = '';
+  emailFromRoute = '';
 
   ngOnInit() {
-    const email = this.route.snapshot.queryParams['email'];
-    const code = this.route.snapshot.queryParams['code']; // Note: The backend expects 'code' or 'token'
+    this.emailFromRoute = this.route.snapshot.queryParams['email'] ?? '';
 
-    if (!email || !code) {
-      this.isLoading = false;
-      this.isSuccess = false;
-      this.errorMessage = 'Invalid confirmation link. Missing parameters.';
+    this.form = this.fb.group({
+      email: [this.emailFromRoute, [Validators.required, Validators.email]],
+      code:  ['', [Validators.required]]
+    });
+  }
+
+  get emailControl() { return this.form.get('email'); }
+  get codeControl()  { return this.form.get('code'); }
+
+  onSubmit() {
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
       return;
     }
 
+    this.isLoading    = true;
+    this.errorMessage = '';
+
+    const { email, code } = this.form.value;
+
     this.securityService.confirmEmail({ email, code }).subscribe({
-      next: () => {
-        this.isLoading = false;
-        this.isSuccess = true;
+      next: (response) => {
+        if (response.token) {
+          this.authService.saveSession(response.token, response);
+        }
+        this.router.navigate(['/']);
       },
       error: (err) => {
-        this.isLoading = false;
-        this.isSuccess = false;
-        this.errorMessage = err.error?.detail || 'Failed to confirm email. The link might be expired or invalid.';
+        this.isLoading    = false;
+        this.errorMessage = err.error?.detail || 'Invalid verification code. Please try again.';
       }
     });
   }

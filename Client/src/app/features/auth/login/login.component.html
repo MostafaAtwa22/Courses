@@ -1,52 +1,90 @@
 <div class="auth-card">
+
   <div class="auth-header">
     <h2>Welcome Back</h2>
     <p>Please enter your details to sign in.</p>
   </div>
-  
-  <div *ngIf="errorMessage" class="alert alert-danger mb-4 p-3 rounded bg-red-100 text-red-700" style="background-color: #fee2e2; color: #b91c1c; border: 1px solid #f87171; border-radius: 4px; padding: 12px; margin-bottom: 16px;">
+
+  <!-- Success banner (after password reset) -->
+  <div *ngIf="successMessage" class="banner success-banner">
+    <i class="fa-solid fa-circle-check"></i>
+    {{ successMessage }}
+  </div>
+
+  <!-- Error banner -->
+  <div *ngIf="errorMessage" class="banner error-banner">
+    <i class="fa-solid fa-circle-exclamation"></i>
     {{ errorMessage }}
   </div>
 
-  <form class="auth-form" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+  <form class="auth-form" [formGroup]="loginForm" (ngSubmit)="onSubmit()" novalidate>
+
+    <!-- Email -->
     <div class="form-group">
       <label for="email">Email Address</label>
       <div class="input-wrapper">
-        <i class="fa-solid fa-envelope"></i>
-        <input type="email" id="email" formControlName="email" placeholder="name@company.com">
+        <i class="fa-solid fa-envelope input-icon"></i>
+        <input
+          type="email"
+          id="email"
+          formControlName="email"
+          placeholder="name@company.com"
+          autocomplete="email"
+          [class.is-invalid]="loginForm.get('email')?.invalid && loginForm.get('email')?.touched"
+        />
       </div>
-      <div class="text-danger small mt-1" *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched" style="color: #ef4444; font-size: 0.875rem; margin-top: 0.25rem;">
-        <span *ngIf="loginForm.get('email')?.hasError('required')">Email is required</span>
-        <span *ngIf="loginForm.get('email')?.hasError('email')">Please enter a valid email</span>
-      </div>
+      <span class="field-error" *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched">
+        <ng-container *ngIf="loginForm.get('email')?.hasError('required')">Email is required.</ng-container>
+        <ng-container *ngIf="loginForm.get('email')?.hasError('email')">Please enter a valid email address.</ng-container>
+      </span>
     </div>
-    
+
+    <!-- Password -->
     <div class="form-group">
-      <label for="password">Password</label>
+      <div class="label-row">
+        <label for="password">Password</label>
+        <a routerLink="/auth/forget-password" class="forgot-link">Forgot password?</a>
+      </div>
       <div class="input-wrapper">
-        <i class="fa-solid fa-lock"></i>
-        <input type="password" id="password" formControlName="password" placeholder="••••••••">
+        <i class="fa-solid fa-lock input-icon"></i>
+        <input
+          [type]="showPassword ? 'text' : 'password'"
+          id="password"
+          formControlName="password"
+          placeholder="••••••••"
+          autocomplete="current-password"
+          [class.is-invalid]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched"
+        />
+        <button type="button" class="toggle-visibility" (click)="showPassword = !showPassword" tabindex="-1" [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'">
+          <i class="fa-solid" [class.fa-eye]="!showPassword" [class.fa-eye-slash]="showPassword"></i>
+        </button>
       </div>
-      <div class="text-danger small mt-1" *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched" style="color: #ef4444; font-size: 0.875rem; margin-top: 0.25rem;">
-        <span *ngIf="loginForm.get('password')?.hasError('required')">Password is required</span>
-      </div>
+      <span class="field-error" *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
+        Password is required.
+      </span>
     </div>
 
-    <div class="form-options">
-      <a routerLink="/auth/forget-password" class="forgot-password">Forgot password?</a>
-    </div>
-
+    <!-- Submit -->
     <button type="submit" class="btn-primary btn-block" [disabled]="isLoading">
-      <span *ngIf="isLoading"><i class="fa-solid fa-circle-notch fa-spin"></i> Signing in...</span>
-      <span *ngIf="!isLoading">Sign In</span>
+      <i class="fa-solid fa-circle-notch fa-spin" *ngIf="isLoading"></i>
+      <span>{{ isLoading ? 'Signing in…' : 'Sign In' }}</span>
     </button>
-    
-    <button type="button" class="btn-outline btn-block btn-google">
-      <i class="fa-brands fa-google"></i> Sign in with Google
+
+    <!-- Divider -->
+    <div class="divider">
+      <span>or</span>
+    </div>
+
+    <!-- Google -->
+    <button type="button" class="btn-google">
+      <i class="fa-brands fa-google"></i>
+      <span>Continue with Google</span>
     </button>
+
   </form>
 
   <div class="auth-footer">
     <p>Don't have an account? <a routerLink="/auth/role-select">Sign up for free</a></p>
   </div>
+
 </div>

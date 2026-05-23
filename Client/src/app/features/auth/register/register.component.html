@@ -4,110 +4,171 @@
     <p>Start your learning journey with us today.</p>
   </div>
 
-  <!-- Stored Role Badge -->
-  <div class="role-badge mb-4" *ngIf="selectedRoleLabel" style="background: var(--primary-light); color: var(--primary-color); border: 1px solid rgba(99, 102, 241, 0.2); padding: 10px 16px; border-radius: 8px; display: flex; align-items: center; gap: 8px; font-weight: 500; font-size: 0.9rem; margin-bottom: 20px;">
-    <i class="fa-solid" [class.fa-graduation-cap]="selectedRoleLabel === 'Student'" [class.fa-chalkboard-user]="selectedRoleLabel === 'Instructor'"></i>
-    <span>Signing up as an <strong>{{ selectedRoleLabel }}</strong></span>
-    <a routerLink="/auth/role-select" style="margin-left: auto; font-size: 0.8rem; font-weight: 600; text-decoration: none; color: var(--primary-color);">Change</a>
+  <!-- Role Badge -->
+  <div class="role-badge" *ngIf="selectedRoleLabel">
+    <i class="fa-solid"
+       [class.fa-graduation-cap]="selectedRoleLabel === 'Student'"
+       [class.fa-chalkboard-user]="selectedRoleLabel === 'Instructor'"></i>
+    <span>Signing up as a <strong>{{ selectedRoleLabel }}</strong></span>
+    <a routerLink="/auth/role-select" class="change-role">Change</a>
   </div>
-  
-  <div *ngIf="errorMessage" class="alert alert-danger mb-4 p-3 rounded" style="background-color: #fee2e2; color: #b91c1c; border: 1px solid #f87171; border-radius: 4px; padding: 12px; margin-bottom: 16px;">
+
+  <!-- Server error -->
+  <div *ngIf="errorMessage" class="server-error">
+    <i class="fa-solid fa-circle-exclamation"></i>
     {{ errorMessage }}
   </div>
 
   <form class="auth-form" [formGroup]="registerForm" (ngSubmit)="onSubmit()">
-    <div style="display: flex; gap: 1rem;">
-      <div class="form-group" style="flex: 1;">
+
+    <!-- First / Last name -->
+    <div class="name-row">
+      <div class="form-group">
         <label for="firstName">First Name</label>
         <div class="input-wrapper">
           <i class="fa-solid fa-user"></i>
           <input type="text" id="firstName" formControlName="firstName" placeholder="John">
         </div>
-        <div class="text-danger small mt-1" *ngIf="registerForm.get('firstName')?.invalid && registerForm.get('firstName')?.touched" style="color: #ef4444; font-size: 0.8rem; margin-top: 0.25rem;">
+        <span class="field-error" *ngIf="registerForm.get('firstName')?.invalid && registerForm.get('firstName')?.touched">
           First name is required.
-        </div>
+        </span>
       </div>
-      <div class="form-group" style="flex: 1;">
+      <div class="form-group">
         <label for="lastName">Last Name</label>
         <div class="input-wrapper">
           <i class="fa-regular fa-user"></i>
           <input type="text" id="lastName" formControlName="lastName" placeholder="Doe">
         </div>
-        <div class="text-danger small mt-1" *ngIf="registerForm.get('lastName')?.invalid && registerForm.get('lastName')?.touched" style="color: #ef4444; font-size: 0.8rem; margin-top: 0.25rem;">
+        <span class="field-error" *ngIf="registerForm.get('lastName')?.invalid && registerForm.get('lastName')?.touched">
           Last name is required.
-        </div>
+        </span>
       </div>
     </div>
-    
+
+    <!-- Username -->
     <div class="form-group">
       <label for="userName">Username</label>
       <div class="input-wrapper">
         <i class="fa-solid fa-at"></i>
         <input type="text" id="userName" formControlName="userName" placeholder="johndoe">
       </div>
-      <div class="text-danger small mt-1" *ngIf="registerForm.get('userName')?.invalid && registerForm.get('userName')?.touched" style="color: #ef4444; font-size: 0.8rem; margin-top: 0.25rem;">
+      <span class="field-error" *ngIf="registerForm.get('userName')?.invalid && registerForm.get('userName')?.touched">
         Username is required.
-      </div>
+      </span>
     </div>
 
+    <!-- Email -->
     <div class="form-group">
       <label for="email">Email Address</label>
       <div class="input-wrapper">
         <i class="fa-solid fa-envelope"></i>
         <input type="email" id="email" formControlName="email" placeholder="name@company.com">
       </div>
-      <div class="text-danger small mt-1" *ngIf="registerForm.get('email')?.invalid && registerForm.get('email')?.touched" style="color: #ef4444; font-size: 0.8rem; margin-top: 0.25rem;">
-        <span *ngIf="registerForm.get('email')?.errors?.['required']">Email is required.</span>
-        <span *ngIf="registerForm.get('email')?.errors?.['email']">Please enter a valid email address.</span>
-      </div>
+      <span class="field-error" *ngIf="registerForm.get('email')?.invalid && registerForm.get('email')?.touched">
+        <ng-container *ngIf="registerForm.get('email')?.errors?.['required']">Email is required.</ng-container>
+        <ng-container *ngIf="registerForm.get('email')?.errors?.['email']">Please enter a valid email address.</ng-container>
+      </span>
     </div>
-    
+
+    <!-- Password with strength meter -->
     <div class="form-group">
       <label for="password">Password</label>
       <div class="input-wrapper">
         <i class="fa-solid fa-lock"></i>
-        <input type="password" id="password" formControlName="password" placeholder="••••••••">
+        <input
+          [type]="showPassword ? 'text' : 'password'"
+          id="password"
+          formControlName="password"
+          placeholder="••••••••"
+        />
+        <button type="button" class="toggle-visibility" (click)="showPassword = !showPassword" tabindex="-1">
+          <i class="fa-solid" [class.fa-eye]="!showPassword" [class.fa-eye-slash]="showPassword"></i>
+        </button>
       </div>
-      <p class="input-hint" style="color: #64748b; font-size: 0.75rem; margin-top: 0.25rem;" *ngIf="!(registerForm.get('password')?.invalid && registerForm.get('password')?.touched)">
-        Must be at least 8 characters long.
-      </p>
-      <div class="text-danger small mt-1" *ngIf="registerForm.get('password')?.invalid && registerForm.get('password')?.touched" style="color: #ef4444; font-size: 0.8rem; margin-top: 0.25rem;">
-        <span *ngIf="registerForm.get('password')?.errors?.['required']">Password is required.</span>
-        <span *ngIf="registerForm.get('password')?.errors?.['minlength']">Password must be at least 8 characters.</span>
+
+      <!-- Strength bar -->
+      <div class="strength-meter" *ngIf="showPasswordStrength">
+        <div class="strength-segments">
+          <div
+            class="segment"
+            *ngFor="let i of [0,1,2,3,4]"
+            [class.filled]="passwordScore > i"
+            [class]="'segment ' + (passwordScore > i ? passwordStrengthClass : '')"
+          ></div>
+        </div>
+        <span class="strength-label" [class]="passwordStrengthClass">{{ passwordStrengthLabel }}</span>
       </div>
+
+      <!-- Conditions checklist -->
+      <ul class="password-conditions" *ngIf="showPasswordStrength">
+        <li *ngFor="let c of passwordConditions" [class.met]="c.met">
+          <i class="fa-solid" [class.fa-circle-check]="c.met" [class.fa-circle]="!c.met"></i>
+          {{ c.label }}
+        </li>
+      </ul>
+
+      <span class="field-error" *ngIf="registerForm.get('password')?.invalid && registerForm.get('password')?.touched">
+        <ng-container *ngIf="registerForm.get('password')?.errors?.['required']">Password is required.</ng-container>
+        <ng-container *ngIf="registerForm.get('password')?.errors?.['minlength']">Password must be at least 8 characters.</ng-container>
+      </span>
     </div>
 
+    <!-- Confirm Password -->
     <div class="form-group">
       <label for="confirmPassword">Confirm Password</label>
       <div class="input-wrapper">
         <i class="fa-solid fa-lock"></i>
-        <input type="password" id="confirmPassword" formControlName="confirmPassword" placeholder="••••••••">
+        <input
+          [type]="showConfirmPassword ? 'text' : 'password'"
+          id="confirmPassword"
+          formControlName="confirmPassword"
+          placeholder="••••••••"
+        />
+        <button type="button" class="toggle-visibility" (click)="showConfirmPassword = !showConfirmPassword" tabindex="-1">
+          <i class="fa-solid" [class.fa-eye]="!showConfirmPassword" [class.fa-eye-slash]="showConfirmPassword"></i>
+        </button>
       </div>
-      <div class="text-danger small mt-1" *ngIf="registerForm.get('confirmPassword')?.touched && (registerForm.get('confirmPassword')?.errors?.['required'] || registerForm.get('confirmPassword')?.errors?.['passwordMismatch'])" style="color: #ef4444; font-size: 0.875rem; margin-top: 0.25rem;">
-        <span *ngIf="registerForm.get('confirmPassword')?.errors?.['required']">Please confirm your password.</span>
-        <span *ngIf="registerForm.get('confirmPassword')?.errors?.['passwordMismatch']">Passwords do not match.</span>
-      </div>
+      <span class="field-error" *ngIf="registerForm.get('confirmPassword')?.touched && (registerForm.get('confirmPassword')?.errors?.['required'] || registerForm.get('confirmPassword')?.errors?.['passwordMismatch'])">
+        <ng-container *ngIf="registerForm.get('confirmPassword')?.errors?.['required']">Please confirm your password.</ng-container>
+        <ng-container *ngIf="registerForm.get('confirmPassword')?.errors?.['passwordMismatch']">Passwords do not match.</ng-container>
+      </span>
     </div>
 
+    <!-- Gender toggle -->
     <div class="form-group">
-      <label for="gender">Gender</label>
-      <div class="input-wrapper" style="padding: 0;">
-        <select id="gender" formControlName="gender" style="width: 100%; border: none; padding: 12px 12px 12px 36px; border-radius: 8px; background: transparent; outline: none; font-family: inherit;">
-          <option *ngFor="let g of genders" [value]="g">{{ g }}</option>
-        </select>
-        <i class="fa-solid fa-venus-mars" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #94a3b8;"></i>
+      <label>Gender</label>
+      <div class="gender-toggle">
+        <button
+          type="button"
+          class="gender-option"
+          [class.active]="selectedGender === Gender.Male"
+          (click)="selectGender(Gender.Male)"
+        >
+          <i class="fa-solid fa-mars"></i>
+          <span>Male</span>
+        </button>
+        <button
+          type="button"
+          class="gender-option"
+          [class.active]="selectedGender === Gender.Female"
+          (click)="selectGender(Gender.Female)"
+        >
+          <i class="fa-solid fa-venus"></i>
+          <span>Female</span>
+        </button>
       </div>
     </div>
 
+    <!-- Terms -->
     <div class="form-options">
       <label class="remember-me">
         <input type="checkbox" formControlName="terms">
-        <span>I agree to the <a href="#">Terms & Conditions</a></span>
+        <span>I agree to the <a href="#">Terms &amp; Conditions</a></span>
       </label>
     </div>
-    <div class="text-danger small mb-2" *ngIf="registerForm.get('terms')?.invalid && registerForm.get('terms')?.touched" style="color: #ef4444; font-size: 0.8rem; margin-top: 0.25rem;">
-      You must agree to the Terms & Conditions to register.
-    </div>
+    <span class="field-error" *ngIf="registerForm.get('terms')?.invalid && registerForm.get('terms')?.touched">
+      You must agree to the Terms &amp; Conditions to register.
+    </span>
 
     <button type="submit" class="btn-primary btn-block" [disabled]="isLoading">
       <span *ngIf="isLoading"><i class="fa-solid fa-circle-notch fa-spin"></i> Creating...</span>

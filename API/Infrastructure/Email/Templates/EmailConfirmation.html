@@ -45,19 +45,50 @@
             font-size: 16px;
             color: #434655;
         }
-        .btn-container {
+        .code-container {
             text-align: center;
             margin: 32px 0;
+        }
+        .code-box {
+            display: inline-block;
+            background-color: #f1f5f9;
+            border: 2px dashed #2563EB;
+            border-radius: 12px;
+            padding: 20px 40px;
+        }
+        .code-label {
+            font-size: 13px;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 8px;
+        }
+        .code-value {
+            font-size: 22px;
+            font-weight: 700;
+            color: #2563EB;
+            letter-spacing: 0.05em;
+            word-break: break-all;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        .divider {
+            border: none;
+            border-top: 1px solid #e2e8f0;
+            margin: 28px 0;
+        }
+        .btn-container {
+            text-align: center;
+            margin: 8px 0 24px;
         }
         .btn {
             background-color: #2563EB;
             color: #ffffff !important;
-            padding: 16px 32px;
+            padding: 14px 32px;
             border-radius: 8px;
             font-weight: 600;
             text-decoration: none;
             display: inline-block;
-            font-size: 16px;
+            font-size: 15px;
         }
         .footer {
             padding: 20px;
@@ -69,6 +100,12 @@
         @media only screen and (max-width: 600px) {
             .content {
                 padding: 24px;
+            }
+            .code-box {
+                padding: 16px 24px;
+            }
+            .code-value {
+                font-size: 18px;
             }
         }
     </style>
@@ -82,14 +119,30 @@
             <div class="content">
                 <p>Hi {{UserName}},</p>
                 <p>Welcome to <strong>EduFocus</strong>! We're excited to have you on board.</p>
-                <p>To get started and verify your account, please click the button below:</p>
-                <div class="btn-container">
-                    <a href="{{ConfirmationLink}}" class="btn">Confirm Email Address</a>
+                <p>To verify your account, enter the confirmation code below on the verification page:</p>
+
+                <div class="code-container">
+                    <div class="code-box">
+                        <div class="code-label">Your confirmation code</div>
+                        <div class="code-value">{{ConfirmationCode}}</div>
+                    </div>
                 </div>
-                <p>If the button doesn't work, you can also copy and paste the following link into your browser:</p>
-                <p style="word-break: break-all; font-size: 14px; color: #2563EB;">{{ConfirmationLink}}</p>
+
+                <hr class="divider" />
+
+                <p style="text-align: center; margin-bottom: 12px;">Or click the button below to go directly to the verification page with your email pre-filled:</p>
+                <div class="btn-container">
+                    <a href="{{ConfirmationPageUrl}}" class="btn">Go to Verification Page</a>
+                </div>
+                <p style="font-size: 13px; color: #94a3b8; text-align: center; margin-bottom: 0;">
+                    If the button doesn't work, copy this link:<br />
+                    <a href="{{ConfirmationPageUrl}}" style="color: #2563EB; word-break: break-all;">{{ConfirmationPageUrl}}</a>
+                </p>
+
+                <hr class="divider" />
+
                 <p>If you did not sign up for an account, you can safely ignore this email.</p>
-                <p>Happy learning!<br><strong>The EduFocus Team</strong></p>
+                <p style="margin-bottom: 0;">Happy learning!<br><strong>The EduFocus Team</strong></p>
             </div>
             <div class="footer">
                 <p>&copy; 2026 EduFocus. All rights reserved.</p>

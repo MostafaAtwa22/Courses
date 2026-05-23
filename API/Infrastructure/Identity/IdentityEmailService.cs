@@ -81,7 +81,7 @@ namespace Infrastructure.Identity
             );
 
             var baseUrl = _urlsOptions.Value.Client;
-            var resetLink = $"{baseUrl}/authentication/reset-password?email={user.Email}&token={encodedToken}";
+            var resetLink = $"{baseUrl}/auth/reset-password?email={Uri.EscapeDataString(user.Email!)}&token={Uri.EscapeDataString(encodedToken)}";
             
             var templatePath = Path.Combine(AppContext.BaseDirectory, "Email", "Templates", "ForgetPassword.html");
             var template = await File.ReadAllTextAsync(templatePath);
@@ -102,19 +102,16 @@ namespace Infrastructure.Identity
 
         public async Task SendEmailConfirmationEmailAsync(ApplicationUser user, string token)
         {
-            var encodedToken = WebEncoders.Base64UrlEncode(
-                Encoding.UTF8.GetBytes(token)
-            );
-
             var baseUrl = _urlsOptions.Value.Client;
-            var confirmationLink = $"{baseUrl}/authentication/confirm-email?email={user.Email}&token={encodedToken}";
+            var confirmationPageUrl = $"{baseUrl}/auth/confirm-email?email={Uri.EscapeDataString(user.Email!)}";
 
             var templatePath = Path.Combine(AppContext.BaseDirectory, "Email", "Templates", "EmailConfirmation.html");
             var template = await File.ReadAllTextAsync(templatePath);
 
             var htmlBody = template
                 .Replace("{{UserName}}", user.UserName)
-                .Replace("{{ConfirmationLink}}", confirmationLink);
+                .Replace("{{ConfirmationCode}}", token)
+                .Replace("{{ConfirmationPageUrl}}", confirmationPageUrl);
 
             var emailRequest = new EmailMessageDto
             {
