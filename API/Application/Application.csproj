@@ -7,10 +7,17 @@
   <ItemGroup>
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.1.1" />
     <PackageReference Include="MediatR" Version="14.1.0" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.18.0" />
   </ItemGroup>
   
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Reference Include="Google.Apis.Auth">
+      <HintPath>..\..\..\..\..\..\.nuget\packages\google.apis.auth\1.75.0\lib\net6.0\Google.Apis.Auth.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
   <PropertyGroup>

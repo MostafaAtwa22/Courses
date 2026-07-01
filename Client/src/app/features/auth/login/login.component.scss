@@ -160,6 +160,16 @@
     }
 
     // ── Google button ─────────────────────────────────────────────────────────
+    .google-button-container {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      
+      ::ng-deep div[id^="google"] {
+        width: 100% !important;
+      }
+    }
+
     .btn-google {
       width: 100%;
       display: flex;

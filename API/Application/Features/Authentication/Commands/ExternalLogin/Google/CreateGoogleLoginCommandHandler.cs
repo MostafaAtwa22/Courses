@@ -1,31 +1,27 @@
 using System.IdentityModel.Tokens.Jwt;
+using Application.Common.Exceptions;
+using Application.Common.Interfaces.Identity;
 using Domain.Entities.Identity;
 using Microsoft.AspNetCore.Identity;
 using Constant = Domain.Constants.IdentityConstants;
 
-namespace Application.Features.Authentication.Commands.Login
+namespace Application.Features.Authentication.Commands.ExternalLogin.Google
 {
-    public sealed class CreateLoginCommandHandler(
-            UserManager<ApplicationUser> _userManager,
-            SignInManager<ApplicationUser> _signInManager,
+    public sealed class CreateGoogleLoginCommandHandler(
+            IExternalAuthService _externalAuthService,
             IAuthService _authService,
-            ITwoFactorService _twoFactorService) :
-        IRequestHandler<CreateLoginCommand, AuthResponseDto>
+            ITwoFactorService _twoFactorService,
+            UserManager<ApplicationUser> _userManager) :
+        IRequestHandler<CreateGoogleLoginCommand, AuthResponseDto>
     {
-        public async Task<AuthResponseDto> Handle(CreateLoginCommand request, CancellationToken cancellationToken)
+        public async Task<AuthResponseDto> Handle(CreateGoogleLoginCommand request, CancellationToken cancellationToken)
         {
-            var user = await _userManager.FindByEmailAsync(request.Dto.Email)
-                ?? throw new UnauthorizedException("Invalid email or password.");
-            
-            if (!await _userManager.IsEmailConfirmedAsync(user))
-                throw new EmailNotConfirmedException("Email confirmation is required.");
-            
-            var result = await _signInManager.CheckPasswordSignInAsync(user, request.Dto.Password, true);
-            
-            if (result.IsLockedOut)
+            var user = await _externalAuthService.GoogleLoginAsync(request.Dto);
+
+            if (await _authService.IsLockedOutAsync(user))
                 throw new AccountLockedException("Account is locked. Please try again later.");
 
-            if (result.RequiresTwoFactor)
+            if (await _userManager.GetTwoFactorEnabledAsync(user))
             {
                 await _twoFactorService.SendOtpAsync(user);
                 return new AuthResponseDto
@@ -36,8 +32,6 @@ namespace Application.Features.Authentication.Commands.Login
                 };
             }
 
-            if (!result.Succeeded)
-                throw new UnauthorizedException("Invalid email or password.");
             var response = await _authService.GetAuthResponseAsync(user);
 
             var jwtId = new JwtSecurityTokenHandler()

@@ -1,8 +1,9 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../services/auth.service';
+import { GoogleAuthService } from '../services/google-auth.service';
 
 @Component({
   selector: 'app-login',
@@ -12,25 +13,39 @@ import { AuthService } from '../services/auth.service';
   styleUrl: './login.component.scss'
 })
 export class LoginComponent implements OnInit {
-  private fb          = inject(FormBuilder);
-  private authService = inject(AuthService);
-  private router      = inject(Router);
-  private route       = inject(ActivatedRoute);
+  private fb               = inject(FormBuilder);
+  private authService      = inject(AuthService);
+  private googleAuthService = inject(GoogleAuthService);
+  private router           = inject(Router);
+  private route            = inject(ActivatedRoute);
+
+  @ViewChild('googleButton', { static: true }) googleButton!: ElementRef;
 
   loginForm = this.fb.nonNullable.group({
     email:    ['', [Validators.required, Validators.email]],
     password: ['', Validators.required]
   });
 
-  isLoading      = false;
-  errorMessage   = '';
-  successMessage = '';
-  showPassword   = false;
+  isLoading        = false;
+  isGoogleLoading  = false;
+  errorMessage     = '';
+  successMessage   = '';
+  showPassword     = false;
 
   ngOnInit() {
     if (this.route.snapshot.queryParams['reset'] === 'success') {
       this.successMessage = 'Password reset successfully. You can now sign in.';
     }
+
+    // Initialize Google SDK
+    this.googleAuthService.initialize((idToken: string) => {
+      this.handleGoogleLogin(idToken);
+    });
+
+    // Render Google button
+    setTimeout(() => {
+      this.googleAuthService.renderButton(this.googleButton.nativeElement);
+    }, 100);
   }
 
   onSubmit() {
@@ -55,6 +70,24 @@ export class LoginComponent implements OnInit {
       error: (err) => {
         this.isLoading    = false;
         this.errorMessage = err.error?.detail || err.error?.title || 'Login failed. Please check your credentials.';
+      }
+    });
+  }
+
+  handleGoogleLogin(idToken: string) {
+    this.isGoogleLoading = true;
+    this.authService.googleLogin({ idToken }).subscribe({
+      next: (response) => {
+        this.isGoogleLoading = false;
+        if (response.requiresTwoFactor) {
+          this.router.navigate(['/auth/two-factor']);
+        } else {
+          this.router.navigate(['/']);
+        }
+      },
+      error: (err) => {
+        this.isGoogleLoading = false;
+        this.errorMessage = err.error?.detail || err.error?.title || 'Google login failed. Please try again.';
       }
     });
   }

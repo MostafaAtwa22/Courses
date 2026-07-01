@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { LoginDto, RegisterDto, AuthResponseDto, BaseIdentityResponse } from '../models/auth.models';
+import { GoogleLoginDto } from '../models/external-login.models';
 
 @Injectable({
   providedIn: 'root'
@@ -18,7 +19,27 @@ export class AuthService {
   }
 
   login(request: LoginDto): Observable<AuthResponseDto> {
-    return this.http.post<AuthResponseDto>(`${this.apiUrl}/login`, request).pipe(
+    return this.http.post<AuthResponseDto>(`${this.apiUrl}/login`, request, { withCredentials: true }).pipe(
+      tap(response => {
+        if (response.token) {
+          this.saveSession(response.token, response);
+        }
+      })
+    );
+  }
+
+  googleLogin(request: GoogleLoginDto): Observable<AuthResponseDto> {
+    return this.http.post<AuthResponseDto>(`${this.apiUrl}/google-login`, request, { withCredentials: true }).pipe(
+      tap(response => {
+        if (response.token) {
+          this.saveSession(response.token, response);
+        }
+      })
+    );
+  }
+  
+  refreshToken(): Observable<AuthResponseDto> {
+    return this.http.post<AuthResponseDto>(`${this.apiUrl}/refresh-token`, {}, { withCredentials: true }).pipe(
       tap(response => {
         if (response.token) {
           this.saveSession(response.token, response);
@@ -38,6 +59,13 @@ export class AuthService {
   }
 
   logout(): void {
+    this.http.post(`${this.apiUrl}/revoke-token`, {}, { withCredentials: true }).subscribe({
+      next: () => this.clearSession(),
+      error: () => this.clearSession()
+    });
+  }
+
+  clearSession(): void {
     localStorage.removeItem('EduFocus_token');
     localStorage.removeItem('EduFocus_user');
     this.currentUser.set(null);

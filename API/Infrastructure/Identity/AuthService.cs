@@ -17,13 +17,19 @@ namespace Infrastructure.Identity
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly JwtOptions _jwtOptions;
         private readonly SigningCredentials _signingCredentials; 
+        private readonly Infrastructure.Persistence.Data.ApplicationDbContext _context;
+        private readonly UrlsOptions _urlsOptions;
 
         public AuthService(
             UserManager<ApplicationUser> userManager,
-            IOptions<JwtOptions> jwtOptions)
+            IOptions<JwtOptions> jwtOptions,
+            IOptions<UrlsOptions> urlsOptions,
+            Infrastructure.Persistence.Data.ApplicationDbContext context)
         {
             _userManager = userManager;
             _jwtOptions  = jwtOptions.Value;
+            _urlsOptions = urlsOptions.Value;
+            _context     = context;
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtOptions.Key));
             _signingCredentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
@@ -78,20 +84,41 @@ namespace Infrastructure.Identity
             var token = await CreateTokenAsync(user);
             var roles = await _userManager.GetRolesAsync(user);
 
-            var response = user.ToAuthResponseDto(roles);
+            var response = user.ToAuthResponseDto(roles, _urlsOptions.API);
             response.Token = token;
 
             return response;
         }
 
-        public RefreshToken GenerateRefreshToken()
+        public RefreshToken GenerateRefreshToken(string jwtId)
         {
             var token = Convert.ToBase64String(RandomNumberGenerator.GetBytes(32));
             return new RefreshToken 
             {
                 Token = token, 
+                JwtId = jwtId,
                 ExpiryDate = DateTime.UtcNow.AddDays(_jwtOptions.RefreshTokenLifetimeInDays)
             };
+        }
+
+        public async Task AddRefreshTokenAsync(ApplicationUser user, RefreshToken refreshToken)
+        {
+            refreshToken.UserId = user.Id;
+            _context.RefreshTokens.Add(refreshToken);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task UpdateRefreshTokenAsync(RefreshToken refreshToken)
+        {
+            _context.RefreshTokens.Update(refreshToken);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<RefreshToken?> GetRefreshTokenAsync(string token)
+        {
+            return await _context.RefreshTokens
+                .Include(r => r.User)
+                .SingleOrDefaultAsync(r => r.Token == token);
         }
 
         public async Task<ApplicationUser?> FindUserByEmailAsync(string email)

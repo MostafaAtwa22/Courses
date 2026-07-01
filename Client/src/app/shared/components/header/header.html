@@ -113,7 +113,7 @@
           </div>
           <div>
             <p class="mobile-user-name">{{ user.firstName }} {{ user.lastName }}</p>
-            <p class="mobile-user-role">{{ user.roles?.[0] }}</p>
+            <p class="mobile-user-role">{{ user.roles[0] }}</p>
           </div>
         </div>
         <button class="dropdown-item logout mobile-logout" (click)="logout(); isMenuOpen = false">

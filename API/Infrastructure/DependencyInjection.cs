@@ -50,6 +50,8 @@ public static class DependencyInjection
         services.AddScoped<ISectionRepository, SectionRepository>();
         services.AddScoped<IContentRepository, ContentRepository>();
         services.AddScoped<IInstructorRepository, InstructorRepository>();
+        services.AddScoped<IExternalLogin, ExternalLogin>();
+        services.AddScoped<IExternalAuthService, ExternalAuthService>();
         
         return services;
     }

@@ -1,5 +1,3 @@
-using Application.DTOs.Account;
-using Application.DTOs.Authentication;
 using Domain.Entities.Identity;
 
 namespace Application.Common.Mappings
@@ -21,7 +19,7 @@ namespace Application.Common.Mappings
             };
         }
 
-        public static AuthResponseDto ToAuthResponseDto(this ApplicationUser user, IList<string> roles)
+        public static AuthResponseDto ToAuthResponseDto(this ApplicationUser user, IList<string> roles, string apiUrl)
         {
             return new AuthResponseDto
             {
@@ -32,7 +30,7 @@ namespace Application.Common.Mappings
                 LastName       = user.LastName          ?? string.Empty,
                 PhoneNumber    = user.PhoneNumber       ?? string.Empty,
                 Gender         = user.Gender,
-                ProfilePicture = user.ProfilePictureUrl ?? string.Empty,
+                ProfilePicture = string.IsNullOrEmpty(user.ProfilePictureUrl) ? string.Empty : $"{apiUrl}/{user.ProfilePictureUrl}",
                 Is2FAEnable    = user.TwoFactorEnabled,
                 Roles          = [..roles]
             };

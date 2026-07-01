@@ -1,6 +1,7 @@
 using Application.Common.Models;
 using Domain.Entities.Identity;
 using Microsoft.AspNetCore.Identity;
+using static Google.Apis.Auth.GoogleJsonWebSignature;
 
 namespace Application.Common.Extensions;
 
@@ -38,5 +39,18 @@ public static class ApplicationUserExtensions
             .ToHashSet();
 
         return query.Where(u => userIdsInRole.Contains(u.Id));
+    }
+
+    public static ApplicationUser MapFromGoogle(this Payload googleUser)
+    {
+        return new ApplicationUser
+        {
+            Email = googleUser.Email,
+            UserName = googleUser.Email,
+            FirstName = googleUser.GivenName ?? string.Empty,
+            LastName = googleUser.FamilyName ?? string.Empty,
+            GoogleId = googleUser.Subject,
+            EmailConfirmed = true
+        };
     }
 }
