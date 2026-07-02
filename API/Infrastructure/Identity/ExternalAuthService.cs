@@ -1,33 +1,56 @@
 using Application.Common.Exceptions;
 using Application.Common.Extensions;
 using Application.Common.Interfaces.Identity;
+using Application.Common.Models.Identity;
 using Application.DTOs.Authentication;
 using Domain.Entities.Identity;
 using Domain.Enums.Identity;
 using Microsoft.AspNetCore.Identity;
 using IdentityConstants = Domain.Constants.IdentityConstants;
 
-
 namespace Infrastructure.Identity;
 
-public class ExternalAuthService(
-    UserManager<ApplicationUser> _userManager,
-    IExternalLogin _externalLogin) : IExternalAuthService
+public class ExternalAuthService : IExternalAuthService
 {
+    private readonly UserManager<ApplicationUser> _userManager;
+    private readonly IEnumerable<IExternalLoginValidator> _validators;
+
+    public ExternalAuthService(
+        UserManager<ApplicationUser> userManager,
+        IEnumerable<IExternalLoginValidator> validators)
+    {
+        _userManager = userManager;
+        _validators = validators;
+    }
+
     public async Task<ApplicationUser> GoogleLoginAsync(GoogleLoginDto googleLoginDto)
     {
-        var googleUser = await _externalLogin.ValidateGoogleAsync(googleLoginDto.IdToken);
+        var validator = _validators.FirstOrDefault(v => v.Provider == ExternalLoginProvider.Google)
+            ?? throw new InvalidOperationException("Google login validator not found.");
 
-        if (googleUser is null)
-            throw new UnauthorizedException("Invalid Google token.");
+        var externalUser = await validator.ValidateAsync(googleLoginDto.IdToken);
 
-        var user = await _userManager.FindByLoginAsync(IdentityConstants.Google, 
-            googleUser.Subject);
+        return await ProcessExternalUserAsync(externalUser, IdentityConstants.Google);
+    }
+
+    public async Task<ApplicationUser> FacebookLoginAsync(FacebookLoginDto facebookLoginDto)
+    {
+        var validator = _validators.FirstOrDefault(v => v.Provider == ExternalLoginProvider.Facebook)
+            ?? throw new InvalidOperationException("Facebook login validator not found.");
+
+        var externalUser = await validator.ValidateAsync(facebookLoginDto.AccessToken);
+
+        return await ProcessExternalUserAsync(externalUser, "Facebook");
+    }
+
+    private async Task<ApplicationUser> ProcessExternalUserAsync(ExternalUser externalUser, string providerStr)
+    {
+        var user = await _userManager.FindByLoginAsync(providerStr, externalUser.Id);
 
         if (user is not null)
             return user;
 
-        user = googleUser.MapFromGoogle();
+        user = externalUser.MapToApplicationUser();
 
         var createResult = await _userManager.CreateAsync(user);
 
@@ -36,15 +59,12 @@ public class ExternalAuthService(
 
         await _userManager.AddToRoleAsync(user, Role.Student.ToString());
 
-        var loginInfo = new UserLoginInfo(
-            IdentityConstants.Google,
-            googleUser.Subject,
-            IdentityConstants.Google);
+        var loginInfo = new UserLoginInfo(providerStr, externalUser.Id, providerStr);
         
         var addLoginResult = await _userManager.AddLoginAsync(user, loginInfo);
 
         if (!addLoginResult.Succeeded)
-            throw new Exception($"Failed to add Google login: {string.Join(", ", addLoginResult.Errors.Select(e => e.Description))}");
+            throw new Exception($"Failed to add external login: {string.Join(", ", addLoginResult.Errors.Select(e => e.Description))}");
 
         return user;
     }

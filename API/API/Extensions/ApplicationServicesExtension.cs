@@ -11,7 +11,6 @@ namespace API.Extensions
             services.Configure<UrlsOptions>(config.GetSection(UrlsOptions.SectionName));
             services.Configure<JwtOptions>(config.GetSection(JwtOptions.SectionName));
             services.Configure<EmailOptions>(config.GetSection(EmailOptions.SectionName));
-            services.Configure<GoogleOptions>(config.GetSection(GoogleOptions.SectionName));
             
             services.AddProblemDetails();
             services.AddExceptionHandler<ValidationExceptionHandler>();

@@ -13,6 +13,8 @@ using Microsoft.AspNetCore.Identity;
 using Infrastructure.Email;
 using Application.Common.Interfaces.Email;
 using Application.Common.Interfaces.Identity;
+using Infrastructure.Identity.Authentication.Facebook;
+using Infrastructure.Identity.Authentication.Google;
 using constant = Domain.Constants;
 
 public static class DependencyInjection
@@ -26,7 +28,7 @@ public static class DependencyInjection
 
         services
             .AddPersistence(connectionString)
-            .AddIdentityServices()
+            .AddIdentityServices(config)
             .AddCaching(config)
             .AddInfrastructureServices()
             .AddBackgroundJobs(config)
@@ -50,13 +52,12 @@ public static class DependencyInjection
         services.AddScoped<ISectionRepository, SectionRepository>();
         services.AddScoped<IContentRepository, ContentRepository>();
         services.AddScoped<IInstructorRepository, InstructorRepository>();
-        services.AddScoped<IExternalLogin, ExternalLogin>();
         services.AddScoped<IExternalAuthService, ExternalAuthService>();
         
         return services;
     }
 
-    private static IServiceCollection AddIdentityServices(this IServiceCollection services)
+    private static IServiceCollection AddIdentityServices(this IServiceCollection services, IConfiguration config)
     {
         services.AddIdentity<ApplicationUser, IdentityRole>(options =>
         {
@@ -88,6 +89,14 @@ public static class DependencyInjection
         services.AddScoped<IAuthService, AuthService>();
         services.AddTransient<IIdentityEmailService, IdentityEmailService>();
         services.AddTransient<ITwoFactorService, TwoFactorService>();
+
+        services.Configure<GoogleOptions>(config.GetSection(GoogleOptions.SectionName));
+        services.Configure<FacebookOptions>(config.GetSection(FacebookOptions.SectionName));
+        services.AddHttpClient();
+        
+        services.AddScoped<IExternalLoginValidator, GoogleValidator>();
+        services.AddScoped<IExternalLoginValidator, FacebookValidator>();
+
         return services;
     }
 
