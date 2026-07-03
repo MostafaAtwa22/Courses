@@ -7,6 +7,10 @@ export const routes: Routes = [
         loadComponent: () => import('./features/home/home').then(m => m.Home)
     },
     {
+        path: 'auth/github-callback',
+        loadComponent: () => import('./features/auth/github-callback/github-callback.component').then(m => m.GithubCallbackComponent)
+    },
+    {
         path: 'auth',
         loadComponent: () => import('./features/auth/auth-layout/auth-layout.component').then(m => m.AuthLayoutComponent),
         canActivate: [guestGuard],

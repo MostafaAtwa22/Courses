@@ -14,6 +14,7 @@ using Application.Common.Interfaces.Email;
 using Application.Common.Interfaces.Identity;
 using Infrastructure.Identity.Authentication.Facebook;
 using Infrastructure.Identity.Authentication.Google;
+using Infrastructure.Identity.Authentication.Github;
 using Constant = Domain.Constants;
 
 public static class DependencyInjection
@@ -96,10 +97,12 @@ public static class DependencyInjection
 
         services.Configure<GoogleOptions>(config.GetSection(GoogleOptions.SectionName));
         services.Configure<FacebookOptions>(config.GetSection(FacebookOptions.SectionName));
+        services.Configure<GithubOptions>(config.GetSection(GithubOptions.SectionName));
         services.AddHttpClient();
         
         services.AddScoped<IExternalLoginValidator, GoogleValidator>();
         services.AddScoped<IExternalLoginValidator, FacebookValidator>();
+        services.AddScoped<IExternalLoginValidator, GithubValidator>();
 
         return services;
     }

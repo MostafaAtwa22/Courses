@@ -5,9 +5,10 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../services/auth.service';
 import { GoogleAuthService } from '../services/google-auth.service';
 import { FacebookAuthService } from '../services/facebook-auth.service';
+import { GithubAuthService } from '../services/github-auth.service';
 import { AuthResponseDto } from '../models/auth.models';
 
-type LoginMethod = 'email' | 'google' | 'facebook' | 'microsoft';
+type LoginMethod = 'email' | 'google' | 'facebook' | 'github';
 
 interface AuthState {
   loading: boolean;
@@ -28,6 +29,7 @@ export class LoginComponent implements OnInit {
   private authService         = inject(AuthService);
   private googleAuthService   = inject(GoogleAuthService);
   private facebookAuthService = inject(FacebookAuthService);
+  private githubAuthService   = inject(GithubAuthService);
   private router              = inject(Router);
   private route               = inject(ActivatedRoute);
 
@@ -50,7 +52,7 @@ export class LoginComponent implements OnInit {
   get isEmailLoading()     { return this.authState.loadingMethod === 'email'; }
   get isGoogleLoading()    { return this.authState.loadingMethod === 'google'; }
   get isFacebookLoading()  { return this.authState.loadingMethod === 'facebook'; }
-  get isMicrosoftLoading() { return this.authState.loadingMethod === 'microsoft'; }
+  get isGithubLoading() { return this.authState.loadingMethod === 'github'; }
 
   ngOnInit() {
     if (this.route.snapshot.queryParams['reset'] === 'success') {
@@ -61,11 +63,9 @@ export class LoginComponent implements OnInit {
 
     this.googleAuthService.initialize((idToken: string) => {
       this.handleGoogleLogin(idToken);
-    });
-
-    setTimeout(() => {
+    }).then(() => {
       this.googleAuthService.renderButton(this.googleButton.nativeElement);
-    }, 100);
+    });
   }
 
 
@@ -81,19 +81,6 @@ export class LoginComponent implements OnInit {
       next:  (response) => this.handleSuccess(response),
       error: (err) => this.handleError('email', err, 'Login failed. Please check your credentials.')
     });
-  }
-
-
-  triggerGoogleLogin() {
-    // Click the actual hidden Google SDK button — more reliable than prompt()
-    // which gets suppressed by browser cooldowns and FedCM restrictions
-    const sdkBtn = this.googleButton.nativeElement.querySelector('div[role="button"]') as HTMLElement | null;
-    if (sdkBtn) {
-      sdkBtn.click();
-    } else {
-      // Fallback to prompt if the SDK button isn't found
-      this.googleAuthService.prompt();
-    }
   }
 
   handleGoogleLogin(idToken: string) {
@@ -119,8 +106,19 @@ export class LoginComponent implements OnInit {
     }
   }
 
-  handleMicrosoftLogin() {
-    // TODO: implement Microsoft OAuth flow
+  async handleGithubLogin() {
+    try {
+      this.startLoading('github');
+      const code        = await this.githubAuthService.login();
+      const redirectUri = this.githubAuthService.redirectUri;
+
+      this.authService.githubLogin({ code, redirectUri }).subscribe({
+        next:  (response) => this.handleSuccess(response),
+        error: (err) => this.handleError('github', err, 'GitHub login failed. Please try again.')
+      });
+    } catch (err: any) {
+      this.handleError('github', null, typeof err === 'string' ? err : 'GitHub login was cancelled.');
+    }
   }
 
   private startLoading(method: LoginMethod) {
@@ -144,7 +142,7 @@ export class LoginComponent implements OnInit {
     }
   }
 
-  private handleError(method: LoginMethod, err: any, fallbackMessage: string) {
+  private handleError(_method: LoginMethod, err: any, fallbackMessage: string) {
     this.stopLoading();
     this.authState.error = err?.error?.detail || err?.error?.title || fallbackMessage;
   }

@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { LoginDto, RegisterDto, AuthResponseDto, BaseIdentityResponse } from '../models/auth.models';
-import { FacebookLoginDto, GoogleLoginDto } from '../models/external-login.models';
+import { FacebookLoginDto, GoogleLoginDto, GithubLoginDto } from '../models/external-login.models';
 import { SessionService } from './session.service';
 
 @Injectable({
@@ -41,6 +41,12 @@ export class AuthService {
 
   facebookLogin(request: FacebookLoginDto): Observable<AuthResponseDto> {
     return this.http.post<AuthResponseDto>(`${this.apiUrl}/facebook-login`, request, { withCredentials: true }).pipe(
+      this.saveOnSuccess()
+    );
+  }
+
+  githubLogin(request: GithubLoginDto): Observable<AuthResponseDto> {
+    return this.http.post<AuthResponseDto>(`${this.apiUrl}/github-login`, request, { withCredentials: true }).pipe(
       this.saveOnSuccess()
     );
   }

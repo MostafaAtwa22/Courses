@@ -160,22 +160,46 @@
     }
 
     // ── Social login row ──────────────────────────────────────────────────────
-    // The real Google SDK button sits invisibly at position:absolute so the
-    // SDK renders properly and its internal <div role="button"> can be clicked.
-    .google-button-hidden {
-      position: absolute;
-      opacity: 0;
-      pointer-events: none;
-      width: 1px;
-      height: 1px;
-      overflow: hidden;
-    }
-
     .social-row {
       display: flex;
       justify-content: center;
       gap: 16px;
-      position: relative;
+      align-items: center;
+    }
+
+    // Clips the Google SDK-rendered button to 48×48 circle, matching other social buttons
+    .social-btn-wrapper--google {
+      width: 48px;
+      height: 48px;
+      flex-shrink: 0;
+      border-radius: 50%;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.2s, box-shadow 0.2s;
+
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+      }
+
+      // Force SDK's injected container to exactly fill the wrapper
+      :deep(div) {
+        width: 48px !important;
+        height: 48px !important;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+
+      // Force the SDK iframe itself to fill and clip
+      :deep(iframe) {
+        width: 48px !important;
+        height: 48px !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        border: none !important;
+      }
     }
 
     .social-btn {

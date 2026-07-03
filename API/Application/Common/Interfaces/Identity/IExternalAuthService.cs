@@ -7,4 +7,5 @@ public interface IExternalAuthService
 {
     Task<ApplicationUser> GoogleLoginAsync(GoogleLoginDto googleLoginDto);
     Task<ApplicationUser> FacebookLoginAsync(FacebookLoginDto facebookLoginDto);
+    Task<ApplicationUser> GithubLoginAsync(GithubLoginDto githubLoginDto);
 }

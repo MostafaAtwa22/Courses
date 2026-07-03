@@ -48,6 +48,14 @@ public class AuthenticationEndpoints : ICarterModule
             .Produces(StatusCodes.Status401Unauthorized)
             .Produces(StatusCodes.Status400BadRequest);
 
+        group.MapPost("/github-login", GithubLogin)
+            .WithName(nameof(GithubLogin))
+            .AllowAnonymous()
+            .RequireRateLimiting(RateLimiterPolicies.Auth)
+            .Produces<AuthResponseDto>()
+            .Produces(StatusCodes.Status401Unauthorized)
+            .Produces(StatusCodes.Status400BadRequest);
+
         group.MapPost("/refresh-token", RefreshToken)
             .WithName(nameof(RefreshToken))
             .AllowAnonymous()
@@ -86,6 +94,13 @@ public class AuthenticationEndpoints : ICarterModule
         FacebookLoginDto request, IMediator mediator, HttpContext context)
     {
         var result = await mediator.Send(new CreateFacebookLoginCommand(request));
+        return ProcessTokenResponse(context, result);
+    }
+
+    private static async Task<Results<Ok<AuthResponseDto>, UnauthorizedHttpResult, BadRequest>> GithubLogin(
+        GithubLoginDto request, IMediator mediator, HttpContext context)
+    {
+        var result = await mediator.Send(new Application.Features.Authentication.Commands.ExternalLogin.Github.CreateGithubLoginCommand(request));
         return ProcessTokenResponse(context, result);
     }
     

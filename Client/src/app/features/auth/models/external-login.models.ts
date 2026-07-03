@@ -5,3 +5,8 @@ export interface GoogleLoginDto {
 export interface FacebookLoginDto {
     accessToken: string;
 }
+
+export interface GithubLoginDto {
+    code: string;
+    redirectUri: string;
+}

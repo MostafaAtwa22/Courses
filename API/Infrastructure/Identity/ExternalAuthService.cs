@@ -43,6 +43,18 @@ public class ExternalAuthService : IExternalAuthService
         return await ProcessExternalUserAsync(externalUser, "Facebook");
     }
 
+    public async Task<ApplicationUser> GithubLoginAsync(GithubLoginDto githubLoginDto)
+    {
+        var validator = _validators.FirstOrDefault(v => v.Provider == ExternalLoginProvider.Github)
+            ?? throw new InvalidOperationException("Github validator not found.");
+
+        // Pass code and redirectUri together so the validator can exchange them for an access token
+        var payload = $"{githubLoginDto.Code}|{githubLoginDto.RedirectUri}";
+        var externalUser = await validator.ValidateAsync(payload);
+
+        return await ProcessExternalUserAsync(externalUser, "Github");
+    }
+
     private async Task<ApplicationUser> ProcessExternalUserAsync(ExternalUser externalUser, string providerStr)
     {
         var user = await _userManager.FindByLoginAsync(providerStr, externalUser.Id);
