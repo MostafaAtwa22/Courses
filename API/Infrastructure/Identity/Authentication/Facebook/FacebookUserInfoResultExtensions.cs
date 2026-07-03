@@ -13,7 +13,6 @@ public static class FacebookUserInfoResultExtensions
             Email = facebookUserInfo.Email,
             FirstName = facebookUserInfo.FirstName,
             LastName = facebookUserInfo.LastName,
-            Picture = facebookUserInfo.Picture.Data.Url,
             Provider = ExternalLoginProvider.Facebook
         };
     }

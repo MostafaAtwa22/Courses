@@ -1,18 +1,27 @@
-import { inject, Injectable, signal } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { LoginDto, RegisterDto, AuthResponseDto, BaseIdentityResponse } from '../models/auth.models';
-import { GoogleLoginDto } from '../models/external-login.models';
+import { FacebookLoginDto, GoogleLoginDto } from '../models/external-login.models';
+import { SessionService } from './session.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private http = inject(HttpClient);
-  private apiUrl = `${environment.apiUrl}/authentication`;
+  private http           = inject(HttpClient);
+  private sessionService = inject(SessionService);
+  private apiUrl         = `${environment.apiUrl}/authentication`;
 
-  currentUser = signal<BaseIdentityResponse | null>(this.getSavedUser());
+  get currentUser()             { return this.sessionService.currentUser; }
+  getToken(): string | null     { return this.sessionService.getToken(); }
+  isLoggedIn(): boolean         { return this.sessionService.isLoggedIn(); }
+  clearSession(): void          { this.sessionService.clearSession(); }
+  saveSession(token: string, user: BaseIdentityResponse): void {
+    this.sessionService.saveSession(token, user);
+  }
+
 
   register(request: RegisterDto): Observable<void> {
     return this.http.post<void>(`${this.apiUrl}/register`, request);
@@ -20,68 +29,40 @@ export class AuthService {
 
   login(request: LoginDto): Observable<AuthResponseDto> {
     return this.http.post<AuthResponseDto>(`${this.apiUrl}/login`, request, { withCredentials: true }).pipe(
-      tap(response => {
-        if (response.token) {
-          this.saveSession(response.token, response);
-        }
-      })
+      this.saveOnSuccess()
     );
   }
 
   googleLogin(request: GoogleLoginDto): Observable<AuthResponseDto> {
     return this.http.post<AuthResponseDto>(`${this.apiUrl}/google-login`, request, { withCredentials: true }).pipe(
-      tap(response => {
-        if (response.token) {
-          this.saveSession(response.token, response);
-        }
-      })
+      this.saveOnSuccess()
     );
   }
-  
+
+  facebookLogin(request: FacebookLoginDto): Observable<AuthResponseDto> {
+    return this.http.post<AuthResponseDto>(`${this.apiUrl}/facebook-login`, request, { withCredentials: true }).pipe(
+      this.saveOnSuccess()
+    );
+  }
+
   refreshToken(): Observable<AuthResponseDto> {
     return this.http.post<AuthResponseDto>(`${this.apiUrl}/refresh-token`, {}, { withCredentials: true }).pipe(
-      tap(response => {
-        if (response.token) {
-          this.saveSession(response.token, response);
-        }
-      })
+      this.saveOnSuccess()
     );
-  }
-
-  saveSession(token: string, user: BaseIdentityResponse): void {
-    localStorage.setItem('EduFocus_token', token);
-    localStorage.setItem('EduFocus_user', JSON.stringify(user));
-    this.currentUser.set(user);
-  }
-
-  getToken(): string | null {
-    return localStorage.getItem('EduFocus_token');
   }
 
   logout(): void {
     this.http.post(`${this.apiUrl}/revoke-token`, {}, { withCredentials: true }).subscribe({
-      next: () => this.clearSession(),
-      error: () => this.clearSession()
+      next:  () => this.sessionService.clearSession(),
+      error: () => this.sessionService.clearSession()
     });
   }
 
-  clearSession(): void {
-    localStorage.removeItem('EduFocus_token');
-    localStorage.removeItem('EduFocus_user');
-    this.currentUser.set(null);
-  }
-
-  isLoggedIn(): boolean {
-    return !!this.getToken();
-  }
-
-  private getSavedUser(): BaseIdentityResponse | null {
-    const userJson = localStorage.getItem('EduFocus_user');
-    if (!userJson) return null;
-    try {
-      return JSON.parse(userJson) as BaseIdentityResponse;
-    } catch {
-      return null;
-    }
+  private saveOnSuccess() {
+    return tap<AuthResponseDto>(response => {
+      if (response.token) {
+        this.sessionService.saveSession(response.token, response);
+      }
+    });
   }
 }

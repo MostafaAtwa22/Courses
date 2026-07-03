@@ -1,6 +1,6 @@
 using Application.Common.Interfaces.Identity;
 using Microsoft.AspNetCore.Identity;
-using constant = Domain.Constants;
+using Constant = Domain.Constants;
 
 namespace Infrastructure.Identity
 {
@@ -12,7 +12,7 @@ namespace Infrastructure.Identity
         public async Task SendOtpAsync(ApplicationUser user)
         {
             var code = await _userManager.GenerateTwoFactorTokenAsync(
-                user, constant.IdentityConstants.EmailOtpProvider
+                user, Constant.IdentityConstants.EmailOtpProvider
             );
 
             await _emailService.Send2FAEmailAsync(user, code);
@@ -21,9 +21,11 @@ namespace Infrastructure.Identity
         public async Task<bool> VerifyOtpAsync(ApplicationUser user, string code)
         {
             return await _userManager.VerifyTwoFactorTokenAsync(
-                user, constant.IdentityConstants.EmailOtpProvider, code
+                user, Constant.IdentityConstants.EmailOtpProvider, code
             );
         }
 
+        public async Task<bool> IsTwoFactorEnabledAsync(ApplicationUser user)
+            => await _userManager.GetTwoFactorEnabledAsync(user);
     }
 }

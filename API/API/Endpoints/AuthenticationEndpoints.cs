@@ -1,4 +1,5 @@
 using Application.DTOs.Authentication;
+using Application.Features.Authentication.Commands.ExternalLogin.Facebook;
 using Application.Features.Authentication.Commands.ExternalLogin.Google;
 using Application.Features.Authentication.Commands.Login;
 using Application.Features.Authentication.Commands.Register;
@@ -39,6 +40,14 @@ public class AuthenticationEndpoints : ICarterModule
             .Produces(StatusCodes.Status401Unauthorized)
             .Produces(StatusCodes.Status400BadRequest);
 
+        group.MapPost("/facebook-login", FacebookLogin)
+            .WithName(nameof(FacebookLogin))
+            .AllowAnonymous()
+            .RequireRateLimiting(RateLimiterPolicies.Auth)
+            .Produces<AuthResponseDto>()
+            .Produces(StatusCodes.Status401Unauthorized)
+            .Produces(StatusCodes.Status400BadRequest);
+
         group.MapPost("/refresh-token", RefreshToken)
             .WithName(nameof(RefreshToken))
             .AllowAnonymous()
@@ -70,6 +79,13 @@ public class AuthenticationEndpoints : ICarterModule
         GoogleLoginDto request, IMediator mediator, HttpContext context)
     {
         var result = await mediator.Send(new CreateGoogleLoginCommand(request));
+        return ProcessTokenResponse(context, result);
+    }
+
+    private static async Task<Results<Ok<AuthResponseDto>, UnauthorizedHttpResult, BadRequest>> FacebookLogin(
+        FacebookLoginDto request, IMediator mediator, HttpContext context)
+    {
+        var result = await mediator.Send(new CreateFacebookLoginCommand(request));
         return ProcessTokenResponse(context, result);
     }
     

@@ -159,43 +159,72 @@
       }
     }
 
-    // ── Google button ─────────────────────────────────────────────────────────
-    .google-button-container {
-      width: 100%;
-      display: flex;
-      justify-content: center;
-      
-      ::ng-deep div[id^="google"] {
-        width: 100% !important;
-      }
+    // ── Social login row ──────────────────────────────────────────────────────
+    // The real Google SDK button sits invisibly at position:absolute so the
+    // SDK renders properly and its internal <div role="button"> can be clicked.
+    .google-button-hidden {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
     }
 
-    .btn-google {
-      width: 100%;
+    .social-row {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      position: relative;
+    }
+
+    .social-btn {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      border: 1.5px solid var(--border-color);
+      background: var(--surface);
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 10px;
-      padding: 11px 16px;
-      background: var(--surface);
-      border: 1.5px solid var(--border-color);
-      border-radius: var(--radius-md);
-      color: var(--text-color);
-      font-family: var(--font-body);
-      font-size: 0.9rem;
-      font-weight: 600;
       cursor: pointer;
-      transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+      transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s, background 0.2s;
+      flex-shrink: 0;
+
+      .social-icon {
+        width: 20px;
+        height: 20px;
+        display: block;
+      }
 
       i {
-        color: #DB4437;
-        font-size: 1rem;
+        font-size: 1.1rem;
+        line-height: 1;
       }
 
       &:hover {
-        border-color: var(--primary-color);
-        background: var(--surface-variant);
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+      }
+
+      &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+      }
+
+      &--google {
+        &:hover { border-color: #EA4335; }
+      }
+
+      &--facebook {
+        i { color: #1877F2; }
+        &:hover { border-color: #1877F2; }
+      }
+
+      &--microsoft {
+        &:hover { border-color: #00A4EF; }
       }
     }
   }

@@ -6,8 +6,7 @@ using Infrastructure.Persistence.Data;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Infrastructure.Repositories;
 using Infrastructure.Identity;
-using Infrastructure.Services;
-using StackExchange.Redis;
+using Infrastructure.Services;using StackExchange.Redis;
 using Infrastructure.Cache;
 using Microsoft.AspNetCore.Identity;
 using Infrastructure.Email;
@@ -15,7 +14,7 @@ using Application.Common.Interfaces.Email;
 using Application.Common.Interfaces.Identity;
 using Infrastructure.Identity.Authentication.Facebook;
 using Infrastructure.Identity.Authentication.Google;
-using constant = Domain.Constants;
+using Constant = Domain.Constants;
 
 public static class DependencyInjection
 {
@@ -23,7 +22,7 @@ public static class DependencyInjection
         this IServiceCollection services,
         IConfiguration config)
     {
-        var connectionString = config.GetConnectionString(constant.IdentityConstants.DefaultConnection) 
+        var connectionString = config.GetConnectionString(Constant.IdentityConstants.DefaultConnection) 
             ?? throw new InvalidOperationException("Default connection string is not configured");
 
         services
@@ -69,13 +68,13 @@ public static class DependencyInjection
             
             // Confirm email
             options.SignIn.RequireConfirmedEmail = true;
-            options.Tokens.EmailConfirmationTokenProvider = constant.IdentityConstants.EmailOtpProvider;
-            options.Tokens.ProviderMap[constant.IdentityConstants.EmailOtpProvider] = new TokenProviderDescriptor(
+            options.Tokens.EmailConfirmationTokenProvider = Constant.IdentityConstants.EmailOtpProvider;
+            options.Tokens.ProviderMap[Constant.IdentityConstants.EmailOtpProvider] = new TokenProviderDescriptor(
                 typeof(EmailTokenProvider<ApplicationUser>)
             );
             // user settings
             options.User.RequireUniqueEmail = true;
-            options.User.AllowedUserNameCharacters = constant.IdentityConstants.AllowedUserNameCharacters;
+            options.User.AllowedUserNameCharacters = Constant.IdentityConstants.AllowedUserNameCharacters;
 
             // Lockout settings
             options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
@@ -84,9 +83,14 @@ public static class DependencyInjection
         })
         .AddEntityFrameworkStores<ApplicationDbContext>()
         .AddDefaultTokenProviders()
-        .AddTokenProvider<EmailTokenProvider<ApplicationUser>>(constant.IdentityConstants.EmailOtpProvider);
+        .AddTokenProvider<EmailTokenProvider<ApplicationUser>>(Constant.IdentityConstants.EmailOtpProvider);
 
         services.AddScoped<IAuthService, AuthService>();
+        services.AddScoped<ITokenService>(sp => sp.GetRequiredService<IAuthService>());
+        services.AddScoped<IRefreshTokenRepository>(sp => sp.GetRequiredService<IAuthService>());
+        services.AddScoped<IUserIdentityService>(sp => sp.GetRequiredService<IAuthService>());
+        services.AddScoped<IPasswordService>(sp => sp.GetRequiredService<IAuthService>());
+        services.AddScoped<ILoginPipeline, LoginPipeline>();
         services.AddTransient<IIdentityEmailService, IdentityEmailService>();
         services.AddTransient<ITwoFactorService, TwoFactorService>();
 
@@ -104,7 +108,7 @@ public static class DependencyInjection
     {
         services.AddSingleton<IConnectionMultiplexer>(c => 
         {
-            var redis = config.GetConnectionString(constant.IdentityConstants.Cache) 
+            var redis = config.GetConnectionString(Constant.IdentityConstants.Cache) 
                 ?? throw new InvalidOperationException("Redis connection string is not configured");
 
             var configuration = ConfigurationOptions.Parse(redis, true);
@@ -146,8 +150,8 @@ public static class DependencyInjection
     }
 
     private static IServiceCollection AddBackgroundJobs(this IServiceCollection services, IConfiguration config)
-    {
-        var redisConnection = config.GetConnectionString(constant.IdentityConstants.Cache) 
+    {   
+        var redisConnection = config.GetConnectionString(Constant.IdentityConstants.Cache) 
             ?? throw new InvalidOperationException("Redis connection string is not configured");
 
         services.AddHangfire(configuration =>

@@ -4,21 +4,21 @@ using Application.DTOs.Account;
 using Application.Features.Account.Commands.ForgetPassword;
 using Domain.Entities.Identity;
 using FluentAssertions;
-using Moq;
-
-namespace Application.Tests.Account.Commands;
+using Moq;namespace Application.Tests.Account.Commands;
 
 public class ForgetPasswordCommandHandlerTests
 {
-    private readonly Mock<IAuthService> _authServiceMock;
+    private readonly Mock<IUserIdentityService> _userIdentityServiceMock;
+    private readonly Mock<IPasswordService> _passwordServiceMock;
     private readonly Mock<IIdentityEmailService> _identityEmailServiceMock;
     private readonly ForgetPasswordCommandHandler _handler;
 
     public ForgetPasswordCommandHandlerTests()
     {
-        _authServiceMock = new Mock<IAuthService>();
+        _userIdentityServiceMock = new Mock<IUserIdentityService>();
+        _passwordServiceMock = new Mock<IPasswordService>();
         _identityEmailServiceMock = new Mock<IIdentityEmailService>();
-        _handler = new ForgetPasswordCommandHandler(_authServiceMock.Object, _identityEmailServiceMock.Object);
+        _handler = new ForgetPasswordCommandHandler(_userIdentityServiceMock.Object, _passwordServiceMock.Object, _identityEmailServiceMock.Object);
     }
 
     [Fact]
@@ -29,8 +29,8 @@ public class ForgetPasswordCommandHandlerTests
         var user = new ApplicationUser { Email = dto.Email };
         var token = "reset-token";
 
-        _authServiceMock.Setup(x => x.FindUserByEmailAsync(dto.Email)).ReturnsAsync(user);
-        _authServiceMock.Setup(x => x.GeneratePasswordResetTokenAsync(user)).ReturnsAsync(token);
+        _userIdentityServiceMock.Setup(x => x.FindUserByEmailAsync(dto.Email)).ReturnsAsync(user);
+        _passwordServiceMock.Setup(x => x.GeneratePasswordResetTokenAsync(user)).ReturnsAsync(token);
 
         // Act
         await _handler.Handle(new ForgetPasswordCommand(dto), CancellationToken.None);
@@ -44,7 +44,7 @@ public class ForgetPasswordCommandHandlerTests
     {
         // Arrange
         var dto = new ForgetPasswordDto { Email = "notfound@example.com" };
-        _authServiceMock.Setup(x => x.FindUserByEmailAsync(dto.Email)).ReturnsAsync((ApplicationUser?)null);
+        _userIdentityServiceMock.Setup(x => x.FindUserByEmailAsync(dto.Email)).ReturnsAsync((ApplicationUser?)null);
 
         // Act
         Func<Task> act = async () => await _handler.Handle(new ForgetPasswordCommand(dto), CancellationToken.None);

@@ -8,7 +8,6 @@ namespace Domain.Entities.Identity
         public string LastName { get; set; } = string.Empty;
         public Gender Gender { get; set; }
         public string? ProfilePictureUrl { get; set; }
-        public string? GoogleId { get; set; }
         
         public Student? StudentProfile { get; set; }
         public Instructor? InstructorProfile { get; set; }

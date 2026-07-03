@@ -5,19 +5,19 @@ using Application.Features.Profiles.Commands.SetPassword;
 using Domain.Entities.Identity;
 using FluentAssertions;
 using Microsoft.AspNetCore.Identity;
-using Moq;
-
-namespace Application.Tests.Profiles.Commands;
+using Moq;namespace Application.Tests.Profiles.Commands;
 
 public class SetPasswordHandlerTests
 {
-    private readonly Mock<IAuthService> _authServiceMock;
+    private readonly Mock<IPasswordService> _passwordServiceMock;
+    private readonly Mock<IUserIdentityService> _userIdentityServiceMock;
     private readonly SetPasswordCommandHandler _handler;
 
     public SetPasswordHandlerTests()
     {
-        _authServiceMock = new Mock<IAuthService>();
-        _handler = new SetPasswordCommandHandler(_authServiceMock.Object);
+        _passwordServiceMock     = new Mock<IPasswordService>();
+        _userIdentityServiceMock = new Mock<IUserIdentityService>();
+        _handler = new SetPasswordCommandHandler(_passwordServiceMock.Object, _userIdentityServiceMock.Object);
     }
 
     [Fact]
@@ -32,16 +32,16 @@ public class SetPasswordHandlerTests
         };
         var command = new SetPasswordCommand(dto) { User = user };
 
-        _authServiceMock.Setup(x => x.HasPasswordAsync(user)).ReturnsAsync(false);
-        _authServiceMock.Setup(x => x.SetPasswordAsync(user, dto.NewPassword))
+        _passwordServiceMock.Setup(x => x.HasPasswordAsync(user)).ReturnsAsync(false);
+        _passwordServiceMock.Setup(x => x.SetPasswordAsync(user, dto.NewPassword))
             .ReturnsAsync(IdentityResult.Success);
 
         // Act
         await _handler.Handle(command, CancellationToken.None);
 
         // Assert
-        _authServiceMock.Verify(x => x.SetPasswordAsync(user, dto.NewPassword), Times.Once);
-        _authServiceMock.Verify(x => x.UpdateSecurityStampAsync(user), Times.Once);
+        _passwordServiceMock.Verify(x => x.SetPasswordAsync(user, dto.NewPassword), Times.Once);
+        _userIdentityServiceMock.Verify(x => x.UpdateSecurityStampAsync(user), Times.Once);
     }
 
     [Fact]
@@ -56,7 +56,7 @@ public class SetPasswordHandlerTests
         };
         var command = new SetPasswordCommand(dto) { User = user };
 
-        _authServiceMock.Setup(x => x.HasPasswordAsync(user)).ReturnsAsync(true);
+        _passwordServiceMock.Setup(x => x.HasPasswordAsync(user)).ReturnsAsync(true);
 
         // Act
         Func<Task> act = async () => await _handler.Handle(command, CancellationToken.None);
@@ -77,9 +77,9 @@ public class SetPasswordHandlerTests
         };
         var command = new SetPasswordCommand(dto) { User = user };
 
-        _authServiceMock.Setup(x => x.HasPasswordAsync(user)).ReturnsAsync(false);
+        _passwordServiceMock.Setup(x => x.HasPasswordAsync(user)).ReturnsAsync(false);
         var identityError = new IdentityError { Description = "Password too short" };
-        _authServiceMock.Setup(x => x.SetPasswordAsync(user, dto.NewPassword))
+        _passwordServiceMock.Setup(x => x.SetPasswordAsync(user, dto.NewPassword))
             .ReturnsAsync(IdentityResult.Failed(identityError));
 
         // Act

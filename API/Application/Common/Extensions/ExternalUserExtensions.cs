@@ -15,7 +15,6 @@ public static class ExternalUserExtensions
             Email = payload.Email,
             FirstName = payload.GivenName ?? string.Empty,
             LastName = payload.FamilyName ?? string.Empty,
-            Picture = payload.Picture ?? string.Empty,
             Provider = ExternalLoginProvider.Google
         };
     }
@@ -28,9 +27,7 @@ public static class ExternalUserExtensions
             UserName = externalUser.Email,
             FirstName = externalUser.FirstName,
             LastName = externalUser.LastName,
-            ProfilePictureUrl = externalUser.Picture,
-            EmailConfirmed = true,
-            GoogleId = externalUser.Provider == ExternalLoginProvider.Google ? externalUser.Id : null
+            EmailConfirmed = true
         };
     }
 }

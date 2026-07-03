@@ -6,21 +6,21 @@ using Domain.Entities.Identity;
 using Domain.Enums.Identity;
 using FluentAssertions;
 using Microsoft.AspNetCore.Identity;
-using Moq;
-
-namespace Application.Tests.Account.Commands;
+using Moq;namespace Application.Tests.Account.Commands;
 
 public class LockUserCommandHandlerTests
 {
-    private readonly Mock<IAuthService> _authServiceMock;
+    private readonly Mock<IUserIdentityService> _userIdentityServiceMock;
+    private readonly Mock<IPasswordService> _passwordServiceMock;
     private readonly Mock<IIdentityEmailService> _identityEmailServiceMock;
     private readonly LockUserCommandHandler _handler;
 
     public LockUserCommandHandlerTests()
     {
-        _authServiceMock = new Mock<IAuthService>();
+        _userIdentityServiceMock = new Mock<IUserIdentityService>();
+        _passwordServiceMock = new Mock<IPasswordService>();
         _identityEmailServiceMock = new Mock<IIdentityEmailService>();
-        _handler = new LockUserCommandHandler(_authServiceMock.Object, _identityEmailServiceMock.Object);
+        _handler = new LockUserCommandHandler(_userIdentityServiceMock.Object, _passwordServiceMock.Object, _identityEmailServiceMock.Object);
     }
 
     [Fact]
@@ -32,16 +32,16 @@ public class LockUserCommandHandlerTests
         var command = new LockUserCommand(userId, dto);
         var user = new ApplicationUser { Id = userId.ToString() };
 
-        _authServiceMock.Setup(x => x.FindUserByIdAsync(userId.ToString())).ReturnsAsync(user);
-        _authServiceMock.Setup(x => x.IsInRoleAsync(user, Role.SuperAdmin.ToString())).ReturnsAsync(false);
-        _authServiceMock.Setup(x => x.LockUserAsync(user, dto.LockoutUntil.Value.UtcDateTime))
+        _userIdentityServiceMock.Setup(x => x.FindUserByIdAsync(userId.ToString())).ReturnsAsync(user);
+        _userIdentityServiceMock.Setup(x => x.IsInRoleAsync(user, Role.SuperAdmin.ToString())).ReturnsAsync(false);
+        _passwordServiceMock.Setup(x => x.LockUserAsync(user, dto.LockoutUntil.Value.UtcDateTime))
             .ReturnsAsync(IdentityResult.Success);
 
         // Act
         await _handler.Handle(command, CancellationToken.None);
 
         // Assert
-        _authServiceMock.Verify(x => x.LockUserAsync(user, dto.LockoutUntil.Value.UtcDateTime), Times.Once);
+        _passwordServiceMock.Verify(x => x.LockUserAsync(user, dto.LockoutUntil.Value.UtcDateTime), Times.Once);
         _identityEmailServiceMock.Verify(x => x.SendAccountLockedEmailAsync(user, dto), Times.Once);
     }
 
@@ -52,7 +52,7 @@ public class LockUserCommandHandlerTests
         var userId = Guid.NewGuid();
         var dto = new LockUserDto { Reason = "Reason" };
         var command = new LockUserCommand(userId, dto);
-        _authServiceMock.Setup(x => x.FindUserByIdAsync(userId.ToString())).ReturnsAsync((ApplicationUser?)null);
+        _userIdentityServiceMock.Setup(x => x.FindUserByIdAsync(userId.ToString())).ReturnsAsync((ApplicationUser?)null);
 
         // Act
         Func<Task> act = async () => await _handler.Handle(command, CancellationToken.None);
@@ -70,8 +70,8 @@ public class LockUserCommandHandlerTests
         var command = new LockUserCommand(userId, dto);
         var user = new ApplicationUser { Id = userId.ToString() };
 
-        _authServiceMock.Setup(x => x.FindUserByIdAsync(userId.ToString())).ReturnsAsync(user);
-        _authServiceMock.Setup(x => x.IsInRoleAsync(user, Role.SuperAdmin.ToString())).ReturnsAsync(true);
+        _userIdentityServiceMock.Setup(x => x.FindUserByIdAsync(userId.ToString())).ReturnsAsync(user);
+        _userIdentityServiceMock.Setup(x => x.IsInRoleAsync(user, Role.SuperAdmin.ToString())).ReturnsAsync(true);
 
         // Act
         Func<Task> act = async () => await _handler.Handle(command, CancellationToken.None);

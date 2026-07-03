@@ -50,14 +50,19 @@ public class ExternalAuthService : IExternalAuthService
         if (user is not null)
             return user;
 
-        user = externalUser.MapToApplicationUser();
+        user = await _userManager.FindByEmailAsync(externalUser.Email);
 
-        var createResult = await _userManager.CreateAsync(user);
+        if (user is null)
+        {
+            user = externalUser.MapToApplicationUser();
 
-        if (!createResult.Succeeded)
-            throw new Exception($"Failed to create user: {string.Join(", ", createResult.Errors.Select(e => e.Description))}");
+            var createResult = await _userManager.CreateAsync(user);
 
-        await _userManager.AddToRoleAsync(user, Role.Student.ToString());
+            if (!createResult.Succeeded)
+                throw new Exception($"Failed to create user: {string.Join(", ", createResult.Errors.Select(e => e.Description))}");
+
+            await _userManager.AddToRoleAsync(user, Role.Student.ToString());
+        }
 
         var loginInfo = new UserLoginInfo(providerStr, externalUser.Id, providerStr);
         

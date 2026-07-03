@@ -7,19 +7,19 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
 using Moq;
-using System.Text;
-
-namespace Application.Tests.Account.Commands;
+using System.Text;namespace Application.Tests.Account.Commands;
 
 public class ResetPasswordCommandHandlerTests
 {
-    private readonly Mock<IAuthService> _authServiceMock;
+    private readonly Mock<IUserIdentityService> _userIdentityServiceMock;
+    private readonly Mock<IPasswordService> _passwordServiceMock;
     private readonly ResetPasswordCommandHandler _handler;
 
     public ResetPasswordCommandHandlerTests()
     {
-        _authServiceMock = new Mock<IAuthService>();
-        _handler = new ResetPasswordCommandHandler(_authServiceMock.Object);
+        _userIdentityServiceMock = new Mock<IUserIdentityService>();
+        _passwordServiceMock = new Mock<IPasswordService>();
+        _handler = new ResetPasswordCommandHandler(_userIdentityServiceMock.Object, _passwordServiceMock.Object);
     }
 
     [Fact]
@@ -37,16 +37,16 @@ public class ResetPasswordCommandHandlerTests
         };
         var user = new ApplicationUser { Email = dto.Email };
 
-        _authServiceMock.Setup(x => x.FindUserByEmailAsync(dto.Email)).ReturnsAsync(user);
-        _authServiceMock.Setup(x => x.ResetPasswordAsync(user, token, dto.NewPassword))
+        _userIdentityServiceMock.Setup(x => x.FindUserByEmailAsync(dto.Email)).ReturnsAsync(user);
+        _passwordServiceMock.Setup(x => x.ResetPasswordAsync(user, token, dto.NewPassword))
             .ReturnsAsync(IdentityResult.Success);
 
         // Act
         await _handler.Handle(new ResetPasswordCommand(dto), CancellationToken.None);
 
         // Assert
-        _authServiceMock.Verify(x => x.ResetPasswordAsync(user, token, dto.NewPassword), Times.Once);
-        _authServiceMock.Verify(x => x.UpdateSecurityStampAsync(user), Times.Once);
+        _passwordServiceMock.Verify(x => x.ResetPasswordAsync(user, token, dto.NewPassword), Times.Once);
+        _userIdentityServiceMock.Verify(x => x.UpdateSecurityStampAsync(user), Times.Once);
     }
 
     [Fact]
@@ -54,7 +54,7 @@ public class ResetPasswordCommandHandlerTests
     {
         // Arrange
         var dto = new ResetPasswordDto { Email = "notfound@example.com", Token = "any" };
-        _authServiceMock.Setup(x => x.FindUserByEmailAsync(dto.Email)).ReturnsAsync((ApplicationUser?)null);
+        _userIdentityServiceMock.Setup(x => x.FindUserByEmailAsync(dto.Email)).ReturnsAsync((ApplicationUser?)null);
 
         // Act
         Func<Task> act = async () => await _handler.Handle(new ResetPasswordCommand(dto), CancellationToken.None);
@@ -72,8 +72,8 @@ public class ResetPasswordCommandHandlerTests
         var dto = new ResetPasswordDto { Email = "test@example.com", Token = encodedToken, NewPassword = "New" };
         var user = new ApplicationUser { Email = dto.Email };
 
-        _authServiceMock.Setup(x => x.FindUserByEmailAsync(dto.Email)).ReturnsAsync(user);
-        _authServiceMock.Setup(x => x.ResetPasswordAsync(user, token, dto.NewPassword))
+        _userIdentityServiceMock.Setup(x => x.FindUserByEmailAsync(dto.Email)).ReturnsAsync(user);
+        _passwordServiceMock.Setup(x => x.ResetPasswordAsync(user, token, dto.NewPassword))
             .ReturnsAsync(IdentityResult.Failed(new IdentityError { Description = "Invalid token" }));
 
         // Act

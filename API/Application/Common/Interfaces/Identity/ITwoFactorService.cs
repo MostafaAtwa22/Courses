@@ -6,6 +6,6 @@ namespace Application.Common.Interfaces.Identity
     {
         Task SendOtpAsync(ApplicationUser user);
         Task<bool> VerifyOtpAsync(ApplicationUser user, string code);
-
+        Task<bool> IsTwoFactorEnabledAsync(ApplicationUser user);
     }
 }
