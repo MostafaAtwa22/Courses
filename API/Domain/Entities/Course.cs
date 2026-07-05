@@ -6,7 +6,7 @@ namespace Domain.Entities
         public string Description { get; set; } = string.Empty;
         public string PictureUrl { get; set; } = string.Empty;
         public CourseStatus Status { get; set; } = CourseStatus.InProgress;
-        public int Cost { get; set; }
+        public decimal Cost { get; set; } = 0m;
         public int StudentCount { get; set; } 
         public int TotalReviews { get; set; } 
         public decimal AverageRate { get; set; }
@@ -24,5 +24,6 @@ namespace Domain.Entities
         public ICollection<Review> Reviews { get; set; } = [];
         public ICollection<Enrollment> Enrollments { get; set; } = [];
         public ICollection<Section> Sections { get; set; } = [];
+        public ICollection<CourseDiscount> CourseDiscounts { get; set; } = [];
     }
 }

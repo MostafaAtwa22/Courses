@@ -41,6 +41,7 @@ export interface CourseSummary extends BaseResponseModel {
     title: string;
     pictureUrl: string;
     cost: number;
+    priceAfterDiscount: number;
     totalReviews: number;
     averageRate: number;
     category: string;
@@ -54,6 +55,7 @@ export interface CourseResponse extends BaseResponseModel {
     pictureUrl: string;
     status: CourseStatus;
     cost: number;
+    priceAfterDiscount: number;
     studentCount: number;
     totalReviews: number;
     averageRate: number;
@@ -68,6 +70,7 @@ export interface CourseResponse extends BaseResponseModel {
     whatYouWillLearn: string[];
     requirements: string[];
     introVideoUrl: string;
+    discounts?: CourseDiscountResponse[];
 }
 
 export interface CourseRequest {
@@ -106,4 +109,18 @@ export interface SectionCreateRequest {
 export interface SectionUpdateRequest {
     title: string;
     order: number;
+}
+
+export interface CourseDiscountResponse extends BaseResponseModel {
+    percentage: number;
+    startTime: string;
+    endTime: string;
+    isActive: boolean;
+    courseId: string;
+}
+
+export interface CreateCourseDiscountRequest {
+    percentage: number;
+    startTime: string;
+    endTime: string;
 }

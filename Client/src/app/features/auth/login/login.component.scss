@@ -10,7 +10,9 @@
       color: var(--text-color);
     }
 
-    p { color: var(--text-muted); }
+    p {
+      color: var(--text-muted);
+    }
   }
 
   // ── Banners ────────────────────────────────────────────────────────────────
@@ -23,7 +25,9 @@
     font-size: 0.875rem;
     margin-bottom: 20px;
 
-    i { flex-shrink: 0; }
+    i {
+      flex-shrink: 0;
+    }
   }
 
   .success-banner {
@@ -61,14 +65,19 @@
         justify-content: space-between;
         align-items: center;
 
-        label { margin: 0; }
+        label {
+          margin: 0;
+        }
 
         .forgot-link {
           font-size: 0.82rem;
           font-weight: 600;
           color: var(--primary-color);
           text-decoration: none;
-          &:hover { text-decoration: underline; }
+
+          &:hover {
+            text-decoration: underline;
+          }
         }
       }
 
@@ -96,7 +105,10 @@
           font-size: 0.95rem;
           transition: border-color 0.2s, box-shadow 0.2s;
 
-          &::placeholder { color: var(--text-muted); opacity: 0.7; }
+          &::placeholder {
+            color: var(--text-muted);
+            opacity: 0.7;
+          }
 
           &:focus {
             outline: none;
@@ -122,7 +134,9 @@
           line-height: 1;
           transition: color 0.2s;
 
-          &:hover { color: var(--primary-color); }
+          &:hover {
+            color: var(--primary-color);
+          }
         }
       }
 
@@ -239,16 +253,25 @@
       }
 
       &--google {
-        &:hover { border-color: #EA4335; }
+        &:hover {
+          border-color: #EA4335;
+        }
       }
 
       &--facebook {
-        i { color: #1877F2; }
-        &:hover { border-color: #1877F2; }
+        i {
+          color: #1877F2;
+        }
+
+        &:hover {
+          border-color: #1877F2;
+        }
       }
 
       &--microsoft {
-        &:hover { border-color: #00A4EF; }
+        &:hover {
+          border-color: #00A4EF;
+        }
       }
     }
   }
@@ -264,7 +287,10 @@
       color: var(--primary-color);
       font-weight: 600;
       text-decoration: none;
-      &:hover { text-decoration: underline; }
+
+      &:hover {
+        text-decoration: underline;
+      }
     }
   }
 }

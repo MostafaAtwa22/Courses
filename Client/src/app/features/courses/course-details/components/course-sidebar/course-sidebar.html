@@ -20,8 +20,12 @@
   
   <div class="card-body p-4">
     <div class="d-flex align-items-center gap-2 mb-3">
-      <h2 class="h2 fw-bold mb-0" style="color: var(--primary-color);">{{ course?.cost || 89.99 | currency }}</h2>
-      <span class="badge bg-danger">85% OFF</span>
+      <h2 class="h2 fw-bold mb-0" style="color: var(--primary-color);">{{ course?.priceAfterDiscount || course?.cost || 89.99 | currency }}</h2>
+      <span *ngIf="hasDiscount()" class="badge bg-danger">{{ discountPercentage() }}% OFF</span>
+    </div>
+    <div *ngIf="hasDiscount()" class="text-muted small mb-3">
+      <span class="text-decoration-line-through">{{ course?.cost | currency }}</span>
+      <span class="ms-2">Original price</span>
     </div>
     
     <button class="btn btn-primary w-100 py-3 fw-bold mb-2">Buy Now</button>

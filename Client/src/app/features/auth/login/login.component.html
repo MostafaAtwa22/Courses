@@ -24,18 +24,13 @@
       <label for="email">Email Address</label>
       <div class="input-wrapper">
         <i class="fa-solid fa-envelope input-icon"></i>
-        <input
-          type="email"
-          id="email"
-          formControlName="email"
-          placeholder="name@company.com"
-          autocomplete="email"
-          [class.is-invalid]="loginForm.get('email')?.invalid && loginForm.get('email')?.touched"
-        />
+        <input type="email" id="email" formControlName="email" placeholder="name@company.com" autocomplete="email"
+          [class.is-invalid]="loginForm.get('email')?.invalid && loginForm.get('email')?.touched" />
       </div>
       <span class="field-error" *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched">
         <ng-container *ngIf="loginForm.get('email')?.hasError('required')">Email is required.</ng-container>
-        <ng-container *ngIf="loginForm.get('email')?.hasError('email')">Please enter a valid email address.</ng-container>
+        <ng-container *ngIf="loginForm.get('email')?.hasError('email')">Please enter a valid email
+          address.</ng-container>
       </span>
     </div>
 
@@ -47,15 +42,11 @@
       </div>
       <div class="input-wrapper">
         <i class="fa-solid fa-lock input-icon"></i>
-        <input
-          [type]="showPassword ? 'text' : 'password'"
-          id="password"
-          formControlName="password"
-          placeholder="••••••••"
-          autocomplete="current-password"
-          [class.is-invalid]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched"
-        />
-        <button type="button" class="toggle-visibility" (click)="showPassword = !showPassword" tabindex="-1" [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'">
+        <input [type]="showPassword ? 'text' : 'password'" id="password" formControlName="password"
+          placeholder="••••••••" autocomplete="current-password"
+          [class.is-invalid]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched" />
+        <button type="button" class="toggle-visibility" (click)="showPassword = !showPassword" tabindex="-1"
+          [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'">
           <i class="fa-solid" [class.fa-eye]="!showPassword" [class.fa-eye-slash]="showPassword"></i>
         </button>
       </div>
@@ -82,14 +73,8 @@
       <div class="social-btn-wrapper social-btn-wrapper--google" #googleButton></div>
 
       <!-- Facebook -->
-      <button
-        type="button"
-        class="social-btn social-btn--facebook"
-        (click)="handleFacebookLogin()"
-        [disabled]="authState.loading"
-        aria-label="Continue with Facebook"
-        title="Continue with Facebook"
-      >
+      <button type="button" class="social-btn social-btn--facebook" (click)="handleFacebookLogin()"
+        [disabled]="authState.loading" aria-label="Continue with Facebook" title="Continue with Facebook">
         <i class="fa-solid fa-circle-notch fa-spin" *ngIf="isFacebookLoading; else facebookIcon"></i>
         <ng-template #facebookIcon>
           <i class="fa-brands fa-facebook-f social-icon"></i>
@@ -97,14 +82,8 @@
       </button>
 
       <!-- Github -->
-      <button
-        type="button"
-        class="social-btn social-btn--github"
-        (click)="handleGithubLogin()"
-        [disabled]="authState.loading"
-        aria-label="Continue with Github"
-        title="Continue with Github"
-      >
+      <button type="button" class="social-btn social-btn--github" (click)="handleGithubLogin()"
+        [disabled]="authState.loading" aria-label="Continue with Github" title="Continue with Github">
         <i class="fa-solid fa-circle-notch fa-spin" *ngIf="isGithubLoading; else githubIcon"></i>
         <ng-template #githubIcon>
           <i class="fa-brands fa-github social-icon" style="color: #333;"></i>

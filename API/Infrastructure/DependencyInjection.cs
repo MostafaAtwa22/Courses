@@ -6,7 +6,9 @@ using Infrastructure.Persistence.Data;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Infrastructure.Repositories;
 using Infrastructure.Identity;
-using Infrastructure.Services;using StackExchange.Redis;
+using Infrastructure.Services;
+using Infrastructure.BackgroundJobs;
+using StackExchange.Redis;
 using Infrastructure.Cache;
 using Microsoft.AspNetCore.Identity;
 using Infrastructure.Email;
@@ -52,6 +54,7 @@ public static class DependencyInjection
         services.AddScoped<ISectionRepository, SectionRepository>();
         services.AddScoped<IContentRepository, ContentRepository>();
         services.AddScoped<IInstructorRepository, InstructorRepository>();
+        services.AddScoped<ICourseDiscountRepository, CourseDiscountRepository>();
         services.AddScoped<IExternalAuthService, ExternalAuthService>();
         
         return services;
@@ -130,6 +133,7 @@ public static class DependencyInjection
         services.AddTransient<EmailService>();
         services.AddTransient<IEmailService, BackgroundEmailService>();
         services.AddSingleton<IUrlProvider, UrlProvider>();
+        services.AddScoped<IDiscountJobService, DiscountJobService>();
         services.AddHttpContextAccessor();
         
         return services;

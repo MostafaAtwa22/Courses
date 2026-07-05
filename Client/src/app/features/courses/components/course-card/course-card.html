@@ -17,8 +17,9 @@
     </div>
     <h3 class="course-title">{{ course.title }}</h3>
     <div class="course-footer">
-      <div class="price-container">
-        <span class="price">${{ course.cost }}</span>
+      <div class="price-container d-flex align-items-center gap-2">
+        <span class="price fw-bold">${{ course.priceAfterDiscount }}</span>
+        <span *ngIf="course.cost > course.priceAfterDiscount" class="text-muted small text-decoration-line-through">${{ course.cost }}</span>
       </div>
       <div class="d-flex gap-2">
         <button class="btn-enroll" [routerLink]="['/courses', course.id]">

@@ -6,8 +6,12 @@ public class CreateGithubLoginCommandValidator : AbstractValidator<CreateGithubL
 {
     public CreateGithubLoginCommandValidator()
     {
-        RuleFor(x => x.Dto.AccessToken)
+        RuleFor(x => x.Dto.Code)
             .NotEmpty()
-            .WithMessage("Github access token is required.");
+            .WithMessage("Github access code is required.");
+        
+        RuleFor(x => x.Dto.RedirectUri)
+            .NotEmpty()
+            .WithMessage("Github access Redirect URL is required.");
     }
 }

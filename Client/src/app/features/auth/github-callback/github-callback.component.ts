@@ -16,13 +16,13 @@ import { ActivatedRoute } from '@angular/router';
   `
 })
 export class GithubCallbackComponent implements OnInit {
-  constructor(private route: ActivatedRoute) {}
+  constructor(private route: ActivatedRoute) { }
 
   ngOnInit(): void {
     const params = this.route.snapshot.queryParams;
-    const code   = params['code']  ?? null;
-    const state  = params['state'] ?? null;
-    const error  = params['error'] ?? null;
+    const code = params['code'] ?? null;
+    const state = params['state'] ?? null;
+    const error = params['error'] ?? null;
 
     if (window.opener) {
       window.opener.postMessage(

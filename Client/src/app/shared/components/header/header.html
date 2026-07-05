@@ -18,12 +18,14 @@
         <i class="fa-solid" [class.fa-moon]="!isDarkMode" [class.fa-sun]="isDarkMode"></i>
       </button>
 
-      <div class="auth-buttons desktop-only">
+      <div class="auth-buttons">
 
         <!-- Guest -->
         <ng-container *ngIf="!authService.currentUser()">
-          <button class="btn-login" routerLink="/auth/login">Log In</button>
-          <button class="btn-primary" routerLink="/auth/role-select">Sign Up</button>
+          <div class="desktop-only" style="gap: 12px; align-items: center;">
+            <button class="btn-login" routerLink="/auth/login">Log In</button>
+            <button class="btn-primary" routerLink="/auth/role-select">Sign Up</button>
+          </div>
         </ng-container>
 
         <!-- Logged in -->
@@ -105,22 +107,6 @@
         <button class="btn-primary" routerLink="/auth/role-select" (click)="isMenuOpen = false">Sign Up</button>
       </ng-container>
 
-      <ng-container *ngIf="authService.currentUser() as user">
-        <div class="mobile-user-info">
-          <div class="mobile-avatar">
-            <img *ngIf="user.profilePicture" [src]="user.profilePicture" [alt]="user.firstName" />
-            <span *ngIf="!user.profilePicture">{{ user.firstName[0] }}{{ user.lastName[0] }}</span>
-          </div>
-          <div>
-            <p class="mobile-user-name">{{ user.firstName }} {{ user.lastName }}</p>
-            <p class="mobile-user-role">{{ user.roles[0] }}</p>
-          </div>
-        </div>
-        <button class="dropdown-item logout mobile-logout" (click)="logout(); isMenuOpen = false">
-          <i class="fa-solid fa-arrow-right-from-bracket"></i>
-          <span>Log Out</span>
-        </button>
-      </ng-container>
     </div>
   </div>
 </nav>

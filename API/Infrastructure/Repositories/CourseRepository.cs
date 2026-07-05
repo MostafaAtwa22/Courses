@@ -22,7 +22,9 @@ namespace Infrastructure.Repositories
         private string SelectColumns =>
             $@"c.id, c.title, c.description, 
                CASE WHEN c.picture_url IS NOT NULL THEN CONCAT('{urlsOptions.Value.API}/', c.picture_url) ELSE NULL END AS PictureUrl, 
-               c.status, c.cost, c.student_count AS StudentCount, c.total_reviews AS TotalReviews, c.average_rate AS AverageRate, 
+               c.status, c.cost, 
+               c.cost - c.cost * COALESCE((SELECT MAX(percentage) FROM course_discounts cd WHERE cd.course_id = c.id AND cd.is_active = true), 0) / 100.0 AS PriceAfterDiscount,
+               c.student_count AS StudentCount, c.total_reviews AS TotalReviews, c.average_rate AS AverageRate, 
                c.language, c.what_you_will_learn AS WhatYouWillLearn, c.requirements AS Requirements,
                CASE WHEN c.intro_video_url IS NOT NULL THEN CONCAT('{urlsOptions.Value.API}/', c.intro_video_url) ELSE NULL END AS IntroVideoUrl,
                cat.name AS Category,
@@ -39,7 +41,9 @@ namespace Infrastructure.Repositories
                 WHERE ins.id = c.instructor_id LIMIT 1) AS InstructorTitle";
 
         private string SummaryColumns =>
-            $@"c.id, c.title, c.cost, c.total_reviews AS TotalReviews, c.average_rate AS AverageRate, c.language,
+            $@"c.id, c.title, c.cost,
+               c.cost - c.cost * COALESCE((SELECT MAX(percentage) FROM course_discounts cd WHERE cd.course_id = c.id AND cd.is_active = true), 0) / 100.0 AS PriceAfterDiscount,
+               c.total_reviews AS TotalReviews, c.average_rate AS AverageRate, c.language,
                CASE WHEN c.picture_url IS NOT NULL THEN CONCAT('{urlsOptions.Value.API}/', c.picture_url) ELSE NULL END AS PictureUrl,
                cat.name AS Category,
                (SELECT CONCAT(u.first_name, ' ', u.last_name) 

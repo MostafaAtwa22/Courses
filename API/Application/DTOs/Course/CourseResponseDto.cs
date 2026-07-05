@@ -8,7 +8,8 @@ namespace Application.DTOs.Course
         public string Description { get; set; } = string.Empty;
         public string PictureUrl { get; set; } = string.Empty;
         public CourseStatus Status { get; set; } = CourseStatus.InProgress;
-        public int Cost { get; set; }
+        public decimal Cost { get; set; }
+        public decimal PriceAfterDiscount { get; set; }
         public int StudentCount { get; set; }
         public int TotalReviews { get; set; }
         public decimal AverageRate { get; set; }

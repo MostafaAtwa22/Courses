@@ -6,7 +6,7 @@ import { environment } from '../../../../environments/environment';
 })
 export class GithubAuthService {
   private readonly authorizeUrl = 'https://github.com/login/oauth/authorize';
-  private readonly scope        = 'read:user user:email';
+  private readonly scope = 'read:user user:email';
   private readonly callbackPath = '/auth/github-callback';
 
   get redirectUri(): string {
@@ -20,17 +20,17 @@ export class GithubAuthService {
       sessionStorage.setItem('github_oauth_state', state);
 
       const params = new URLSearchParams({
-        client_id:    environment.githubClientId,
+        client_id: environment.githubClientId,
         redirect_uri: this.redirectUri,
-        scope:        this.scope,
+        scope: this.scope,
         state
       });
 
-      const popupUrl    = `${this.authorizeUrl}?${params.toString()}`;
-      const popupWidth  = 600;
+      const popupUrl = `${this.authorizeUrl}?${params.toString()}`;
+      const popupWidth = 600;
       const popupHeight = 700;
-      const left        = window.screenX + (window.outerWidth  - popupWidth)  / 2;
-      const top         = window.screenY + (window.outerHeight - popupHeight) / 2;
+      const left = window.screenX + (window.outerWidth - popupWidth) / 2;
+      const top = window.screenY + (window.outerHeight - popupHeight) / 2;
 
       const popup = window.open(
         popupUrl,

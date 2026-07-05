@@ -17,7 +17,12 @@ namespace Infrastructure.Persistence.Configurations
             builder.Property(c => c.Description)
                 .IsRequired()
                 .HasMaxLength(3000);
-
+            
+            builder.Property(c => c.Cost)
+                .IsRequired()
+                .HasColumnType("decimal(18,2)")
+                .HasDefaultValue(0m);
+            
             builder.Property(c => c.PictureUrl)
                 .HasMaxLength(500);
 
@@ -25,7 +30,7 @@ namespace Infrastructure.Persistence.Configurations
                 .HasColumnType("numeric(3, 1)")
                 .IsRequired()
                 .HasDefaultValue(0m);
-
+        
             builder.Property(c => c.TotalReviews)
                 .IsRequired()
                 .HasDefaultValue(0);

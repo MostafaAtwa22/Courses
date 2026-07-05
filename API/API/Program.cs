@@ -49,6 +49,16 @@ app.UseHangfireDashboard("/hangfire", new DashboardOptions
     Authorization = new[] { new API.Filters.HangfireDashboardAuthFilter() },
     DashboardTitle = "EduFocus - Background Jobs"
 });
+
+// Schedule the discount deactivation job to run hourly
+using (var scope = app.Services.CreateScope())
+{
+    var discountJobService = scope.ServiceProvider.GetRequiredService<Application.Common.Interfaces.IDiscountJobService>();
+    RecurringJob.AddOrUpdate("deactivate-expired-discounts", 
+        () => discountJobService.DeactivateExpiredDiscountsAsync(), 
+        Cron.Hourly);
+}
+
 app.MapCarter();
 
 app.Run();
