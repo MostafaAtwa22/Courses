@@ -1,6 +1,6 @@
 namespace Application.Features.Courses.Commands.Update
 {
-    public sealed class UpdateCourseCommandHandler(
+    public sealed class UpdateInstructorCommandHandler(
         ICourseRepository _repo,
         IFileService _fileService) : IRequestHandler<UpdateCourseCommand>
     {

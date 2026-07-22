@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Http;
 using Moq;
 
 namespace Application.Tests;
@@ -30,5 +31,24 @@ public static class MockHelpers
             logger.Object,
             schemes.Object,
             confirmation.Object);
+    }
+
+    public static IFormFile CreateMockFormFile(string fileName)
+    {
+        var fileMock = new Mock<IFormFile>();
+        var content = "dummy file content";
+        var ms = new MemoryStream();
+        var writer = new StreamWriter(ms);
+        writer.Write(content);
+        writer.Flush();
+        ms.Position = 0;
+
+        fileMock.Setup(_ => _.OpenReadStream()).Returns(ms);
+        fileMock.Setup(_ => _.FileName).Returns(fileName);
+        fileMock.Setup(_ => _.Length).Returns(ms.Length);
+        fileMock.Setup(_ => _.CopyToAsync(It.IsAny<Stream>(), It.IsAny<CancellationToken>()))
+            .Returns((Stream target, CancellationToken token) => ms.CopyToAsync(target, token));
+
+        return fileMock.Object;
     }
 }

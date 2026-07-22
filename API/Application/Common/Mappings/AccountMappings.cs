@@ -10,7 +10,7 @@ namespace Application.Common.Mappings
         {
             return new UserResponseDto
             {
-                Id = user.Id,
+                Id = Guid.Parse(user.Id),
                 FirstName = user.FirstName,
                 LastName = user.LastName,
                 Email = user.Email ?? string.Empty,

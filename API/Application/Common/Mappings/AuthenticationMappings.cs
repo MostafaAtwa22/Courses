@@ -23,7 +23,7 @@ namespace Application.Common.Mappings
         {
             return new AuthResponseDto
             {
-                Id             = user.Id,
+                Id             = Guid.Parse(user.Id),
                 UserName       = user.UserName          ?? string.Empty,
                 Email          = user.Email             ?? string.Empty,
                 FirstName      = user.FirstName         ?? string.Empty,

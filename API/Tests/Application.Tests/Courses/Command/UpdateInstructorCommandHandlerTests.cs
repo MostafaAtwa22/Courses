@@ -8,17 +8,17 @@ using Moq;
 
 namespace Application.Tests.Courses.Command
 {
-    public class UpdateCourseCommandHandlerTests
+    public class UpdateInstructorCommandHandlerTests
     {
         private readonly Mock<ICourseRepository> _repoMock;
         private readonly Mock<IFileService> _fileServiceMock;
-        private readonly UpdateCourseCommandHandler _handler;
+        private readonly UpdateInstructorCommandHandler _handler;
 
-        public UpdateCourseCommandHandlerTests()
+        public UpdateInstructorCommandHandlerTests()
         {
             _repoMock = new Mock<ICourseRepository>();
             _fileServiceMock = new Mock<IFileService>();
-            _handler = new UpdateCourseCommandHandler(_repoMock.Object, _fileServiceMock.Object);
+            _handler = new UpdateInstructorCommandHandler(_repoMock.Object, _fileServiceMock.Object);
         }
 
         [Fact]

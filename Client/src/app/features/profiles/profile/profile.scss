@@ -1,0 +1,100 @@
+// Profile Page Styles
+
+// Smooth transitions for theme switching
+* {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+// Mobile menu toggle for sidebar (if needed later)
+@media (max-width: 1023px) {
+  aside {
+    &.mobile-open {
+      display: flex !important;
+      position: fixed;
+      top: 80px;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 50;
+      background: var(--surface);
+      overflow-y: auto;
+    }
+  }
+}
+
+// Ensure proper spacing on mobile
+@media (max-width: 640px) {
+  .profile-header {
+    .button-group {
+      flex-direction: column;
+      width: 100%;
+      
+      button {
+        width: 100%;
+      }
+    }
+  }
+  
+  .stats-grid {
+    .stat-card {
+      padding: 1rem;
+    }
+  }
+}
+
+// Dark mode enhancements
+:host-context(.dark) {
+  // Ensure shadows don't show in dark mode
+  .shadow-sm {
+    box-shadow: none;
+  }
+  
+  // Enhance focus states
+  button:focus,
+  a:focus {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+  }
+}
+
+// Light mode enhancements
+button:focus,
+a:focus {
+  outline: 2px solid var(--primary-container);
+  outline-offset: 2px;
+}
+
+// Smooth hover transitions
+button,
+a {
+  transition: all 0.2s ease;
+}
+
+// Card hover effects
+.card-hover {
+  &:hover {
+    transform: translateY(-2px);
+    transition: transform 0.2s ease;
+  }
+}
+
+// Responsive text sizing
+@media (max-width: 768px) {
+  h1 {
+    font-size: 24px;
+    line-height: 32px;
+  }
+  
+  h3 {
+    font-size: 18px;
+    line-height: 24px;
+  }
+}
+
+// Accessibility improvements
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+    animation: none !important;
+  }
+}
