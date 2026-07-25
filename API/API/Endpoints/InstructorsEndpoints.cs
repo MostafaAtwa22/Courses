@@ -34,7 +34,8 @@ namespace API.Endpoints
                 .Produces(StatusCodes.Status400BadRequest)
                 .DisableAntiforgery()
                 .RequireAuthorization(policy =>
-                    policy.RequireRole(Role.Admin.ToString()));
+                    policy.RequireRole(
+                        Role.Instructor.ToString()));
 
             group.MapPut("/{id:guid}", UpdateInstructor)
                 .WithName(nameof(UpdateInstructor))

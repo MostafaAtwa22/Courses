@@ -69,6 +69,10 @@ export const routes: Routes = [
         loadComponent: () => import('./features/profiles/profile/profile').then(m => m.ProfileComponent)
     },
     {
+        path: 'instructor/create',
+        loadComponent: () => import('./features/instructors/instructor-creation/instructor-creation.component').then(m => m.InstructorCreationComponent)
+    },
+    {
         path: '**',
         redirectTo: ''
     }

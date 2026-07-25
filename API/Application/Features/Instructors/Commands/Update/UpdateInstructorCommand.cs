@@ -1,5 +1,4 @@
 using Application.DTOs.Instructor;
-using Application.Common.Interfaces.Identity;
 using Domain.Entities.Identity;
 
 namespace Application.Features.Instructors.Commands.Update

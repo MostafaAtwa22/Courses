@@ -6,7 +6,7 @@ namespace Application.Behaviors
     public class UserContextBehavior<TRequest, TResponse>(
         ICurrentUserService _currentUserService,
         UserManager<ApplicationUser> _userManager,
-        Microsoft.AspNetCore.Http.IHttpContextAccessor _httpContextAccessor)
+        IHttpContextAccessor _httpContextAccessor)
         : IPipelineBehavior<TRequest, TResponse>
         where TRequest : ICurrentUserRequest
     {

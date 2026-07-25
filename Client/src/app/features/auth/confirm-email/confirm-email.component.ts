@@ -52,7 +52,15 @@ export class ConfirmEmailComponent implements OnInit {
         if (response.token) {
           this.authService.saveSession(response.token, response);
         }
-        this.router.navigate(['/']);
+        
+        // Check if user was registering as instructor
+        const pendingInstructorRegistration = localStorage.getItem('pending_instructor_registration');
+        if (pendingInstructorRegistration === 'true') {
+          localStorage.removeItem('pending_instructor_registration');
+          this.router.navigate(['/instructor/create']);
+        } else {
+          this.router.navigate(['/']);
+        }
       },
       error: (err) => {
         this.isLoading    = false;

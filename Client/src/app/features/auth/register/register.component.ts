@@ -134,6 +134,10 @@ export class RegisterComponent implements OnInit {
 
     this.authService.register(registerDto).subscribe({
       next: () => {
+        // Store role for post-confirmation routing
+        if (registerDto.role === Role.Instructor) {
+          localStorage.setItem('pending_instructor_registration', 'true');
+        }
         this.router.navigate(['/auth/confirm-email'], {
           queryParams: { email: registerDto.email }
         });

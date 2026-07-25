@@ -1,5 +1,3 @@
-using FluentValidation;
-
 namespace Application.Behaviors
 {
     public class ValidationBehavior<TRequest, TResponse>
