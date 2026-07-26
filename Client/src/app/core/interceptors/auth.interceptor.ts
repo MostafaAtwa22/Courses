@@ -11,7 +11,6 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const authService = inject(AuthService);
   const router = inject(Router);
 
-  // If the request is for the auth endpoint itself, don't intercept 401 to refresh again.
   if (req.url.includes('/refresh-token')) {
     return next(req);
   }
@@ -52,8 +51,9 @@ const handle401Error = (request: HttpRequest<any>, next: HttpHandlerFn, authServ
       }),
       catchError((err) => {
         isRefreshing = false;
+        refreshTokenSubject.next(null);
         authService.clearSession();
-        router.navigate(['/login']);
+        router.navigate(['/auth/login']);
         return throwError(() => err);
       })
     );
@@ -62,6 +62,11 @@ const handle401Error = (request: HttpRequest<any>, next: HttpHandlerFn, authServ
   return refreshTokenSubject.pipe(
     filter(token => token !== null),
     take(1),
-    switchMap((token) => next(addToken(request, token as string)))
+    switchMap((token) => {
+      if (!authService.getToken()) {
+        return throwError(() => new Error('Session expired. Please log in again.'));
+      }
+      return next(addToken(request, token as string));
+    })
   );
 };

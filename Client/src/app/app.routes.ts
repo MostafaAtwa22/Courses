@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { guestGuard } from './core/guards/guest.guard';
+import { authGuard } from './core/guards/auth.guard';
 
 export const routes: Routes = [
     {
@@ -71,6 +72,34 @@ export const routes: Routes = [
     {
         path: 'instructor/create',
         loadComponent: () => import('./features/instructors/instructor-creation/instructor-creation.component').then(m => m.InstructorCreationComponent)
+    },
+    {
+        path: 'settings',
+        loadComponent: () => import('./features/settings/settings-layout/settings-layout.component').then(m => m.SettingsLayoutComponent),
+        canActivate: [authGuard],
+        children: [
+            {
+                path: 'profile',
+                loadComponent: () => import('./features/settings/profile-settings/profile-settings.component').then(m => m.ProfileSettingsComponent)
+            },
+            {
+                path: 'security',
+                loadComponent: () => import('./features/settings/security-settings/security-settings.component').then(m => m.SecuritySettingsComponent)
+            },
+            {
+                path: 'password',
+                loadComponent: () => import('./features/settings/password-settings/password-settings.component').then(m => m.PasswordSettingsComponent)
+            },
+            {
+                path: 'delete-account',
+                loadComponent: () => import('./features/settings/delete-account/delete-account.component').then(m => m.DeleteAccountComponent)
+            },
+            {
+                path: '',
+                redirectTo: 'profile',
+                pathMatch: 'full'
+            }
+        ]
     },
     {
         path: '**',

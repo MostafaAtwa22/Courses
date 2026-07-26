@@ -1,0 +1,117 @@
+<div class="delete-account">
+  <div class="settings-header">
+    <h1>Delete Account</h1>
+    <p>Permanently delete your account and all associated data</p>
+  </div>
+
+  <div class="settings-content">
+    <!-- Warning Card -->
+    <div class="card warning-card">
+      <div class="warning-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+          <line x1="12" y1="9" x2="12" y2="13"></line>
+          <line x1="12" y1="17" x2="12.01" y2="17"></line>
+        </svg>
+      </div>
+      <h2>Warning: This action cannot be undone</h2>
+      <p class="warning-text">
+        Deleting your account will permanently remove all your data including:
+      </p>
+      <ul class="warning-list">
+        <li>Your profile information and settings</li>
+        <li>Course enrollment and progress</li>
+        <li>Payment history and subscriptions</li>
+        <li>All personal data associated with your account</li>
+      </ul>
+      <p class="warning-text">
+        Please make sure you want to proceed with this action.
+      </p>
+    </div>
+
+    <!-- Delete Account Form -->
+    <div class="card">
+      <h2>Delete Account</h2>
+      <form [formGroup]="deleteAccountForm" (ngSubmit)="openConfirmModal()">
+        <div class="form-group">
+          <label for="password">Password *</label>
+          <input 
+            id="password" 
+            type="password" 
+            formControlName="password" 
+            placeholder="Enter your password to confirm"
+          />
+          <div class="error-message" *ngIf="deleteAccountForm.get('password')?.touched && deleteAccountForm.get('password')?.invalid">
+            <span *ngIf="deleteAccountForm.get('password')?.errors?.['required']">Password is required</span>
+          </div>
+        </div>
+
+        <div class="form-group checkbox-group">
+          <label class="checkbox-label">
+            <input type="checkbox" formControlName="confirmDelete" />
+            <span>I understand that this action cannot be undone and I want to delete my account</span>
+          </label>
+          <div class="error-message" *ngIf="deleteAccountForm.get('confirmDelete')?.touched && deleteAccountForm.get('confirmDelete')?.invalid">
+            <span *ngIf="deleteAccountForm.get('confirmDelete')?.errors?.['required']">You must confirm to proceed</span>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button 
+            type="submit" 
+            class="btn btn-danger" 
+            [disabled]="deleteAccountForm.invalid || isDeleting"
+          >
+            <svg *ngIf="!isDeleting" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="3 6 5 6 21 6"></polyline>
+              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+            </svg>
+            <span *ngIf="!isDeleting">Delete Account</span>
+            <span *ngIf="isDeleting">Deleting...</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Confirm Delete Modal -->
+  <div class="modal-overlay" *ngIf="showConfirmModal" (click)="closeConfirmModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>Confirm Account Deletion</h3>
+        <button type="button" class="close-button" (click)="closeConfirmModal()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p class="modal-warning">
+          Are you absolutely sure you want to delete your account? This action is irreversible.
+        </p>
+        <div class="form-group">
+          <label for="confirmText">Type "DELETE" to confirm</label>
+          <input 
+            id="confirmText" 
+            type="text" 
+            [(ngModel)]="confirmText" 
+            placeholder="DELETE"
+          />
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="cancelDelete()">Cancel</button>
+        <button 
+          type="button" 
+          class="btn btn-danger" 
+          (click)="confirmDeleteAccount()"
+          [disabled]="isDeleting"
+        >
+          <span *ngIf="!isDeleting">Yes, Delete My Account</span>
+          <span *ngIf="isDeleting">Deleting...</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

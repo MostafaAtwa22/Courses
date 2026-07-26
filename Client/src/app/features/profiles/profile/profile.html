@@ -9,7 +9,7 @@
                 <div class="relative">
                     <img [src]="profilePicture" [alt]="fullName + ' profile picture'"
                         class="w-24 h-24 rounded-full object-cover border-4 border-surface-container-low dark:border-border-dark" />
-                    <div *ngIf="userData.emailConfirmed"
+                <div *ngIf="currentUser?.email"
                         class="absolute bottom-0 right-0 bg-secondary-fixed dark:bg-secondary text-on-secondary-fixed dark:text-on-secondary p-1 rounded-full border-2 border-surface-light dark:border-surface-dark"
                         title="Verified User">
                         <span class="material-symbols-outlined text-[16px]">verified</span>
@@ -25,11 +25,11 @@
                     </div>
                     <div
                         class="flex flex-wrap items-center justify-center md:justify-start gap-3 text-outline dark:text-outline font-body-sm text-body-sm">
-                        <span *ngIf="userData.userName" class="flex items-center gap-1"><span
+                        <span *ngIf="currentUser?.userName" class="flex items-center gap-1"><span
                                 class="material-symbols-outlined text-[16px]">alternate_email</span> {{
-                            userData.userName }}</span>
-                        <span *ngIf="userData.email" class="flex items-center gap-1"><span
-                                class="material-symbols-outlined text-[16px]">mail</span> {{ userData.email }}</span>
+                            currentUser?.userName }}</span>
+                        <span *ngIf="currentUser?.email" class="flex items-center gap-1"><span
+                                class="material-symbols-outlined text-[16px]">mail</span> {{ currentUser?.email }}</span>
                         <span class="flex items-center gap-1"><span
                                 class="material-symbols-outlined text-[16px]">calendar_today</span> Joined {{
                             formattedJoinDate }}</span>
@@ -107,13 +107,13 @@
                             <label class="font-label-sm text-label-sm text-outline dark:text-outline block mb-1">First
                                 Name</label>
                             <p class="font-body-md text-body-md text-on-surface dark:text-surface-light">{{
-                                userData.firstName || 'N/A' }}</p>
+                                currentUser?.firstName || 'N/A' }}</p>
                         </div>
                         <div>
                             <label class="font-label-sm text-label-sm text-outline dark:text-outline block mb-1">Last
                                 Name</label>
                             <p class="font-body-md text-body-md text-on-surface dark:text-surface-light">{{
-                                userData.lastName || 'N/A' }}</p>
+                                currentUser?.lastName || 'N/A' }}</p>
                         </div>
                     </div>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -121,13 +121,13 @@
                             <label
                                 class="font-label-sm text-label-sm text-outline dark:text-outline block mb-1">Gender</label>
                             <p class="font-body-md text-body-md text-on-surface dark:text-surface-light">{{
-                                userData.gender || 'Not specified' }}</p>
+                                currentUser?.gender || 'Not specified' }}</p>
                         </div>
                         <div>
                             <label
                                 class="font-label-sm text-label-sm text-outline dark:text-outline block mb-1">Phone</label>
                             <p class="font-body-md text-body-md text-on-surface dark:text-surface-light">{{
-                                userData.phoneNumber || 'Not provided' }}</p>
+                                currentUser?.phoneNumber || 'Not provided' }}</p>
                         </div>
                     </div>
                 </div>
@@ -143,16 +143,16 @@
                             class="font-label-sm text-label-sm text-outline dark:text-outline block mb-1">Professional
                             Title</label>
                         <p class="font-body-md text-body-md font-medium text-on-surface dark:text-surface-light">{{
-                            userData.professionalTitle || 'Senior Software Architect' }}</p>
+                            'Senior Software Architect' }}</p>
                     </div>
                     <div>
                         <label
                             class="font-label-sm text-label-sm text-outline dark:text-outline block mb-1">Biography</label>
                         <p class="font-body-sm text-body-sm text-on-surface-variant dark:text-outline leading-relaxed">
-                            {{ userData.bio || 'Senior Software Architect with 15+ years experience building scalable
+                            Senior Software Architect with 15+ years experience building scalable
                             enterprise systems. Passionate about teaching modern web technologies and cloud
                             architecture. Dedicated to creating comprehensive, hands-on learning experiences for
-                            developers of all levels.' }}
+                            developers of all levels.
                         </p>
                     </div>
                     <div>

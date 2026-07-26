@@ -32,6 +32,7 @@ namespace Application.Common.Mappings
                 Gender         = user.Gender,
                 ProfilePicture = string.IsNullOrEmpty(user.ProfilePictureUrl) ? string.Empty : $"{apiUrl}/{user.ProfilePictureUrl}",
                 Is2FAEnable    = user.TwoFactorEnabled,
+                HasPassword    = !string.IsNullOrEmpty(user.PasswordHash),
                 Roles          = [..roles]
             };
         }

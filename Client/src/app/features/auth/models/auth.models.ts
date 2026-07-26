@@ -23,6 +23,7 @@ export interface BaseIdentityResponse {
   phoneNumber?: string;
   profilePicture?: string;
   is2FAEnable: boolean;
+  hasPassword: boolean;
   gender: Gender;
   roles: string[];
 }

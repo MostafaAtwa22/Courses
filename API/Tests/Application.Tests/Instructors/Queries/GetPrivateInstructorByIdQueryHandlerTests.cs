@@ -28,9 +28,7 @@ public class GetPrivateInstructorByIdQueryHandlerTests
         _userIdentityServiceMock.Setup(x => x.IsInRoleAsync(adminUser, Role.Admin.ToString())).ReturnsAsync(true);
 
         _handler = new GetPrivateInstructorByIdQueryHandler(
-            _instructorRepositoryMock.Object,
-            _currentUserServiceMock.Object,
-            _userIdentityServiceMock.Object);
+            _instructorRepositoryMock.Object);
     }
 
     [Fact]

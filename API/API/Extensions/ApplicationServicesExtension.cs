@@ -24,7 +24,7 @@ namespace API.Extensions
             services.AddExceptionHandler<PostgresExceptionHandler>();
             services.AddExceptionHandler<GlobalExceptionHandler>();
 
-            services.AddAuthentication();
+            services.AddJwtAuthentication(config);
             services.AddAuthorization();
             services.Configure<SecurityStampValidatorOptions>(options =>
             {

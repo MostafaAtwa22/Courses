@@ -34,10 +34,7 @@
 
             <!-- Avatar trigger -->
             <button class="avatar-btn" (click)="toggleDropdown()" [attr.aria-expanded]="isDropdownOpen" aria-haspopup="true">
-              <img *ngIf="user.profilePicture" [src]="user.profilePicture" [alt]="user.firstName" class="avatar-img" />
-              <span *ngIf="!user.profilePicture" class="avatar-initials">
-                {{ user.firstName[0] }}{{ user.lastName[0] }}
-              </span>
+              <img [src]="user.profilePicture || (user.gender === 'Female' ? 'assets/users/default-female.png' : 'assets/users/default-male.png')" [alt]="user.firstName" class="avatar-img" />
             </button>
 
             <!-- Dropdown panel -->
@@ -45,8 +42,7 @@
               <!-- User info header -->
               <div class="dropdown-header">
                 <div class="dropdown-avatar">
-                  <img *ngIf="user.profilePicture" [src]="user.profilePicture" [alt]="user.firstName" />
-                  <span *ngIf="!user.profilePicture">{{ user.firstName[0] }}{{ user.lastName[0] }}</span>
+                  <img [src]="user.profilePicture || (user.gender === 'Female' ? 'assets/users/default-female.png' : 'assets/users/default-male.png')" [alt]="user.firstName" />
                 </div>
                 <div class="dropdown-user-info">
                   <span class="dropdown-name">{{ user.firstName }} {{ user.lastName }}</span>

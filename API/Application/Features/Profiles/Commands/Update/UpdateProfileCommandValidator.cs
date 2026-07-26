@@ -14,7 +14,7 @@ namespace Application.Features.Profiles.Commands.Update
 
             RuleFor(x => x.Dto.UserName)
                 .NotEmpty().WithMessage("Username is required")
-                .MaximumLength(20).WithMessage("Username must not exceed 20 characters");
+                .MaximumLength(200).WithMessage("Username must not exceed 200 characters");
 
             RuleFor(x => x.Dto.PhoneNumber)
                 .Matches(@"^\+?[1-9]\d{1,14}$").WithMessage("Invalid phone number format");
