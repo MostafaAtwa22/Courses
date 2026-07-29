@@ -10,8 +10,8 @@ import { FaqComponent } from './components/faq/faq';
 import { FooterComponent } from '../../shared/components/footer/footer';
 import { CategoryService } from '../categories/services/category.service';
 import { QueryParams } from '../../shared/models/query-params.model';
-
 import { CourseService } from '../courses/services/course.service';
+import { ThemeService } from '../../core/services/theme.service';
 
 @Component({
   selector: 'app-home',
@@ -32,7 +32,8 @@ import { CourseService } from '../courses/services/course.service';
 export class Home implements OnInit, OnDestroy {
   private categoryService = inject(CategoryService);
   private courseService = inject(CourseService);
-  isDarkMode = false;
+  private themeService = inject(ThemeService);
+  isDarkMode = this.themeService.isDarkModeSignal();
   currentSlide = 0;
   slideInterval: any;
 
@@ -71,11 +72,6 @@ export class Home implements OnInit, OnDestroy {
     this.startSlider();
     this.loadCategories();
     this.loadFeaturedCourses();
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme === 'dark') {
-      this.isDarkMode = true;
-      document.body.classList.add('dark');
-    }
   }
 
   loadFeaturedCourses() {
@@ -140,14 +136,8 @@ export class Home implements OnInit, OnDestroy {
   }
 
   toggleTheme() {
-    this.isDarkMode = !this.isDarkMode;
-    if (this.isDarkMode) {
-      document.body.classList.add('dark');
-      localStorage.setItem('theme', 'dark');
-    } else {
-      document.body.classList.remove('dark');
-      localStorage.setItem('theme', 'light');
-    }
+    this.themeService.toggleTheme();
+    this.isDarkMode = this.themeService.isDarkModeSignal();
   }
 
   toggleFaq(index: number) {

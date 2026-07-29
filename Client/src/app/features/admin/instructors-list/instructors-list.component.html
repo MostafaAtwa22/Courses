@@ -1,0 +1,79 @@
+<div class="instructors-list-container">
+  <div class="header">
+    <h1>Instructors Management</h1>
+    <div class="search-bar">
+      <input 
+        type="text" 
+        [(ngModel)]="searchQuery" 
+        placeholder="Search instructors..." 
+        (keyup.enter)="onSearch()"
+      >
+      <button (click)="onSearch()">Search</button>
+    </div>
+  </div>
+
+  <div class="table-container">
+    <table class="instructors-table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Title</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let instructor of instructorsResult.items">
+          <td>{{ instructor.firstName }} {{ instructor.lastName }}</td>
+          <td>{{ instructor.email }}</td>
+          <td>{{ instructor.title }}</td>
+          <td>
+            <span [class]="getStatusClass(instructor.status)">{{ instructor.status }}</span>
+          </td>
+          <td>
+            <div class="actions">
+              <button 
+                *ngIf="instructor.status !== 'Verfied'"
+                class="btn-verify"
+                (click)="changeStatus(instructor.id, 'Verfied')"
+              >
+                Verify
+              </button>
+              <button 
+                *ngIf="instructor.status !== 'Unverfied'"
+                class="btn-unverify"
+                (click)="changeStatus(instructor.id, 'Unverfied')"
+              >
+                Unverify
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="pagination" *ngIf="instructorsResult.totalPages > 1">
+    <button 
+      (click)="onPageChange(instructorsResult.pageNumber - 1)"
+      [disabled]="!instructorsResult.hasPreviousPage"
+    >
+      Previous
+    </button>
+    <span *ngFor="let page of getPagesArray()">
+      <button 
+        (click)="onPageChange(page)"
+        [class.active]="page === instructorsResult.pageNumber"
+      >
+        {{ page }}
+      </button>
+    </span>
+    <button 
+      (click)="onPageChange(instructorsResult.pageNumber + 1)"
+      [disabled]="!instructorsResult.hasNextPage"
+    >
+      Next
+    </button>
+  </div>
+</div>

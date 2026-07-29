@@ -73,45 +73,4 @@
       </form>
     </div>
   </div>
-
-  <!-- Confirm Delete Modal -->
-  <div class="modal-overlay" *ngIf="showConfirmModal" (click)="closeConfirmModal()">
-    <div class="modal-content" (click)="$event.stopPropagation()">
-      <div class="modal-header">
-        <h3>Confirm Account Deletion</h3>
-        <button type="button" class="close-button" (click)="closeConfirmModal()">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <line x1="18" y1="6" x2="6" y2="18"></line>
-            <line x1="6" y1="6" x2="18" y2="18"></line>
-          </svg>
-        </button>
-      </div>
-      <div class="modal-body">
-        <p class="modal-warning">
-          Are you absolutely sure you want to delete your account? This action is irreversible.
-        </p>
-        <div class="form-group">
-          <label for="confirmText">Type "DELETE" to confirm</label>
-          <input 
-            id="confirmText" 
-            type="text" 
-            [(ngModel)]="confirmText" 
-            placeholder="DELETE"
-          />
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" (click)="cancelDelete()">Cancel</button>
-        <button 
-          type="button" 
-          class="btn btn-danger" 
-          (click)="confirmDeleteAccount()"
-          [disabled]="isDeleting"
-        >
-          <span *ngIf="!isDeleting">Yes, Delete My Account</span>
-          <span *ngIf="isDeleting">Deleting...</span>
-        </button>
-      </div>
-    </div>
-  </div>
 </div>

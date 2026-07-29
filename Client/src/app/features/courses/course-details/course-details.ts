@@ -13,6 +13,7 @@ import { CourseInstructorComponent } from './components/course-instructor/course
 import { CourseReviewsComponent } from './components/course-reviews/course-reviews';
 import { HeaderComponent } from '../../../shared/components/header/header';
 import { FooterComponent } from '../../../shared/components/footer/footer';
+import { ThemeService } from '../../../core/services/theme.service';
 
 @Component({
   selector: 'app-course-details',
@@ -38,6 +39,7 @@ export class CourseDetailsComponent implements OnInit {
   private sectionService = inject(SectionService);
   private contentService = inject(ContentService);
   private reviewService = inject(ReviewService);
+  private themeService = inject(ThemeService);
 
   course?: CourseResponse;
   sections: SectionResponse[] = [];
@@ -47,7 +49,7 @@ export class CourseDetailsComponent implements OnInit {
   totalSections = 0;
   currentPage = 1;
   pageSize = 5;
-  isDarkMode = false;
+  isDarkMode = this.themeService.isDarkModeSignal();
 
   // Track which sections have had their contents loaded
   private loadedSectionIds = new Set<string>();
@@ -63,12 +65,6 @@ export class CourseDetailsComponent implements OnInit {
   `;
 
   ngOnInit(): void {
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme === 'dark') {
-      this.isDarkMode = true;
-      document.body.classList.add('dark');
-    }
-
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       this.courseService.getById(id).subscribe({
@@ -170,14 +166,8 @@ export class CourseDetailsComponent implements OnInit {
   }
 
   toggleTheme() {
-    this.isDarkMode = !this.isDarkMode;
-    if (this.isDarkMode) {
-      document.body.classList.add('dark');
-      localStorage.setItem('theme', 'dark');
-    } else {
-      document.body.classList.remove('dark');
-      localStorage.setItem('theme', 'light');
-    }
+    this.themeService.toggleTheme();
+    this.isDarkMode = this.themeService.isDarkModeSignal();
   }
 
   handleContentSelected(content: ContentResponse): void {

@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HeaderComponent } from '../../../shared/components/header/header';
 import { FooterComponent } from '../../../shared/components/footer/footer';
 import { SessionService } from '../../auth/services/session.service';
 import { BaseIdentityResponse } from '../../auth/models/auth.models';
 import { Gender } from '../../../shared/models/identity.models';
+import { ThemeService } from '../../../core/services/theme.service';
 
 @Component({
   selector: 'app-profile',
@@ -14,7 +15,8 @@ import { Gender } from '../../../shared/models/identity.models';
   styleUrl: './profile.scss'
 })
 export class ProfileComponent implements OnInit {
-  isDarkMode = false;
+  private themeService = inject(ThemeService);
+  isDarkMode = this.themeService.isDarkModeSignal();
   currentUser: BaseIdentityResponse | null = null;
 
   private readonly defaultMalePic   = 'assets/users/default-male.png';
@@ -23,24 +25,12 @@ export class ProfileComponent implements OnInit {
   constructor(private sessionService: SessionService) {}
 
   ngOnInit() {
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme === 'dark') {
-      this.isDarkMode = true;
-      document.body.classList.add('dark');
-    }
-
     this.currentUser = this.sessionService.currentUser();
   }
 
   toggleTheme() {
-    this.isDarkMode = !this.isDarkMode;
-    if (this.isDarkMode) {
-      document.body.classList.add('dark');
-      localStorage.setItem('theme', 'dark');
-    } else {
-      document.body.classList.remove('dark');
-      localStorage.setItem('theme', 'light');
-    }
+    this.themeService.toggleTheme();
+    this.isDarkMode = this.themeService.isDarkModeSignal();
   }
 
   get fullName(): string {

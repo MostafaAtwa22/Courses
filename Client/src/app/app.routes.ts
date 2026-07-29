@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { guestGuard } from './core/guards/guest.guard';
 import { authGuard } from './core/guards/auth.guard';
+import { instructorCompletionGuard } from './core/guards/instructor-completion.guard';
 
 export const routes: Routes = [
     {
@@ -53,11 +54,13 @@ export const routes: Routes = [
     },
     {
         path: 'courses',
-        loadComponent: () => import('./features/courses/courses-list').then(m => m.CoursesListComponent)
+        loadComponent: () => import('./features/courses/courses-list').then(m => m.CoursesListComponent),
+        canActivate: [instructorCompletionGuard]
     },
     {
         path: 'courses/:id',
         loadComponent: () => import('./features/courses/course-details/course-details').then(m => m.CourseDetailsComponent),
+        canActivate: [instructorCompletionGuard],
         children: [
             {
                 path: 'content/:contentId',
@@ -67,11 +70,17 @@ export const routes: Routes = [
     },
     {
         path: 'profile',
-        loadComponent: () => import('./features/profiles/profile/profile').then(m => m.ProfileComponent)
+        loadComponent: () => import('./features/profiles/profile/profile').then(m => m.ProfileComponent),
+        canActivate: [instructorCompletionGuard]
     },
     {
         path: 'instructor/create',
         loadComponent: () => import('./features/instructors/instructor-creation/instructor-creation.component').then(m => m.InstructorCreationComponent)
+    },
+    {
+        path: 'admin/instructors',
+        loadComponent: () => import('./features/admin/instructors-list/instructors-list.component').then(m => m.InstructorsListComponent),
+        canActivate: [authGuard]
     },
     {
         path: 'settings',

@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { ProfileService } from '../../profiles/services/profile.service';
 import { SessionService } from '../../auth/services/session.service';
 import { ChangePasswordDto, SetPasswordDto } from '../../profiles/models/profile.models';
+import { ToastService } from '../../../core/services/toast.service';
 
 @Component({
   selector: 'app-password-settings',
@@ -19,7 +20,12 @@ export class PasswordSettingsComponent implements OnInit {
   isSettingPassword = false;
   hasPassword = true; // This should be determined from user data
 
-  constructor(private fb: FormBuilder, private profileService: ProfileService, private sessionService: SessionService) {
+  constructor(
+    private fb: FormBuilder,
+    private profileService: ProfileService,
+    private sessionService: SessionService,
+    private toastService: ToastService
+  ) {
     this.changePasswordForm = this.fb.group({
       oldPassword: ['', [Validators.required]],
       newPassword: ['', [Validators.required, Validators.minLength(8)]],
@@ -60,12 +66,12 @@ export class PasswordSettingsComponent implements OnInit {
       next: () => {
         this.isChangingPassword = false;
         this.changePasswordForm.reset();
-        alert('Password changed successfully!');
+        this.toastService.success('Password changed successfully!');
       },
       error: (error) => {
         console.error('Error changing password:', error);
         this.isChangingPassword = false;
-        alert('Failed to change password. Please check your old password and try again.');
+        this.toastService.error('Failed to change password. Please check your old password and try again.');
       }
     });
   }
@@ -84,7 +90,7 @@ export class PasswordSettingsComponent implements OnInit {
         this.isSettingPassword = false;
         this.setPasswordForm.reset();
         this.hasPassword = true;
-        
+
         // Update session
         const currentUser = this.sessionService.currentUser();
         const token = this.sessionService.getToken();
@@ -92,13 +98,13 @@ export class PasswordSettingsComponent implements OnInit {
           const updatedUser = { ...currentUser, hasPassword: true };
           this.sessionService.saveSession(token, updatedUser);
         }
-        
-        alert('Password set successfully!');
+
+        this.toastService.success('Password set successfully!');
       },
       error: (error) => {
         console.error('Error setting password:', error);
         this.isSettingPassword = false;
-        alert('Failed to set password. Please try again.');
+        this.toastService.error('Failed to set password. Please try again.');
       }
     });
   }

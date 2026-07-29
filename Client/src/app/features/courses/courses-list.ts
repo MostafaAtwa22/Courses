@@ -9,6 +9,7 @@ import { CategoryService } from '../categories/services/category.service';
 import { createCourseQueryParams, createQueryParams, CourseQueryParams } from '../../shared/models/query-params.model';
 import { PaginatedResultModel } from '../../shared/models/paginated-result.model';
 import { CourseSummary } from './models/course.models';
+import { ThemeService } from '../../core/services/theme.service';
 
 @Component({
   selector: 'app-courses-list',
@@ -27,8 +28,9 @@ export class CoursesListComponent implements OnInit, OnDestroy {
   private categoryService = inject(CategoryService);
   private destroy$ = new Subject<void>();
   private searchSubject = new Subject<string>();
+  private themeService = inject(ThemeService);
 
-  isDarkMode = false;
+  isDarkMode = this.themeService.isDarkModeSignal();
   isFilterOpen = false;
 
   categories: string[] = ['All'];
@@ -41,7 +43,6 @@ export class CoursesListComponent implements OnInit, OnDestroy {
   showSuggestions = false;
 
   ngOnInit() {
-    this.initTheme();
     this.loadCategories();
     this.loadCourses();
 
@@ -67,14 +68,6 @@ export class CoursesListComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  initTheme() {
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme === 'dark') {
-      this.isDarkMode = true;
-      document.body.classList.add('dark');
-    }
-  }
-
   loadCategories() {
     this.categoryService.getAll(createQueryParams({ pageSize: 100 })).subscribe({
       next: (res) => {
@@ -92,14 +85,8 @@ export class CoursesListComponent implements OnInit, OnDestroy {
   }
 
   toggleTheme() {
-    this.isDarkMode = !this.isDarkMode;
-    if (this.isDarkMode) {
-      document.body.classList.add('dark');
-      localStorage.setItem('theme', 'dark');
-    } else {
-      document.body.classList.remove('dark');
-      localStorage.setItem('theme', 'light');
-    }
+    this.themeService.toggleTheme();
+    this.isDarkMode = this.themeService.isDarkModeSignal();
   }
 
   setCategory(cat: string) {

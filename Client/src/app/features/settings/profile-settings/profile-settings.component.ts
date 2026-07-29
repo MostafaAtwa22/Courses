@@ -6,6 +6,8 @@ import { ProfileService } from '../../profiles/services/profile.service';
 import { BaseIdentityResponse } from '../../auth/models/auth.models';
 import { UpdateProfileDto } from '../../profiles/models/profile.models';
 import { Gender } from '../../../shared/models/identity.models';
+import { ToastService } from '../../../core/services/toast.service';
+import { AlertService } from '../../../core/services/alert.service';
 
 @Component({
   selector: 'app-profile-settings',
@@ -29,7 +31,9 @@ export class ProfileSettingsComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private sessionService: SessionService,
-    private profileService: ProfileService
+    private profileService: ProfileService,
+    private toastService: ToastService,
+    private alertService: AlertService
   ) {
     this.profileForm = this.fb.group({
       firstName: ['', [Validators.required, Validators.minLength(2)]],
@@ -86,34 +90,44 @@ export class ProfileSettingsComponent implements OnInit {
           const token = this.sessionService.getToken();
           if (token) {
             this.sessionService.saveSession(token, updatedUser);
+            // Update local currentUser reference to reflect changes immediately
+            this.currentUser = updatedUser;
           }
         }
         this.isUploadingImage = false;
         this.selectedImage = null;
+        this.toastService.success('Profile picture updated successfully!');
       },
       error: (error) => {
         console.error('Error uploading image:', error);
         this.isUploadingImage = false;
+        this.toastService.error('Failed to upload profile picture. Please try again.');
       }
     });
   }
 
   removeImage(): void {
-    this.profileService.deleteProfileImage().subscribe({
-      next: () => {
-        if (this.currentUser) {
-          const updatedUser = { ...this.currentUser, profilePicture: undefined };
-          const token = this.sessionService.getToken();
-          if (token) {
-            this.sessionService.saveSession(token, updatedUser);
-            this.currentUser = updatedUser;
+    this.alertService.confirmDelete('Remove profile picture?', 'This will remove your current profile picture.').then((result) => {
+      if (result.isConfirmed) {
+        this.profileService.deleteProfileImage().subscribe({
+          next: () => {
+            if (this.currentUser) {
+              const updatedUser = { ...this.currentUser, profilePicture: undefined };
+              const token = this.sessionService.getToken();
+              if (token) {
+                this.sessionService.saveSession(token, updatedUser);
+                this.currentUser = updatedUser;
+              }
+            }
+            this.imagePreview = null;
+            this.selectedImage = null;
+            this.toastService.success('Profile picture removed successfully!');
+          },
+          error: (error) => {
+            console.error('Error removing image:', error);
+            this.toastService.error('Failed to remove profile picture. Please try again.');
           }
-        }
-        this.imagePreview = null;
-        this.selectedImage = null;
-      },
-      error: (error) => {
-        console.error('Error removing image:', error);
+        });
       }
     });
   }
@@ -144,12 +158,13 @@ export class ProfileSettingsComponent implements OnInit {
         }
         this.isSubmitting = false;
         this.isEditing = false;
-        alert('Profile updated successfully!');
+        this.toastService.success('Profile updated successfully!');
+        this.alertService.success('Success', 'Your profile has been updated successfully.');
       },
       error: (error) => {
         console.error('Error updating profile:', error);
         this.isSubmitting = false;
-        alert('Failed to update profile. Please try again.');
+        this.toastService.error('Failed to update profile. Please try again.');
       }
     });
   }
@@ -169,5 +184,11 @@ export class ProfileSettingsComponent implements OnInit {
 
   get fullName(): string {
     return `${this.profileForm.get('firstName')?.value || ''} ${this.profileForm.get('lastName')?.value || ''}`.trim();
+  }
+
+  get memberSince(): string {
+    if (!this.currentUser?.createdAt) return '';
+    const date = new Date(this.currentUser.createdAt);
+    return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
   }
 }

@@ -1,0 +1,190 @@
+// Toast Override Styles - Matches Website Theme
+// Uses CSS variables for automatic dark/light mode support
+
+@import 'ngx-toastr/toastr';
+
+// Ensure toast container inherits dark mode
+body.dark .toast-container,
+.dark .toast-container {
+  background: transparent !important;
+}
+
+body.dark .custom-toast,
+.dark .custom-toast,
+.custom-toast {
+  background: var(--surface) !important;
+  color: var(--text-color) !important;
+  border: 1px solid var(--border-color) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1) !important;
+  backdrop-filter: blur(10px) !important;
+  min-width: 320px !important;
+  max-width: 400px !important;
+  padding: 1rem !important;
+  margin: 0.5rem !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  
+  &.toast-success {
+    border-left: 4px solid var(--success) !important;
+    
+    .toast-title {
+      color: var(--success) !important;
+    }
+    
+    .toast-message {
+      color: var(--text-color) !important;
+    }
+  }
+  
+  &.toast-error {
+    border-left: 4px solid var(--error) !important;
+    
+    .toast-title {
+      color: var(--error) !important;
+    }
+    
+    .toast-message {
+      color: var(--text-color) !important;
+    }
+  }
+  
+  &.toast-warning {
+    border-left: 4px solid #f59e0b !important;
+    
+    .toast-title {
+      color: #f59e0b !important;
+    }
+    
+    .toast-message {
+      color: var(--text-color) !important;
+    }
+  }
+  
+  &.toast-info {
+    border-left: 4px solid var(--primary-color) !important;
+    
+    .toast-title {
+      color: var(--primary-color) !important;
+    }
+    
+    .toast-message {
+      color: var(--text-color) !important;
+    }
+  }
+}
+
+body.dark .toast-title,
+.dark .toast-title,
+.toast-title {
+  font-weight: 700 !important;
+  font-size: 0.95rem !important;
+  font-family: var(--font-heading, 'Manrope', sans-serif) !important;
+  margin-bottom: 0.25rem !important;
+  letter-spacing: -0.3px !important;
+}
+
+body.dark .toast-message,
+.dark .toast-message,
+.toast-message {
+  font-weight: 500 !important;
+  font-size: 0.875rem !important;
+  font-family: var(--font-body, 'Inter', sans-serif) !important;
+  line-height: 1.4 !important;
+  color: var(--text-muted) !important;
+}
+
+// Progress bar styling
+.toast-progress {
+  background: var(--primary-color) !important;
+  height: 3px !important;
+  border-radius: 2px !important;
+  opacity: 0.7 !important;
+}
+
+.toast-success .toast-progress {
+  background: var(--success) !important;
+}
+
+.toast-error .toast-progress {
+  background: var(--error) !important;
+}
+
+.toast-warning .toast-progress {
+  background: #f59e0b !important;
+}
+
+.toast-info .toast-progress {
+  background: var(--primary-color) !important;
+}
+
+// Close button styling
+.toast-close-button {
+  color: var(--text-muted) !important;
+  font-size: 1.2rem !important;
+  opacity: 0.6 !important;
+  transition: opacity 0.2s ease !important;
+  
+  &:hover {
+    opacity: 1 !important;
+    color: var(--text-color) !important;
+  }
+}
+
+// Icon styling
+.toast-icon {
+  font-size: 1.5rem !important;
+  margin-right: 0.75rem !important;
+  
+  .toast-success & {
+    color: var(--success) !important;
+  }
+  
+  .toast-error & {
+    color: var(--error) !important;
+  }
+  
+  .toast-warning & {
+    color: #f59e0b !important;
+  }
+  
+  .toast-info & {
+    color: var(--primary-color) !important;
+  }
+}
+
+// Container styling
+.toast-container {
+  .toast-top-right {
+    top: 1rem !important;
+    right: 1rem !important;
+  }
+  
+  .toast-top-left {
+    top: 1rem !important;
+    left: 1rem !important;
+  }
+  
+  .toast-bottom-right {
+    bottom: 1rem !important;
+    right: 1rem !important;
+  }
+  
+  .toast-bottom-left {
+    bottom: 1rem !important;
+    left: 1rem !important;
+  }
+}
+
+// Dark mode specific adjustments
+.dark .custom-toast {
+  background: var(--surface) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3) !important;
+}
+
+.dark .toast-title {
+  color: var(--text-color) !important;
+}
+
+.dark .toast-message {
+  color: var(--text-muted) !important;
+}

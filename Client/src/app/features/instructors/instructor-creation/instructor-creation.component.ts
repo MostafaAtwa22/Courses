@@ -28,6 +28,7 @@ export class InstructorCreationComponent {
 
   isLoading = false;
   errorMessage = '';
+  successMessage = '';
   cvFileName = '';
   cvFileSize = '';
 
@@ -91,7 +92,10 @@ export class InstructorCreationComponent {
     this.instructorService.createInstructor(formData).subscribe({
       next: () => {
         this.isLoading = false;
-        this.router.navigate(['/']);
+        this.successMessage = 'Your profile has been created and is pending admin verification.';
+        setTimeout(() => {
+          this.router.navigate(['/']);
+        }, 3000);
       },
       error: (err) => {
         this.isLoading = false;

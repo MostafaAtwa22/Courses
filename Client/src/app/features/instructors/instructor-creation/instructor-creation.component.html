@@ -11,6 +11,12 @@
       {{ errorMessage }}
     </div>
 
+    <!-- Success message -->
+    <div *ngIf="successMessage" class="server-success">
+      <i class="fa-solid fa-circle-check"></i>
+      {{ successMessage }}
+    </div>
+
     <form class="instructor-form" [formGroup]="instructorForm" (ngSubmit)="onSubmit()">
 
       <!-- Title -->

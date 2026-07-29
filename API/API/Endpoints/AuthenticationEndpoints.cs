@@ -134,17 +134,26 @@ public class AuthenticationEndpoints : ICarterModule
 
     private static Ok<AuthResponseDto> ProcessTokenResponse(HttpContext context, AuthResponseDto result)
     {
-        SetRefreshTokenCookie(context, result.RefreshToken!, result.RefreshTokenExpiration);
-        result.RefreshToken = null; 
+        if (!string.IsNullOrWhiteSpace(result.RefreshToken) && result.RefreshTokenExpiration != default)
+            SetRefreshTokenCookie(context, result.RefreshToken, result.RefreshTokenExpiration);
+
+        result.RefreshToken = null;
         return TypedResults.Ok(result);
     }
 
     private static void SetRefreshTokenCookie(HttpContext context, string token, DateTime expires)
     {
+        var expiresUtc = expires.Kind switch
+        {
+            DateTimeKind.Utc => expires,
+            DateTimeKind.Local => expires.ToUniversalTime(),
+            _ => DateTime.SpecifyKind(expires, DateTimeKind.Utc)
+        };
+
         context.Response.Cookies.Append(RefreshTokenCookieName, token, new CookieOptions
         {
             HttpOnly = true,
-            Expires = expires,
+            Expires = new DateTimeOffset(expiresUtc),
             Secure = true,
             SameSite = SameSiteMode.None
         });

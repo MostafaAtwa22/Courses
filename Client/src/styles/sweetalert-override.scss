@@ -1,0 +1,274 @@
+// SweetAlert2 Override Styles - Matches Website Theme
+// Uses CSS variables for automatic dark/light mode support
+
+@import 'sweetalert2/src/sweetalert2';
+
+// Ensure sweetalert container inherits dark mode
+body.dark .swal2-container,
+.dark .swal2-container {
+  background: rgba(0, 0, 0, 0.5) !important;
+}
+
+body.dark .custom-swal-popup,
+.dark .custom-swal-popup,
+.custom-swal-popup {
+  background: var(--surface) !important;
+  border: 1px solid var(--border-color) !important;
+  border-radius: 20px !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15) !important;
+  backdrop-filter: blur(10px) !important;
+  padding: 2rem !important;
+  max-width: 500px !important;
+}
+
+body.dark .custom-swal-title,
+.dark .custom-swal-title,
+.custom-swal-title {
+  font-family: var(--font-heading, 'Manrope', sans-serif) !important;
+  font-weight: 800 !important;
+  font-size: 1.5rem !important;
+  color: var(--text-color) !important;
+  margin-bottom: 0.5rem !important;
+  letter-spacing: -0.5px !important;
+}
+
+body.dark .custom-swal-content,
+.dark .custom-swal-content,
+.custom-swal-content {
+  font-family: var(--font-body, 'Inter', sans-serif) !important;
+  font-size: 1rem !important;
+  color: var(--text-muted) !important;
+  line-height: 1.6 !important;
+  margin: 1rem 0 !important;
+}
+
+// Button styling
+.custom-swal-confirm,
+.custom-swal-deny,
+.custom-swal-cancel {
+  font-family: var(--font-body, 'Inter', sans-serif) !important;
+  font-weight: 600 !important;
+  font-size: 0.9rem !important;
+  padding: 0.8rem 1.75rem !important;
+  border-radius: 12px !important;
+  border: none !important;
+  cursor: pointer !important;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  letter-spacing: 0.2px !important;
+  margin: 0 0.5rem !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1) !important;
+}
+
+.custom-swal-confirm {
+  background: var(--primary-color) !important;
+  color: white !important;
+  
+  &:hover {
+    background: var(--primary-dark) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 22px rgba(37, 99, 235, 0.3) !important;
+  }
+}
+
+.custom-swal-deny {
+  background: var(--error) !important;
+  color: white !important;
+  
+  &:hover {
+    background: #dc2626 !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 22px rgba(239, 68, 68, 0.3) !important;
+  }
+}
+
+.custom-swal-cancel {
+  background: var(--surface-variant) !important;
+  color: var(--text-color) !important;
+  border: 1.5px solid var(--border-color) !important;
+  
+  &:hover {
+    background: var(--surface) !important;
+    border-color: var(--primary-color) !important;
+    color: var(--primary-color) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15) !important;
+  }
+}
+
+// Input styling
+body.dark .custom-swal-input,
+.dark .custom-swal-input,
+.custom-swal-input {
+  background: var(--bg-color) !important;
+  border: 1.5px solid var(--border-color) !important;
+  border-radius: 12px !important;
+  color: var(--text-color) !important;
+  font-family: var(--font-body, 'Inter', sans-serif) !important;
+  font-size: 0.95rem !important;
+  padding: 0.875rem 1.1rem !important;
+  transition: all 0.25s ease !important;
+  
+  &:focus {
+    outline: none !important;
+    border-color: var(--primary-color) !important;
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12) !important;
+    background: var(--surface) !important;
+  }
+  
+  &::placeholder {
+    color: var(--text-muted) !important;
+    opacity: 0.7 !important;
+  }
+}
+
+// Icon styling
+.swal2-icon {
+  border: none !important;
+  
+  &.swal2-success {
+    color: var(--success) !important;
+    
+    .swal2-success-ring {
+      border-color: var(--success) !important;
+    }
+    
+    .swal2-success-fix {
+      background: var(--success) !important;
+    }
+    
+    [class^='swal2-success-line'] {
+      background: var(--success) !important;
+    }
+  }
+  
+  &.swal2-error {
+    color: var(--error) !important;
+    
+    .swal2-error-ring {
+      border-color: var(--error) !important;
+    }
+    
+    .swal2-error-x-mark {
+      color: var(--error) !important;
+    }
+    
+    [class^='swal2-error-line'] {
+      background: var(--error) !important;
+    }
+  }
+  
+  &.swal2-warning {
+    color: #f59e0b !important;
+    border-color: #f59e0b !important;
+  }
+  
+  &.swal2-info {
+    color: var(--primary-color) !important;
+    border-color: var(--primary-color) !important;
+  }
+  
+  &.swal2-question {
+    color: var(--primary-color) !important;
+    border-color: var(--primary-color) !important;
+  }
+}
+
+// Backdrop styling
+.swal2-backdrop-show {
+  background: rgba(0, 0, 0, 0.5) !important;
+  backdrop-filter: blur(4px) !important;
+}
+
+// Animation classes
+.swal2-show {
+  animation: swal2-show 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.swal2-hide {
+  animation: swal2-hide 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+@keyframes swal2-show {
+  from {
+    opacity: 0;
+    transform: scale(0.9) translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes swal2-hide {
+  from {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.9) translateY(-20px);
+  }
+}
+
+// Dark mode specific adjustments
+.dark .custom-swal-popup {
+  background: var(--surface) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4) !important;
+}
+
+.dark .swal2-backdrop-show {
+  background: rgba(0, 0, 0, 0.7) !important;
+}
+
+.dark .custom-swal-input {
+  background: var(--bg-color) !important;
+  color: var(--text-color) !important;
+}
+
+.dark .custom-swal-form-text {
+  color: var(--text-muted) !important;
+}
+
+.dark .custom-swal-title {
+  color: var(--text-color) !important;
+}
+
+.dark .custom-swal-content {
+  color: var(--text-muted) !important;
+}
+
+.dark .swal2-footer {
+  color: var(--text-muted) !important;
+  border-top-color: var(--border-color) !important;
+}
+
+// Validation message styling
+.swal2-validation-message {
+  background: var(--error) !important;
+  color: white !important;
+  border-radius: 8px !important;
+  font-family: var(--font-body, 'Inter', sans-serif) !important;
+  font-size: 0.875rem !important;
+}
+
+// Footer styling
+.swal2-footer {
+  border-top: 1px solid var(--border-color) !important;
+  color: var(--text-muted) !important;
+  font-family: var(--font-body, 'Inter', sans-serif) !important;
+  font-size: 0.875rem !important;
+}
+
+// Custom form container styling
+.custom-swal-form-container {
+  text-align: left !important;
+  margin: 20px 0 !important;
+}
+
+.custom-swal-form-text {
+  margin-bottom: 15px !important;
+  color: var(--text-muted) !important;
+  font-family: var(--font-body, 'Inter', sans-serif) !important;
+  font-size: 0.95rem !important;
+  line-height: 1.6 !important;
+}
