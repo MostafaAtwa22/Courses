@@ -59,7 +59,7 @@ namespace API.Tests.Endpoints
         public async Task UpdateProfileImage_ShouldReturnNoContent_WhenSuccessful()
         {
             // Arrange
-            var dto = new UpdateProfileImageDto { Image = null };
+            var dto = new UpdateProfileImageDto { Image = null! };
             _mediatorMock.Setup(m => m.Send(It.IsAny<UpdateProfileImageCommand>(), It.IsAny<CancellationToken>()))
                 .Returns(Task.CompletedTask);
 

@@ -1,12 +1,11 @@
-using Application.Common.Models;
 using Application.DTOs.Instructor;
 using Application.Features.Instructors.Commands.ChangeStatus;
 using Application.Features.Instructors.Commands.Create;
-using Application.Features.Instructors.Commands.Delete;
 using Application.Features.Instructors.Commands.Update;
 using Application.Features.Instructors.Queries.GetAll;
 using Application.Features.Instructors.Queries.GetPublicById;
 using Application.Features.Instructors.Queries.GetPrivateById;
+using Application.Features.Instructors.Commands.Delete;
 
 
 namespace API.Endpoints

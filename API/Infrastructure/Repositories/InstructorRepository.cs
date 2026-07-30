@@ -27,7 +27,14 @@ namespace Infrastructure.Repositories
                (SELECT CASE WHEN u.profile_picture_url IS NOT NULL THEN CONCAT('{urlsOptions.Value.API}/', u.profile_picture_url) ELSE NULL END 
                 FROM ""AspNetUsers"" u 
                 WHERE u.id = i.user_id LIMIT 1) AS ProfilePictureUrl,
-               (SELECT COALESCE(AVG(c.average_rate), 0) FROM courses c WHERE c.instructor_id = i.id) AS AverageRate";
+               (SELECT COALESCE(AVG(c.average_rate), 0) FROM courses c WHERE c.instructor_id = i.id) AS AverageRate,
+               (SELECT COUNT(*) FROM course_reviews cr 
+                JOIN courses c ON cr.course_id = c.id 
+                WHERE c.instructor_id = i.id) AS TotalReviews,
+               (SELECT COUNT(DISTINCT e.user_id) FROM enrollments e 
+                JOIN courses c ON e.course_id = c.id 
+                WHERE c.instructor_id = i.id) AS TotalStudents,
+               (SELECT COUNT(*) FROM courses c WHERE c.instructor_id = i.id) AS TotalCourses";
 
         private string PrivateSelectColumns =>
             $@"{SelectColumns}, 

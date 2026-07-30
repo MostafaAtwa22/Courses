@@ -1,0 +1,104 @@
+// General card
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  padding: 2rem 2.5rem;
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.04);
+  transition: box-shadow 0.3s ease;
+
+  &:hover {
+    box-shadow: 0 6px 28px rgba(0, 0, 0, 0.07);
+  }
+
+  @media (max-width: 640px) {
+    padding: 1.5rem;
+  }
+
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+
+    h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text-color);
+      margin: 0;
+      font-family: var(--font-heading, 'Inter', sans-serif);
+    }
+
+    .header-title {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+
+      svg {
+        color: var(--primary-color);
+        padding: 6px;
+        background: rgba(37, 99, 235, 0.1);
+        border-radius: 50%;
+        width: 32px;
+        height: 32px;
+        flex-shrink: 0;
+      }
+
+      h2 {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--text-color);
+        margin: 0;
+        font-family: var(--font-heading, 'Inter', sans-serif);
+      }
+    }
+  }
+}
+
+// About content
+.about-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+
+  .about-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+
+    .label {
+      font-size: 0.65rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+    }
+
+    .value {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text-color);
+    }
+
+    .biography {
+      font-size: 0.9rem;
+      font-weight: 400;
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin: 0;
+    }
+  }
+}
+
+// Smooth transitions for theme switching
+* {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+// Accessibility improvements
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+    animation: none !important;
+  }
+}

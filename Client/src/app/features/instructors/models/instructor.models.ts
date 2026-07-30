@@ -20,6 +20,9 @@ export interface InstructorResponse {
   gitHubProfileUrl: string;
   status: string;
   averageRate: number;
+  totalReviews: number;
+  totalStudents: number;
+  totalCourses: number;
 }
 
 export interface InstructorPrivateResponse extends InstructorResponse {

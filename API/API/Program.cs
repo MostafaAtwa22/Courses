@@ -3,9 +3,7 @@ using Serilog;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using API.Extensions;
-
 using API.Cors;
-using Hangfire;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,7 +14,7 @@ builder.Services
 builder.Services.AddApplicationServices(builder.Configuration);
 builder.Services.AddRateLimiter(builder.Configuration);
 builder.Services.AddCors(builder.Configuration);
-
+builder.Services.AddSwaggerDocumentation(builder.Configuration);
 
 builder.Host.UseSerilog((hostingContext, configuration) =>
     configuration.ReadFrom.Configuration(hostingContext.Configuration));
@@ -28,6 +26,8 @@ await app.UseAutoMigrationAsync();
 app.UseExceptionHandler();
 
 app.UseHttpsRedirection();
+
+app.UseSwaggerDocumentation();
 
 app.UseStaticFiles();
 
@@ -44,20 +44,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.UseRateLimiter();
-app.UseHangfireDashboard("/hangfire", new DashboardOptions
-{
-    Authorization = new[] { new API.Filters.HangfireDashboardAuthFilter() },
-    DashboardTitle = "EduFocus - Background Jobs"
-});
-
-// Schedule the discount deactivation job to run hourly
-using (var scope = app.Services.CreateScope())
-{
-    var discountJobService = scope.ServiceProvider.GetRequiredService<Application.Common.Interfaces.IDiscountJobService>();
-    RecurringJob.AddOrUpdate("deactivate-expired-discounts", 
-        () => discountJobService.DeactivateExpiredDiscountsAsync(), 
-        Cron.Hourly);
-}
+app.UseScheduledBackgroundJobs();
 
 app.MapCarter();
 
