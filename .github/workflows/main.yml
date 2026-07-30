@@ -1,0 +1,42 @@
+name: .NET CI
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'API/**'
+      
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'API/**'
+  
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: ./API
+        
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6.1.0
+        
+      - name: Setup .NET 10
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+          cache: true
+          cache-dependency-path: 'API/**/packages.lock.json'
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --no-restore --configuration Release
+
+      - name: Run tests
+        run: dotnet test --no-build --configuration Release
