@@ -3,7 +3,7 @@ import { inject, Injectable } from '@angular/core';
 import { environment } from '../../../../environments/environment';
 import { InstructorPrivateResponse, InstructorPublicResponse } from '../models/instructor.models';
 import { PaginatedResultModel } from '../../../shared/models/paginated-result.model';
-import { QueryParams } from '../../../shared/models/query-params.model';
+import { InstructorQueryParams } from '../../../shared/models/query-params.model';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -29,7 +29,7 @@ export class InstructorService {
     return this.http.put<void>(`${this.apiUrl}/${id}`, formData);
   }
 
-  getAllInstructors(params: QueryParams): Observable<PaginatedResultModel<InstructorPrivateResponse>> {
+  getAllInstructors(params: InstructorQueryParams): Observable<PaginatedResultModel<InstructorPrivateResponse>> {
     return this.http.get<PaginatedResultModel<InstructorPrivateResponse>>(`${this.apiUrl}/admin/all`, { params: params as any });
   }
 

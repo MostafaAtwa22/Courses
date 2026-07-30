@@ -5,7 +5,7 @@ using Domain.Enums.Identity;
 
 namespace Application.Features.Instructors.Queries.GetAll
 {
-    public sealed record GetAllInstructorsQuery(QueryParams Params) 
+    public sealed record GetAllInstructorsQuery(InstructorQueryParams Params) 
         : IRequest<PaginatedResult<InstructorPrivateResponseDto>>, IRequireAuthorization
     {
         public string[] RequiredRoles => [Role.Admin.ToString(), Role.SuperAdmin.ToString()];

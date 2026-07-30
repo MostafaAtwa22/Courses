@@ -8,6 +8,7 @@ using Application.Common.Options;
 using Application.DTOs.Authentication;
 using Domain.Entities.Identity;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
@@ -42,7 +43,11 @@ public class AuthService : IAuthService
         var userClaims = await _userManager.GetClaimsAsync(user);
         var roles      = await _userManager.GetRolesAsync(user);
 
-        var claims = new List<Claim>(7 + userClaims.Count + roles.Count)
+        // Check if user has an instructor profile
+        var hasInstructorProfile = await _context.Instructors
+            .AnyAsync(i => i.UserId == user.Id);
+
+        var claims = new List<Claim>(8 + userClaims.Count + roles.Count)
         {
             new(JwtRegisteredClaimNames.Sub,        user.Id),
             new(JwtRegisteredClaimNames.UniqueName, user.UserName   ?? string.Empty),
@@ -51,6 +56,7 @@ public class AuthService : IAuthService
             new(JwtRegisteredClaimNames.GivenName,  user.FirstName  ?? string.Empty),
             new(JwtRegisteredClaimNames.FamilyName, user.LastName   ?? string.Empty),
             new("security_stamp",                   user.SecurityStamp ?? string.Empty),
+            new("has_instructor_profile",           hasInstructorProfile.ToString().ToLower()),
         };
 
         claims.AddRange(userClaims);

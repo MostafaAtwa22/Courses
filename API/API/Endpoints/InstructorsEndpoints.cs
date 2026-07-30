@@ -2,12 +2,12 @@ using Application.Common.Models;
 using Application.DTOs.Instructor;
 using Application.Features.Instructors.Commands.ChangeStatus;
 using Application.Features.Instructors.Commands.Create;
+using Application.Features.Instructors.Commands.Delete;
 using Application.Features.Instructors.Commands.Update;
 using Application.Features.Instructors.Queries.GetAll;
 using Application.Features.Instructors.Queries.GetPublicById;
 using Application.Features.Instructors.Queries.GetPrivateById;
-using Domain.Enums;
-using Domain.Enums.Identity;
+
 
 namespace API.Endpoints
 {
@@ -66,6 +66,15 @@ namespace API.Endpoints
                     policy.RequireRole(
                         Role.Admin.ToString(),
                         Role.SuperAdmin.ToString()));
+
+            group.MapDelete("/{id:guid}", DeleteInstructor)
+                .WithName(nameof(DeleteInstructor))
+                .Produces(StatusCodes.Status204NoContent)
+                .Produces(StatusCodes.Status404NotFound)
+                .RequireAuthorization(policy =>
+                    policy.RequireRole(
+                        Role.Admin.ToString(),
+                        Role.SuperAdmin.ToString()));
         }
 
         public static async Task<Results<Ok<InstructorPublicResponseDto>, NotFound>> GetPublicInstructor(
@@ -98,7 +107,7 @@ namespace API.Endpoints
         }
 
         public static async Task<Ok<PaginatedResult<InstructorPrivateResponseDto>>> GetAllInstructors(
-            [AsParameters] QueryParams queryParams,
+            [AsParameters] InstructorQueryParams queryParams,
             IMediator mediator)
         {
             var result = await mediator.Send(new GetAllInstructorsQuery(queryParams));
@@ -107,13 +116,18 @@ namespace API.Endpoints
 
         public static async Task<Results<NoContent, NotFound>> ChangeInstructorStatus(
             Guid id,
-            [FromBody] ChangeInstructorStatusRequest request,
+            [FromBody] ChangeInstructorStatusDto request,
             IMediator mediator)
         {
             await mediator.Send(new ChangeInstructorStatusCommand(id, request.Status));
             return TypedResults.NoContent();
         }
-    }
 
-    public record ChangeInstructorStatusRequest(InstructorStatus Status);
+        public static async Task<Results<NoContent, NotFound>> DeleteInstructor(
+            Guid id, IMediator mediator)
+        {
+            await mediator.Send(new DeleteInstructorCommand(id));
+            return TypedResults.NoContent();
+        }
+    }
 }

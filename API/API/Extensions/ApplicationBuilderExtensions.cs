@@ -14,7 +14,14 @@ namespace API.Extensions
             using var scope = app.ApplicationServices.CreateScope();
             var services = scope.ServiceProvider;
             var context = services.GetRequiredService<ApplicationDbContext>();
-            await context.Database.MigrateAsync();
+            if (context.Database.IsRelational())
+            {
+                await context.Database.MigrateAsync();
+            }
+            else
+            {
+                await context.Database.EnsureCreatedAsync();
+            }
 
             var loggerFactory = services.GetRequiredService<ILoggerFactory>();
             var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();

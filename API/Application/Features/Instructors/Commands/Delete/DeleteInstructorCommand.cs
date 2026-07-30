@@ -1,8 +1,8 @@
 using Domain.Enums.Identity;
 
-namespace Application.Features.Instructors.Commands.ChangeStatus
+namespace Application.Features.Instructors.Commands.Delete
 {
-    public sealed record ChangeInstructorStatusCommand(Guid Id, InstructorStatus Status) 
+    public sealed record DeleteInstructorCommand(Guid Id) 
         : IRequest, IRequireAuthorization
     {
         public string[] RequiredRoles => [Role.Admin.ToString(), Role.SuperAdmin.ToString()];

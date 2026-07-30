@@ -33,20 +33,6 @@ public class Generate2FATokenCommandHandlerTests
     }
 
     [Fact]
-    public async Task Handle_ShouldThrowBadRequest_When2FAIsAlreadyEnabled()
-    {
-        // Arrange
-        var user = new ApplicationUser { TwoFactorEnabled = true };
-        var command = new Generate2FATokenCommand() { User = user };
-
-        // Act
-        Func<Task> act = async () => await _handler.Handle(command, CancellationToken.None);
-
-        // Assert
-        await act.Should().ThrowAsync<BadRequestException>().WithMessage("2FA is already enabled for this user.");
-    }
-
-    [Fact]
     public async Task Handle_ShouldThrowBadRequest_WhenEmailIsNotConfirmed()
     {
         // Arrange

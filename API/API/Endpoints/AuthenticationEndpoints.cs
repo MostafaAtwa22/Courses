@@ -69,42 +69,42 @@ public class AuthenticationEndpoints : ICarterModule
             .Produces(StatusCodes.Status401Unauthorized);
     }
 
-    private static async Task<Results<Created, BadRequest>> Register(
+    public static async Task<Results<Created, BadRequest>> Register(
         RegisterDto request, IMediator mediator)
     {
         await mediator.Send(new CreateRegisterCommand(request));
         return TypedResults.Created();
     }
 
-    private static async Task<Results<Ok<AuthResponseDto>, UnauthorizedHttpResult, BadRequest>> Login(
+    public static async Task<Results<Ok<AuthResponseDto>, UnauthorizedHttpResult, BadRequest>> Login(
         LoginDto request, IMediator mediator, HttpContext context)
     {
         var result = await mediator.Send(new CreateLoginCommand(request));
         return ProcessTokenResponse(context, result);
     }
 
-    private static async Task<Results<Ok<AuthResponseDto>, UnauthorizedHttpResult, BadRequest>> GoogleLogin(
+    public static async Task<Results<Ok<AuthResponseDto>, UnauthorizedHttpResult, BadRequest>> GoogleLogin(
         GoogleLoginDto request, IMediator mediator, HttpContext context)
     {
         var result = await mediator.Send(new CreateGoogleLoginCommand(request));
         return ProcessTokenResponse(context, result);
     }
 
-    private static async Task<Results<Ok<AuthResponseDto>, UnauthorizedHttpResult, BadRequest>> FacebookLogin(
+    public static async Task<Results<Ok<AuthResponseDto>, UnauthorizedHttpResult, BadRequest>> FacebookLogin(
         FacebookLoginDto request, IMediator mediator, HttpContext context)
     {
         var result = await mediator.Send(new CreateFacebookLoginCommand(request));
         return ProcessTokenResponse(context, result);
     }
 
-    private static async Task<Results<Ok<AuthResponseDto>, UnauthorizedHttpResult, BadRequest>> GithubLogin(
+    public static async Task<Results<Ok<AuthResponseDto>, UnauthorizedHttpResult, BadRequest>> GithubLogin(
         GithubLoginDto request, IMediator mediator, HttpContext context)
     {
         var result = await mediator.Send(new Application.Features.Authentication.Commands.ExternalLogin.Github.CreateGithubLoginCommand(request));
         return ProcessTokenResponse(context, result);
     }
     
-    private static async Task<Results<Ok<AuthResponseDto>, UnauthorizedHttpResult>> RefreshToken(
+    public static async Task<Results<Ok<AuthResponseDto>, UnauthorizedHttpResult>> RefreshToken(
         HttpContext context, IMediator mediator)
     {
         if (!context.Request.Cookies.TryGetValue(RefreshTokenCookieName, out var refreshToken) || string.IsNullOrEmpty(refreshToken))
@@ -114,7 +114,7 @@ public class AuthenticationEndpoints : ICarterModule
         return ProcessTokenResponse(context, result);
     }
 
-    private static async Task<Results<Ok, UnauthorizedHttpResult>> RevokeToken(
+    public static async Task<Results<Ok, UnauthorizedHttpResult>> RevokeToken(
         HttpContext context, IMediator mediator)
     {
         if (!context.Request.Cookies.TryGetValue(RefreshTokenCookieName, out var refreshToken) || string.IsNullOrEmpty(refreshToken))
@@ -132,7 +132,7 @@ public class AuthenticationEndpoints : ICarterModule
         return TypedResults.Ok();
     }
 
-    private static Ok<AuthResponseDto> ProcessTokenResponse(HttpContext context, AuthResponseDto result)
+    public static Ok<AuthResponseDto> ProcessTokenResponse(HttpContext context, AuthResponseDto result)
     {
         if (!string.IsNullOrWhiteSpace(result.RefreshToken) && result.RefreshTokenExpiration != default)
             SetRefreshTokenCookie(context, result.RefreshToken, result.RefreshTokenExpiration);
@@ -141,7 +141,7 @@ public class AuthenticationEndpoints : ICarterModule
         return TypedResults.Ok(result);
     }
 
-    private static void SetRefreshTokenCookie(HttpContext context, string token, DateTime expires)
+    public static void SetRefreshTokenCookie(HttpContext context, string token, DateTime expires)
     {
         var expiresUtc = expires.Kind switch
         {

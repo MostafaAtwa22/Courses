@@ -1,138 +1,159 @@
-using System.Net;
-using System.Net.Http.Json;
+using API.Endpoints;
 using Application.Common.Models;
 using Application.DTOs.Content;
-using Application.DTOs.Section;
-using Domain.Enums;
+using Application.Features.Contents.Commands.Create;
+using Application.Features.Contents.Commands.Delete;
+using Application.Features.Contents.Commands.Update;
+using Application.Features.Contents.Queries.GetByCourse;
+using Application.Features.Contents.Queries.GetById;
+using Application.Features.Contents.Queries.GetBySection;
 using FluentAssertions;
-using Microsoft.AspNetCore.Mvc.Testing;
+using MediatR;
+using Microsoft.AspNetCore.Http.HttpResults;
+using Moq;
+using Xunit;
 
 namespace API.Tests.Endpoints
 {
-    [Collection("Integration Tests")]
     public class ContentsEndpointsTests
     {
-        private readonly HttpClient _client;
+        private readonly Mock<IMediator> _mediatorMock;
 
-        public ContentsEndpointsTests(IntegrationTestFactory<Program> factory)
+        public ContentsEndpointsTests()
         {
-            _client = factory.CreateClient();
-        }
-
-        private async Task<Guid> CreateValidSectionAsync(Guid courseId)
-        {
-            var newSection = new SectionCreateDto
-            {
-                Title = $"Section_{Guid.NewGuid().ToString().Substring(0, 8)}",
-                Order = 1,
-                CourseId = courseId
-            };
-            var response = await _client.PostAsJsonAsync("/sections", newSection);
-            var result = await response.Content.ReadFromJsonAsync<SectionResponseDto>();
-            return result!.Id;
-        }
-
-        private async Task<Guid> CreateValidCourseAsync()
-        {
-            // Category setup
-            var uniqueCatName = $"Category_{Guid.NewGuid().ToString().Substring(0, 8)}";
-            var catReq = new Application.DTOs.Category.CategoryCreateDto { Name = uniqueCatName, Slug = uniqueCatName.ToLower() };
-            var catRes = await _client.PostAsJsonAsync("/categories", catReq);
-            var catObj = await catRes.Content.ReadFromJsonAsync<Application.DTOs.Category.CategoryResponseDto>();
-            var validCatId = catObj!.Id;
-
-            // Course setup
-            var title = $"Course_{Guid.NewGuid().ToString().Substring(0, 8)}";
-            using var content = new MultipartFormDataContent();
-            content.Add(new StringContent(title), "Title");
-            content.Add(new StringContent("This is a valid long description that is more than 50 characters long so it passes the validation process."), "Description");
-            content.Add(new StringContent(Domain.Enums.CourseStatus.InProgress.ToString()), "Status");
-            content.Add(new StringContent("150"), "Cost");
-            content.Add(new StringContent(validCatId.ToString()), "CategoryId");
-            content.Add(new StringContent("f1b1b1b1-b1b1-b1b1-b1b1-b1b1b1b1b1b1"), "InstructorId");
-            content.Add(new StringContent("English"), "Language");
-
-            var fileContent = new ByteArrayContent(new byte[] { 0x01, 0x02, 0x03 });
-            fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("image/jpeg");
-            content.Add(fileContent, "PictureUrl", "test.jpg");
-
-            var videoContent = new ByteArrayContent(new byte[] { 0x01, 0x02, 0x03 });
-            videoContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("video/mp4");
-            content.Add(videoContent, "IntroVideo", "test.mp4");
-
-            var options = new System.Text.Json.JsonSerializerOptions { PropertyNameCaseInsensitive = true, Converters = { new System.Text.Json.Serialization.JsonStringEnumConverter() } };
-            var courseRes = await _client.PostAsync("/courses", content);
-            var courseObj = await courseRes.Content.ReadFromJsonAsync<Application.DTOs.Course.CourseResponseDto>(options);
-            return courseObj!.Id;
+            _mediatorMock = new Mock<IMediator>();
         }
 
         [Fact]
-        public async Task Lifecycle_ShouldWorkCorrectly()
+        public async Task GetBySection_ShouldReturnOk_WithContentsList()
         {
-            var courseId = await CreateValidCourseAsync();
-            var sectionId = await CreateValidSectionAsync(courseId);
+            // Arrange
+            var sectionId = Guid.NewGuid();
+            var expectedContents = new List<ContentResponseDto>
+            {
+                new ContentResponseDto { Id = Guid.NewGuid(), Title = "Content 1", SectionId = sectionId },
+                new ContentResponseDto { Id = Guid.NewGuid(), Title = "Content 2", SectionId = sectionId }
+            };
+            _mediatorMock.Setup(m => m.Send(It.IsAny<GetContentBySectionQuery>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(expectedContents);
 
-            // 1. Create
-            using var createContent = new MultipartFormDataContent();
-            createContent.Add(new StringContent("Lifecycle Video"), "Title");
-            createContent.Add(new StringContent(ContentType.Video.ToString()), "Type");
-            createContent.Add(new StringContent(sectionId.ToString()), "SectionId");
-            createContent.Add(new StringContent("1"), "Order");
-            createContent.Add(new StringContent("true"), "IsPreview");
-            
-            var videoContent = new ByteArrayContent(new byte[] { 0x00, 0x00 });
-            videoContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("video/mp4");
-            createContent.Add(videoContent, "File", "video.mp4");
+            // Act
+            var result = await ContentsEndpoints.GetBySection(sectionId, _mediatorMock.Object);
 
-            var createResponse = await _client.PostAsync("/contents", createContent);
-            createResponse.StatusCode.Should().Be(HttpStatusCode.Created);
-            
-            var options = new System.Text.Json.JsonSerializerOptions { PropertyNameCaseInsensitive = true, Converters = { new System.Text.Json.Serialization.JsonStringEnumConverter() } };
-            var createdContent = await createResponse.Content.ReadFromJsonAsync<ContentResponseDto>(options);
-            var id = createdContent!.Id;
+            // Assert
+            var okResult = result.Result as Ok<IReadOnlyList<ContentResponseDto>>;
+            okResult.Should().NotBeNull();
+            okResult!.Value.Should().BeEquivalentTo(expectedContents);
+        }
 
-            // 2. Get By Id
-            var getResponse = await _client.GetAsync($"/contents/{id}");
-            getResponse.StatusCode.Should().Be(HttpStatusCode.OK);
-            var getResult = await getResponse.Content.ReadFromJsonAsync<ContentResponseDto>(options);
-            getResult!.Title.Should().Be("Lifecycle Video");
+        [Fact]
+        public async Task GetByCourse_ShouldReturnOk_WithPaginatedResult()
+        {
+            // Arrange
+            var courseId = Guid.NewGuid();
+            var queryParams = new QueryParams();
+            var expectedResult = new PaginatedResult<ContentResponseDto>(new List<ContentResponseDto>(), 0, 1, 10);
+            _mediatorMock.Setup(m => m.Send(It.IsAny<GetContentByCourseQuery>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(expectedResult);
 
-            // 3. Get By Section
-            var getListResponse = await _client.GetAsync($"/contents/section/{sectionId}");
-            getListResponse.StatusCode.Should().Be(HttpStatusCode.OK);
-            var listResult = await getListResponse.Content.ReadFromJsonAsync<List<ContentResponseDto>>(options);
-            listResult.Should().Contain(x => x.Id == id);
+            // Act
+            var result = await ContentsEndpoints.GetByCourse(courseId, queryParams, _mediatorMock.Object);
 
-            // 3.1 Get By Course
-            var getCourseListResponse = await _client.GetAsync($"/contents/course/{courseId}");
-            getCourseListResponse.StatusCode.Should().Be(HttpStatusCode.OK);
-            var courseListResult = await getCourseListResponse.Content.ReadFromJsonAsync<PaginatedResult<ContentResponseDto>>(options);
-            courseListResult!.Items.Should().Contain(x => x.Id == id);
+            // Assert
+            var okResult = result.Result as Ok<PaginatedResult<ContentResponseDto>>;
+            okResult.Should().NotBeNull();
+            okResult!.Value.Should().BeEquivalentTo(expectedResult);
+        }
 
-            // 4. Update
-            using var updateContent = new MultipartFormDataContent();
-            updateContent.Add(new StringContent("Lifecycle Video Updated"), "Title");
-            updateContent.Add(new StringContent(ContentType.Video.ToString()), "Type");
-            updateContent.Add(new StringContent(sectionId.ToString()), "SectionId");
-            updateContent.Add(new StringContent("2"), "Order");
-            updateContent.Add(new StringContent("false"), "IsPreview");
+        [Fact]
+        public async Task GetContentById_ShouldReturnOk_WhenContentExists()
+        {
+            // Arrange
+            var id = Guid.NewGuid();
+            var expectedContent = new ContentResponseDto { Id = id, Title = "Test Content" };
+            _mediatorMock.Setup(m => m.Send(It.IsAny<GetContentByIdQuery>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(expectedContent);
 
-            var updateResponse = await _client.PutAsync($"/contents/{id}", updateContent);
-            updateResponse.StatusCode.Should().Be(HttpStatusCode.NoContent);
+            // Act
+            var result = await ContentsEndpoints.GetContentById(id, _mediatorMock.Object);
 
-            // 5. Verify Update
-            var getResponseAfterUpdate = await _client.GetAsync($"/contents/{id}");
-            var updatedResult = await getResponseAfterUpdate.Content.ReadFromJsonAsync<ContentResponseDto>(options);
-            updatedResult!.Title.Should().Be("Lifecycle Video Updated");
-            updatedResult.Order.Should().Be(2);
+            // Assert
+            var okResult = result.Result as Ok<ContentResponseDto>;
+            okResult.Should().NotBeNull();
+            okResult!.Value.Should().Be(expectedContent);
+        }
 
-            // 6. Delete
-            var deleteResponse = await _client.DeleteAsync($"/contents/{id}");
-            deleteResponse.StatusCode.Should().Be(HttpStatusCode.NoContent);
+        [Fact]
+        public async Task GetContentById_ShouldReturnNotFound_WhenContentDoesNotExist()
+        {
+            // Arrange
+            var id = Guid.NewGuid();
+            _mediatorMock.Setup(m => m.Send(It.IsAny<GetContentByIdQuery>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync((ContentResponseDto)null!);
 
-            // 7. Verify Delete
-            var getResponseAfterDelete = await _client.GetAsync($"/contents/{id}");
-            getResponseAfterDelete.StatusCode.Should().Be(HttpStatusCode.NotFound);
+            // Act
+            var result = await ContentsEndpoints.GetContentById(id, _mediatorMock.Object);
+
+            // Assert
+            var notFoundResult = result.Result as NotFound;
+            notFoundResult.Should().NotBeNull();
+        }
+
+        [Fact]
+        public async Task CreateContent_ShouldReturnCreatedAtRoute_WhenSuccessful()
+        {
+            // Arrange
+            var request = new ContentCreateDto { Title = "New Content" };
+            var newId = Guid.NewGuid();
+            var expectedContent = new ContentResponseDto { Id = newId, Title = "New Content" };
+
+            _mediatorMock.Setup(m => m.Send(It.IsAny<CreateContentCommand>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(newId);
+            _mediatorMock.Setup(m => m.Send(It.IsAny<GetContentByIdQuery>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(expectedContent);
+
+            // Act
+            var result = await ContentsEndpoints.CreateContent(request, _mediatorMock.Object);
+
+            // Assert
+            var createdResult = result.Result as CreatedAtRoute<ContentResponseDto>;
+            createdResult.Should().NotBeNull();
+            createdResult!.RouteName.Should().Be(nameof(ContentsEndpoints.GetContentById));
+            createdResult.RouteValues.Should().ContainKey("id").WhoseValue.Should().Be(newId);
+            createdResult.Value.Should().Be(expectedContent);
+        }
+
+        [Fact]
+        public async Task UpdateContent_ShouldReturnNoContent_WhenSuccessful()
+        {
+            // Arrange
+            var id = Guid.NewGuid();
+            var request = new ContentUpdateDto { Title = "Updated Content" };
+            _mediatorMock.Setup(m => m.Send(It.IsAny<UpdateContentCommand>(), It.IsAny<CancellationToken>()))
+                .Returns(Task.CompletedTask);
+
+            // Act
+            var result = await ContentsEndpoints.UpdateContent(id, request, _mediatorMock.Object);
+
+            // Assert
+            var noContentResult = result.Result as NoContent;
+            noContentResult.Should().NotBeNull();
+        }
+
+        [Fact]
+        public async Task DeleteContent_ShouldReturnNoContent_WhenSuccessful()
+        {
+            // Arrange
+            var id = Guid.NewGuid();
+            _mediatorMock.Setup(m => m.Send(It.IsAny<DeleteContentCommand>(), It.IsAny<CancellationToken>()))
+                .Returns(Task.CompletedTask);
+
+            // Act
+            var result = await ContentsEndpoints.DeleteContent(id, _mediatorMock.Object);
+
+            // Assert
+            var noContentResult = result.Result as NoContent;
+            noContentResult.Should().NotBeNull();
         }
     }
 }

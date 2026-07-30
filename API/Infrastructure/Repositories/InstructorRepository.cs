@@ -1,9 +1,6 @@
 using Application.Common.Interfaces.Identity;
-using Application.Common.Models;
 using Application.Common.Options;
 using Application.DTOs.Instructor;
-using Dapper;
-using Domain.Entities.Identity;
 using Domain.Enums;
 using Microsoft.Extensions.Options;
 
@@ -12,6 +9,13 @@ namespace Infrastructure.Repositories
     public class InstructorRepository(IDbConnectionFactory factory, IOptions<UrlsOptions> urlsOptions)
         : BaseRepository(factory), IInstructorRepository
     {
+        private static readonly Dictionary<string, string> AllowedSortColumns = new(StringComparer.OrdinalIgnoreCase)
+        {
+            { "name", "FullName" },
+            { "average_rate", "AverageRate" },
+            { "created_at", "i.created_at" }
+        };
+
         private string SelectColumns =>
             $@"i.id, i.bio, i.title, 
                i.linked_in_profile_url AS LinkedInProfileUrl, 
@@ -22,7 +26,8 @@ namespace Infrastructure.Repositories
                 WHERE u.id = i.user_id LIMIT 1) AS FullName,
                (SELECT CASE WHEN u.profile_picture_url IS NOT NULL THEN CONCAT('{urlsOptions.Value.API}/', u.profile_picture_url) ELSE NULL END 
                 FROM ""AspNetUsers"" u 
-                WHERE u.id = i.user_id LIMIT 1) AS ProfilePictureUrl";
+                WHERE u.id = i.user_id LIMIT 1) AS ProfilePictureUrl,
+               (SELECT COALESCE(AVG(c.average_rate), 0) FROM courses c WHERE c.instructor_id = i.id) AS AverageRate";
 
         private string PrivateSelectColumns =>
             $@"{SelectColumns}, 
@@ -96,36 +101,31 @@ namespace Infrastructure.Repositories
             await connection.ExecuteAsync(sql, new { Id = id });
         }
 
-        public async Task<PaginatedResult<InstructorPrivateResponseDto>> GetAllAsync(QueryParams queryParams, CancellationToken ct = default)
+        public Task<PaginatedResult<InstructorPrivateResponseDto>> GetAllAsync(InstructorQueryParams queryParams, CancellationToken ct = default)
         {
-            using var connection = await CreateConnectionAsync(ct);
-            
-            var baseSql = $"{PrivateSelectColumns} {FromClause}";
-            var countSql = $"SELECT COUNT(*) {FromClause}";
-            
-            var whereClause = "WHERE 1=1";
-            var parameters = new DynamicParameters();
-            
-            if (!string.IsNullOrWhiteSpace(queryParams.Search))
+            var extraConditions = new List<string>();
+
+            if (queryParams.Status.HasValue)
             {
-                whereClause += " AND (i.bio ILIKE @Search OR i.title ILIKE @Search)";
-                parameters.Add("Search", $"%{queryParams.Search}%");
+                extraConditions.Add("i.status = @Status");
             }
-            
-            var finalSql = $"{baseSql} {whereClause} ORDER BY i.created_at DESC LIMIT @PageSize OFFSET @Offset";
-            var finalCountSql = $"{countSql} {whereClause}";
-            
-            parameters.Add("PageSize", queryParams.PageSize);
-            parameters.Add("Offset", (queryParams.PageNumber - 1) * queryParams.PageSize);
-            
-            var items = await connection.QueryAsync<InstructorPrivateResponseDto>(finalSql, parameters);
-            var totalCount = await connection.QuerySingleAsync<int>(finalCountSql, parameters);
-            
-            return PaginatedResult<InstructorPrivateResponseDto>.Success(
-                items.ToList(), 
-                totalCount, 
-                queryParams.PageNumber, 
-                queryParams.PageSize);
+
+            return ExecutePaginatedQueryAsync<InstructorPrivateResponseDto>(
+                queryParams,
+                countSql: $"SELECT COUNT(1) {FromClause}",
+                selectSql: $"SELECT {PrivateSelectColumns} {FromClause}",
+                allowedSortColumns: AllowedSortColumns, 
+                defaultSortColumn: "i.created_at",
+                searchCondition: "(i.bio ILIKE @SearchTerm OR i.title ILIKE @SearchTerm)",
+                extraConditions: extraConditions,
+                configureParameters: parameters =>
+                {
+                    if (queryParams.Status.HasValue)
+                    {
+                        parameters.Add("Status", queryParams.Status.Value);
+                    }
+                },
+                ct);
         }
 
         public async Task UpdateStatusAsync(Guid id, InstructorStatus status, CancellationToken ct = default)

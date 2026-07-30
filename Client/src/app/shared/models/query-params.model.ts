@@ -12,6 +12,10 @@ export interface CourseQueryParams extends QueryParams {
   maxRating?: number;
 }
 
+export interface InstructorQueryParams extends QueryParams {
+  status?: string;
+}
+
 export function createQueryParams(
   params?: Partial<QueryParams>
 ): QueryParams {
@@ -33,6 +37,16 @@ export function createCourseQueryParams(
     category: '',
     minRating: undefined,
     maxRating: undefined,
+    ...params
+  };
+}
+
+export function createInstructorQueryParams(
+  params?: Partial<InstructorQueryParams>
+): InstructorQueryParams {
+  return {
+    ...createQueryParams(params),
+    status: undefined,
     ...params
   };
 }

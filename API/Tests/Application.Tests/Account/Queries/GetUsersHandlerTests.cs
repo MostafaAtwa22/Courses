@@ -29,8 +29,8 @@ public class GetUsersHandlerTests
         // Arrange
         var users = new List<ApplicationUser>
         {
-            new() { Id = "1", FirstName = "John", LastName = "Doe", Email = "john@example.com", UserName = "johndoe" },
-            new() { Id = "2", FirstName = "Jane", LastName = "Doe", Email = "jane@example.com", UserName = "janedoe" }
+            new() { Id = Guid.NewGuid().ToString(), FirstName = "John", LastName = "Doe", Email = "john@example.com", UserName = "johndoe" },
+            new() { Id = Guid.NewGuid().ToString(), FirstName = "Jane", LastName = "Doe", Email = "jane@example.com", UserName = "janedoe" }
         }.BuildMock();
 
         _userManagerMock.Setup(x => x.Users).Returns(users);
@@ -46,8 +46,9 @@ public class GetUsersHandlerTests
         result.Should().NotBeNull();
         result.Items.Should().HaveCount(2);
         result.TotalCount.Should().Be(2);
-        result.Items[0].FirstName.Should().Be("John");
-        result.Items[0].Roles.Should().Contain("Student");
+        result.Items.Should().ContainSingle(u => u.FirstName == "John");
+        result.Items.Should().ContainSingle(u => u.FirstName == "Jane");
+        result.Items.All(u => u.Roles.Contains("Student")).Should().BeTrue();
     }
 
     [Fact]
@@ -56,8 +57,8 @@ public class GetUsersHandlerTests
         // Arrange
         var users = new List<ApplicationUser>
         {
-            new() { Id = "1", FirstName = "John", LastName = "Doe", Email = "john@example.com", UserName = "johndoe" },
-            new() { Id = "2", FirstName = "Jane", LastName = "Doe", Email = "jane@example.com", UserName = "janedoe" }
+            new() { Id = Guid.NewGuid().ToString(), FirstName = "John", LastName = "Doe", Email = "john@example.com", UserName = "johndoe" },
+            new() { Id = Guid.NewGuid().ToString(), FirstName = "Jane", LastName = "Doe", Email = "jane@example.com", UserName = "janedoe" }
         }.BuildMock();
 
         _userManagerMock.Setup(x => x.Users).Returns(users);

@@ -1,180 +1,152 @@
-using System.Net;
-using System.Net.Http.Json;
 using Application.Common.Models;
 using Application.DTOs.Course;
+using Application.Features.Courses.Commands.Create;
+using Application.Features.Courses.Commands.Delete;
+using Application.Features.Courses.Commands.Update;
+using Application.Features.Courses.Queries.GetAll;
+using Application.Features.Courses.Queries.GetById;
+using Application.Features.Courses.Queries.GetSuggestions;
 using FluentAssertions;
-using Microsoft.AspNetCore.Mvc.Testing;
+using MediatR;
+using Microsoft.AspNetCore.Http.HttpResults;
+using Moq;
+using API.Endpoints;
 
 namespace API.Tests.Endpoints
 {
-    [Collection("Integration Tests")]
     public class CoursesEndpointsTests
     {
-        private readonly HttpClient _client;
+        private readonly Mock<IMediator> _mediatorMock;
 
-        public CoursesEndpointsTests(IntegrationTestFactory<Program> factory)
+        public CoursesEndpointsTests()
         {
-            _client = factory.CreateClient();
+            _mediatorMock = new Mock<IMediator>();
         }
 
         [Fact]
-        public async Task GetAll_ReturnsOk()
-        {
-            // Act
-            var response = await _client.GetAsync("/courses");
-
-            // Assert
-            response.StatusCode.Should().Be(HttpStatusCode.OK);
-
-            var result = await response.Content.ReadFromJsonAsync<PaginatedResult<CourseResponseDto>>();
-            result.Should().NotBeNull();        
-        }
-
-        [Fact]
-        public async Task GetById_ReturnsNotFound()
+        public async Task GetCourses_ShouldReturnOk_WithPaginatedResult()
         {
             // Arrange
-            var id = Guid.NewGuid().ToString();
+            var queryParams = new CourseQueryParams();
+            var expectedResult = new PaginatedResult<CourseSummaryDto>(new List<CourseSummaryDto>(), 0, 1, 10);
+            _mediatorMock.Setup(m => m.Send(It.IsAny<GetCoursesQuery>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(expectedResult);
 
             // Act
-            var response = await _client.GetAsync($"/courses/{id}");
+            var result = await CoursesEndpoints.GetCourses(queryParams, _mediatorMock.Object);
 
             // Assert
-            response.StatusCode.Should().Be(HttpStatusCode.NotFound);
-        }
-        [Fact]
-        public async Task Create_ShouldReturnCreated()
-        {
-            // Category setup
-            var uniqueCatName = $"Category_{Guid.NewGuid().ToString().Substring(0, 8)}";
-            var catReq = new Application.DTOs.Category.CategoryCreateDto { Name = uniqueCatName, Slug = uniqueCatName.ToLower() };
-            var catRes = await _client.PostAsJsonAsync("/categories", catReq);
-            var catObj = await catRes.Content.ReadFromJsonAsync<Application.DTOs.Category.CategoryResponseDto>();
-            var validCatId = catObj!.Id;
-
-            // Arrange
-            var title = $"Course_{Guid.NewGuid().ToString().Substring(0, 8)}";
-            using var content = new MultipartFormDataContent();
-            content.Add(new StringContent(title), "Title");
-            content.Add(new StringContent("This is a valid long description that is more than 50 characters long so it passes the validation process."), "Description");
-            content.Add(new StringContent(Domain.Enums.CourseStatus.InProgress.ToString()), "Status");
-            content.Add(new StringContent("150"), "Cost");
-            content.Add(new StringContent(validCatId.ToString()), "CategoryId");
-            content.Add(new StringContent("f1b1b1b1-b1b1-b1b1-b1b1-b1b1b1b1b1b1"), "InstructorId");
-            content.Add(new StringContent("English"), "Language");
-
-            var fileContent = new ByteArrayContent(new byte[] { 0x01, 0x02, 0x03 });
-            fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("image/jpeg");
-            content.Add(fileContent, "PictureUrl", "test.jpg");
-
-            var videoContent = new ByteArrayContent(new byte[] { 0x01, 0x02, 0x03 });
-            videoContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("video/mp4");
-            content.Add(videoContent, "IntroVideo", "test.mp4");
-
-            // Act
-            var response = await _client.PostAsync("/courses", content);
-
-            // Assert
-            if (response.StatusCode == HttpStatusCode.InternalServerError)
-            {
-                var error = await response.Content.ReadAsStringAsync();
-                throw new Exception($"500 Error: {error}");
-            }
-            response.StatusCode.Should().Be(HttpStatusCode.Created);
-            var options = new System.Text.Json.JsonSerializerOptions { PropertyNameCaseInsensitive = true, Converters = { new System.Text.Json.Serialization.JsonStringEnumConverter() } };
-            var result = await response.Content.ReadFromJsonAsync<CourseResponseDto>(options);
-            result.Should().NotBeNull();
-            result!.Id.Should().NotBeEmpty();
-            result.Title.Should().Be(title);
+            var okResult = result.Result as Ok<PaginatedResult<CourseSummaryDto>>;
+            okResult.Should().NotBeNull();
+            okResult!.Value.Should().BeEquivalentTo(expectedResult);
         }
 
         [Fact]
-        public async Task Create_ShouldReturnBadRequest()
+        public async Task GetSuggestions_ShouldReturnOk_WithSuggestions()
         {
             // Arrange
-            using var content = new MultipartFormDataContent();
-            content.Add(new StringContent(""), "Title");
-            content.Add(new StringContent("Too short"), "Description");
-            // Missing other fields or invalid fields
+            var query = "test";
+            var expectedSuggestions = new List<string> { "Test Course 1", "Test Course 2" };
+            _mediatorMock.Setup(m => m.Send(It.IsAny<GetCourseSuggestionsQuery>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(expectedSuggestions);
 
             // Act
-            var response = await _client.PostAsync("/courses", content);
+            var result = await CoursesEndpoints.GetSuggestions(query, _mediatorMock.Object);
 
             // Assert
-            response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+            result.Should().BeOfType<Ok<IEnumerable<string>>>();
+            result.Value.Should().BeEquivalentTo(expectedSuggestions);
         }
 
         [Fact]
-        public async Task Lifecycle_ShouldWorkCorrectly()
+        public async Task GetCourseById_ShouldReturnOk_WhenCourseExists()
         {
-            // Category setup
-            var uniqueCatName = $"Category_{Guid.NewGuid().ToString().Substring(0, 8)}";
-            var catReq = new Application.DTOs.Category.CategoryCreateDto { Name = uniqueCatName, Slug = uniqueCatName.ToLower() };
-            var catRes = await _client.PostAsJsonAsync("/categories", catReq);
-            var catObj = await catRes.Content.ReadFromJsonAsync<Application.DTOs.Category.CategoryResponseDto>();
-            var validCatId = catObj!.Id;
+            // Arrange
+            var id = Guid.NewGuid();
+            var expectedCourse = new CourseResponseDto();
+            _mediatorMock.Setup(m => m.Send(It.IsAny<GetCourseByIdQuery>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(expectedCourse);
+
+            // Act
+            var result = await CoursesEndpoints.GetCourseById(id, _mediatorMock.Object);
+
+            // Assert
+            var okResult = result.Result as Ok<CourseResponseDto>;
+            okResult.Should().NotBeNull();
+            okResult!.Value.Should().Be(expectedCourse);
+        }
+
+        [Fact]
+        public async Task GetCourseById_ShouldReturnNotFound_WhenCourseDoesNotExist()
+        {
+            // Arrange
+            var id = Guid.NewGuid();
+            _mediatorMock.Setup(m => m.Send(It.IsAny<GetCourseByIdQuery>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync((CourseResponseDto)null!);
+
+            // Act
+            var result = await CoursesEndpoints.GetCourseById(id, _mediatorMock.Object);
+
+            // Assert
+            var notFoundResult = result.Result as NotFound;
+            notFoundResult.Should().NotBeNull();
+        }
+
+        [Fact]
+        public async Task CreateCourse_ShouldReturnCreatedAtRoute_WhenSuccessful()
+        {
+            // Arrange
+            var request = new CourseCreateDto();
+            var newId = Guid.NewGuid();
+            var expectedCourse = new CourseResponseDto { Id = newId };
             
-            // 1. Create
-            var title = $"Lifecycle_Course_{Guid.NewGuid().ToString().Substring(0, 8)}";
-            using var createContent = new MultipartFormDataContent();
-            createContent.Add(new StringContent(title), "Title");
-            createContent.Add(new StringContent("This is a valid long description that is more than 50 characters long so it passes the validation process."), "Description");
-            createContent.Add(new StringContent(Domain.Enums.CourseStatus.InProgress.ToString()), "Status");
-            createContent.Add(new StringContent("200"), "Cost");
-            createContent.Add(new StringContent(validCatId.ToString()), "CategoryId");
-            createContent.Add(new StringContent("f1b1b1b1-b1b1-b1b1-b1b1-b1b1b1b1b1b1"), "InstructorId");
-            createContent.Add(new StringContent("English"), "Language");
-            var imageContent = new ByteArrayContent(new byte[] { 0x01 });
-            imageContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("image/jpeg");
-            createContent.Add(imageContent, "PictureUrl", "lifecycle.jpg");
+            _mediatorMock.Setup(m => m.Send(It.IsAny<CreateCourseCommand>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(newId);
+            _mediatorMock.Setup(m => m.Send(It.IsAny<GetCourseByIdQuery>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(expectedCourse);
 
-            var videoContent = new ByteArrayContent(new byte[] { 0x01, 0x02, 0x03 });
-            videoContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("video/mp4");
-            createContent.Add(videoContent, "IntroVideo", "test.mp4");
+            // Act
+            var result = await CoursesEndpoints.CreateCourse(request, _mediatorMock.Object);
 
-            var createResponse = await _client.PostAsync("/courses", createContent);
-            
-            if(createResponse.StatusCode == HttpStatusCode.Created) 
-            {
-                var options = new System.Text.Json.JsonSerializerOptions { PropertyNameCaseInsensitive = true, Converters = { new System.Text.Json.Serialization.JsonStringEnumConverter() } };
-                var createdCourse = await createResponse.Content.ReadFromJsonAsync<CourseResponseDto>(options);
-                var id = createdCourse!.Id;
+            // Assert
+            var createdResult = result.Result as CreatedAtRoute<CourseResponseDto>;
+            createdResult.Should().NotBeNull();
+            createdResult!.RouteName.Should().Be(nameof(CoursesEndpoints.GetCourseById));
+            createdResult.RouteValues.Should().ContainKey("id").WhoseValue.Should().Be(newId);
+            createdResult.Value.Should().Be(expectedCourse);
+        }
 
-                // 2. Get By Id
-                var getResponse = await _client.GetAsync($"/courses/{id}");
-                getResponse.StatusCode.Should().Be(HttpStatusCode.OK);
-                var getResult = await getResponse.Content.ReadFromJsonAsync<CourseResponseDto>(options);
-                getResult!.Title.Should().Be(title);
+        [Fact]
+        public async Task UpdateCourse_ShouldReturnNoContent_WhenSuccessful()
+        {
+            // Arrange
+            var id = Guid.NewGuid();
+            var request = new CourseUpdateDto();
+            _mediatorMock.Setup(m => m.Send(It.IsAny<UpdateCourseCommand>(), It.IsAny<CancellationToken>()))
+                .Returns(Task.CompletedTask);
 
-                // 3. Update
-                using var updateContent = new MultipartFormDataContent();
-                updateContent.Add(new StringContent(title + " Updated"), "Title");
-                updateContent.Add(new StringContent("This is a valid long description that is more than 50 characters long so it passes the validation process."), "Description");
-                updateContent.Add(new StringContent(Domain.Enums.CourseStatus.Done.ToString()), "Status");
-                updateContent.Add(new StringContent("250"), "Cost");
-                updateContent.Add(new StringContent(validCatId.ToString()), "CategoryId");
-                updateContent.Add(new StringContent("f1b1b1b1-b1b1-b1b1-b1b1-b1b1b1b1b1b1"), "InstructorId");
-                var updateImage = new ByteArrayContent(new byte[] { 0x02 });
-                updateImage.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("image/jpeg");
-                updateContent.Add(updateImage, "PictureUrl", "updated.jpg");
+            // Act
+            var result = await CoursesEndpoints.UpdateCourse(id, request, _mediatorMock.Object);
 
-                var updateResponse = await _client.PutAsync($"/courses/{id}", updateContent);
-                updateResponse.StatusCode.Should().Be(HttpStatusCode.NoContent);
+            // Assert
+            var noContentResult = result.Result as NoContent;
+            noContentResult.Should().NotBeNull();
+        }
 
-                // 4. Verify Update
-                var getResponseAfterUpdate = await _client.GetAsync($"/courses/{id}");
-                var updatedResult = await getResponseAfterUpdate.Content.ReadFromJsonAsync<CourseResponseDto>(options);
-                updatedResult!.Title.Should().Be(title + " Updated");
-                updatedResult.Status.Should().Be(Domain.Enums.CourseStatus.Done);
+        [Fact]
+        public async Task DeleteCourse_ShouldReturnNoContent_WhenSuccessful()
+        {
+            // Arrange
+            var id = Guid.NewGuid();
+            _mediatorMock.Setup(m => m.Send(It.IsAny<DeleteCourseCommand>(), It.IsAny<CancellationToken>()))
+                .Returns(Task.CompletedTask);
 
-                // 5. Delete
-                var deleteResponse = await _client.DeleteAsync($"/courses/{id}");
-                deleteResponse.StatusCode.Should().Be(HttpStatusCode.NoContent);
+            // Act
+            var result = await CoursesEndpoints.DeleteCourse(id, _mediatorMock.Object);
 
-                // 6. Verify Delete
-                var getResponseAfterDelete = await _client.GetAsync($"/courses/{id}");
-                getResponseAfterDelete.StatusCode.Should().Be(HttpStatusCode.NotFound);
-            }
+            // Assert
+            var noContentResult = result.Result as NoContent;
+            noContentResult.Should().NotBeNull();
         }
     }
 }

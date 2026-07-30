@@ -71,4 +71,17 @@ export class AuthService {
       }
     });
   }
+
+  private decodeToken(token: string): any {
+    const payload = token.split('.')[1];
+    return JSON.parse(atob(payload));
+  }
+
+  hasInstructorProfile(): boolean {
+    const token = this.getToken();
+    if (!token) return false;
+    
+    const payload = this.decodeToken(token);
+    return payload?.has_instructor_profile === 'true';
+  }
 }

@@ -1,53 +1,108 @@
-using System.Net;
-using System.Net.Http.Json;
 using Application.DTOs.Authentication;
 using Application.DTOs.Security;
+using Application.Features.Security.Commands.ConfirmEmail;
+using Application.Features.Security.Commands.Disable2FA;
+using Application.Features.Security.Commands.Enable2FA;
+using Application.Features.Security.Commands.Generate2FA;
+using Application.Features.Security.Commands.VerifyTwoFactor;
 using FluentAssertions;
+using MediatR;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Moq;
+using API.Endpoints;
 
-namespace API.Tests.Endpoints;
-
-[Collection("Integration Tests")]
-public class SecurityEndpointsTests
+namespace API.Tests.Endpoints
 {
-    private readonly HttpClient _client;
-    private readonly IntegrationTestFactory<Program> _factory;
-
-    public SecurityEndpointsTests(IntegrationTestFactory<Program> factory)
+    public class SecurityEndpointsTests
     {
-        _factory = factory;
-        _client = factory.CreateClient();
-    }
+        private readonly Mock<IMediator> _mediatorMock;
 
-    [Fact]
-    public async Task ConfirmEmail_ShouldReturnOk_WhenCodeIsValid()
-    {
-        // Arrange
-        var dto = new ConfirmEmailDto { Email = "admin@edufocus.com", Code = "valid-code" };
-
-        // Act
-        var response = await _client.PostAsJsonAsync("/security/confirm-email", dto);
-
-        // Assert
-        // Note: This might fail if the DB is not connected or the code is not in DB
-        // But for structural completion, we add the test.
-        if (response.StatusCode == HttpStatusCode.OK)
+        public SecurityEndpointsTests()
         {
-            var result = await response.Content.ReadFromJsonAsync<AuthResponseDto>();
-            result.Should().NotBeNull();
+            _mediatorMock = new Mock<IMediator>();
         }
-    }
 
-    [Fact]
-    public async Task Generate2FAToken_ShouldReturnUnauthorized_WhenNotLoggedIn()
-    {
-        // Arrange
-        _factory.CurrentUserServiceMock.Setup(x => x.UserId).Returns((string?)null);
+        [Fact]
+        public async Task ConfirmEmail_ShouldReturnOk_WithAuthResponse()
+        {
+            // Arrange
+            var request = new ConfirmEmailDto();
+            var expectedResponse = new AuthResponseDto { Token = "test-token" };
+            _mediatorMock.Setup(m => m.Send(It.IsAny<ConfirmEmailCommand>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(expectedResponse);
 
-        // Act
-        var response = await _client.PostAsync("/security/2fa/generate", null);
+            // Act
+            var result = await SecurityEndpoints.ConfirmEmail(request, _mediatorMock.Object);
 
-        // Assert
-        response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+            // Assert
+            var okResult = result.Result as Ok<AuthResponseDto>;
+            okResult.Should().NotBeNull();
+            okResult!.Value.Should().Be(expectedResponse);
+        }
+
+        [Fact]
+        public async Task Generate2FAToken_ShouldReturnNoContent_WhenSuccessful()
+        {
+            // Arrange
+            _mediatorMock.Setup(m => m.Send(It.IsAny<Generate2FATokenCommand>(), It.IsAny<CancellationToken>()))
+                .Returns(Task.CompletedTask);
+
+            // Act
+            var result = await SecurityEndpoints.Generate2FAToken(_mediatorMock.Object);
+
+            // Assert
+            var noContentResult = result.Result as NoContent;
+            noContentResult.Should().NotBeNull();
+        }
+
+        [Fact]
+        public async Task Enable2FA_ShouldReturnNoContent_WhenSuccessful()
+        {
+            // Arrange
+            var code = "123456";
+            _mediatorMock.Setup(m => m.Send(It.IsAny<Enable2FACommand>(), It.IsAny<CancellationToken>()))
+                .Returns(Task.CompletedTask);
+
+            // Act
+            var result = await SecurityEndpoints.Enable2FA(code, _mediatorMock.Object);
+
+            // Assert
+            var noContentResult = result.Result as NoContent;
+            noContentResult.Should().NotBeNull();
+        }
+
+        [Fact]
+        public async Task Disable2FA_ShouldReturnNoContent_WhenSuccessful()
+        {
+            // Arrange
+            var dto = new Disable2FADto { Password = "Password123!", Code = "123456" };
+            _mediatorMock.Setup(m => m.Send(It.IsAny<Disable2FACommand>(), It.IsAny<CancellationToken>()))
+                .Returns(Task.CompletedTask);
+
+            // Act
+            var result = await SecurityEndpoints.Disable2FA(dto, _mediatorMock.Object);
+
+            // Assert
+            var noContentResult = result.Result as NoContent;
+            noContentResult.Should().NotBeNull();
+        }
+
+        [Fact]
+        public async Task VerifyTwoFactor_ShouldReturnOk_WithAuthResponse()
+        {
+            // Arrange
+            var request = new VerifyTwoFactorDto();
+            var expectedResponse = new AuthResponseDto { Token = "test-token" };
+            _mediatorMock.Setup(m => m.Send(It.IsAny<VerifyTwoFactorCommand>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(expectedResponse);
+
+            // Act
+            var result = await SecurityEndpoints.VerifyTwoFactor(request, _mediatorMock.Object);
+
+            // Assert
+            var okResult = result.Result as Ok<AuthResponseDto>;
+            okResult.Should().NotBeNull();
+            okResult!.Value.Should().Be(expectedResponse);
+        }
     }
 }

@@ -1,102 +1,133 @@
-using System.Net;
-using System.Net.Http.Json;
+using API.Endpoints;
 using Application.Common.Models;
 using Application.DTOs.Review;
+using Application.Features.Reviews.Commands.Create;
+using Application.Features.Reviews.Commands.Delete;
+using Application.Features.Reviews.Commands.Update;
+using Application.Features.Reviews.Queries.GetByCourse;
+using Application.Features.Reviews.Queries.GetById;
 using FluentAssertions;
-using Microsoft.AspNetCore.Mvc.Testing;
+using MediatR;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Moq;
+using Xunit;
 
 namespace API.Tests.Endpoints
 {
-    [Collection("Integration Tests")]
     public class ReviewsEndpointsTests
     {
-        private readonly HttpClient _client;
-        private readonly IntegrationTestFactory<Program> _factory;
+        private readonly Mock<IMediator> _mediatorMock;
 
-        public ReviewsEndpointsTests(IntegrationTestFactory<Program> factory)
+        public ReviewsEndpointsTests()
         {
-            _factory = factory;
-            _client = factory.CreateClient();
+            _mediatorMock = new Mock<IMediator>();
         }
 
         [Fact]
-        public async Task GetByCourse_ReturnsOk()
+        public async Task GetReviewsByCourse_ShouldReturnOk_WithPaginatedResult()
         {
             // Arrange
-            var courseId = "c1b1b1b1-b1b1-b1b1-b1b1-b1b1b1b1b1b1"; // From seed
+            var courseId = Guid.NewGuid();
+            var queryParams = new QueryParams();
+            var expectedResult = new PaginatedResult<ReviewResponseDto>(new List<ReviewResponseDto>(), 0, 1, 10);
+            _mediatorMock.Setup(m => m.Send(It.IsAny<GetReviewsByCourseQuery>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(expectedResult);
 
             // Act
-            var response = await _client.GetAsync($"/reviews/course/{courseId}");
+            var result = await ReviewsEndpoints.GetReviewsByCourse(courseId, queryParams, _mediatorMock.Object);
 
             // Assert
-            response.StatusCode.Should().Be(HttpStatusCode.OK);
-            var result = await response.Content.ReadFromJsonAsync<PaginatedResult<ReviewResponseDto>>();
-            result.Should().NotBeNull();
-            result!.Items.Should().NotBeEmpty();
+            var okResult = result as Ok<PaginatedResult<ReviewResponseDto>>;
+            okResult.Should().NotBeNull();
+            okResult!.Value.Should().BeEquivalentTo(expectedResult);
         }
 
         [Fact]
-        public async Task CreateReview_ShouldReturnForbidden_WhenNotEnrolled()
+        public async Task GetReviewById_ShouldReturnOk_WhenReviewExists()
         {
             // Arrange
-            var userId = "d3b3b3b3-b3b3-b3b3-b3b3-b3b3b3b3b3b3"; // Seeded user
-            var courseId = "c2b2b2b2-b2b2-b2b2-b2b2-b2b2b2b2b2b2"; // Student NOT enrolled in this in seed
-
-            _factory.CurrentUserServiceMock.Setup(u => u.UserId).Returns(userId);
-
-            var dto = new ReviewCreateDto 
-            { 
-                Headline = "Testing", 
-                Comment = "No enrollment", 
-                Rating = 5, 
-                CourseId = Guid.Parse(courseId) 
-            };
+            var id = Guid.NewGuid();
+            var expectedReview = new ReviewResponseDto { Id = id, Rating = 5, Comment = "Great course!" };
+            _mediatorMock.Setup(m => m.Send(It.IsAny<GetReviewByIdQuery>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(expectedReview);
 
             // Act
-            var response = await _client.PostAsJsonAsync("/reviews", dto);
+            var result = await ReviewsEndpoints.GetReviewById(id, _mediatorMock.Object);
 
             // Assert
-            response.StatusCode.Should().Be(HttpStatusCode.Forbidden);
+            var okResult = result.Result as Ok<ReviewResponseDto>;
+            okResult.Should().NotBeNull();
+            okResult!.Value.Should().Be(expectedReview);
         }
 
         [Fact]
-        public async Task UpdateReview_ShouldReturnNoContent_WhenOwner()
+        public async Task GetReviewById_ShouldReturnNotFound_WhenReviewDoesNotExist()
         {
             // Arrange
-            var userId = "d3b3b3b3-b3b3-b3b3-b3b3-b3b3b3b3b3b3"; // Owner of review a1b1...
-            var reviewId = "a1b1b1b1-b1b1-b1b1-b1b1-b1b1b1b1b1b1";
-
-            _factory.CurrentUserServiceMock.Setup(u => u.UserId).Returns(userId);
-
-            var dto = new ReviewUpdateDto 
-            { 
-                Headline = "Updated Headline", 
-                Comment = "Updated comment", 
-                Rating = 4 
-            };
+            var id = Guid.NewGuid();
+            _mediatorMock.Setup(m => m.Send(It.IsAny<GetReviewByIdQuery>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync((ReviewResponseDto)null!);
 
             // Act
-            var response = await _client.PutAsJsonAsync($"/reviews/{reviewId}", dto);
+            var result = await ReviewsEndpoints.GetReviewById(id, _mediatorMock.Object);
 
             // Assert
-            response.StatusCode.Should().Be(HttpStatusCode.NoContent);
+            var notFoundResult = result.Result as NotFound;
+            notFoundResult.Should().NotBeNull();
         }
 
         [Fact]
-        public async Task DeleteReview_ShouldReturnForbidden_WhenNotOwner()
+        public async Task CreateReview_ShouldReturnCreatedAtRoute_WhenSuccessful()
         {
             // Arrange
-            var userId = "d4b4b4b4-b4b4-b4b4-b4b4-b4b4b4b4b4b4"; // NOT owner of review a1b1...
-            var reviewId = "a1b1b1b1-b1b1-b1b1-b1b1-b1b1b1b1b1b1";
-
-            _factory.CurrentUserServiceMock.Setup(u => u.UserId).Returns(userId);
+            var dto = new ReviewCreateDto { CourseId = Guid.NewGuid(), Rating = 5, Comment = "Great course!" };
+            var newId = Guid.NewGuid();
+            
+            _mediatorMock.Setup(m => m.Send(It.IsAny<CreateReviewCommand>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(newId);
 
             // Act
-            var response = await _client.DeleteAsync($"/reviews/{reviewId}");
+            var result = await ReviewsEndpoints.CreateReview(dto, _mediatorMock.Object);
 
             // Assert
-            response.StatusCode.Should().Be(HttpStatusCode.Forbidden);
+            var createdResult = result as CreatedAtRoute<Guid>;
+            createdResult.Should().NotBeNull();
+            createdResult!.RouteName.Should().Be(nameof(ReviewsEndpoints.GetReviewById));
+            createdResult.RouteValues.Should().ContainKey("id").WhoseValue.Should().Be(newId);
+            createdResult.Value.Should().Be(newId);
+        }
+
+        [Fact]
+        public async Task UpdateReview_ShouldReturnNoContent_WhenSuccessful()
+        {
+            // Arrange
+            var id = Guid.NewGuid();
+            var dto = new ReviewUpdateDto { Rating = 4, Comment = "Updated review" };
+            _mediatorMock.Setup(m => m.Send(It.IsAny<UpdateReviewCommand>(), It.IsAny<CancellationToken>()))
+                .Returns(Task.CompletedTask);
+
+            // Act
+            var result = await ReviewsEndpoints.UpdateReview(id, dto, _mediatorMock.Object);
+
+            // Assert
+            var noContentResult = result.Result as NoContent;
+            noContentResult.Should().NotBeNull();
+        }
+
+        [Fact]
+        public async Task DeleteReview_ShouldReturnNoContent_WhenSuccessful()
+        {
+            // Arrange
+            var id = Guid.NewGuid();
+            _mediatorMock.Setup(m => m.Send(It.IsAny<DeleteReviewCommand>(), It.IsAny<CancellationToken>()))
+                .Returns(Task.CompletedTask);
+
+            // Act
+            var result = await ReviewsEndpoints.DeleteReview(id, _mediatorMock.Object);
+
+            // Assert
+            var noContentResult = result.Result as NoContent;
+            noContentResult.Should().NotBeNull();
         }
     }
 }

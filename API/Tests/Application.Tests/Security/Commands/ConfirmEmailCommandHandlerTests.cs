@@ -36,7 +36,7 @@ public class ConfirmEmailCommandHandlerTests
 
         _userIdentityServiceMock.Setup(x => x.FindUserByEmailAsync(dto.Email)).ReturnsAsync(user);
         _userIdentityServiceMock.Setup(x => x.IsLockedOutAsync(user)).ReturnsAsync(false);
-        _passwordServiceMock.Setup(x => x.ConfirmEmailAsync(user, token)).ReturnsAsync(true);
+        _passwordServiceMock.Setup(x => x.ConfirmEmailAsync(user, It.IsAny<string>())).ReturnsAsync(true);
         _tokenServiceMock.Setup(x => x.GetAuthResponseAsync(user)).ReturnsAsync(authResponse);
 
         // Act
