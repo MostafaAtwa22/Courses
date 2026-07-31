@@ -1,14 +1,20 @@
 <section class="mt-5 pt-5 border-top">
   <h3 class="fw-bold mb-4">Instructor</h3>
   <div class="instructor-profile">
-    <h4 class="fw-bold text-decoration-underline mb-1 cursor-pointer" style="color: var(--primary-color);">
-      {{ course?.instructorName || 'Prof. Sarah Jenkins' }}
-    </h4>
-    <p class="mb-4" style="color: var(--text-muted);">{{ course?.instructorTitle || 'Expert Web Developer & Educator' }}</p>
+    <a routerLink="/instructors/{{ instructorId }}" class="text-decoration-none">
+      <h4 class="fw-bold text-decoration-underline mb-1 cursor-pointer" style="color: var(--primary-color);">
+        {{ instructorName }}
+      </h4>
+    </a>
+    <p class="mb-2" style="color: var(--text-muted);" *ngIf="instructorTitle">{{ instructorTitle }}</p>
+    <div class="d-flex align-items-center gap-2 mb-4">
+      <span class="small" style="color: var(--text-muted);" *ngIf="instructor?.email">{{ instructor!.email }}</span>
+    </div>
     
     <div class="row align-items-center mb-4">
       <div class="col-auto">
-        <img [src]="course?.instructorProfilePicture || 'https://ui-avatars.com/api/?name=' + (course?.instructorName || 'Instructor') + '&background=random'" 
+        <img [src]="instructorProfilePicture"
+             [alt]="instructorName"
              class="rounded-circle shadow-sm" 
              style="width: 120px; height: 120px; object-fit: cover;">
       </div>
@@ -16,42 +22,43 @@
         <ul class="list-unstyled mb-0 d-flex flex-column gap-2">
           <li class="d-flex align-items-center gap-2">
             <i class="fas fa-star text-warning"></i>
-            <span class="fw-bold" style="color: var(--text-color);">4.8</span>
+            <span class="fw-bold" style="color: var(--text-color);">{{ instructor?.averageRate | decimal }}</span>
             <span class="small" style="color: var(--text-muted);">Instructor Rating</span>
           </li>
           <li class="d-flex align-items-center gap-2">
             <i class="fas fa-certificate" style="color: var(--text-muted);"></i>
-            <span class="fw-bold" style="color: var(--text-color);">{{ course?.totalReviews || 12450 | number }}</span>
+            <span class="fw-bold" style="color: var(--text-color);">{{ totalReviewsDisplay }}</span>
             <span class="small" style="color: var(--text-muted);">Reviews</span>
           </li>
           <li class="d-flex align-items-center gap-2">
             <i class="fas fa-users" style="color: var(--text-muted);"></i>
-            <span class="fw-bold" style="color: var(--text-color);">{{ course?.studentCount || 85000 | number }}</span>
+            <span class="fw-bold" style="color: var(--text-color);">{{ totalStudentsDisplay }}</span>
             <span class="small" style="color: var(--text-muted);">Students</span>
           </li>
           <li class="d-flex align-items-center gap-2">
             <i class="fas fa-play-circle" style="color: var(--text-muted);"></i>
-            <span class="fw-bold" style="color: var(--text-color);">12</span>
+            <span class="fw-bold" style="color: var(--text-color);">{{ totalCoursesDisplay }}</span>
             <span class="small" style="color: var(--text-muted);">Courses</span>
           </li>
         </ul>
       </div>
     </div>
     
-    <div class="instructor-bio">
-      <p [class.collapsed]="!isExpanded">
-        {{ course?.instructorBio || 'Sarah Jenkins is a professional full-stack developer with over 10 years of experience in the industry. She has worked with Fortune 500 companies and startups alike, helping them build scalable and robust web applications using modern technologies like React, Node.js, and Cloud Infrastructure.' }}
+    <div class="instructor-bio mb-4">
+      <p [class.collapsed]="!isExpanded" *ngIf="instructor?.bio || course?.instructorBio">
+        {{ instructor?.bio || course?.instructorBio }}
       </p>
-      <button class="btn btn-link fw-bold p-0 text-decoration-none" style="color: var(--primary-color);" (click)="isExpanded = !isExpanded">
+      <button *ngIf="instructor?.bio || course?.instructorBio" class="btn btn-link fw-bold p-0 text-decoration-none" style="color: var(--primary-color);" (click)="isExpanded = !isExpanded">
         {{ isExpanded ? 'Show less' : 'Show more' }}
         <i class="fas" [ngClass]="isExpanded ? 'fa-chevron-up' : 'fa-chevron-down'" class="ms-1 small"></i>
       </button>
     </div>
 
     <div class="d-flex gap-3 mt-4">
-      <button class="btn rounded-circle social-btn"><i class="fab fa-linkedin-in"></i></button>
-      <button class="btn rounded-circle social-btn"><i class="fab fa-twitter"></i></button>
-      <button class="btn rounded-circle social-btn"><i class="fas fa-globe"></i></button>
+      <a *ngIf="instructor?.linkedInProfileUrl" [href]="instructor!.linkedInProfileUrl" target="_blank" rel="noopener noreferrer" class="btn rounded-circle social-btn"><i class="fab fa-linkedin-in"></i></a>
+      <button *ngIf="!instructor?.linkedInProfileUrl" class="btn rounded-circle social-btn"><i class="fab fa-linkedin-in"></i></button>
+      <a *ngIf="instructor?.gitHubProfileUrl" [href]="instructor!.gitHubProfileUrl" target="_blank" rel="noopener noreferrer" class="btn rounded-circle social-btn"><i class="fab fa-github"></i></a>
+      <button *ngIf="!instructor?.gitHubProfileUrl" class="btn rounded-circle social-btn"><i class="fas fa-globe"></i></button>
     </div>
   </div>
 </section>

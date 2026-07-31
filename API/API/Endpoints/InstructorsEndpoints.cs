@@ -4,6 +4,7 @@ using Application.Features.Instructors.Commands.Create;
 using Application.Features.Instructors.Commands.Update;
 using Application.Features.Instructors.Queries.GetAll;
 using Application.Features.Instructors.Queries.GetPublicById;
+using Application.Features.Instructors.Queries.GetPublicByCourseId;
 using Application.Features.Instructors.Queries.GetPrivateById;
 using Application.Features.Instructors.Commands.Delete;
 
@@ -19,6 +20,11 @@ namespace API.Endpoints
 
             group.MapGet("/public/{id:guid}", GetPublicInstructor)
                 .WithName(nameof(GetPublicInstructor))
+                .Produces<InstructorPublicResponseDto>(StatusCodes.Status200OK)
+                .Produces(StatusCodes.Status404NotFound);
+
+            group.MapGet("/public/by-course/{courseId:guid}", GetPublicInstructorByCourseId)
+                .WithName(nameof(GetPublicInstructorByCourseId))
                 .Produces<InstructorPublicResponseDto>(StatusCodes.Status200OK)
                 .Produces(StatusCodes.Status404NotFound);
 
@@ -80,6 +86,13 @@ namespace API.Endpoints
             Guid id, IMediator mediator)
         {
             var result = await mediator.Send(new GetPublicInstructorByIdQuery(id));
+            return result is not null ? TypedResults.Ok(result) : TypedResults.NotFound();
+        }
+
+        public static async Task<Results<Ok<InstructorPublicResponseDto>, NotFound>> GetPublicInstructorByCourseId(
+            Guid courseId, IMediator mediator)
+        {
+            var result = await mediator.Send(new GetPublicInstructorByCourseIdQuery(courseId));
             return result is not null ? TypedResults.Ok(result) : TypedResults.NotFound();
         }
 

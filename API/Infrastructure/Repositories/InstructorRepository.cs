@@ -21,17 +21,19 @@ namespace Infrastructure.Repositories
                i.linked_in_profile_url AS LinkedInProfileUrl, 
                i.git_hub_profile_url AS GitHubProfileUrl, 
                i.status,
-               (SELECT CONCAT(u.first_name, ' ', u.last_name) 
-                FROM ""AspNetUsers"" u 
-                WHERE u.id = i.user_id LIMIT 1) AS FullName,
-               (SELECT CASE WHEN u.profile_picture_url IS NOT NULL THEN CONCAT('{urlsOptions.Value.API}/', u.profile_picture_url) ELSE NULL END 
-                FROM ""AspNetUsers"" u 
-                WHERE u.id = i.user_id LIMIT 1) AS ProfilePictureUrl,
+               i.created_at AS CreatedAt,
+               i.updated_at AS UpdatedAt,
+               u.first_name AS FirstName,
+               u.last_name AS LastName,
+               u.email AS Email,
+               u.user_name AS UserName,
+               u.gender AS Gender,
+               CASE WHEN u.profile_picture_url IS NOT NULL THEN CONCAT('{urlsOptions.Value.API}/', u.profile_picture_url) ELSE NULL END AS ProfilePicture,
                (SELECT COALESCE(AVG(c.average_rate), 0) FROM courses c WHERE c.instructor_id = i.id) AS AverageRate,
-               (SELECT COUNT(*) FROM course_reviews cr 
+               (SELECT COUNT(*) FROM reviews cr 
                 JOIN courses c ON cr.course_id = c.id 
                 WHERE c.instructor_id = i.id) AS TotalReviews,
-               (SELECT COUNT(DISTINCT e.user_id) FROM enrollments e 
+               (SELECT COUNT(DISTINCT e.student_id) FROM enrollments e 
                 JOIN courses c ON e.course_id = c.id 
                 WHERE c.instructor_id = i.id) AS TotalStudents,
                (SELECT COUNT(*) FROM courses c WHERE c.instructor_id = i.id) AS TotalCourses";
@@ -40,7 +42,7 @@ namespace Infrastructure.Repositories
             $@"{SelectColumns}, 
                CASE WHEN i.cv_url IS NOT NULL THEN CONCAT('{urlsOptions.Value.API}/', i.cv_url) ELSE NULL END AS CvUrl";
 
-        private const string FromClause = "FROM instructors i";
+        private const string FromClause = "FROM instructors i JOIN \"AspNetUsers\" u ON i.user_id = u.id";
 
         public async Task<Instructor?> GetByUserIdAsync(string userId, CancellationToken ct = default)
         {
@@ -52,22 +54,39 @@ namespace Infrastructure.Repositories
         public async Task<Instructor?> GetEntityByIdAsync(Guid id, CancellationToken ct = default)
         {
             using var connection = await CreateConnectionAsync(ct);
-            var sql = "SELECT * FROM instructors WHERE id = @Id";
-            return await connection.QueryFirstOrDefaultAsync<Instructor>(sql, new { Id = id });
+            var sql = "SELECT * FROM instructors WHERE id = @Id OR user_id = @UserId";
+            return await connection.QueryFirstOrDefaultAsync<Instructor>(sql, new { Id = id, UserId = id.ToString() });
         }
         
         public async Task<InstructorPublicResponseDto?> GetPublicByIdAsync(Guid id, CancellationToken ct = default)
         {
             using var connection = await CreateConnectionAsync(ct);
-            var sql = $"SELECT {SelectColumns} {FromClause} WHERE i.id = @Id";
-            return await connection.QueryFirstOrDefaultAsync<InstructorPublicResponseDto>(sql, new { Id = id });
+            var sql = $"SELECT {SelectColumns} {FromClause} WHERE i.id = @Id OR i.user_id = @UserId";
+            return await connection.QueryFirstOrDefaultAsync<InstructorPublicResponseDto>(sql, new { Id = id, UserId = id.ToString() });
+        }
+
+        public async Task<InstructorPublicResponseDto?> GetPublicByCourseIdAsync(
+            Guid courseId,
+            CancellationToken ct = default)
+        {
+            using var connection = await CreateConnectionAsync(ct);
+
+            var sql = $@"
+                SELECT {SelectColumns}
+                {FromClause}
+                JOIN courses c ON i.id = c.instructor_id
+                WHERE c.id = @CourseId";
+
+            return await connection.QueryFirstOrDefaultAsync<InstructorPublicResponseDto>(
+                sql,
+                new { CourseId = courseId });
         }
 
         public async Task<InstructorPrivateResponseDto?> GetPrivateByIdAsync(Guid id, CancellationToken ct = default)
         {
             using var connection = await CreateConnectionAsync(ct);
-            var sql = $"SELECT {PrivateSelectColumns} {FromClause} WHERE i.id = @Id";
-            return await connection.QueryFirstOrDefaultAsync<InstructorPrivateResponseDto>(sql, new { Id = id });
+            var sql = $"SELECT {PrivateSelectColumns} {FromClause} WHERE i.id = @Id OR i.user_id = @UserId";
+            return await connection.QueryFirstOrDefaultAsync<InstructorPrivateResponseDto>(sql, new { Id = id, UserId = id.ToString() });
         }
     
         public async Task<Guid> CreateAsync(Instructor instructor, CancellationToken ct = default)
@@ -104,8 +123,8 @@ namespace Infrastructure.Repositories
         public async Task DeleteAsync(Guid id, CancellationToken ct = default)
         {
             using var connection = await CreateConnectionAsync(ct);
-            var sql = @"DELETE FROM instructors WHERE id = @Id";
-            await connection.ExecuteAsync(sql, new { Id = id });
+            var sql = @"DELETE FROM instructors WHERE id = @Id OR user_id = @UserId";
+            await connection.ExecuteAsync(sql, new { Id = id, UserId = id.ToString() });
         }
 
         public Task<PaginatedResult<InstructorPrivateResponseDto>> GetAllAsync(InstructorQueryParams queryParams, CancellationToken ct = default)

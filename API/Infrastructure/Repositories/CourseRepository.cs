@@ -28,6 +28,7 @@ namespace Infrastructure.Repositories
                c.language, c.what_you_will_learn AS WhatYouWillLearn, c.requirements AS Requirements,
                CASE WHEN c.intro_video_url IS NOT NULL THEN CONCAT('{urlsOptions.Value.API}/', c.intro_video_url) ELSE NULL END AS IntroVideoUrl,
                cat.name AS Category,
+               c.instructor_id AS InstructorId,
                (SELECT CONCAT(u.first_name, ' ', u.last_name) 
                 FROM instructors ins 
                 JOIN ""AspNetUsers"" u ON ins.user_id = u.id 

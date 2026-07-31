@@ -25,6 +25,10 @@ export class InstructorService {
     return this.http.get<InstructorPublicResponse>(`${this.apiUrl}/public/${id}`);
   }
 
+  getPublicInstructorByCourseId(courseId: string): Observable<InstructorPublicResponse> {
+    return this.http.get<InstructorPublicResponse>(`${this.apiUrl}/public/by-course/${courseId}`);
+  }
+
   updateInstructor(id: string, formData: FormData): Observable<void> {
     return this.http.put<void>(`${this.apiUrl}/${id}`, formData);
   }

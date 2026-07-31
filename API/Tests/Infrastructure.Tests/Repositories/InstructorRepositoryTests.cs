@@ -10,6 +10,7 @@ using Moq;
 using Moq.Dapper;
 using FluentAssertions;
 using Dapper;
+using Domain.Enums;
 
 namespace Infrastructure.Tests.Repositories;
 
@@ -115,7 +116,15 @@ public class InstructorRepositoryTests
     {
         // Arrange
         var id = Guid.NewGuid();
-        var expected = new InstructorPublicResponseDto { Id = id };
+        var expected = new InstructorPublicResponseDto 
+        { 
+            Id = id, 
+            FirstName = "John", 
+            LastName = "Doe",
+            Email = "john@example.com",
+            UserName = "johndoe",
+            Gender = Gender.Male
+        };
 
         _connectionMock
             .SetupDapperAsync(c => c.QueryFirstOrDefaultAsync<InstructorPublicResponseDto>(
@@ -128,6 +137,10 @@ public class InstructorRepositoryTests
         // Assert
         result.Should().NotBeNull();
         result!.Id.Should().Be(id);
+        result.FirstName.Should().Be("John");
+        result.LastName.Should().Be("Doe");
+        result.Email.Should().Be("john@example.com");
+        result.UserName.Should().Be("johndoe");
     }
 
     [Fact]
@@ -153,7 +166,15 @@ public class InstructorRepositoryTests
     {
         // Arrange
         var id = Guid.NewGuid();
-        var expected = new InstructorPrivateResponseDto { Id = id };
+        var expected = new InstructorPrivateResponseDto 
+        { 
+            Id = id, 
+            FirstName = "Alice", 
+            LastName = "Smith",
+            Email = "alice@example.com",
+            UserName = "alicesmith",
+            Gender = Gender.Female
+        };
 
         _connectionMock
             .SetupDapperAsync(c => c.QueryFirstOrDefaultAsync<InstructorPrivateResponseDto>(
@@ -166,6 +187,10 @@ public class InstructorRepositoryTests
         // Assert
         result.Should().NotBeNull();
         result!.Id.Should().Be(id);
+        result.FirstName.Should().Be("Alice");
+        result.LastName.Should().Be("Smith");
+        result.Email.Should().Be("alice@example.com");
+        result.UserName.Should().Be("alicesmith");
     }
 
     [Fact]

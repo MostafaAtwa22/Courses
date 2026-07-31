@@ -9,6 +9,7 @@ namespace Application.Common.Interfaces.Identity
         Task<Instructor?> GetByUserIdAsync(string userId, CancellationToken ct = default);
         Task<Instructor?> GetEntityByIdAsync(Guid id, CancellationToken ct = default);
         Task<InstructorPublicResponseDto?> GetPublicByIdAsync(Guid id, CancellationToken ct = default);
+        Task<InstructorPublicResponseDto?> GetPublicByCourseIdAsync(Guid courseId, CancellationToken ct = default);
         Task<InstructorPrivateResponseDto?> GetPrivateByIdAsync(Guid id, CancellationToken ct = default);
         Task<PaginatedResult<InstructorPrivateResponseDto>> GetAllAsync(InstructorQueryParams queryParams, CancellationToken ct = default);
         Task<Guid> CreateAsync(Instructor instructor, CancellationToken ct = default);

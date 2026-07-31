@@ -21,6 +21,14 @@
   --success: #00875a;
   --error: #ba1a1a;
 
+  /* Status Colors - Light Mode */
+  --status-pending-bg: rgba(251, 191, 36, 0.25);
+  --status-pending-color: #f59e0b;
+  --status-verfied-bg: rgba(34, 197, 94, 0.25);
+  --status-verfied-color: #22c55e;
+  --status-unverfied-bg: rgba(239, 68, 68, 0.25);
+  --status-unverfied-color: #ef4444;
+
   /* Shapes */
   --radius-sm: 4px;
   --radius-md: 8px;
@@ -51,6 +59,14 @@
   --border-color: #334155;
   --success: #10b981;
   --error: #ef4444;
+
+  /* Status Colors - Dark Mode */
+  --status-pending-bg: rgba(251, 191, 36, 0.35);
+  --status-pending-color: #fcd34d;
+  --status-verfied-bg: rgba(34, 197, 94, 0.35);
+  --status-verfied-color: #4ade80;
+  --status-unverfied-bg: rgba(239, 68, 68, 0.35);
+  --status-unverfied-color: #f87171;
 }
 
 /* Smooth theme transition */

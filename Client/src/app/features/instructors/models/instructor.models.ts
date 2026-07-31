@@ -18,7 +18,6 @@ export interface InstructorResponse {
   title: string;
   linkedInProfileUrl: string;
   gitHubProfileUrl: string;
-  status: string;
   averageRate: number;
   totalReviews: number;
   totalStudents: number;
@@ -28,6 +27,7 @@ export interface InstructorResponse {
 export interface InstructorPrivateResponse extends InstructorResponse {
   phoneNumber: string;
   cvUrl: string;
+  status: string;
 }
 
 export interface InstructorPublicResponse extends InstructorResponse {

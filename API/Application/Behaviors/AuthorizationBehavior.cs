@@ -29,7 +29,7 @@ namespace Application.Behaviors
             if (request.RequireOwnership)
             {
                 var instructor = await _instructorRepo.GetByUserIdAsync(userId, cancellationToken);
-                if (instructor == null || instructor.Id != request.ResourceId)
+                if (instructor == null || (instructor.Id != request.ResourceId && !userId.Equals(request.ResourceId.ToString(), StringComparison.OrdinalIgnoreCase)))
                 {
                     throw new ForbiddenException("You are not authorized to access this resource.");
                 }

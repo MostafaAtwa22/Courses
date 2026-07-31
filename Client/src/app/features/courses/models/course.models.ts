@@ -63,6 +63,7 @@ export interface CourseResponse extends BaseResponseModel {
     instructorName: string;
     instructorProfilePicture: string;
     instructorTitle: string;
+    instructorId?: string;
     instructorBio?: string;
     sections?: SectionResponse[];
     reviews?: ReviewResponse[];

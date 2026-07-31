@@ -11,11 +11,12 @@ import { InstructorPrivateResponse } from '../../instructors/models/instructor.m
 import { InstructorStatsComponent } from '../instructor-profile/instructor-stats/instructor-stats.component';
 import { InstructorAboutComponent } from '../instructor-profile/instructor-about/instructor-about.component';
 import { InstructorAdditionalDataComponent } from '../instructor-profile/instructor-additional-data/instructor-additional-data.component';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [CommonModule, HeaderComponent, FooterComponent, InstructorStatsComponent, InstructorAboutComponent, InstructorAdditionalDataComponent],
+  imports: [CommonModule, HeaderComponent, FooterComponent, InstructorStatsComponent, InstructorAboutComponent, InstructorAdditionalDataComponent, RouterLink],
   templateUrl: './profile.html',
   styleUrl: './profile.scss'
 })
