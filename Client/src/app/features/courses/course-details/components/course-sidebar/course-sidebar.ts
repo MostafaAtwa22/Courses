@@ -1,11 +1,12 @@
 import { Component, Input, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CourseResponse, CourseDiscountResponse } from '../../../models/course.models';
+import { VideoPlayerComponent } from '../../../../../shared/components/video-player/video-player.component';
 
 @Component({
   selector: 'app-course-sidebar',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, VideoPlayerComponent],
   templateUrl: './course-sidebar.html',
   styleUrl: './course-sidebar.scss'
 })

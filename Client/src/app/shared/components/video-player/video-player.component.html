@@ -1,0 +1,68 @@
+<div class="video-player-wrapper" [class.compact-mode]="compactMode" #videoContainer>
+  <video #videoPlayer
+    [autoplay]="autoplay"
+    class="w-100 h-100" 
+    [src]="getFullUrl(videoUrl)">
+    Your browser does not support the video tag.
+  </video>
+  
+  <!-- Custom Video Controls -->
+  <div class="video-controls">
+    <!-- Progress Bar -->
+    <div class="progress-bar-container">
+      <div class="progress-bar-bg" (click)="seekTo($event)">
+        <div class="progress-bar-fill" [style.width.%]="(currentTime / duration) * 100"></div>
+        <div class="progress-bar-thumb" [style.left.%]="(currentTime / duration) * 100"></div>
+      </div>
+    </div>
+    
+    <!-- Control Buttons -->
+    <div class="controls-row">
+      <div class="controls-left">
+        <button class="control-btn" (click)="togglePlay()">
+          <i class="fas" [ngClass]="isPlaying ? 'fa-pause' : 'fa-play'"></i>
+        </button>
+        
+        <div class="time-display">
+          <span>{{ formatTime(currentTime) }}</span>
+          <span class="time-separator">/</span>
+          <span>{{ formatTime(duration) }}</span>
+        </div>
+        
+        <div class="volume-control">
+          <button class="control-btn" (click)="toggleMute()">
+            <i class="fas" [ngClass]="getVolumeIcon()"></i>
+          </button>
+          <input type="range" class="volume-slider" min="0" max="1" step="0.05" [value]="volume" (input)="setVolume($any($event.target).value)">
+        </div>
+      </div>
+      
+      <div class="controls-right">
+        <div class="speed-control" [class.show-menu]="showSpeedMenu">
+          <button class="control-btn" (click)="showSpeedMenu = !showSpeedMenu">
+            <span>{{ playbackRate }}x</span>
+          </button>
+          <div class="speed-menu">
+            <button *ngFor="let speed of playbackSpeeds" class="speed-option" 
+                    [class.active]="speed === playbackRate"
+                    (click)="setPlaybackRate(speed)">
+              {{ speed }}x
+            </button>
+          </div>
+        </div>
+        
+        <a *ngIf="showDownload && videoUrl" [href]="getFullUrl(videoUrl)" [download]="downloadTitle || 'video'" class="control-btn" title="Download">
+          <i class="fas fa-download"></i>
+        </a>
+        
+        <button class="control-btn" (click)="togglePictureInPicture()" title="Picture in Picture">
+          <i class="fas fa-clone"></i>
+        </button>
+        
+        <button class="control-btn" (click)="goFullscreen()" title="Fullscreen">
+          <i class="fas" [ngClass]="isFullscreen ? 'fa-compress' : 'fa-expand'"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

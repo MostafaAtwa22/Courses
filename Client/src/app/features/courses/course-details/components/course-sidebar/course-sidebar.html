@@ -11,7 +11,13 @@
     </div>
     
     <div *ngIf="isPlayingVideo" class="video-preview">
-      <video [src]="course?.introVideoUrl" controls autoplay class="w-100" style="height: 220px; background: black;"></video>
+      <app-video-player
+        [videoUrl]="course?.introVideoUrl"
+        [autoplay]="true"
+        [showDownload]="false"
+        [compactMode]="true">
+      </app-video-player>
+      
       <button class="btn btn-sm btn-dark position-absolute top-0 end-0 m-2" (click)="toggleVideo()">
         <i class="fas fa-times"></i>
       </button>

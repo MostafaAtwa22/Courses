@@ -63,3 +63,10 @@
     background-color: var(--surface-variant);
   }
 }
+
+.video-preview {
+  position: relative;
+  background: black;
+  height: 220px;
+  overflow: hidden;
+}

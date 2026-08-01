@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { InstructorService } from '../services/instructor.service';
 import { InstructorPublicResponse } from '../models/instructor.models';
-import { DecimalPipe } from '../../../shared/pipes/decimal.pipe';
 import { HeaderComponent } from '../../../shared/components/header/header';
 import { FooterComponent } from '../../../shared/components/footer/footer';
 import { ThemeService } from '../../../core/services/theme.service';
@@ -11,7 +10,7 @@ import { ThemeService } from '../../../core/services/theme.service';
 @Component({
   selector: 'app-instructor-public-profile',
   standalone: true,
-  imports: [CommonModule, DecimalPipe, HeaderComponent, FooterComponent],
+  imports: [CommonModule, HeaderComponent, FooterComponent],
   templateUrl: './public-profile.component.html',
   styleUrl: './public-profile.component.scss'
 })

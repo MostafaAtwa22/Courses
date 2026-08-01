@@ -6,11 +6,13 @@ import { CourseService } from '../../../services/course.service';
 import { SectionService } from '../../../services/section.service';
 import { ContentResponse, ContentType, CourseResponse, SectionResponse } from '../../../models/course.models';
 import { forkJoin } from 'rxjs';
+import { VideoPlayerComponent } from '../../../../../shared/components/video-player/video-player.component';
+import { environment } from '../../../../../../environments/environment';
 
 @Component({
   selector: 'app-content-player',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, VideoPlayerComponent],
   templateUrl: './content-player.html',
   styleUrl: './content-player.scss'
 })
@@ -31,10 +33,18 @@ export class ContentPlayerComponent implements OnInit, OnDestroy {
 
   expandedSections = new Set<string>();
   
-  // Flattened list of all contents for navigation
   allContents: ContentResponse[] = [];
   nextContent?: ContentResponse;
   previousContent?: ContentResponse;
+  isSidebarOpen = false;
+
+  getFullUrl(relativeUrl?: string): string {
+    if (!relativeUrl) return '';
+    if (relativeUrl.startsWith('http://') || relativeUrl.startsWith('https://')) {
+      return relativeUrl;
+    }
+    return `${environment.apiUrl}/${relativeUrl.replace(/^\//, '')}`;
+  }
 
   ngOnInit(): void {
     document.body.style.overflow = 'hidden';
@@ -60,6 +70,13 @@ export class ContentPlayerComponent implements OnInit, OnDestroy {
     document.body.style.overflow = 'auto';
   }
 
+  isVideoContent(content: ContentResponse | undefined): boolean {
+    if (!content) return false;
+    // Check both numeric type (0) and string type ("Video")
+    const typeValue = content.type as any;
+    return typeValue === ContentType.Video || typeValue === 'Video' || typeValue === 'video';
+  }
+
   loadCurrentContent(id: string): void {
     this.loading = true;
     this.contentService.getById(id).subscribe({
@@ -67,6 +84,7 @@ export class ContentPlayerComponent implements OnInit, OnDestroy {
         this.content = content;
         this.loading = false;
         this.expandedSections.add(content.sectionId);
+        this.updateNavigation(id);
       },
       error: (err) => {
         console.error('Error loading content:', err);
@@ -141,6 +159,10 @@ export class ContentPlayerComponent implements OnInit, OnDestroy {
 
   close(): void {
     this.router.navigate(['../../'], { relativeTo: this.route });
+  }
+
+  toggleSidebar(): void {
+    this.isSidebarOpen = !this.isSidebarOpen;
   }
 
   openFile(): void {
