@@ -15,20 +15,26 @@ namespace Application.Features.Instructors.Commands.Create
                 .WithMessage("Title must be at least 3 characters long.");
 
             RuleFor(x => x.Dto.LinkedInProfileUrl)
-                .NotEmpty()
-                .WithMessage("LinkedIn Profile Url is required.")
-                .MaximumLength(200)
-                .WithMessage("LinkedIn Profile Url must not exceed 100 characters.")
-                .MinimumLength(50)
-                .WithMessage("LinkedIn Profile Url must be at least 50 characters long.");
+                .Must(url =>
+                {
+                    if (!Uri.TryCreate(url, UriKind.Absolute, out var uri))
+                        return false;
+
+                    return uri.Host.Equals("linkedin.com", StringComparison.OrdinalIgnoreCase) ||
+                           uri.Host.Equals("www.linkedin.com", StringComparison.OrdinalIgnoreCase);
+                })
+                .WithMessage("Please enter a valid LinkedIn URL.");
 
             RuleFor(x => x.Dto.GitHubProfileUrl)
-                .NotEmpty()
-                .WithMessage("Github Profile Url is required.")
-                .MaximumLength(200)
-                .WithMessage("Github Profile Url must not exceed 100 characters.")
-                .MinimumLength(50)
-                .WithMessage("Github Profile Url must be at least 50 characters long.");
+                .Must(url =>
+                {
+                    if (!Uri.TryCreate(url, UriKind.Absolute, out var uri))
+                        return false;
+
+                    return uri.Host.Equals("github.com", StringComparison.OrdinalIgnoreCase) ||
+                           uri.Host.Equals("www.github.com", StringComparison.OrdinalIgnoreCase);
+                })
+                .WithMessage("Please enter a valid GitHub URL.");
 
             RuleFor(x => x.Dto.Bio)
                 .NotEmpty()
@@ -37,20 +43,20 @@ namespace Application.Features.Instructors.Commands.Create
                 .WithMessage("Description must not exceed 3000 characters.")
                 .MinimumLength(50)
                 .WithMessage("Description must be at least 50 characters long.");
-            
+
             RuleFor(x => x.Dto.CvUrl)
                 .NotNull()
-                .WithMessage("Picture is required.");
+                .WithMessage("CV is required.");
 
             RuleFor(x => x.Dto.CvUrl.ContentType)
-                .Must(type => type is "image/pdf" or "image/do" or "image/webp")
+                .Must(type => type is "application/pdf" or "application/vnd.openxmlformats-officedocument.wordprocessingml.document")
                 .When(x => x.Dto.CvUrl != null)
-                .WithMessage("Only JPEG, PNG, or WebP images are allowed.");
+                .WithMessage("Only PDF or DOCX files are allowed.");
 
             RuleFor(x => x.Dto.CvUrl.Length)
                 .LessThanOrEqualTo(5 * 1024 * 1024)
                 .When(x => x.Dto.CvUrl != null)
-                .WithMessage("Image size must not exceed 5MB.");
+                .WithMessage("File size must not exceed 5MB.");
         }
     }
 }

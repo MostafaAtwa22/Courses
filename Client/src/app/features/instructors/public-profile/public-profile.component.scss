@@ -3,6 +3,8 @@
   background-color: var(--bg-color);
   color: var(--text-color);
   transition: background-color 0.3s ease, color 0.3s ease;
+  width: 100%;
+  overflow-x: hidden;
 }
 
 // Loading State
@@ -89,6 +91,9 @@
   max-width: 1200px;
   margin: 0 auto;
   padding: 2rem 1.5rem;
+  width: 100%;
+  overflow-x: hidden;
+  box-sizing: border-box;
 }
 
 // Header Section
@@ -341,6 +346,9 @@
   padding: 2rem;
   margin-bottom: 2.5rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  overflow: hidden;
+  width: 100%;
+  max-width: 100%;
 
   @media (min-width: 768px) {
     padding: 2.5rem;
@@ -365,11 +373,24 @@
   }
 
   .about-content {
+    width: 100%;
+    overflow: hidden;
+    max-width: 100%;
+    box-sizing: border-box;
+    
     .bio-text {
       line-height: 1.9;
       color: var(--text-color);
       margin-bottom: 1.25rem;
       font-size: 1rem;
+      word-wrap: break-word !important;
+      overflow-wrap: break-word !important;
+      white-space: normal !important;
+      width: 100% !important;
+      max-width: 100% !important;
+      overflow: hidden !important;
+      box-sizing: border-box !important;
+      word-break: break-word !important;
 
       @media (min-width: 768px) {
         font-size: 1.0625rem;
@@ -381,6 +402,9 @@
         line-clamp: 3;
         -webkit-box-orient: vertical;
         overflow: hidden;
+        text-overflow: ellipsis;
+        word-break: break-word;
+        overflow-wrap: break-word;
       }
     }
 

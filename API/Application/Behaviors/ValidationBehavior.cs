@@ -16,7 +16,7 @@ namespace Application.Behaviors
                 var failures = results.SelectMany(r => r.Errors).Where(f => f is not null).ToList();
             
                 if (failures.Count != 0)
-                    throw new FluentValidation.ValidationException(failures);
+                    throw new Common.Exceptions.ValidationException(failures);
             }
 
             return await next(cancellationToken);

@@ -103,12 +103,12 @@ namespace API.Endpoints
             return result is not null ? TypedResults.Ok(result) : TypedResults.NotFound();
         }
 
-        public static async Task<Results<CreatedAtRoute<InstructorPublicResponseDto>, BadRequest>> CreateInstructor(
+        public static async Task<Results<CreatedAtRoute<InstructorPrivateResponseDto>, BadRequest>> CreateInstructor(
             [FromForm] InstructorCreateDto request, IMediator mediator)
         {
             var id = await mediator.Send(new CreateInstructorCommand(request));
-            var instructor = await mediator.Send(new GetPublicInstructorByIdQuery(id));
-            return TypedResults.CreatedAtRoute(instructor!, nameof(GetPublicInstructor), new { id });
+            var instructor = await mediator.Send(new GetPrivateInstructorByIdQuery(id));
+            return TypedResults.CreatedAtRoute(instructor!, nameof(GetPrivateInstructor), new { id });
         }
 
         public static async Task<Results<NoContent, NotFound>> UpdateInstructor(

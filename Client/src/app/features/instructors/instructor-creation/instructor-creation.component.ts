@@ -1,28 +1,31 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule, Validators, FormGroup } from '@angular/forms';
 import { InstructorService } from '../services/instructor.service';
+import { SessionService } from '../../auth/services/session.service';
 import { AuthService } from '../../auth/services/auth.service';
 
 @Component({
   selector: 'app-instructor-creation',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule],
   templateUrl: './instructor-creation.component.html',
   styleUrl: './instructor-creation.component.scss'
 })
 export class InstructorCreationComponent {
   private fb = inject(FormBuilder);
   private instructorService = inject(InstructorService);
-  private authService = inject(AuthService);
+  private sessionService = inject(SessionService);
   private router = inject(Router);
+  private authService = inject(AuthService);
+  currentUser = this.sessionService.currentUser;
 
   instructorForm = this.fb.group({
     bio: ['', [Validators.required, Validators.minLength(50), Validators.maxLength(1000)]],
     title: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(100)]],
-    linkedInProfileUrl: ['', [Validators.pattern(/^https?:\/\/(www\.)?linkedin\.com\/.*$/)]],
-    gitHubProfileUrl: ['', [Validators.pattern(/^https?:\/\/(www\.)?github\.com\/.*$/)]],
+    linkedInProfileUrl: ['', [Validators.required, Validators.pattern(/^https?:\/\/(www\.)?linkedin\.com\/.*$/)]],
+    gitHubProfileUrl: ['', [Validators.required, Validators.pattern(/^https?:\/\/(www\.)?github\.com\/.*$/)]],
     cvUrl: [null as File | null, [Validators.required]]
   });
 
@@ -31,6 +34,7 @@ export class InstructorCreationComponent {
   successMessage = '';
   cvFileName = '';
   cvFileSize = '';
+  selectedFile: File | null = null;
 
   onFileSelected(event: Event) {
     const input = event.target as HTMLInputElement;
@@ -42,6 +46,7 @@ export class InstructorCreationComponent {
       if (!allowedTypes.includes(file.type)) {
         this.errorMessage = 'Only PDF and DOCX files are allowed.';
         this.instructorForm.patchValue({ cvUrl: null });
+        this.selectedFile = null;
         return;
       }
 
@@ -50,12 +55,14 @@ export class InstructorCreationComponent {
       if (file.size > maxSize) {
         this.errorMessage = 'File size must be less than 5MB.';
         this.instructorForm.patchValue({ cvUrl: null });
+        this.selectedFile = null;
         return;
       }
 
       this.cvFileName = file.name;
       this.cvFileSize = this.formatFileSize(file.size);
       this.instructorForm.patchValue({ cvUrl: file });
+      this.selectedFile = file;
       this.errorMessage = '';
     }
   }
@@ -85,17 +92,28 @@ export class InstructorCreationComponent {
     formData.append('LinkedInProfileUrl', formValue.linkedInProfileUrl || '');
     formData.append('GitHubProfileUrl', formValue.gitHubProfileUrl || '');
     
-    if (formValue.cvUrl) {
-      formData.append('CvUrl', formValue.cvUrl);
+    if (this.selectedFile) {
+      formData.append('CvUrl', this.selectedFile, this.selectedFile.name);
     }
 
     this.instructorService.createInstructor(formData).subscribe({
       next: () => {
-        this.isLoading = false;
         this.successMessage = 'Your profile has been created and is pending admin verification.';
-        setTimeout(() => {
-          this.router.navigate(['/']);
-        }, 3000);
+        // Refresh the JWT token so the has_instructor_profile claim is updated
+        this.authService.refreshToken().subscribe({
+          next: () => {
+            this.isLoading = false;
+            setTimeout(() => {
+              this.router.navigate(['/']);
+            }, 3000);
+          },
+          error: () => {
+            this.isLoading = false;
+            setTimeout(() => {
+              this.router.navigate(['/']);
+            }, 3000);
+          }
+        });
       },
       error: (err) => {
         this.isLoading = false;

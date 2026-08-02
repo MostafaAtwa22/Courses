@@ -1,6 +1,3 @@
-using Application.Common.Interfaces.Identity;
-using Application.Common.Mappings;
-
 namespace Application.Features.Instructors.Commands.Create
 {
     public sealed class CreateInstructorCommandHandler(

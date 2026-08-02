@@ -2,6 +2,14 @@
   line-height: 1.6;
   margin-bottom: 0.5rem;
   color: var(--text-color);
+  word-wrap: break-word !important;
+  overflow-wrap: break-word !important;
+  white-space: normal !important;
+  word-break: break-word !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
   &.collapsed {
     display: -webkit-box;
     -webkit-line-clamp: 3;

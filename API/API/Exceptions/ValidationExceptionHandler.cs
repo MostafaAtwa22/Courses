@@ -12,7 +12,7 @@ namespace API.Exceptions
             Exception exception,
             CancellationToken cancellationToken)
         {
-            if (exception is not ValidationException ex)
+            if (exception is not Application.Common.Exceptions.ValidationException ex)
                 return false;
 
             logger.LogWarning(ex, "Validation exception occurred: {Message}", ex.Message);
