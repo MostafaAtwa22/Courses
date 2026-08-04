@@ -1,0 +1,59 @@
+<div class="analytics-card">
+  <div class="card-header d-flex justify-content-between align-items-center mb-3">
+    <div>
+      <h5 class="card-title">
+        <i class="fa-solid fa-graduation-cap text-indigo me-2"></i> Top Course Performance
+      </h5>
+      <p class="card-subtitle text-muted">Enrollments, Completion Rate & Student Ratings</p>
+    </div>
+    <button class="btn btn-sm btn-outline-secondary">View All Courses</button>
+  </div>
+
+  <div class="table-responsive">
+    <table class="table align-middle custom-table">
+      <thead>
+        <tr>
+          <th>Course Title</th>
+          <th>Instructor</th>
+          <th>Students</th>
+          <th>Completion</th>
+          <th>Rating</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of courses">
+          <td>
+            <div class="course-info">
+              <span class="course-title">{{ item.title }}</span>
+              <span class="course-category">{{ item.category }}</span>
+            </div>
+          </td>
+          <td class="text-secondary fw-semibold">{{ item.instructor }}</td>
+          <td>
+            <span class="badge bg-light text-dark border">
+              <i class="fa-solid fa-users text-primary me-1"></i> {{ item.enrolledStudents }}
+            </span>
+          </td>
+          <td>
+            <div class="d-flex align-items-center gap-2">
+              <div class="progress flex-grow-1" style="height: 6px; min-width: 80px;">
+                <div
+                  class="progress-bar"
+                  role="progressbar"
+                  [style.width.%]="item.completionRate"
+                  [style.background-color]="item.progressColor"
+                ></div>
+              </div>
+              <span class="completion-val">{{ item.completionRate }}%</span>
+            </div>
+          </td>
+          <td>
+            <span class="rating-badge">
+              <i class="fa-solid fa-star text-warning me-1"></i> {{ item.avgRating }}
+            </span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

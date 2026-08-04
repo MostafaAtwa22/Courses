@@ -21,11 +21,12 @@ namespace Application.Tests.Contents.Queries
         public async Task Handle_ShouldReturnContent_WhenExists()
         {
             var id = Guid.NewGuid();
+            var courseId = Guid.NewGuid();
             var expected = new ContentResponseDto { Id = id };
             _repoMock.Setup(x => x.GetByIdAsync(id, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(expected);
 
-            var result = await _handler.Handle(new GetContentByIdQuery(id), CancellationToken.None);
+            var result = await _handler.Handle(new GetContentByIdQuery(id, courseId), CancellationToken.None);
 
             result.Should().Be(expected);
         }

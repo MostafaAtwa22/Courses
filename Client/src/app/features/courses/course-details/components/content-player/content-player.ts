@@ -79,7 +79,8 @@ export class ContentPlayerComponent implements OnInit, OnDestroy {
 
   loadCurrentContent(id: string): void {
     this.loading = true;
-    this.contentService.getById(id).subscribe({
+    const courseId = this.route.snapshot.parent?.paramMap.get('id') || '';
+    this.contentService.getById(id, courseId).subscribe({
       next: (content) => {
         this.content = content;
         this.loading = false;
@@ -102,10 +103,10 @@ export class ContentPlayerComponent implements OnInit, OnDestroy {
     this.sectionService.getByCourseId(courseId, { pageSize: 100 }).subscribe({
       next: (result) => {
         this.sections = result.items || [];
-        
+
         // 3. For each section, load its contents
-        const contentObservables = this.sections.map(s => this.contentService.getBySection(s.id));
-        
+        const contentObservables = this.sections.map(s => this.contentService.getBySection(s.id, courseId));
+
         forkJoin(contentObservables).subscribe({
           next: (allSectionContents) => {
             this.allContents = [];
@@ -113,7 +114,7 @@ export class ContentPlayerComponent implements OnInit, OnDestroy {
               this.sections[index].contents = contents;
               this.allContents.push(...contents);
             });
-            
+
             if (this.content) {
               this.updateNavigation(this.content.id);
             }

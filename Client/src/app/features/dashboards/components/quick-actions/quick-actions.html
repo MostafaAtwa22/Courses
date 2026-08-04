@@ -1,0 +1,21 @@
+<div class="quick-actions-card">
+  <div class="card-header">
+    <h5 class="card-title">
+      <i class="fa-solid fa-bolt text-warning me-2"></i> Quick Actions
+    </h5>
+  </div>
+  <div class="actions-grid">
+    <button
+      *ngFor="let item of actions"
+      class="action-btn"
+      [ngClass]="item.colorClass"
+      (click)="onActionClick(item.actionKey)"
+    >
+      <div class="action-icon">
+        <i [class]="item.icon"></i>
+      </div>
+      <span class="action-label">{{ item.label }}</span>
+      <span *ngIf="item.badge" class="action-badge">{{ item.badge }}</span>
+    </button>
+  </div>
+</div>

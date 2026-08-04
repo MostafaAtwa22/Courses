@@ -29,6 +29,7 @@ namespace API.Tests.Endpoints
         {
             // Arrange
             var sectionId = Guid.NewGuid();
+            var courseId = Guid.NewGuid();
             var expectedContents = new List<ContentResponseDto>
             {
                 new ContentResponseDto { Id = Guid.NewGuid(), Title = "Content 1", SectionId = sectionId },
@@ -38,7 +39,7 @@ namespace API.Tests.Endpoints
                 .ReturnsAsync(expectedContents);
 
             // Act
-            var result = await ContentsEndpoints.GetBySection(sectionId, _mediatorMock.Object);
+            var result = await ContentsEndpoints.GetBySection(sectionId, courseId, _mediatorMock.Object);
 
             // Assert
             var okResult = result.Result as Ok<IReadOnlyList<ContentResponseDto>>;
@@ -70,12 +71,13 @@ namespace API.Tests.Endpoints
         {
             // Arrange
             var id = Guid.NewGuid();
+            var courseId = Guid.NewGuid();
             var expectedContent = new ContentResponseDto { Id = id, Title = "Test Content" };
             _mediatorMock.Setup(m => m.Send(It.IsAny<GetContentByIdQuery>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(expectedContent);
 
             // Act
-            var result = await ContentsEndpoints.GetContentById(id, _mediatorMock.Object);
+            var result = await ContentsEndpoints.GetContentById(id, courseId, _mediatorMock.Object);
 
             // Assert
             var okResult = result.Result as Ok<ContentResponseDto>;
@@ -88,11 +90,12 @@ namespace API.Tests.Endpoints
         {
             // Arrange
             var id = Guid.NewGuid();
+            var courseId = Guid.NewGuid();
             _mediatorMock.Setup(m => m.Send(It.IsAny<GetContentByIdQuery>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync((ContentResponseDto)null!);
 
             // Act
-            var result = await ContentsEndpoints.GetContentById(id, _mediatorMock.Object);
+            var result = await ContentsEndpoints.GetContentById(id, courseId, _mediatorMock.Object);
 
             // Assert
             var notFoundResult = result.Result as NotFound;

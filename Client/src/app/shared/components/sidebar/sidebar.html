@@ -1,0 +1,50 @@
+<aside class="dashboard-sidebar" [class.collapsed]="isCollapsed">
+  <div class="sidebar-header d-flex align-items-center justify-content-between">
+    <div class="brand-info d-flex align-items-center gap-2" *ngIf="!isCollapsed">
+      <div class="brand-icon">
+        <i class="fa-solid fa-graduation-cap"></i>
+      </div>
+      <div class="brand-text">
+        <span class="brand-title">EduDash</span>
+        <span class="role-tag">{{ role | titlecase }}</span>
+      </div>
+    </div>
+    <button class="btn-toggle" (click)="onToggle()" title="Toggle Navigation Sidebar">
+      <i [class]="isCollapsed ? 'fa-solid fa-chevron-right' : 'fa-solid fa-chevron-left'"></i>
+    </button>
+  </div>
+
+  <div class="sidebar-body">
+    <nav class="nav-list">
+      <a
+        *ngFor="let item of navItems"
+        [routerLink]="item.route"
+        routerLinkActive="active"
+        class="nav-link-item"
+        [title]="isCollapsed ? item.label : ''"
+      >
+        <i [class]="item.icon + ' nav-icon'"></i>
+        <span class="nav-label" *ngIf="!isCollapsed">{{ item.label }}</span>
+        <span
+          *ngIf="item.badge && !isCollapsed"
+          class="badge nav-badge"
+          [ngClass]="item.badgeColor || 'bg-primary'"
+        >
+          {{ item.badge }}
+        </span>
+      </a>
+    </nav>
+  </div>
+
+  <div class="sidebar-footer" *ngIf="!isCollapsed">
+    <div class="user-mini-card">
+      <div class="user-avatar-placeholder">
+        <i class="fa-solid fa-user"></i>
+      </div>
+      <div class="user-meta">
+        <span class="user-name">Active Session</span>
+        <span class="user-status text-success">&bull; Online</span>
+      </div>
+    </div>
+  </div>
+</aside>

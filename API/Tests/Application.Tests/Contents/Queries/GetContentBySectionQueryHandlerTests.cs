@@ -22,12 +22,13 @@ namespace Application.Tests.Contents.Queries
         public async Task Handle_ShouldReturnContentList()
         {
             var sectionId = Guid.NewGuid();
+            var courseId = Guid.NewGuid();
             var expected = new List<ContentResponseDto>();
             
             _repoMock.Setup(x => x.GetBySectionAsync(sectionId, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(expected);
 
-            var result = await _handler.Handle(new GetContentBySectionQuery(sectionId), CancellationToken.None);
+            var result = await _handler.Handle(new GetContentBySectionQuery(sectionId, courseId), CancellationToken.None);
 
             result.Should().BeEquivalentTo(expected);
         }

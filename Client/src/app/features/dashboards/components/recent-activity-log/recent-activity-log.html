@@ -1,0 +1,22 @@
+<div class="activity-card">
+  <div class="card-header d-flex justify-content-between align-items-center mb-3">
+    <h5 class="card-title">
+      <i class="fa-solid fa-clock-rotate-left text-info me-2"></i> Activity Log
+    </h5>
+    <button class="btn btn-sm btn-link text-decoration-none p-0">View All</button>
+  </div>
+
+  <div class="activity-list">
+    <div class="activity-item" *ngFor="let item of activities">
+      <img [src]="item.user.avatar" [alt]="item.user.name" class="user-avatar" />
+      <div class="activity-details">
+        <p class="activity-text">
+          <strong class="user-name">{{ item.user.name }}</strong>
+          <span class="action-desc"> {{ item.action }} </span>
+          <span class="target-name">"{{ item.target }}"</span>
+        </p>
+        <span class="activity-time"><i class="fa-regular fa-clock me-1"></i>{{ item.timestamp }}</span>
+      </div>
+    </div>
+  </div>
+</div>

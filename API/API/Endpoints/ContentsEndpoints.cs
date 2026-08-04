@@ -15,20 +15,23 @@ namespace API.Endpoints
             var group = app.MapGroup("/contents")
                 .WithTags("Contents");
 
-            group.MapGet("/section/{sectionId:guid}", GetBySection)
+            group.MapGet("/section/{sectionId:guid}/{courseId:guid}", GetBySection)
                 .WithName(nameof(GetBySection))
                 .Produces<IEnumerable<ContentResponseDto>>(StatusCodes.Status200OK)
-                .Produces(StatusCodes.Status400BadRequest);
+                .Produces(StatusCodes.Status400BadRequest)
+                .RequireAuthorization();
 
             group.MapGet("/course/{courseId:guid}", GetByCourse)
                 .WithName(nameof(GetByCourse))
                 .Produces<PaginatedResult<ContentResponseDto>>(StatusCodes.Status200OK)
-                .Produces(StatusCodes.Status400BadRequest);
+                .Produces(StatusCodes.Status400BadRequest)
+                .RequireAuthorization();
 
-            group.MapGet("/{id:guid}", GetContentById)
+            group.MapGet("/{id:guid}/{courseId:guid}", GetContentById)
                 .WithName(nameof(GetContentById))
                 .Produces(StatusCodes.Status200OK)
-                .Produces(StatusCodes.Status404NotFound);
+                .Produces(StatusCodes.Status404NotFound)
+                .RequireAuthorization();
 
             group.MapPost("/", CreateContent)
                 .WithName(nameof(CreateContent))
@@ -59,9 +62,10 @@ namespace API.Endpoints
 
         public static async Task<Results<Ok<IReadOnlyList<ContentResponseDto>>, BadRequest>> GetBySection(
             Guid sectionId,
+            Guid courseId,
             IMediator mediator)
         {
-            var result = await mediator.Send(new GetContentBySectionQuery(sectionId));
+            var result = await mediator.Send(new GetContentBySectionQuery(sectionId, courseId));
             return TypedResults.Ok(result);
         }
 
@@ -75,9 +79,11 @@ namespace API.Endpoints
         }
 
         public static async Task<Results<Ok<ContentResponseDto>, NotFound>> GetContentById(
-            Guid id, IMediator mediator)
+            Guid id,
+            Guid courseId,
+            IMediator mediator)
         {
-            var result = await mediator.Send(new GetContentByIdQuery(id));
+            var result = await mediator.Send(new GetContentByIdQuery(id, courseId));
             return result is not null ? TypedResults.Ok(result) : TypedResults.NotFound();
         }
 
@@ -85,9 +91,9 @@ namespace API.Endpoints
             [FromForm] ContentCreateDto request, IMediator mediator)
         {
             var id = await mediator.Send(new CreateContentCommand(request));
-            var content = await mediator.Send(new GetContentByIdQuery(id));
+            var content = await mediator.Send(new GetContentByIdQuery(id, Guid.Empty));
 
-            return TypedResults.CreatedAtRoute(content!, nameof(GetContentById), new { id });
+            return TypedResults.CreatedAtRoute(content!, nameof(GetContentById), new { id, courseId = Guid.Empty });
         }
 
         public static async Task<Results<NoContent, NotFound>> UpdateContent(

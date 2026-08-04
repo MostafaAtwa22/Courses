@@ -1,0 +1,31 @@
+<div class="schedule-card">
+  <div class="card-header d-flex justify-content-between align-items-center mb-3">
+    <h5 class="card-title">
+      <i class="fa-solid fa-calendar-day text-purple me-2"></i> Today's Schedule
+    </h5>
+    <span class="badge bg-purple-subtle text-purple border">4 Events</span>
+  </div>
+
+  <div class="timeline-container">
+    <div class="timeline-item" *ngFor="let item of schedule" [class.live-event]="item.status === 'Live'">
+      <div class="timeline-badge" [ngClass]="'badge-' + item.type.toLowerCase()">
+        <i [class]="item.type === 'Lecture' ? 'fa-solid fa-chalkboard-user' : item.type === 'Lab' ? 'fa-solid fa-flask' : item.type === 'Quiz' ? 'fa-solid fa-pen-ruler' : 'fa-solid fa-users-gear'"></i>
+      </div>
+      <div class="timeline-content">
+        <div class="d-flex justify-content-between align-items-start">
+          <h6 class="event-title">{{ item.title }}</h6>
+          <span class="status-pill" [ngClass]="item.status.toLowerCase()">
+            {{ item.status }}
+          </span>
+        </div>
+        <div class="event-meta">
+          <span><i class="fa-solid fa-clock me-1"></i> {{ item.time }} ({{ item.duration }})</span>
+          <span><i class="fa-solid fa-location-dot me-1"></i> {{ item.roomOrLink }}</span>
+        </div>
+        <div class="event-footer mt-1">
+          <small class="text-muted"><i class="fa-solid fa-user-tie me-1"></i> {{ item.instructor }} &bull; {{ item.courseName }}</small>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

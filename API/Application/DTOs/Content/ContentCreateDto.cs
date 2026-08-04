@@ -11,5 +11,6 @@ namespace Application.DTOs.Content
         public int Order { get; set; }
         public bool IsPreview { get; set; }
         public Guid SectionId { get; set; }
+        public Guid CourseId { get; set; }
     }
 }

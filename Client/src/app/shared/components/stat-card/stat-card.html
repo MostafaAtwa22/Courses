@@ -1,0 +1,16 @@
+<div class="stat-card" [ngClass]="'theme-' + metric.color">
+  <div class="stat-header">
+    <div class="stat-icon-wrapper">
+      <i [class]="metric.icon"></i>
+    </div>
+    <span class="trend-badge" [class.positive]="metric.isPositive" [class.negative]="!metric.isPositive">
+      <i [class]="metric.isPositive ? 'fa-solid fa-arrow-trend-up' : 'fa-solid fa-arrow-trend-down'"></i>
+      {{ metric.change }}
+    </span>
+  </div>
+  <div class="stat-body">
+    <h3 class="stat-value">{{ metric.value }}</h3>
+    <h4 class="stat-title">{{ metric.title }}</h4>
+    <p class="stat-description">{{ metric.description }}</p>
+  </div>
+</div>

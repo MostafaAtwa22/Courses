@@ -1,7 +1,11 @@
 using Application.DTOs.Content;
-using MediatR;
 
 namespace Application.Features.Contents.Queries.GetById
 {
-    public sealed record GetContentByIdQuery(Guid Id) : IRequest<ContentResponseDto?>;
+    public sealed record GetContentByIdQuery(Guid Id, Guid CourseId) 
+        : IRequest<ContentResponseDto?>, IRequireEnrollment
+    {
+        public Guid ContentId => Id;
+        public bool AllowPreview => true;
+    }
 }

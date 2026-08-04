@@ -1,0 +1,126 @@
+.attendance-card {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  border-radius: 16px;
+  padding: 1.25rem 1.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+
+  .card-header .card-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0;
+  }
+
+  .attendance-hero {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 1rem 0;
+
+    .circular-metric {
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      background: conic-gradient(#4f46e5 0% 94.8%, #e2e8f0 94.8% 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      flex-shrink: 0;
+
+      &::before {
+        content: '';
+        position: absolute;
+        width: 72px;
+        height: 72px;
+        border-radius: 50%;
+        background: white;
+      }
+
+      .percentage {
+        position: relative;
+        font-size: 1.15rem;
+        font-weight: 800;
+        color: #0f172a;
+      }
+
+      .label {
+        position: relative;
+        font-size: 0.65rem;
+        color: #64748b;
+        font-weight: 600;
+      }
+    }
+
+    .stats-pills {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      width: 100%;
+
+      .pill-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.35rem 0.75rem;
+        border-radius: 8px;
+        font-size: 0.82rem;
+
+        .count { font-weight: 700; }
+        .pill-label { font-weight: 500; }
+
+        &.present {
+          background: rgba(16, 185, 129, 0.1);
+          color: #059669;
+        }
+        &.absent {
+          background: rgba(239, 68, 68, 0.1);
+          color: #dc2626;
+        }
+        &.late {
+          background: rgba(245, 158, 11, 0.1);
+          color: #d97706;
+        }
+      }
+    }
+  }
+
+  .section-subtitle {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #475569;
+    margin-bottom: 0.65rem;
+  }
+
+  .grade-row {
+    margin-bottom: 0.6rem;
+
+    .grade-name {
+      font-size: 0.8rem;
+      color: #334155;
+      font-weight: 500;
+    }
+
+    .grade-percentage {
+      font-size: 0.8rem;
+      color: #0f172a;
+      font-weight: 700;
+    }
+  }
+}
+
+:host-context(.dark) .attendance-card,
+:host-context(.dark-theme) .attendance-card {
+  background: rgba(30, 41, 59, 0.85);
+  border-color: rgba(51, 65, 85, 0.8);
+
+  .card-header .card-title { color: #f8fafc; }
+  .circular-metric::before { background: #1e293b; }
+  .circular-metric .percentage { color: #f8fafc; }
+  .section-subtitle { color: #cbd5e1; }
+  .grade-row .grade-name { color: #cbd5e1; }
+  .grade-row .grade-percentage { color: #f8fafc; }
+}

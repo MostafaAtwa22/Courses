@@ -99,20 +99,20 @@ namespace API.Tests.Endpoints
             // Arrange
             var request = new InstructorCreateDto { Title = "New Instructor" };
             var newId = Guid.NewGuid();
-            var expectedInstructor = new InstructorPublicResponseDto { Id = newId, Title = "New Instructor" };
+            var expectedInstructor = new InstructorPrivateResponseDto { Id = newId, Title = "New Instructor" };
 
             _mediatorMock.Setup(m => m.Send(It.IsAny<CreateInstructorCommand>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(newId);
-            _mediatorMock.Setup(m => m.Send(It.IsAny<GetPublicInstructorByIdQuery>(), It.IsAny<CancellationToken>()))
+            _mediatorMock.Setup(m => m.Send(It.IsAny<GetPrivateInstructorByIdQuery>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(expectedInstructor);
 
             // Act
             var result = await InstructorsEndpoints.CreateInstructor(request, _mediatorMock.Object);
 
             // Assert
-            var createdResult = result.Result as CreatedAtRoute<InstructorPublicResponseDto>;
+            var createdResult = result.Result as CreatedAtRoute<InstructorPrivateResponseDto>;
             createdResult.Should().NotBeNull();
-            createdResult!.RouteName.Should().Be(nameof(InstructorsEndpoints.GetPublicInstructor));
+            createdResult!.RouteName.Should().Be(nameof(InstructorsEndpoints.GetPrivateInstructor));
             createdResult.RouteValues.Should().ContainKey("id").WhoseValue.Should().Be(newId);
             createdResult.Value.Should().Be(expectedInstructor);
         }

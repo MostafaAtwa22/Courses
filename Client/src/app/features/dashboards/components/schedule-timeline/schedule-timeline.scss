@@ -1,0 +1,116 @@
+.schedule-card {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  border-radius: 16px;
+  padding: 1.25rem 1.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+
+  .card-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0;
+  }
+
+  .text-purple { color: #9333ea; }
+  .bg-purple-subtle { background: rgba(147, 51, 234, 0.1); }
+
+  .timeline-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    position: relative;
+
+    &::before {
+      content: '';
+      position: absolute;
+      left: 17px;
+      top: 10px;
+      bottom: 10px;
+      width: 2px;
+      background: #e2e8f0;
+    }
+  }
+
+  .timeline-item {
+    display: flex;
+    gap: 1rem;
+    position: relative;
+
+    &.live-event {
+      .timeline-content {
+        border-color: rgba(16, 185, 129, 0.4);
+        background: rgba(16, 185, 129, 0.03);
+      }
+    }
+
+    .timeline-badge {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+      z-index: 1;
+      flex-shrink: 0;
+
+      &.badge-lecture { background: #e0e7ff; color: #4f46e5; }
+      &.badge-lab { background: #dcfce7; color: #15803d; }
+      &.badge-quiz { background: #fef3c7; color: #b45309; }
+      &.badge-meeting { background: #f3e8ff; color: #7e22ce; }
+    }
+
+    .timeline-content {
+      flex-grow: 1;
+      background: #f8fafc;
+      border: 1px solid #f1f5f9;
+      border-radius: 12px;
+      padding: 0.85rem 1rem;
+
+      .event-title {
+        font-size: 0.88rem;
+        font-weight: 700;
+        color: #0f172a;
+        margin: 0;
+      }
+
+      .event-meta {
+        display: flex;
+        gap: 1rem;
+        font-size: 0.75rem;
+        color: #64748b;
+        margin-top: 0.35rem;
+      }
+
+      .status-pill {
+        font-size: 0.68rem;
+        font-weight: 700;
+        padding: 2px 8px;
+        border-radius: 10px;
+        text-transform: uppercase;
+
+        &.live { background: rgba(16, 185, 129, 0.15); color: #059669; }
+        &.upcoming { background: rgba(79, 70, 229, 0.12); color: #4f46e5; }
+        &.completed { background: rgba(100, 116, 139, 0.12); color: #64748b; }
+      }
+    }
+  }
+}
+
+:host-context(.dark) .schedule-card,
+:host-context(.dark-theme) .schedule-card {
+  background: rgba(30, 41, 59, 0.85);
+  border-color: rgba(51, 65, 85, 0.8);
+
+  .card-title { color: #f8fafc; }
+  .timeline-container::before { background: rgba(51, 65, 85, 0.8); }
+
+  .timeline-item .timeline-content {
+    background: rgba(15, 23, 42, 0.5);
+    border-color: rgba(51, 65, 85, 0.5);
+    .event-title { color: #f8fafc; }
+    .event-meta { color: #94a3b8; }
+  }
+}

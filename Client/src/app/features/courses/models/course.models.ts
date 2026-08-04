@@ -90,6 +90,7 @@ export interface ContentCreateRequest {
     order: number;
     isPreview: boolean;
     sectionId: string;
+    courseId: string;
 }
 
 export interface ContentUpdateRequest {

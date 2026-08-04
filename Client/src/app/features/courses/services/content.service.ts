@@ -35,8 +35,8 @@ export class ContentService {
     return httpParams;
   }
 
-  getBySection(sectionId: string): Observable<ContentResponse[]> {
-    return this.http.get<ContentResponse[]>(`${this.apiUrl}/section/${sectionId}`);
+  getBySection(sectionId: string, courseId: string): Observable<ContentResponse[]> {
+    return this.http.get<ContentResponse[]>(`${this.apiUrl}/section/${sectionId}/${courseId}`);
   }
 
   getByCourse(courseId: string, params: QueryParams): Observable<PaginatedResultModel<ContentResponse>> {
@@ -45,8 +45,8 @@ export class ContentService {
       .pipe(map((res) => PaginatedResultModel.fromApi<ContentResponse>(res)));
   }
 
-  getById(id: string): Observable<ContentResponse> {
-    return this.http.get<ContentResponse>(`${this.apiUrl}/${id}`);
+  getById(id: string, courseId: string): Observable<ContentResponse> {
+    return this.http.get<ContentResponse>(`${this.apiUrl}/${id}/${courseId}`);
   }
 
   create(request: ContentCreateRequest): Observable<ContentResponse> {
@@ -68,6 +68,10 @@ export class ContentService {
     formData.append('order', request.order.toString());
     formData.append('isPreview', request.isPreview.toString());
     formData.append('sectionId', request.sectionId);
+
+    if ('courseId' in request) {
+      formData.append('courseId', request.courseId);
+    }
 
     if (request.file) {
       formData.append('file', request.file);

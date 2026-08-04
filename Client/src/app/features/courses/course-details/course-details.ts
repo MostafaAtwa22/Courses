@@ -115,7 +115,7 @@ export class CourseDetailsComponent implements OnInit {
     // Update loading state with new Set reference for change detection
     this.loadingContentSectionIds = new Set(this.loadingContentSectionIds).add(sectionId);
 
-    this.contentService.getBySection(sectionId).subscribe({
+    this.contentService.getBySection(sectionId, this.course?.id || '').subscribe({
       next: (contents) => {
         const section = this.sections.find(s => s.id === sectionId);
         if (section) {

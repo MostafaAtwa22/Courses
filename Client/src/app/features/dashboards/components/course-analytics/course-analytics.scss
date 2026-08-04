@@ -1,0 +1,91 @@
+.analytics-card {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  border-radius: 16px;
+  padding: 1.25rem 1.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+
+  .card-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0;
+  }
+
+  .card-subtitle {
+    font-size: 0.78rem;
+    margin: 0;
+  }
+
+  .text-indigo { color: #4f46e5; }
+
+  .custom-table {
+    margin: 0;
+
+    th {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: #64748b;
+      font-weight: 700;
+      border-bottom: 1px solid #f1f5f9;
+      padding: 0.75rem 0.5rem;
+    }
+
+    td {
+      padding: 0.85rem 0.5rem;
+      border-bottom: 1px solid #f8fafc;
+      font-size: 0.85rem;
+    }
+
+    .course-info {
+      display: flex;
+      flex-direction: column;
+
+      .course-title {
+        font-weight: 700;
+        color: #1e293b;
+      }
+
+      .course-category {
+        font-size: 0.75rem;
+        color: #94a3b8;
+      }
+    }
+
+    .completion-val {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: #334155;
+    }
+
+    .rating-badge {
+      font-weight: 700;
+      color: #0f172a;
+      font-size: 0.82rem;
+    }
+  }
+}
+
+:host-context(.dark) .analytics-card,
+:host-context(.dark-theme) .analytics-card {
+  background: rgba(30, 41, 59, 0.85);
+  border-color: rgba(51, 65, 85, 0.8);
+
+  .card-title { color: #f8fafc; }
+
+  .custom-table {
+    th {
+      color: #94a3b8;
+      border-bottom-color: rgba(51, 65, 85, 0.5);
+    }
+    td {
+      border-bottom-color: rgba(51, 65, 85, 0.3);
+    }
+    .course-info .course-title { color: #f1f5f9; }
+    .course-info .course-category { color: #64748b; }
+    .completion-val { color: #cbd5e1; }
+    .rating-badge { color: #f8fafc; }
+  }
+}
