@@ -25,8 +25,11 @@ namespace Application.Tests.Contents.Queries
             var queryParams = new QueryParams();
             var expected = new PaginatedResult<ContentResponseDto>
             {
-                Items = new List<ContentResponseDto>(),
-                TotalCount = 0,
+                Items = new List<ContentResponseDto>
+                {
+                    new ContentResponseDto { Id = Guid.NewGuid(), ContentUrl = "http://example.com/video.mp4", IsPreview = false }
+                },
+                TotalCount = 1,
                 PageNumber = 1,
                 PageSize = 10
             };
@@ -37,6 +40,7 @@ namespace Application.Tests.Contents.Queries
             var result = await _handler.Handle(new GetContentByCourseQuery(courseId, queryParams), CancellationToken.None);
 
             result.Should().Be(expected);
+            result.Items.First().ContentUrl.Should().Be("http://example.com/video.mp4");
         }
     }
 }

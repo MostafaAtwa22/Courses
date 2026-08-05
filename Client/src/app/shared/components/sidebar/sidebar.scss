@@ -5,11 +5,12 @@
   border-right: 1px solid rgba(226, 232, 240, 0.9);
   display: flex;
   flex-direction: column;
-  height: 100%;
+  height: calc(100vh - 72px);
   transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   z-index: 100;
   box-shadow: 4px 0 16px rgba(0, 0, 0, 0.02);
+  overflow: hidden;
 
   &.collapsed {
     width: 72px;

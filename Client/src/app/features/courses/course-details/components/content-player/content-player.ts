@@ -143,7 +143,16 @@ export class ContentPlayerComponent implements OnInit, OnDestroy {
   }
 
   selectContent(content: ContentResponse): void {
+    if (this.isContentRestricted(content)) {
+      return; // Don't navigate to restricted content
+    }
     this.router.navigate(['../', content.id], { relativeTo: this.route });
+  }
+
+  isContentRestricted(content: ContentResponse): boolean {
+    // Content is restricted if it's not a preview and doesn't have a contentUrl
+    // (the backend redacts the URL for non-preview content when user doesn't have full access)
+    return !content.isPreview && !content.contentUrl;
   }
 
   goToNext(): void {

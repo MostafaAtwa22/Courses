@@ -80,6 +80,13 @@ export class CourseContentComponent implements OnChanges {
   }
   
   onContentClick(content: any): void {
+    if (this.isContentRestricted(content)) {
+      return; // Don't emit event for restricted content
+    }
     this.contentSelected.emit(content);
+  }
+
+  isContentRestricted(content: any): boolean {
+    return !content.isPreview && !content.contentUrl;
   }
 }

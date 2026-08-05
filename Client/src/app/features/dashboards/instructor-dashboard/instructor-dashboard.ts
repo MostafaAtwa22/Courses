@@ -1,7 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HeaderComponent } from '../../../shared/components/header/header';
-import { FooterComponent } from '../../../shared/components/footer/footer';
 import { SidebarComponent } from '../../../shared/components/sidebar/sidebar';
 import { StatCardComponent } from '../../../shared/components/stat-card/stat-card';
 import { ScheduleTimelineComponent } from '../components/schedule-timeline/schedule-timeline';
@@ -20,7 +19,6 @@ import {
   imports: [
     CommonModule,
     HeaderComponent,
-    FooterComponent,
     SidebarComponent,
     StatCardComponent,
     ScheduleTimelineComponent,
@@ -34,6 +32,7 @@ export class InstructorDashboardComponent implements OnInit {
   private toastService = inject(ToastService);
 
   isSidebarCollapsed = false;
+  isDarkMode = false;
 
   metrics: DashboardMetric[] = [];
   schedule: ScheduleItem[] = [];
@@ -42,6 +41,30 @@ export class InstructorDashboardComponent implements OnInit {
 
   ngOnInit() {
     this.loadInstructorData();
+    this.loadTheme();
+  }
+
+  loadTheme() {
+    const savedTheme = localStorage.getItem('theme');
+    this.isDarkMode = savedTheme === 'dark';
+    this.applyTheme();
+  }
+
+  toggleTheme() {
+    this.isDarkMode = !this.isDarkMode;
+    localStorage.setItem('theme', this.isDarkMode ? 'dark' : 'light');
+    this.applyTheme();
+  }
+
+  applyTheme() {
+    const body = document.body;
+    if (this.isDarkMode) {
+      body.classList.add('dark');
+      body.classList.add('dark-theme');
+    } else {
+      body.classList.remove('dark');
+      body.classList.remove('dark-theme');
+    }
   }
 
   loadInstructorData() {

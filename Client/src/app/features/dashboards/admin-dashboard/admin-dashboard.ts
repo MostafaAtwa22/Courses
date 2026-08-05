@@ -2,7 +2,6 @@ import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HeaderComponent } from '../../../shared/components/header/header';
-import { FooterComponent } from '../../../shared/components/footer/footer';
 import { SidebarComponent } from '../../../shared/components/sidebar/sidebar';
 import { StatCardComponent } from '../../../shared/components/stat-card/stat-card';
 import { CourseAnalyticsComponent } from '../components/course-analytics/course-analytics';
@@ -24,7 +23,6 @@ import {
     CommonModule,
     FormsModule,
     HeaderComponent,
-    FooterComponent,
     SidebarComponent,
     StatCardComponent,
     CourseAnalyticsComponent,
@@ -39,6 +37,7 @@ export class AdminDashboardComponent implements OnInit {
   private toastService = inject(ToastService);
 
   isSidebarCollapsed = false;
+  isDarkMode = false;
 
   metrics: DashboardMetric[] = [];
   courses: CourseAnalytics[] = [];
@@ -48,6 +47,30 @@ export class AdminDashboardComponent implements OnInit {
 
   ngOnInit() {
     this.loadAdminData();
+    this.loadTheme();
+  }
+
+  loadTheme() {
+    const savedTheme = localStorage.getItem('theme');
+    this.isDarkMode = savedTheme === 'dark';
+    this.applyTheme();
+  }
+
+  toggleTheme() {
+    this.isDarkMode = !this.isDarkMode;
+    localStorage.setItem('theme', this.isDarkMode ? 'dark' : 'light');
+    this.applyTheme();
+  }
+
+  applyTheme() {
+    const body = document.body;
+    if (this.isDarkMode) {
+      body.classList.add('dark');
+      body.classList.add('dark-theme');
+    } else {
+      body.classList.remove('dark');
+      body.classList.remove('dark-theme');
+    }
   }
 
   loadAdminData() {

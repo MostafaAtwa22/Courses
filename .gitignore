@@ -17,3 +17,5 @@
 **/.env
 **/secrets.dev.yaml
 **/values.dev.yaml
+.kiro/
+.cursor/

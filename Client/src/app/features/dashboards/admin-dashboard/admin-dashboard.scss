@@ -1,10 +1,12 @@
 .dashboard-page-wrapper {
   display: flex;
-  min-height: calc(100vh - 140px);
+  height: calc(100vh - 72px);
   background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+  overflow: hidden;
 
   .dashboard-main-content {
     flex-grow: 1;
+    overflow-y: auto;
     overflow-x: hidden;
 
     .max-width-wrapper {

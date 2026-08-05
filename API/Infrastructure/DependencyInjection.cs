@@ -135,6 +135,7 @@ public static class DependencyInjection
         services.AddTransient<IEmailService, BackgroundEmailService>();
         services.AddSingleton<IUrlProvider, UrlProvider>();
         services.AddScoped<IDiscountJobService, DiscountJobService>();
+        services.AddScoped<IContentAccessService, ContentAccessService>();
         services.AddHttpContextAccessor();
         
         return services;

@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { guestGuard } from './core/guards/guest.guard';
 import { authGuard } from './core/guards/auth.guard';
 import { instructorCompletionGuard } from './core/guards/instructor-completion.guard';
+import { contentAccessGuard } from './core/guards/content-access.guard';
 
 export const routes: Routes = [
     {
@@ -64,7 +65,8 @@ export const routes: Routes = [
         children: [
             {
                 path: 'content/:contentId',
-                loadComponent: () => import('./features/courses/course-details/components/content-player/content-player').then(m => m.ContentPlayerComponent)
+                loadComponent: () => import('./features/courses/course-details/components/content-player/content-player').then(m => m.ContentPlayerComponent),
+                canActivate: [contentAccessGuard]
             }
         ]
     },

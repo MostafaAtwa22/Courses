@@ -1,5 +1,3 @@
-using Domain.Enums;
-
 namespace Application.DTOs.Content
 {
     public class ContentResponseDto : BaseResponseDto

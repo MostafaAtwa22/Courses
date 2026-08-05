@@ -19,19 +19,19 @@ namespace API.Endpoints
                 .WithName(nameof(GetBySection))
                 .Produces<IEnumerable<ContentResponseDto>>(StatusCodes.Status200OK)
                 .Produces(StatusCodes.Status400BadRequest)
-                .RequireAuthorization();
+                .AllowAnonymous();
 
             group.MapGet("/course/{courseId:guid}", GetByCourse)
                 .WithName(nameof(GetByCourse))
                 .Produces<PaginatedResult<ContentResponseDto>>(StatusCodes.Status200OK)
                 .Produces(StatusCodes.Status400BadRequest)
-                .RequireAuthorization();
+                .AllowAnonymous();
 
             group.MapGet("/{id:guid}/{courseId:guid}", GetContentById)
                 .WithName(nameof(GetContentById))
                 .Produces(StatusCodes.Status200OK)
                 .Produces(StatusCodes.Status404NotFound)
-                .RequireAuthorization();
+                .AllowAnonymous();
 
             group.MapPost("/", CreateContent)
                 .WithName(nameof(CreateContent))

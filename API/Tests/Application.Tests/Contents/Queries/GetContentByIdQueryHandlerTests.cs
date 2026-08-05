@@ -22,13 +22,14 @@ namespace Application.Tests.Contents.Queries
         {
             var id = Guid.NewGuid();
             var courseId = Guid.NewGuid();
-            var expected = new ContentResponseDto { Id = id };
+            var expected = new ContentResponseDto { Id = id, ContentUrl = "http://example.com/video.mp4", IsPreview = false };
             _repoMock.Setup(x => x.GetByIdAsync(id, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(expected);
 
             var result = await _handler.Handle(new GetContentByIdQuery(id, courseId), CancellationToken.None);
 
             result.Should().Be(expected);
+            result!.ContentUrl.Should().Be("http://example.com/video.mp4");
         }
     }
 }

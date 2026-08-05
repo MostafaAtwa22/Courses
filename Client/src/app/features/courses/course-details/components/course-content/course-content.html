@@ -33,16 +33,20 @@
         <!-- Content list -->
         <ul class="list-group list-group-flush" *ngIf="!isSectionLoading(section.id) && section.contents && section.contents.length > 0">
           <li class="list-group-item d-flex align-items-center justify-content-between py-3 px-4" 
-              style="cursor: pointer;"
+              [class.disabled-content]="isContentRestricted(content)"
+              [style.cursor]="isContentRestricted(content) ? 'not-allowed' : 'pointer'"
               *ngFor="let content of section.contents"
               (click)="onContentClick(content)">
             <div class="d-flex align-items-center gap-3">
               <i class="fas" [ngClass]="getContentIcon(content.type)" style="opacity: 0.5;"></i>
-              <span [style.color]="content.isPreview ? 'var(--primary-color)' : 'var(--text-color)'" [class.text-decoration-underline]="content.isPreview">
+              <span [style.color]="content.isPreview ? 'var(--primary-color)' : 'var(--text-color)'" 
+                    [class.text-decoration-underline]="content.isPreview"
+                    [style.opacity]="isContentRestricted(content) ? '0.5' : '1'">
                 {{ content.title }}
               </span>
             </div>
             <div class="d-flex align-items-center gap-3">
+              <i class="fas fa-lock text-muted" *ngIf="isContentRestricted(content)" title="Content locked - enroll to access"></i>
               <span class="badge px-2 py-1" style="background-color: var(--primary-light); color: var(--primary-color); border: 1px solid var(--primary-color);" *ngIf="content.isPreview">Preview</span>
             </div>
           </li>

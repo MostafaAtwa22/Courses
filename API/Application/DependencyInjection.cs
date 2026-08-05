@@ -1,6 +1,4 @@
 using Application.Behaviors;
-using FluentValidation;
-using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Application
@@ -18,6 +16,8 @@ namespace Application
                 options.AddOpenBehavior(typeof(UserContextBehavior<,>));
                 options.AddOpenBehavior(typeof(AuthorizationBehavior<,>));
                 options.AddOpenBehavior(typeof(InstructorOwnershipBehavior<,>));
+                options.AddOpenBehavior(typeof(EnrollmentAuthorizationBehavior<,>));
+                options.AddOpenBehavior(typeof(ContentAccessBehavior<,>));
             });
             
             services.AddValidatorsFromAssembly(assembly);
