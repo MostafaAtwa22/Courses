@@ -1,10 +1,13 @@
 <section class="mt-5">
   <h3 class="fw-bold mb-4">Course Content</h3>
   <div class="d-flex justify-content-between align-items-center mb-3">
-    <span style="color: var(--text-muted);" class="small">
-      {{ totalSections }} sections • 
-      {{ getTotalLectures() }} lectures
-    </span>
+    <div class="d-flex align-items-center gap-3">
+      <span style="color: var(--text-muted);" class="small">
+        {{ totalSections }} sections •
+        {{ getTotalLectures() }} lectures
+      </span>
+      <app-progress-bar [progress]="progress" [showLabel]="false" [height]="6" [width]="120"></app-progress-bar>
+    </div>
     <button class="btn btn-link fw-bold text-decoration-none p-0" style="color: var(--primary-color);" (click)="toggleExpandAll()">
       {{ expandAll ? 'Collapse all sections' : 'Expand all sections' }}
     </button>
@@ -19,7 +22,9 @@
                 (click)="toggleSection(section)">
           <div class="d-flex justify-content-between w-100 me-3">
             <span>{{ section.title }}</span>
-            <span class="small fw-normal" style="color: var(--text-muted);">{{ section.contentsCount || 0 }} lectures</span>
+            <span class="small fw-normal" style="color: var(--text-muted);">
+              {{ progress ? getCompletedCountForSection(section) : 0 }} / {{ section.contentsCount || 0 }}
+            </span>
           </div>
         </button>
       </h2>
@@ -38,7 +43,8 @@
               *ngFor="let content of section.contents"
               (click)="onContentClick(content)">
             <div class="d-flex align-items-center gap-3">
-              <i class="fas" [ngClass]="getContentIcon(content.type)" style="opacity: 0.5;"></i>
+              <i class="fas fa-check-circle text-success" *ngIf="progress && isContentCompleted(content.id)" style="font-size: 14px;"></i>
+              <i class="fas" [ngClass]="getContentIcon(content.type)" style="opacity: 0.5;" *ngIf="!progress || !isContentCompleted(content.id)"></i>
               <span [style.color]="content.isPreview ? 'var(--primary-color)' : 'var(--text-color)'" 
                     [class.text-decoration-underline]="content.isPreview"
                     [style.opacity]="isContentRestricted(content) ? '0.5' : '1'">

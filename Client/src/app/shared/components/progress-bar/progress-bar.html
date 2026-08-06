@@ -1,0 +1,9 @@
+<div *ngIf="progress && progress.totalCount > 0" class="progress-bar-container" [class.compact]="compact">
+  <div *ngIf="showLabel || showPercentage" class="progress-header d-flex justify-content-between align-items-center mb-1">
+    <span *ngIf="showLabel" class="progress-label small fw-bold" style="color: var(--primary-color);">{{ label }}</span>
+    <span *ngIf="showPercentage" class="progress-percentage small fw-bold">{{ progress.percentComplete }}%</span>
+  </div>
+  <div class="progress" [style.height.px]="height" [style.width.px]="width">
+    <div class="progress-bar bg-success" [style.width.%]="progress.percentComplete"></div>
+  </div>
+</div>

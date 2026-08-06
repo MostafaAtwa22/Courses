@@ -25,5 +25,6 @@ namespace Domain.Entities
         public ICollection<Enrollment> Enrollments { get; set; } = [];
         public ICollection<Section> Sections { get; set; } = [];
         public ICollection<CourseDiscount> CourseDiscounts { get; set; } = [];
+        public ICollection<ContentProgress> Progress { get; set; } = [];
     }
 }

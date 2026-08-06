@@ -21,5 +21,6 @@ namespace Infrastructure.Persistence.Data
         public required DbSet<Content> Contents { get; set; }
         public required DbSet<CourseDiscount> CourseDiscounts { get; set; }
         public required DbSet<RefreshToken> RefreshTokens { get; set; }
+        public required DbSet<ContentProgress> ContentProgresses { get; set; }
     }
 }

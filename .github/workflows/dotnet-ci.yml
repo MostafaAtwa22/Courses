@@ -4,12 +4,16 @@ on:
   push:
     branches:
       - main
+      - feature/**
+
     paths:
       - 'API/**'
       
   pull_request:
     branches:
       - main
+      - feature/**
+
     paths:
       - 'API/**'
   

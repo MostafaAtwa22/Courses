@@ -116,6 +116,56 @@ namespace Infrastructure.Persistence.Migrations
                     b.ToTable("contents", (string)null);
                 });
 
+            modelBuilder.Entity("Domain.Entities.ContentProgress", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<DateTime>("CompletedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("completed_at");
+
+                    b.Property<Guid>("ContentId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("content_id");
+
+                    b.Property<Guid>("CourseId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("course_id");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<Guid>("StudentId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("student_id");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
+
+                    b.HasKey("Id")
+                        .HasName("pk_content_progress");
+
+                    b.HasIndex("ContentId")
+                        .HasDatabaseName("ix_content_progress_content_id");
+
+                    b.HasIndex("CourseId")
+                        .HasDatabaseName("ix_content_progress_course_id");
+
+                    b.HasIndex("StudentId", "ContentId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_content_progress_student_id_content_id");
+
+                    b.HasIndex("StudentId", "CourseId")
+                        .HasDatabaseName("ix_content_progress_student_id_course_id");
+
+                    b.ToTable("content_progress", (string)null);
+                });
+
             modelBuilder.Entity("Domain.Entities.Course", b =>
                 {
                     b.Property<Guid>("Id")
@@ -530,12 +580,6 @@ namespace Infrastructure.Persistence.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
-                    b.Property<int>("Coins")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasDefaultValue(0)
-                        .HasColumnName("coins");
-
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at");
@@ -825,6 +869,36 @@ namespace Infrastructure.Persistence.Migrations
                     b.Navigation("Section");
                 });
 
+            modelBuilder.Entity("Domain.Entities.ContentProgress", b =>
+                {
+                    b.HasOne("Domain.Entities.Content", "Content")
+                        .WithMany("Progress")
+                        .HasForeignKey("ContentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_content_progress_contents_content_id");
+
+                    b.HasOne("Domain.Entities.Course", "Course")
+                        .WithMany("Progress")
+                        .HasForeignKey("CourseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_content_progress_courses_course_id");
+
+                    b.HasOne("Domain.Entities.Identity.Student", "Student")
+                        .WithMany("Progress")
+                        .HasForeignKey("StudentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_content_progress_students_student_id");
+
+                    b.Navigation("Content");
+
+                    b.Navigation("Course");
+
+                    b.Navigation("Student");
+                });
+
             modelBuilder.Entity("Domain.Entities.Course", b =>
                 {
                     b.HasOne("Domain.Entities.Category", "Category")
@@ -1010,11 +1084,18 @@ namespace Infrastructure.Persistence.Migrations
                     b.Navigation("Courses");
                 });
 
+            modelBuilder.Entity("Domain.Entities.Content", b =>
+                {
+                    b.Navigation("Progress");
+                });
+
             modelBuilder.Entity("Domain.Entities.Course", b =>
                 {
                     b.Navigation("CourseDiscounts");
 
                     b.Navigation("Enrollments");
+
+                    b.Navigation("Progress");
 
                     b.Navigation("Reviews");
 
@@ -1038,6 +1119,8 @@ namespace Infrastructure.Persistence.Migrations
             modelBuilder.Entity("Domain.Entities.Identity.Student", b =>
                 {
                     b.Navigation("Enrollments");
+
+                    b.Navigation("Progress");
 
                     b.Navigation("Reviews");
                 });

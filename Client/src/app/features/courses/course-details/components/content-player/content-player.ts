@@ -4,15 +4,17 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { ContentService } from '../../../services/content.service';
 import { CourseService } from '../../../services/course.service';
 import { SectionService } from '../../../services/section.service';
-import { ContentResponse, ContentType, CourseResponse, SectionResponse } from '../../../models/course.models';
+import { ProgressService } from '../../../services/progress.service';
+import { ContentResponse, ContentType, CourseProgress, CourseResponse, SectionResponse } from '../../../models/course.models';
 import { forkJoin } from 'rxjs';
 import { VideoPlayerComponent } from '../../../../../shared/components/video-player/video-player.component';
+import { ProgressBarComponent } from '../../../../../shared/components/progress-bar/progress-bar';
 import { environment } from '../../../../../../environments/environment';
 
 @Component({
   selector: 'app-content-player',
   standalone: true,
-  imports: [CommonModule, RouterModule, VideoPlayerComponent],
+  imports: [CommonModule, RouterModule, VideoPlayerComponent, ProgressBarComponent],
   templateUrl: './content-player.html',
   styleUrl: './content-player.scss'
 })
@@ -22,10 +24,13 @@ export class ContentPlayerComponent implements OnInit, OnDestroy {
   private contentService = inject(ContentService);
   private courseService = inject(CourseService);
   private sectionService = inject(SectionService);
+  private progressService = inject(ProgressService);
 
   course?: CourseResponse;
   content?: ContentResponse;
   sections: SectionResponse[] = [];
+  progress?: CourseProgress;
+  isEnrolled = false;
   
   loading = true;
   error: string | null = null;
@@ -99,12 +104,25 @@ export class ContentPlayerComponent implements OnInit, OnDestroy {
     // 1. Get Course details
     this.courseService.getById(courseId).subscribe(c => this.course = c);
 
-    // 2. Get Sections
+    // 2. Load progress (silently, don't block on failure)
+    this.progressService.checkEnrollment(courseId).subscribe({
+      next: (progress) => {
+        this.progress = progress;
+        this.isEnrolled = true;
+      },
+      error: (err) => {
+        // User might not be enrolled or not logged in - that's fine
+        this.isEnrolled = false;
+        console.log('Could not load progress (user may not be enrolled)');
+      }
+    });
+
+    // 3. Get Sections
     this.sectionService.getByCourseId(courseId, { pageSize: 100 }).subscribe({
       next: (result) => {
         this.sections = result.items || [];
 
-        // 3. For each section, load its contents
+        // 4. For each section, load its contents
         const contentObservables = this.sections.map(s => this.contentService.getBySection(s.id, courseId));
 
         forkJoin(contentObservables).subscribe({
@@ -150,8 +168,6 @@ export class ContentPlayerComponent implements OnInit, OnDestroy {
   }
 
   isContentRestricted(content: ContentResponse): boolean {
-    // Content is restricted if it's not a preview and doesn't have a contentUrl
-    // (the backend redacts the URL for non-preview content when user doesn't have full access)
     return !content.isPreview && !content.contentUrl;
   }
 
@@ -188,5 +204,79 @@ export class ContentPlayerComponent implements OnInit, OnDestroy {
       case 2: return 'fa-question-circle'; // Quiz
       default: return 'fa-play-circle';
     }
+  }
+
+  isContentCompleted(contentId: string): boolean {
+    return this.progress?.completedContentIds?.includes(contentId) ?? false;
+  }
+
+  toggleContentComplete(event: Event, content: ContentResponse): void {
+    event.stopPropagation(); // Prevent selecting the content
+    
+    if (!this.course?.id) return;
+
+    const isCompleted = this.isContentCompleted(content.id);
+    const request = { contentId: content.id, courseId: this.course.id };
+
+    if (isCompleted) {
+      this.progressService.markIncomplete(request).subscribe({
+        next: () => {
+          // Update local state
+          if (this.progress) {
+            this.progress.completedContentIds = this.progress.completedContentIds.filter(id => id !== content.id);
+            this.progress.completedCount = Math.max(0, this.progress.completedCount - 1);
+            this.progress.percentComplete = this.progress.totalCount > 0 
+              ? Math.round((this.progress.completedCount / this.progress.totalCount) * 100)
+              : 0;
+          }
+        },
+        error: (err) => {
+          console.error('Failed to mark content as incomplete:', err);
+        }
+      });
+    } else {
+      this.progressService.markComplete(request).subscribe({
+        next: () => {
+          // Update local state
+          if (this.progress) {
+            if (!this.progress.completedContentIds.includes(content.id)) {
+              this.progress.completedContentIds.push(content.id);
+              this.progress.completedCount++;
+              this.progress.percentComplete = this.progress.totalCount > 0 
+                ? Math.round((this.progress.completedCount / this.progress.totalCount) * 100)
+                : 0;
+            }
+          }
+        },
+        error: (err) => {
+          console.error('Failed to mark content as complete:', err);
+        }
+      });
+    }
+  }
+
+  markCurrentContentComplete(): void {
+    if (this.content && this.course?.id) {
+      const request = { contentId: this.content.id, courseId: this.course.id };
+      this.progressService.markComplete(request).subscribe({
+        next: () => {
+          if (this.progress && !this.progress.completedContentIds.includes(this.content!.id)) {
+            this.progress.completedContentIds.push(this.content!.id);
+            this.progress.completedCount++;
+            this.progress.percentComplete = this.progress.totalCount > 0 
+              ? Math.round((this.progress.completedCount / this.progress.totalCount) * 100)
+              : 0;
+          }
+        },
+        error: (err) => {
+          console.error('Failed to mark content as complete:', err);
+        }
+      });
+    }
+  }
+
+  getCompletedCountForSection(section: SectionResponse): number {
+    if (!this.progress || !section.contents) return 0;
+    return section.contents.filter(c => this.isContentCompleted(c.id)).length;
   }
 }

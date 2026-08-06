@@ -19,6 +19,7 @@ export interface ContentResponse extends BaseResponseModel {
     order: number;
     isPreview: boolean;
     sectionId: string;
+    isCompleted?: boolean; 
 }
 
 export interface SectionResponse extends BaseResponseModel {
@@ -125,4 +126,24 @@ export interface CreateCourseDiscountRequest {
     percentage: number;
     startTime: string;
     endTime: string;
+}
+
+export interface CourseProgress {
+    courseId: string;
+    completedCount: number;
+    totalCount: number;
+    percentComplete: number;
+    completedContentIds: string[];
+}
+
+export interface CourseProgressSummary {
+    courseId: string;
+    completedCount: number;
+    totalCount: number;
+    percentComplete: number;
+}
+
+export interface MarkProgressRequest {
+    contentId: string;
+    courseId: string;
 }

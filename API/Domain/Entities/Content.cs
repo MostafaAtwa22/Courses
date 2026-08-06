@@ -14,5 +14,7 @@ namespace Domain.Entities
 
         public Guid SectionId { get; set; }
         public Section Section { get; set; } = default!;
+
+        public ICollection<ContentProgress> Progress { get; set; } = [];
     }
 }
