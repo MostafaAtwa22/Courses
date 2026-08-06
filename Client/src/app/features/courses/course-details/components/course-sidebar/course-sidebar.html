@@ -34,10 +34,20 @@
       <span class="ms-2">Original price</span>
     </div>
     
-    <button class="btn btn-primary w-100 py-3 fw-bold mb-2">Buy Now</button>
-    <button class="btn sidebar-outline-btn w-100 py-3 fw-bold mb-3">Add to Cart</button>
+    <button *ngIf="!isEnrolled && !isCheckingEnrollment" class="btn btn-primary w-100 py-3 fw-bold mb-2">Buy Now</button>
+    <button *ngIf="!isEnrolled && !isCheckingEnrollment" class="btn sidebar-outline-btn w-100 py-3 fw-bold mb-3">Add to Cart</button>
     
-    <p class="text-center small" style="color: var(--text-muted);">30-Day Money-Back Guarantee</p>
+    <button *ngIf="isEnrolled" class="btn btn-success w-100 py-3 fw-bold mb-3" (click)="goToCourse()">
+      <i class="fa-solid fa-play me-2"></i>Go to Course
+    </button>
+    
+    <div *ngIf="isCheckingEnrollment" class="text-center py-3">
+      <div class="spinner-border spinner-border-sm" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+    
+    <p *ngIf="!isEnrolled" class="text-center small" style="color: var(--text-muted);">30-Day Money-Back Guarantee</p>
     
     <div class="course-includes">
       <h6 class="fw-bold mb-3">This course includes:</h6>

@@ -7,9 +7,6 @@ namespace Infrastructure.Persistence.Configurations
             builder.ToTable("students");
             
             builder.HasKey(s => s.Id);
-            
-            builder.Property(s => s.Coins)
-                .HasDefaultValue(0);
 
             builder.HasOne(s => s.User)
                 .WithOne(u => u.StudentProfile)

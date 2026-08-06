@@ -1,11 +1,12 @@
 import { Component, EventEmitter, Input, Output, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { SectionResponse } from '../../../models/course.models';
+import { SectionResponse, CourseProgress } from '../../../models/course.models';
+import { ProgressBarComponent } from '../../../../../shared/components/progress-bar/progress-bar';
 
 @Component({
   selector: 'app-course-content',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, ProgressBarComponent],
   templateUrl: './course-content.html',
   styleUrl: './course-content.scss'
 })
@@ -15,6 +16,7 @@ export class CourseContentComponent implements OnChanges {
   @Input() loading = false;
   @Input() hasMore = false;
   @Input() loadingContentSectionIds = new Set<string>();
+  @Input() progress?: CourseProgress;
   @Output() loadMore = new EventEmitter<void>();
   @Output() sectionOpened = new EventEmitter<string>();
   @Output() contentSelected = new EventEmitter<any>();
@@ -88,5 +90,14 @@ export class CourseContentComponent implements OnChanges {
 
   isContentRestricted(content: any): boolean {
     return !content.isPreview && !content.contentUrl;
+  }
+
+  isContentCompleted(contentId: string): boolean {
+    return this.progress?.completedContentIds?.includes(contentId) ?? false;
+  }
+
+  getCompletedCountForSection(section: SectionResponse): number {
+    if (!this.progress || !section.contents) return 0;
+    return section.contents.filter(c => this.isContentCompleted(c.id)).length;
   }
 }

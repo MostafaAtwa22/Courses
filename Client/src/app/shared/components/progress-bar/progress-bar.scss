@@ -1,0 +1,36 @@
+.progress-bar-container {
+  .progress-header {
+    .progress-label {
+      font-size: 0.85rem;
+    }
+
+    .progress-percentage {
+      font-size: 0.85rem;
+    }
+  }
+
+  .progress {
+    background: var(--surface-variant);
+    border-radius: var(--radius-full);
+
+    .progress-bar {
+      background: var(--success) !important;
+      border-radius: var(--radius-full);
+      transition: width 0.3s ease;
+    }
+  }
+
+  &.compact {
+    .progress-header {
+      margin-bottom: 0.25rem;
+    }
+
+    .progress-label {
+      font-size: 0.75rem;
+    }
+
+    .progress-percentage {
+      font-size: 0.75rem;
+    }
+  }
+}

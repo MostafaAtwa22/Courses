@@ -8,12 +8,7 @@
       <span class="course-title fw-bold text-truncate">{{ course?.title }}</span>
     </div>
     <div class="d-flex align-items-center gap-4">
-      <div class="progress-container d-none d-md-flex align-items-center gap-2">
-        <div class="progress" style="width: 100px; height: 6px;">
-            <div class="progress-bar bg-success" [style.width.%]="45"></div>
-        </div>
-        <span class="small fw-bold">45% complete</span>
-      </div>
+      <app-progress-bar *ngIf="isEnrolled && progress" [progress]="progress" [showLabel]="false" [height]="6" [width]="120" class="d-none d-md-flex"></app-progress-bar>
       <button class="btn btn-outline-light btn-sm fw-bold px-3">Share</button>
       <button class="btn-close ms-2" (click)="close()"></button>
     </div>
@@ -73,6 +68,13 @@
           <span class="lecture-info fw-bold d-none d-sm-block">{{ content?.title }}</span>
         </div>
         <div class="d-flex align-items-center gap-2">
+            <button class="btn btn-sm btn-success fw-bold"
+                    (click)="markCurrentContentComplete()"
+                    [disabled]="!content || isContentCompleted(content.id)"
+                    *ngIf="isEnrolled && progress">
+                <i class="fas fa-check me-1"></i>
+                {{ isContentCompleted(content?.id ?? '') ? 'Completed' : 'Mark as complete' }}
+            </button>
             <button class="btn btn-sm btn-dark fw-bold border border-secondary" (click)="goToNext()" [disabled]="!nextContent">
                 Next Lecture <i class="fas fa-arrow-right ms-1"></i>
             </button>
@@ -91,7 +93,8 @@
                (click)="toggleSection(section.id)">
             <div class="d-flex flex-column">
               <span class="fw-bold small">Section {{ section.order }}: {{ section.title }}</span>
-              <span class="xs-text opacity-75">0 / {{ section.contentsCount }} | 15min</span>
+              <span class="xs-text opacity-75" *ngIf="progress">{{ getCompletedCountForSection(section) }} / {{ section.contentsCount }} | 15min</span>
+              <span class="xs-text opacity-75" *ngIf="!progress">0 / {{ section.contentsCount }} | 15min</span>
             </div>
             <i class="fas" [ngClass]="isSectionExpanded(section.id) ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
           </div>
@@ -103,8 +106,8 @@
                  [class.disabled-content]="isContentRestricted(c)"
                  [style.cursor]="isContentRestricted(c) ? 'not-allowed' : 'pointer'"
                  (click)="selectContent(c)">
-              <div class="checkbox-container mt-1">
-                <div class="custom-checkbox" [class.checked]="false"></div>
+              <div class="checkbox-container mt-1" (click)="progress ? toggleContentComplete($event, c) : null" [style.cursor]="progress ? 'pointer' : 'default'">
+                <div class="custom-checkbox" [class.checked]="isContentCompleted(c.id)"></div>
               </div>
               <div class="d-flex flex-column flex-grow-1">
                 <span class="content-title small fw-bold" [style.opacity]="isContentRestricted(c) ? '0.5' : '1'">{{ c.order }}. {{ c.title }}</span>

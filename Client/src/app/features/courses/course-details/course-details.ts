@@ -5,7 +5,8 @@ import { CourseService } from '../services/course.service';
 import { SectionService } from '../services/section.service';
 import { ContentService } from '../services/content.service';
 import { ReviewService } from '../services/review.service';
-import { CourseResponse, SectionResponse, ReviewResponse, ContentResponse } from '../models/course.models';
+import { ProgressService } from '../services/progress.service';
+import { CourseResponse, SectionResponse, ReviewResponse, ContentResponse, CourseProgress } from '../models/course.models';
 import { CourseHeroComponent } from './components/course-hero/course-hero';
 import { CourseSidebarComponent } from './components/course-sidebar/course-sidebar';
 import { CourseContentComponent } from './components/course-content/course-content';
@@ -39,11 +40,14 @@ export class CourseDetailsComponent implements OnInit {
   private sectionService = inject(SectionService);
   private contentService = inject(ContentService);
   private reviewService = inject(ReviewService);
+  private progressService = inject(ProgressService);
   private themeService = inject(ThemeService);
 
   course?: CourseResponse;
   sections: SectionResponse[] = [];
   reviews: ReviewResponse[] = [];
+  progress?: CourseProgress;
+  isEnrolled = false;
   sectionsLoading = false;
   hasMoreSections = false;
   totalSections = 0;
@@ -74,12 +78,27 @@ export class CourseDetailsComponent implements OnInit {
           this.requirements = course.requirements || [];
           this.loadSections(course.id);
           this.loadReviews(course.id);
+          this.loadProgress(course.id);
         },
         error: (err) => {
           console.error('Error fetching course:', err);
         }
       });
     }
+  }
+
+  loadProgress(courseId: string): void {
+    this.progressService.checkEnrollment(courseId).subscribe({
+      next: (progress) => {
+        this.progress = progress;
+        this.isEnrolled = true;
+      },
+      error: (err) => {
+        // User might not be enrolled or not logged in - that's fine
+        this.isEnrolled = false;
+        console.log('Could not load progress (user may not be enrolled)');
+      }
+    });
   }
 
   loadSections(courseId: string): void {

@@ -6,8 +6,29 @@ import { ToastrService } from 'ngx-toastr';
 export const errorInterceptor: HttpInterceptorFn = (req, next) => {
   const toastr = inject(ToastrService);
 
+  // Check for silent check header - skip toast notifications
+  const isSilentCheck = req.headers.get('X-Silent-Check') === 'true';
+
+  // Skip toast for course-related endpoints that may fail for non-enrolled users
+  const isCourseEndpoint = req.url.includes('/contents/') || req.url.includes('/sections/') || req.url.includes('/progress/');
+
   return next(req).pipe(
     catchError((error: HttpErrorResponse) => {
+      // Skip toast for silent checks
+      if (isSilentCheck) {
+        return throwError(() => error);
+      }
+
+      // Skip toast for 403 errors on course endpoints (non-enrolled users)
+      if (isCourseEndpoint && error.status === 403) {
+        return throwError(() => error);
+      }
+
+      // Skip toast for 404 errors on course endpoints (content not found for non-enrolled)
+      if (isCourseEndpoint && error.status === 404) {
+        return throwError(() => error);
+      }
+
       let errorMessage = 'An unexpected error occurred. Please try again.';
 
       if (error instanceof HttpErrorResponse) {

@@ -16,6 +16,7 @@
       </span>
     </div>
     <h3 class="course-title">{{ course.title }}</h3>
+
     <div class="course-footer">
       <div class="price-container d-flex align-items-center gap-2">
         <span class="price fw-bold">${{ course.priceAfterDiscount }}</span>
@@ -25,8 +26,11 @@
         <button class="btn-enroll" [routerLink]="['/courses', course.id]">
           <i class="fa-solid fa-eye"></i>
         </button>
-        <button class="btn-enroll">
+        <button *ngIf="!isEnrolled" class="btn-enroll">
           <i class="fa-solid fa-cart-plus"></i>
+        </button>
+        <button *ngIf="isEnrolled" class="btn-enroll" [routerLink]="getPlayerRoute()" title="Go to Course">
+          <i class="fa-solid fa-play"></i>
         </button>
       </div>
     </div>
