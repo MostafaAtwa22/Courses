@@ -1,19 +1,10 @@
+using Application.DTOs.Progress;
+
 namespace Infrastructure.Repositories
 {
     public class ContentProgressRepository(IDbConnectionFactory factory) 
         : BaseRepository(factory), IContentProgressRepository
     {
-        public async Task<Guid?> GetStudentIdByUserIdAsync(string userId, CancellationToken cancellationToken = default)
-        {
-            using var connection = await CreateConnectionAsync(cancellationToken);
-            var sql = @"
-                SELECT id 
-                FROM students
-                WHERE user_id = @UserId";
-            
-            return await connection.QueryFirstOrDefaultAsync<Guid?>(sql, new { UserId = userId });
-        }
-
         public async Task MarkCompleteAsync(Guid studentId, Guid contentId, Guid courseId, CancellationToken cancellationToken = default)
         {
             using var connection = await CreateConnectionAsync(cancellationToken);
@@ -59,7 +50,7 @@ namespace Infrastructure.Repositories
             return contentIds.ToHashSet();
         }
 
-        public async Task<CourseProgressSummary> GetCourseProgressSummaryAsync(Guid studentId, Guid courseId, CancellationToken cancellationToken = default)
+        public async Task<CourseProgressSummaryDto> GetCourseProgressSummaryAsync(Guid studentId, Guid courseId, CancellationToken cancellationToken = default)
         {
             using var connection = await CreateConnectionAsync(cancellationToken);
             var sql = @"
@@ -90,11 +81,11 @@ namespace Infrastructure.Repositories
                 FROM total_contents tc
                 CROSS JOIN completed_contents cc";
             
-            return await connection.QueryFirstOrDefaultAsync<CourseProgressSummary>(sql, new { StudentId = studentId, CourseId = courseId })
-                ?? new CourseProgressSummary { CourseId = courseId, CompletedCount = 0, TotalCount = 0, PercentComplete = 0 };
+            return await connection.QueryFirstOrDefaultAsync<CourseProgressSummaryDto>(sql, new { StudentId = studentId, CourseId = courseId })
+                ?? new CourseProgressSummaryDto { CourseId = courseId, CompletedCount = 0, TotalCount = 0, PercentComplete = 0 };
         }
 
-        public async Task<IReadOnlyList<CourseProgressSummary>> GetMyCoursesProgressAsync(Guid studentId, CancellationToken cancellationToken = default)
+        public async Task<IReadOnlyList<CourseProgressSummaryDto>> GetMyCoursesProgressAsync(Guid studentId, CancellationToken cancellationToken = default)
         {
             using var connection = await CreateConnectionAsync(cancellationToken);
             var sql = @"
@@ -133,7 +124,7 @@ namespace Infrastructure.Repositories
                 LEFT JOIN course_completed cc ON ct.course_id = cc.course_id
                 ORDER BY ct.course_id";
             
-            var results = await connection.QueryAsync<CourseProgressSummary>(sql, new { StudentId = studentId });
+            var results = await connection.QueryAsync<CourseProgressSummaryDto>(sql, new { StudentId = studentId });
             return results.ToList();
         }
     }

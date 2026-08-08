@@ -1,7 +1,3 @@
-using Application.Common.Interfaces.Identity;
-using Application.DTOs.Authentication;
-using MediatR;
-
 namespace Application.Features.Authentication.Commands.ExternalLogin.Github;
 
 public sealed class CreateGithubLoginCommandHandler(

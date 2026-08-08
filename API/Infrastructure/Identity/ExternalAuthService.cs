@@ -3,7 +3,6 @@ using Application.Common.Extensions;
 using Application.Common.Interfaces.Identity;
 using Application.Common.Models.Identity;
 using Application.DTOs.Authentication;
-using Domain.Entities.Identity;
 using Domain.Enums.Identity;
 using Microsoft.AspNetCore.Identity;
 using IdentityConstants = Domain.Constants.IdentityConstants;
@@ -14,13 +13,16 @@ public class ExternalAuthService : IExternalAuthService
 {
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly IEnumerable<IExternalLoginValidator> _validators;
+    private readonly IStudentProfileService _studentProfileService;
 
     public ExternalAuthService(
         UserManager<ApplicationUser> userManager,
-        IEnumerable<IExternalLoginValidator> validators)
+        IEnumerable<IExternalLoginValidator> validators,
+        IStudentProfileService studentProfileService)
     {
         _userManager = userManager;
         _validators = validators;
+        _studentProfileService = studentProfileService;
     }
 
     public async Task<ApplicationUser> GoogleLoginAsync(GoogleLoginDto googleLoginDto)
@@ -48,7 +50,6 @@ public class ExternalAuthService : IExternalAuthService
         var validator = _validators.FirstOrDefault(v => v.Provider == ExternalLoginProvider.Github)
             ?? throw new InvalidOperationException("Github validator not found.");
 
-        // Pass code and redirectUri together so the validator can exchange them for an access token
         var payload = $"{githubLoginDto.Code}|{githubLoginDto.RedirectUri}";
         var externalUser = await validator.ValidateAsync(payload);
 
@@ -74,6 +75,11 @@ public class ExternalAuthService : IExternalAuthService
                 throw new Exception($"Failed to create user: {string.Join(", ", createResult.Errors.Select(e => e.Description))}");
 
             await _userManager.AddToRoleAsync(user, Role.Student.ToString());
+            await _studentProfileService.EnsureStudentProfileAsync(user.Id);
+        }
+        else
+        {
+            await _studentProfileService.EnsureStudentProfileAsync(user.Id);
         }
 
         var loginInfo = new UserLoginInfo(providerStr, externalUser.Id, providerStr);

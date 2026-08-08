@@ -27,6 +27,7 @@ public static class ExternalUserExtensions
             UserName = externalUser.Email,
             FirstName = externalUser.FirstName,
             LastName = externalUser.LastName,
+            Gender = externalUser.Gender,
             EmailConfirmed = true
         };
     }

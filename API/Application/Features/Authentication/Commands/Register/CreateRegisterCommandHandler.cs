@@ -1,5 +1,5 @@
-using Application.Common.Interfaces.Identity;
 using Domain.Entities.Identity;
+using Domain.Enums.Identity;
 using Microsoft.AspNetCore.Identity;
 
 namespace Application.Features.Authentication.Commands.Register
@@ -8,7 +8,8 @@ namespace Application.Features.Authentication.Commands.Register
             UserManager<ApplicationUser> _userManager,
             IUserIdentityService _userIdentityService,
             IPasswordService _passwordService,
-            IIdentityEmailService _identityEmailService) :
+            IIdentityEmailService _identityEmailService,
+            IStudentProfileService _studentProfileService) :
         IRequestHandler<CreateRegisterCommand>
     {
         public async Task Handle(CreateRegisterCommand request, CancellationToken cancellationToken)
@@ -26,6 +27,9 @@ namespace Application.Features.Authentication.Commands.Register
                 throw new BadRequestException(result.Errors.Select(e => e.Description));
 
             await _userManager.AddToRoleAsync(user, request.Dto.Role.ToString());
+
+            if (request.Dto.Role == Role.Student)
+                await _studentProfileService.EnsureStudentProfileAsync(user.Id, cancellationToken);
 
             var token = await _passwordService.GenerateEmailConfirmationTokenAsync(user);
             await _identityEmailService.SendEmailConfirmationEmailAsync(user, token);

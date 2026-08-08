@@ -17,6 +17,7 @@ using Application.Common.Interfaces.Identity;
 using Infrastructure.Identity.Authentication.Facebook;
 using Infrastructure.Identity.Authentication.Google;
 using Infrastructure.Identity.Authentication.Github;
+using Application.Common.Interfaces;
 using Constant = Domain.Constants;
 
 public static class DependencyInjection
@@ -54,6 +55,7 @@ public static class DependencyInjection
         services.AddScoped<ISectionRepository, SectionRepository>();
         services.AddScoped<IContentRepository, ContentRepository>();
         services.AddScoped<IInstructorRepository, InstructorRepository>();
+        services.AddScoped<IStudentRepository, StudentRepository>();
         services.AddScoped<ICourseDiscountRepository, CourseDiscountRepository>();
         services.AddScoped<IEnrollmentRepository, EnrollmentRepository>();
         services.AddScoped<IContentProgressRepository, ContentProgressRepository>();
@@ -99,6 +101,7 @@ public static class DependencyInjection
         services.AddScoped<ILoginPipeline, LoginPipeline>();
         services.AddTransient<IIdentityEmailService, IdentityEmailService>();
         services.AddTransient<ITwoFactorService, TwoFactorService>();
+        services.AddScoped<IStudentProfileService, StudentProfileService>();
 
         services.Configure<GoogleOptions>(config.GetSection(GoogleOptions.SectionName));
         services.Configure<FacebookOptions>(config.GetSection(FacebookOptions.SectionName));
