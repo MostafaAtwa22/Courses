@@ -1,3 +1,4 @@
+using Application.Common.Models;
 using Application.DTOs.Account;
 using Application.Features.Account.Commands.Lock;
 using Application.Features.Account.Commands.UnLock;

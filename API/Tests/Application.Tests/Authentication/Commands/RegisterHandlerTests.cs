@@ -17,6 +17,7 @@ public class RegisterHandlerTests
     private readonly Mock<IUserIdentityService> _userIdentityServiceMock;
     private readonly Mock<IPasswordService> _passwordServiceMock;
     private readonly Mock<IIdentityEmailService> _identityEmailServiceMock;
+    private readonly Mock<IStudentProfileService> _studentProfileServiceMock;
     private readonly CreateRegisterCommandHandler _handler;
 
     public RegisterHandlerTests()
@@ -25,12 +26,14 @@ public class RegisterHandlerTests
         _userIdentityServiceMock  = new Mock<IUserIdentityService>();
         _passwordServiceMock      = new Mock<IPasswordService>();
         _identityEmailServiceMock = new Mock<IIdentityEmailService>();
+        _studentProfileServiceMock = new Mock<IStudentProfileService>();
 
         _handler = new CreateRegisterCommandHandler(
             _userManagerMock.Object,
             _userIdentityServiceMock.Object,
             _passwordServiceMock.Object,
-            _identityEmailServiceMock.Object);
+            _identityEmailServiceMock.Object,
+            _studentProfileServiceMock.Object);
     }
 
     [Fact]
@@ -54,6 +57,8 @@ public class RegisterHandlerTests
             .ReturnsAsync(IdentityResult.Success);
         _userManagerMock.Setup(x => x.AddToRoleAsync(It.IsAny<ApplicationUser>(), It.IsAny<string>()))
             .ReturnsAsync(IdentityResult.Success);
+        _studentProfileServiceMock.Setup(x => x.EnsureStudentProfileAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            .Returns(Task.CompletedTask);
 
         // Act
         await _handler.Handle(command, CancellationToken.None);
@@ -61,6 +66,7 @@ public class RegisterHandlerTests
         // Assert
         _userManagerMock.Verify(x => x.CreateAsync(It.IsAny<ApplicationUser>(), dto.Password), Times.Once);
         _userManagerMock.Verify(x => x.AddToRoleAsync(It.IsAny<ApplicationUser>(), "Student"), Times.Once);
+        _studentProfileServiceMock.Verify(x => x.EnsureStudentProfileAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Once);
         _passwordServiceMock.Verify(x => x.GenerateEmailConfirmationTokenAsync(It.IsAny<ApplicationUser>()), Times.Once);
         _identityEmailServiceMock.Verify(x => x.SendEmailConfirmationEmailAsync(It.IsAny<ApplicationUser>(), It.IsAny<string>()), Times.Once);
     }

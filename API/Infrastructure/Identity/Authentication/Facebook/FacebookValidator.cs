@@ -1,5 +1,4 @@
 using System.Net.Http.Json;
-using System.Text.Json.Serialization;
 using Application.Common.Exceptions;
 using Application.Common.Interfaces.Identity;
 using Application.Common.Models.Identity;
@@ -34,7 +33,7 @@ public class FacebookValidator : IExternalLoginValidator
         if (debugResponse?.Data == null || !debugResponse.Data.IsValid)
             throw new UnauthorizedException("Invalid Facebook access token.");
 
-        var userInfoUrl = $"me?fields=id,email,first_name,last_name,picture&access_token={token}";
+        var userInfoUrl = $"me?fields=id,email,first_name,last_name,picture,gender&access_token={token}";
         var userInfo = await httpClient.GetFromJsonAsync<FacebookUserInfoResult>(userInfoUrl, cancellationToken);
 
         if (userInfo == null || string.IsNullOrEmpty(userInfo.Id))
@@ -60,6 +59,7 @@ public class FacebookValidator : IExternalLoginValidator
         [JsonPropertyName("first_name")] public string FirstName { get; set; } = string.Empty;
         [JsonPropertyName("last_name")] public string LastName { get; set; } = string.Empty;
         [JsonPropertyName("picture")] public FacebookPicture Picture { get; set; } = new();
+        [JsonPropertyName("gender")] public string? Gender { get; set; }
     }
 
     public class FacebookPicture

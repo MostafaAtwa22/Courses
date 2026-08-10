@@ -1,5 +1,6 @@
 using System.Data;
 using Application.Common.Interfaces;
+using Application.DTOs.Progress;
 using Infrastructure.Repositories;
 using Moq;
 using Moq.Dapper;
@@ -107,7 +108,7 @@ namespace Infrastructure.Tests.Repositories
             // Arrange
             var studentId = Guid.NewGuid();
             var courseId = Guid.NewGuid();
-            var expectedSummary = new CourseProgressSummary
+            var expectedSummary = new CourseProgressSummaryDto
             {
                 CourseId = courseId,
                 CompletedCount = 2,
@@ -116,7 +117,7 @@ namespace Infrastructure.Tests.Repositories
             };
 
             _connectionMock
-                .SetupDapperAsync(c => c.QueryFirstOrDefaultAsync<CourseProgressSummary>(
+                .SetupDapperAsync(c => c.QueryFirstOrDefaultAsync<CourseProgressSummaryDto>(
                     It.IsAny<string>(), It.IsAny<object>(), null, null, null))
                 .ReturnsAsync(expectedSummary);
 
@@ -139,9 +140,9 @@ namespace Infrastructure.Tests.Repositories
             var courseId = Guid.NewGuid();
 
             _connectionMock
-                .SetupDapperAsync(c => c.QueryFirstOrDefaultAsync<CourseProgressSummary>(
+                .SetupDapperAsync(c => c.QueryFirstOrDefaultAsync<CourseProgressSummaryDto>(
                     It.IsAny<string>(), It.IsAny<object>(), null, null, null))
-                .ReturnsAsync((CourseProgressSummary?)null);
+                .ReturnsAsync((CourseProgressSummaryDto?)null);
 
             // Act
             var result = await _repository.GetCourseProgressSummaryAsync(studentId, courseId);
@@ -160,13 +161,13 @@ namespace Infrastructure.Tests.Repositories
             // Arrange
             var studentId = Guid.NewGuid();
             var courseId1 = Guid.NewGuid();
-            var expectedProgress = new List<CourseProgressSummary>
+            var expectedProgress = new List<CourseProgressSummaryDto>
             {
-                new CourseProgressSummary { CourseId = courseId1, CompletedCount = 2, TotalCount = 5, PercentComplete = 40 }
+                new CourseProgressSummaryDto { CourseId = courseId1, CompletedCount = 2, TotalCount = 5, PercentComplete = 40 }
             };
 
             _connectionMock
-                .SetupDapperAsync(c => c.QueryAsync<CourseProgressSummary>(
+                .SetupDapperAsync(c => c.QueryAsync<CourseProgressSummaryDto>(
                     It.IsAny<string>(), It.IsAny<object>(), null, null, null))
                 .ReturnsAsync(expectedProgress);
 
@@ -184,9 +185,9 @@ namespace Infrastructure.Tests.Repositories
             var studentId = Guid.NewGuid();
 
             _connectionMock
-                .SetupDapperAsync(c => c.QueryAsync<CourseProgressSummary>(
+                .SetupDapperAsync(c => c.QueryAsync<CourseProgressSummaryDto>(
                     It.IsAny<string>(), It.IsAny<object>(), null, null, null))
-                .ReturnsAsync(Enumerable.Empty<CourseProgressSummary>());
+                .ReturnsAsync(Enumerable.Empty<CourseProgressSummaryDto>());
 
             // Act
             var result = await _repository.GetMyCoursesProgressAsync(studentId);
@@ -201,7 +202,7 @@ namespace Infrastructure.Tests.Repositories
             // Arrange
             var studentId = Guid.NewGuid();
             var courseId = Guid.NewGuid();
-            var expectedSummary = new CourseProgressSummary
+            var expectedSummary = new CourseProgressSummaryDto
             {
                 CourseId = courseId,
                 CompletedCount = 0,
@@ -210,7 +211,7 @@ namespace Infrastructure.Tests.Repositories
             };
 
             _connectionMock
-                .SetupDapperAsync(c => c.QueryFirstOrDefaultAsync<CourseProgressSummary>(
+                .SetupDapperAsync(c => c.QueryFirstOrDefaultAsync<CourseProgressSummaryDto>(
                     It.IsAny<string>(), It.IsAny<object>(), null, null, null))
                 .ReturnsAsync(expectedSummary);
 
@@ -227,7 +228,7 @@ namespace Infrastructure.Tests.Repositories
             // Arrange
             var studentId = Guid.NewGuid();
             var courseId = Guid.NewGuid();
-            var expectedSummary = new CourseProgressSummary
+            var expectedSummary = new CourseProgressSummaryDto
             {
                 CourseId = courseId,
                 CompletedCount = 5,
@@ -236,7 +237,7 @@ namespace Infrastructure.Tests.Repositories
             };
 
             _connectionMock
-                .SetupDapperAsync(c => c.QueryFirstOrDefaultAsync<CourseProgressSummary>(
+                .SetupDapperAsync(c => c.QueryFirstOrDefaultAsync<CourseProgressSummaryDto>(
                     It.IsAny<string>(), It.IsAny<object>(), null, null, null))
                 .ReturnsAsync(expectedSummary);
 

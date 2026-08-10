@@ -50,19 +50,19 @@ namespace Infrastructure.Repositories
             var sql = "SELECT * FROM instructors WHERE user_id = @UserId";
             return await connection.QueryFirstOrDefaultAsync<Instructor>(sql, new { UserId = userId });
         }
-        
+
         public async Task<Instructor?> GetEntityByIdAsync(Guid id, CancellationToken ct = default)
         {
             using var connection = await CreateConnectionAsync(ct);
-            var sql = "SELECT * FROM instructors WHERE id = @Id OR user_id = @UserId";
-            return await connection.QueryFirstOrDefaultAsync<Instructor>(sql, new { Id = id, UserId = id.ToString() });
+            var sql = "SELECT * FROM instructors WHERE id = @Id";
+            return await connection.QueryFirstOrDefaultAsync<Instructor>(sql, new { Id = id });
         }
-        
+
         public async Task<InstructorPublicResponseDto?> GetPublicByIdAsync(Guid id, CancellationToken ct = default)
         {
             using var connection = await CreateConnectionAsync(ct);
-            var sql = $"SELECT {SelectColumns} {FromClause} WHERE i.id = @Id OR i.user_id = @UserId";
-            return await connection.QueryFirstOrDefaultAsync<InstructorPublicResponseDto>(sql, new { Id = id, UserId = id.ToString() });
+            var sql = $"SELECT {SelectColumns} {FromClause} WHERE i.id = @Id";
+            return await connection.QueryFirstOrDefaultAsync<InstructorPublicResponseDto>(sql, new { Id = id });
         }
 
         public async Task<InstructorPublicResponseDto?> GetPublicByCourseIdAsync(
@@ -85,8 +85,8 @@ namespace Infrastructure.Repositories
         public async Task<InstructorPrivateResponseDto?> GetPrivateByIdAsync(Guid id, CancellationToken ct = default)
         {
             using var connection = await CreateConnectionAsync(ct);
-            var sql = $"SELECT {PrivateSelectColumns} {FromClause} WHERE i.id = @Id OR i.user_id = @UserId";
-            return await connection.QueryFirstOrDefaultAsync<InstructorPrivateResponseDto>(sql, new { Id = id, UserId = id.ToString() });
+            var sql = $"SELECT {PrivateSelectColumns} {FromClause} WHERE i.id = @Id";
+            return await connection.QueryFirstOrDefaultAsync<InstructorPrivateResponseDto>(sql, new { Id = id });
         }
     
         public async Task<Guid> CreateAsync(Instructor instructor, CancellationToken ct = default)
@@ -123,8 +123,8 @@ namespace Infrastructure.Repositories
         public async Task DeleteAsync(Guid id, CancellationToken ct = default)
         {
             using var connection = await CreateConnectionAsync(ct);
-            var sql = @"DELETE FROM instructors WHERE id = @Id OR user_id = @UserId";
-            await connection.ExecuteAsync(sql, new { Id = id, UserId = id.ToString() });
+            var sql = @"DELETE FROM instructors WHERE id = @Id";
+            await connection.ExecuteAsync(sql, new { Id = id });
         }
 
         public Task<PaginatedResult<InstructorPrivateResponseDto>> GetAllAsync(InstructorQueryParams queryParams, CancellationToken ct = default)

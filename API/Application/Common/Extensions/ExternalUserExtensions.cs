@@ -15,6 +15,7 @@ public static class ExternalUserExtensions
             Email = payload.Email,
             FirstName = payload.GivenName ?? string.Empty,
             LastName = payload.FamilyName ?? string.Empty,
+            Gender = default,
             Provider = ExternalLoginProvider.Google
         };
     }
@@ -27,6 +28,7 @@ public static class ExternalUserExtensions
             UserName = externalUser.Email,
             FirstName = externalUser.FirstName,
             LastName = externalUser.LastName,
+            Gender = externalUser.Gender,
             EmailConfirmed = true
         };
     }
