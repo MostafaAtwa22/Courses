@@ -32,7 +32,7 @@ public class ExternalAuthService : IExternalAuthService
 
         var externalUser = await validator.ValidateAsync(googleLoginDto.IdToken);
 
-        return await ProcessExternalUserAsync(externalUser, IdentityConstants.Google);
+        return await ProcessExternalUserAsync(externalUser);
     }
 
     public async Task<ApplicationUser> FacebookLoginAsync(FacebookLoginDto facebookLoginDto)
@@ -42,7 +42,7 @@ public class ExternalAuthService : IExternalAuthService
 
         var externalUser = await validator.ValidateAsync(facebookLoginDto.AccessToken);
 
-        return await ProcessExternalUserAsync(externalUser, "Facebook");
+        return await ProcessExternalUserAsync(externalUser);
     }
 
     public async Task<ApplicationUser> GithubLoginAsync(GithubLoginDto githubLoginDto)
@@ -53,11 +53,12 @@ public class ExternalAuthService : IExternalAuthService
         var payload = $"{githubLoginDto.Code}|{githubLoginDto.RedirectUri}";
         var externalUser = await validator.ValidateAsync(payload);
 
-        return await ProcessExternalUserAsync(externalUser, "Github");
+        return await ProcessExternalUserAsync(externalUser);
     }
 
-    private async Task<ApplicationUser> ProcessExternalUserAsync(ExternalUser externalUser, string providerStr)
+    private async Task<ApplicationUser> ProcessExternalUserAsync(ExternalUser externalUser)
     {
+        var providerStr = externalUser.Provider.ToString();
         var user = await _userManager.FindByLoginAsync(providerStr, externalUser.Id);
 
         if (user is not null)
@@ -83,7 +84,7 @@ public class ExternalAuthService : IExternalAuthService
         }
 
         var loginInfo = new UserLoginInfo(providerStr, externalUser.Id, providerStr);
-        
+
         var addLoginResult = await _userManager.AddLoginAsync(user, loginInfo);
 
         if (!addLoginResult.Succeeded)

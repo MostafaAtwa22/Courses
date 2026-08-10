@@ -1,3 +1,4 @@
+using Application.Common.Extensions;
 using Application.Common.Models.Identity;
 using Domain.Enums.Identity;
 
@@ -13,6 +14,7 @@ public static class FacebookUserInfoResultExtensions
             Email = facebookUserInfo.Email,
             FirstName = facebookUserInfo.FirstName,
             LastName = facebookUserInfo.LastName,
+            Gender = GenderMappingExtensions.MapGender(facebookUserInfo.Gender),
             Provider = ExternalLoginProvider.Facebook
         };
     }
