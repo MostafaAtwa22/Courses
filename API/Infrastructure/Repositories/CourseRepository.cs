@@ -1,5 +1,7 @@
+using Application.Common.Models;
 using Application.Common.Options;
 using Application.DTOs.Course;
+using Domain.Enums;
 using Microsoft.Extensions.Options;
 
 namespace Infrastructure.Repositories
@@ -57,7 +59,7 @@ namespace Infrastructure.Repositories
 
         public Task<PaginatedResult<CourseSummaryDto>> GetAllAsync(CourseQueryParams queryParams, CancellationToken ct = default)
         {
-            var extraConditions = new List<string>();
+            var extraConditions = new List<string> { "c.status = @Status" };
 
             if (!string.IsNullOrWhiteSpace(queryParams.Category))
             {
@@ -83,6 +85,7 @@ namespace Infrastructure.Repositories
                 extraConditions: extraConditions,
                 configureParameters: parameters =>
                 {
+                    parameters.Add("Status", CourseStatus.Done.ToString());
                     if (!string.IsNullOrWhiteSpace(queryParams.Category))
                     {
                         parameters.Add("Category", queryParams.Category);
@@ -111,6 +114,68 @@ namespace Infrastructure.Repositories
             using var connection = await CreateConnectionAsync(ct);
             var sql = "SELECT * FROM courses WHERE id = @Id";
             return await connection.QueryFirstOrDefaultAsync<Course>(sql, new { Id = id });
+        }
+
+        public async Task<PaginatedResult<CourseSummaryDto>> GetCoursesByStudentIdAsync(Guid studentId, CourseQueryParams queryParams, CancellationToken ct = default)
+        {
+            var extraConditions = new List<string> { "e.student_id = @StudentId" };
+
+            return await ExecutePaginatedQueryAsync<CourseSummaryDto>(
+                queryParams,
+                countSql: $"SELECT COUNT(1) {FromClause} JOIN enrollments e ON c.id = e.course_id",
+                selectSql: $"SELECT {SummaryColumns} {FromClause} JOIN enrollments e ON c.id = e.course_id",
+                allowedSortColumns: AllowedSortColumns,
+                defaultSortColumn: "c.created_at",
+                searchCondition: "(c.title ILIKE @SearchTerm OR c.description ILIKE @SearchTerm)",
+                extraConditions: extraConditions,
+                configureParameters: parameters =>
+                {
+                    parameters.Add("StudentId", studentId);
+                },
+                ct);
+        }
+
+        public async Task<PaginatedResult<CourseSummaryDto>> GetCoursesByInstructorIdAsync(Guid instructorId, CourseQueryParams queryParams, CancellationToken ct = default)
+        {
+            var extraConditions = new List<string> { "c.instructor_id = @InstructorId" };
+
+            return await ExecutePaginatedQueryAsync<CourseSummaryDto>(
+                queryParams,
+                countSql: $"SELECT COUNT(1) {FromClause}",
+                selectSql: $"SELECT {SummaryColumns} {FromClause}",
+                allowedSortColumns: AllowedSortColumns,
+                defaultSortColumn: "c.created_at",
+                searchCondition: "(c.title ILIKE @SearchTerm OR c.description ILIKE @SearchTerm)",
+                extraConditions: extraConditions,
+                configureParameters: parameters =>
+                {
+                    parameters.Add("InstructorId", instructorId);
+                },
+                ct);
+        }
+
+        public async Task<PaginatedResult<CourseSummaryDto>> GetPublishedCoursesByInstructorIdAsync(Guid instructorId, CourseQueryParams queryParams, CancellationToken ct = default)
+        {
+            var extraConditions = new List<string> 
+            { 
+                "c.instructor_id = @InstructorId",
+                "c.status = @Status"
+            };
+
+            return await ExecutePaginatedQueryAsync<CourseSummaryDto>(
+                queryParams,
+                countSql: $"SELECT COUNT(1) {FromClause}",
+                selectSql: $"SELECT {SummaryColumns} {FromClause}",
+                allowedSortColumns: AllowedSortColumns,
+                defaultSortColumn: "c.created_at",
+                searchCondition: "(c.title ILIKE @SearchTerm OR c.description ILIKE @SearchTerm)",
+                extraConditions: extraConditions,
+                configureParameters: parameters =>
+                {
+                    parameters.Add("InstructorId", instructorId);
+                    parameters.Add("Status", CourseStatus.Done.ToString()); 
+                },
+                ct);
         }
 
         public async Task<Guid> CreateAsync(Course course, CancellationToken ct = default)

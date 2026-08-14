@@ -37,11 +37,12 @@
       svg {
         color: var(--primary-color);
         padding: 6px;
-        background: rgba(37, 99, 235, 0.1);
+        background: rgba(99, 102, 241, 0.15);
         border-radius: 50%;
         width: 32px;
         height: 32px;
         flex-shrink: 0;
+        stroke-width: 2.5;
       }
 
       h2 {
@@ -95,28 +96,53 @@
       svg {
         width: 18px;
         height: 18px;
+        stroke-width: 2.5;
       }
     }
 
-    &:nth-child(1) .icon-box { background: rgba(99, 102, 241, 0.1); color: #6366f1; }
-    &:nth-child(2) .icon-box { background: rgba(6, 182, 212, 0.1); color: #06b6d4; }
-    &:nth-child(3) .icon-box { background: rgba(0, 119, 182, 0.1); color: #0077b6; }
-    &:nth-child(4) .icon-box { background: rgba(33, 33, 33, 0.1); color: #212121; }
+    &:nth-child(1) .icon-box { 
+      background: rgba(99, 102, 241, 0.15); 
+      color: #818cf8;
+    }
+    &:nth-child(2) .icon-box { 
+      background: rgba(6, 182, 212, 0.15); 
+      color: #22d3ee;
+    }
+    &:nth-child(3) .icon-box { 
+      background: rgba(0, 119, 182, 0.15); 
+      color: #38bdf8;
+    }
+    &:nth-child(4) .icon-box { 
+      background: rgba(100, 116, 139, 0.15); 
+      color: #94a3b8;
+    }
 
-    // Status icon colors - using CSS variables for theme-aware coloring
+    // Status icon colors - brighter colors that work in both themes
     .status-icon-pending {
-      background: var(--status-pending-bg, rgba(251, 191, 36, 0.25));
-      color: var(--status-pending-color, #f59e0b);
+      background: rgba(251, 191, 36, 0.15);
+      color: #fbbf24;
+      
+      svg {
+        stroke-width: 2.5;
+      }
     }
 
     .status-icon-verfied {
-      background: var(--status-verfied-bg, rgba(34, 197, 94, 0.25));
-      color: var(--status-verfied-color, #22c55e);
+      background: rgba(34, 197, 94, 0.15);
+      color: #4ade80;
+      
+      svg {
+        stroke-width: 2.5;
+      }
     }
 
     .status-icon-unverfied {
-      background: var(--status-unverfied-bg, rgba(239, 68, 68, 0.25));
-      color: var(--status-unverfied-color, #ef4444);
+      background: rgba(239, 68, 68, 0.15);
+      color: #f87171;
+      
+      svg {
+        stroke-width: 2.5;
+      }
     }
 
     .item-content {
@@ -156,19 +182,19 @@
         }
       }
 
-      // Status styles - using CSS variables for theme-aware coloring
+      // Status styles - brighter colors that work in both themes
       .status-pending {
-        color: var(--status-pending-color, #f59e0b);
+        color: #fbbf24;
         font-weight: 700;
       }
 
       .status-verfied {
-        color: var(--status-verfied-color, #22c55e);
+        color: #4ade80;
         font-weight: 700;
       }
 
       .status-unverfied {
-        color: var(--status-unverfied-color, #ef4444);
+        color: #f87171;
         font-weight: 700;
       }
     }

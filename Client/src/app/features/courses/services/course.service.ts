@@ -13,7 +13,7 @@ export class CourseService {
   private http = inject(HttpClient);
   private apiUrl = `${environment.apiUrl}/courses`;
 
-  getAll(params: CourseQueryParams): Observable<PaginatedResultModel<CourseSummary>> {
+  private buildHttpParams(params: CourseQueryParams): HttpParams {
     let httpParams = new HttpParams();
 
     if (params.pageNumber) {
@@ -41,6 +41,11 @@ export class CourseService {
       httpParams = httpParams.set('maxRating', params.maxRating.toString());
     }
 
+    return httpParams;
+  }
+
+  getAll(params: CourseQueryParams): Observable<PaginatedResultModel<CourseSummary>> {
+    const httpParams = this.buildHttpParams(params);
     return this.http
       .get<unknown>(this.apiUrl, { params: httpParams })
       .pipe(map((res) => PaginatedResultModel.fromApi<CourseSummary>(res)));
@@ -64,5 +69,26 @@ export class CourseService {
 
   delete(id: string): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  }
+
+  getCoursesByStudentId(params: CourseQueryParams): Observable<PaginatedResultModel<CourseSummary>> {
+    const httpParams = this.buildHttpParams(params);
+    return this.http
+      .get<unknown>(`${this.apiUrl}/by-student`, { params: httpParams })
+      .pipe(map((res) => PaginatedResultModel.fromApi<CourseSummary>(res)));
+  }
+
+  getCoursesByInstructorId(params: CourseQueryParams): Observable<PaginatedResultModel<CourseSummary>> {
+    const httpParams = this.buildHttpParams(params);
+    return this.http
+      .get<unknown>(`${this.apiUrl}/by-instructor`, { params: httpParams })
+      .pipe(map((res) => PaginatedResultModel.fromApi<CourseSummary>(res)));
+  }
+
+  getCoursesByInstructorIdPublic(instructorId: string, params: CourseQueryParams): Observable<PaginatedResultModel<CourseSummary>> {
+    const httpParams = this.buildHttpParams(params);
+    return this.http
+      .get<unknown>(`${this.apiUrl}/public/by-instructor/${instructorId}`, { params: httpParams })
+      .pipe(map((res) => PaginatedResultModel.fromApi<CourseSummary>(res)));
   }
 }

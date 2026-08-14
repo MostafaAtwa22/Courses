@@ -16,6 +16,7 @@ namespace Application
                 options.AddOpenBehavior(typeof(UserContextBehavior<,>));
                 options.AddOpenBehavior(typeof(AuthorizationBehavior<,>));
                 options.AddOpenBehavior(typeof(InstructorOwnershipBehavior<,>));
+                options.AddOpenBehavior(typeof(InstructorAuthenticationBehavior<,>));
                 options.AddOpenBehavior(typeof(StudentAuthenticationBehavior<,>));
                 options.AddOpenBehavior(typeof(EnrollmentAuthorizationBehavior<,>));
                 options.AddOpenBehavior(typeof(ContentAccessBehavior<,>));

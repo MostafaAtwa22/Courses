@@ -10,6 +10,7 @@ import { forkJoin } from 'rxjs';
 import { VideoPlayerComponent } from '../../../../../shared/components/video-player/video-player.component';
 import { ProgressBarComponent } from '../../../../../shared/components/progress-bar/progress-bar';
 import { environment } from '../../../../../../environments/environment';
+import { AuthService } from '../../../../auth/services/auth.service';
 
 @Component({
   selector: 'app-content-player',
@@ -25,6 +26,7 @@ export class ContentPlayerComponent implements OnInit, OnDestroy {
   private courseService = inject(CourseService);
   private sectionService = inject(SectionService);
   private progressService = inject(ProgressService);
+  private authService = inject(AuthService);
 
   course?: CourseResponse;
   content?: ContentResponse;
@@ -104,18 +106,22 @@ export class ContentPlayerComponent implements OnInit, OnDestroy {
     // 1. Get Course details
     this.courseService.getById(courseId).subscribe(c => this.course = c);
 
-    // 2. Load progress (silently, don't block on failure)
-    this.progressService.checkEnrollment(courseId).subscribe({
-      next: (progress) => {
-        this.progress = progress;
-        this.isEnrolled = true;
-      },
-      error: (err) => {
-        // User might not be enrolled or not logged in - that's fine
-        this.isEnrolled = false;
-        console.log('Could not load progress (user may not be enrolled)');
-      }
-    });
+    // 2. Load progress (only if authenticated)
+    if (this.authService.isLoggedIn()) {
+      this.progressService.checkEnrollment(courseId).subscribe({
+        next: (progress) => {
+          this.progress = progress;
+          this.isEnrolled = true;
+        },
+        error: (err) => {
+          // User might not be enrolled - that's fine
+          this.isEnrolled = false;
+          console.log('Could not load progress (user may not be enrolled)');
+        }
+      });
+    } else {
+      this.isEnrolled = false;
+    }
 
     // 3. Get Sections
     this.sectionService.getByCourseId(courseId, { pageSize: 100 }).subscribe({
@@ -213,7 +219,7 @@ export class ContentPlayerComponent implements OnInit, OnDestroy {
   toggleContentComplete(event: Event, content: ContentResponse): void {
     event.stopPropagation(); // Prevent selecting the content
     
-    if (!this.course?.id) return;
+    if (!this.course?.id || !this.authService.isLoggedIn()) return;
 
     const isCompleted = this.isContentCompleted(content.id);
     const request = { contentId: content.id, courseId: this.course.id };
@@ -256,7 +262,7 @@ export class ContentPlayerComponent implements OnInit, OnDestroy {
   }
 
   markCurrentContentComplete(): void {
-    if (this.content && this.course?.id) {
+    if (this.content && this.course?.id && this.authService.isLoggedIn()) {
       const request = { contentId: this.content.id, courseId: this.course.id };
       this.progressService.markComplete(request).subscribe({
         next: () => {

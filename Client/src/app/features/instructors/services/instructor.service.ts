@@ -21,6 +21,10 @@ export class InstructorService {
     return this.http.get<InstructorPrivateResponse>(`${this.apiUrl}/private/${id}`);
   }
 
+  getCurrentInstructor(): Observable<InstructorPrivateResponse> {
+    return this.http.get<InstructorPrivateResponse>(`${this.apiUrl}/private/me`);
+  }
+
   getPublicInstructorById(id: string): Observable<InstructorPublicResponse> {
     return this.http.get<InstructorPublicResponse>(`${this.apiUrl}/public/${id}`);
   }

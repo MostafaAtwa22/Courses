@@ -15,6 +15,7 @@ import { CourseReviewsComponent } from './components/course-reviews/course-revie
 import { HeaderComponent } from '../../../shared/components/header/header';
 import { FooterComponent } from '../../../shared/components/footer/footer';
 import { ThemeService } from '../../../core/services/theme.service';
+import { AuthService } from '../../auth/services/auth.service';
 
 @Component({
   selector: 'app-course-details',
@@ -42,6 +43,7 @@ export class CourseDetailsComponent implements OnInit {
   private reviewService = inject(ReviewService);
   private progressService = inject(ProgressService);
   private themeService = inject(ThemeService);
+  private authService = inject(AuthService);
 
   course?: CourseResponse;
   sections: SectionResponse[] = [];
@@ -88,13 +90,19 @@ export class CourseDetailsComponent implements OnInit {
   }
 
   loadProgress(courseId: string): void {
+    // Only load progress if user is authenticated
+    if (!this.authService.isLoggedIn()) {
+      this.isEnrolled = false;
+      return;
+    }
+
     this.progressService.checkEnrollment(courseId).subscribe({
       next: (progress) => {
         this.progress = progress;
         this.isEnrolled = true;
       },
       error: (err) => {
-        // User might not be enrolled or not logged in - that's fine
+        // User might not be enrolled - that's fine
         this.isEnrolled = false;
         console.log('Could not load progress (user may not be enrolled)');
       }

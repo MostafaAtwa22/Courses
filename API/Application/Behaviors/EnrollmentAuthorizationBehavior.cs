@@ -2,13 +2,17 @@ namespace Application.Behaviors
 {
     public class EnrollmentAuthorizationBehavior<TRequest, TResponse>(
         IContentAccessService _contentAccessService,
-        IContentRepository _contentRepository)
+        IContentRepository _contentRepository,
+        ICurrentUserService _currentUserService)
         : IPipelineBehavior<TRequest, TResponse>
     where TRequest : IRequireEnrollment
     {
         public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
         {
             if (request.CourseId == Guid.Empty)
+                return await next();
+
+            if (string.IsNullOrEmpty(_currentUserService.UserId) && request.AllowPreview)
                 return await next();
 
             if (request.ContentId == Guid.Empty)
