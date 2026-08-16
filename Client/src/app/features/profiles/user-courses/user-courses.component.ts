@@ -7,11 +7,12 @@ import { CourseQueryParams, createCourseQueryParams } from '../../../shared/mode
 import { RouterLink } from '@angular/router';
 import { SessionService } from '../../auth/services/session.service';
 import { CourseCardComponent } from '../../courses/components/course-card/course-card';
+import { PaginationComponent } from '../../../shared/components/pagination/pagination.component';
 
 @Component({
   selector: 'app-user-courses',
   standalone: true,
-  imports: [CommonModule, RouterLink, CourseCardComponent],
+  imports: [CommonModule, RouterLink, CourseCardComponent, PaginationComponent],
   templateUrl: './user-courses.component.html',
   styleUrl: './user-courses.component.scss'
 })
@@ -20,7 +21,7 @@ export class UserCoursesComponent implements OnInit {
   private sessionService = inject(SessionService);
 
   coursesResult: PaginatedResultModel<CourseSummary> = new PaginatedResultModel<CourseSummary>();
-  params: CourseQueryParams = createCourseQueryParams({ pageSize: 6, pageNumber: 1 });
+  params: CourseQueryParams = createCourseQueryParams({ pageSize: 3, pageNumber: 1 });
   isLoading = false;
   errorMessage = '';
 
@@ -67,22 +68,12 @@ export class UserCoursesComponent implements OnInit {
   }
 
   onPageChange(page: number) {
-    if (page < 1 || page > this.coursesResult.totalPages) return;
     this.params.pageNumber = page;
     this.loadCourses();
   }
 
   get currentPage(): number {
     return this.params.pageNumber || 1;
-  }
-
-  getPagesArray(): number[] {
-    return Array.from({ length: this.coursesResult.totalPages }, (_, i) => i + 1);
-  }
-
-  get userRole(): string {
-    const currentUser = this.sessionService.currentUser();
-    return currentUser?.roles?.[0] || 'Student';
   }
 
   get isInstructor(): boolean {
@@ -93,13 +84,5 @@ export class UserCoursesComponent implements OnInit {
   get isStudent(): boolean {
     const currentUser = this.sessionService.currentUser();
     return currentUser?.roles?.includes('Student') || false;
-  }
-
-  get coursesRange(): string {
-    if (!this.coursesResult.totalCount || this.coursesResult.totalCount === 0) return '0-0';
-    const pageSize = this.params.pageSize ?? 6;
-    const start = (this.currentPage - 1) * pageSize + 1;
-    const end = Math.min(this.currentPage * pageSize, this.coursesResult.totalCount);
-    return `${start}-${end}`;
   }
 }

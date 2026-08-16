@@ -25,7 +25,6 @@ export class ProfileComponent implements OnInit {
   private themeService = inject(ThemeService);
   private instructorService = inject(InstructorService);
   private sessionService = inject(SessionService);
-  isDarkMode = this.themeService.isDarkModeSignal();
   currentUser: BaseIdentityResponse | null = null;
   instructorData: InstructorPrivateResponse | null = null;
 
@@ -50,7 +49,6 @@ export class ProfileComponent implements OnInit {
 
   toggleTheme() {
     this.themeService.toggleTheme();
-    this.isDarkMode = this.themeService.isDarkModeSignal();
   }
 
   get fullName(): string {

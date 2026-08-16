@@ -11,7 +11,6 @@ import { FooterComponent } from '../../shared/components/footer/footer';
 import { CategoryService } from '../categories/services/category.service';
 import { QueryParams } from '../../shared/models/query-params.model';
 import { CourseService } from '../courses/services/course.service';
-import { ThemeService } from '../../core/services/theme.service';
 
 @Component({
   selector: 'app-home',
@@ -32,8 +31,6 @@ import { ThemeService } from '../../core/services/theme.service';
 export class Home implements OnInit, OnDestroy {
   private categoryService = inject(CategoryService);
   private courseService = inject(CourseService);
-  private themeService = inject(ThemeService);
-  isDarkMode = this.themeService.isDarkModeSignal();
   currentSlide = 0;
   slideInterval: any;
 
@@ -133,11 +130,6 @@ export class Home implements OnInit, OnDestroy {
     this.currentSlide = index;
     clearInterval(this.slideInterval);
     this.startSlider();
-  }
-
-  toggleTheme() {
-    this.themeService.toggleTheme();
-    this.isDarkMode = this.themeService.isDarkModeSignal();
   }
 
   toggleFaq(index: number) {

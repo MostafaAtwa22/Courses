@@ -84,4 +84,20 @@ export class AuthService {
     const payload = this.decodeToken(token);
     return payload?.has_instructor_profile === 'true';
   }
+
+  isInstructor(): boolean {
+    const user = this.currentUser();
+    if (!user) return false;
+    return user.roles.includes('Instructor');
+  }
+
+  isAdmin(): boolean {
+    const user = this.currentUser();
+    if (!user) return false;
+    return user.roles.includes('Admin');
+  }
+
+  isInstructorOrAdmin(): boolean {
+    return this.isInstructor() || this.isAdmin();
+  }
 }

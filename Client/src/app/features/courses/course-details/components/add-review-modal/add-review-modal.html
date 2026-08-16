@@ -1,0 +1,114 @@
+<div class="modal-overlay" *ngIf="isOpen" (click)="closeModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+
+    <!-- Header -->
+    <div class="modal-header">
+      <div class="modal-header-inner">
+        <div class="modal-icon-wrap">
+          <i class="fa-regular fa-star"></i>
+        </div>
+        <div>
+          <h4 class="modal-title">Add Your Review</h4>
+          <p class="modal-subtitle">Your feedback helps other learners</p>
+        </div>
+      </div>
+      <button class="btn-close" (click)="closeModal()" aria-label="Close">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+
+    <div class="modal-body">
+
+      <!-- Rating -->
+      <div class="review-section rating-section">
+        <label class="section-label">How would you rate this course?</label>
+        <div class="star-row">
+          <button
+            *ngFor="let star of stars"
+            class="star-btn"
+            type="button"
+            [class.active]="star <= (hoveredRating || rating)"
+            (mouseenter)="hoveredRating = star"
+            (mouseleave)="hoveredRating = 0"
+            (click)="setRating(star)"
+            [attr.aria-label]="star + ' star'"
+          >
+            <i class="fa-star" [class.fa-solid]="star <= (hoveredRating || rating)" [class.fa-regular]="star > (hoveredRating || rating)"></i>
+          </button>
+        </div>
+        <span class="rating-label" *ngIf="hoveredRating || rating">
+          {{ getRatingLabel(hoveredRating || rating) }}
+        </span>
+      </div>
+
+      <!-- Headline -->
+      <div class="review-section">
+        <label for="headline" class="section-label">
+          <i class="fa-solid fa-heading section-icon"></i>
+          Headline
+        </label>
+        <div class="input-wrap" [class.focused]="headlineFocused">
+          <input
+            type="text"
+            id="headline"
+            class="review-input"
+            [(ngModel)]="headline"
+            placeholder="Summarize your experience in one line"
+            maxlength="100"
+            (focus)="headlineFocused = true"
+            (blur)="headlineFocused = false"
+          />
+        </div>
+        <div class="char-count" [class.warn]="headline.length >= 85">
+          {{ headline.length }}<span>/100</span>
+        </div>
+      </div>
+
+      <!-- Review body -->
+      <div class="review-section">
+        <label for="comment" class="section-label">
+          <i class="fa-solid fa-pen-to-square section-icon"></i>
+          Your Review
+        </label>
+        <div class="input-wrap textarea-wrap" [class.focused]="commentFocused">
+          <textarea
+            id="comment"
+            class="review-input review-textarea"
+            [(ngModel)]="comment"
+            rows="5"
+            placeholder="Share your honest thoughts — what you loved, what could be better…"
+            maxlength="1000"
+            (focus)="commentFocused = true"
+            (blur)="commentFocused = false"
+          ></textarea>
+        </div>
+        <div class="char-count" [class.warn]="comment.length >= 900">
+          {{ comment.length }}<span>/1000</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Footer -->
+    <div class="modal-footer">
+      <button class="btn-cancel" (click)="closeModal()" [disabled]="isSubmitting">
+        Cancel
+      </button>
+      <button
+        class="btn-submit"
+        (click)="submitReview()"
+        [disabled]="!isFormValid() || isSubmitting"
+      >
+        <span *ngIf="!isSubmitting">
+          <i class="fa-solid fa-paper-plane"></i>
+          Submit Review
+        </span>
+        <span *ngIf="isSubmitting">
+          <i class="fa-solid fa-spinner fa-spin"></i>
+          Submitting…
+        </span>
+      </button>
+    </div>
+
+  </div>
+</div>

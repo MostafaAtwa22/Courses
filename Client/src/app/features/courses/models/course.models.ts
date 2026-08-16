@@ -34,8 +34,23 @@ export interface ReviewResponse extends BaseResponseModel {
     headline: string;
     comment: string;
     rating: number;
+    studentId: string;
     studentName: string;
     studentProfilePicture: string;
+    studentGender: string;
+}
+
+export interface ReviewUpdateRequest {
+    headline: string;
+    comment: string;
+    rating: number;
+}
+
+export interface ReviewCreateRequest {
+    courseId: string;
+    headline: string;
+    comment: string;
+    rating: number;
 }
 
 export interface CourseSummary extends BaseResponseModel {

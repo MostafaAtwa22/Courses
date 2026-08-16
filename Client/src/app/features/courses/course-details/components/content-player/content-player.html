@@ -1,134 +1,166 @@
-<div class="udemy-player">
-  <!-- Top Navbar -->
-  <header class="player-navbar d-flex align-items-center justify-content-between px-4">
-    <div class="d-flex align-items-center gap-3">
-      <button class="btn btn-link p-0" (click)="close()">
-        <i class="fas fa-arrow-left"></i>
+<div class="player-shell">
+  <!-- Top Header -->
+  <app-header class="player-header-bar"></app-header>
+
+  <!-- Sub-header -->
+  <div class="player-subheader">
+    <div class="subheader-left">
+      <button class="subheader-back-btn" (click)="close()">
+        <i class="fa-solid fa-arrow-left"></i>
+        <span class="hide-mobile">Back to Course</span>
       </button>
-      <span class="course-title fw-bold text-truncate">{{ course?.title }}</span>
+      <div class="subheader-divider hide-mobile"></div>
+      <div class="subheader-titles">
+        <span class="subheader-course-title">{{ course?.title }}</span>
+        <span class="subheader-content-title">{{ content?.title }}</span>
+      </div>
     </div>
-    <div class="d-flex align-items-center gap-4">
-      <app-progress-bar *ngIf="isEnrolled && progress" [progress]="progress" [showLabel]="false" [height]="6" [width]="120" class="d-none d-md-flex"></app-progress-bar>
-      <button class="btn btn-outline-light btn-sm fw-bold px-3">Share</button>
-      <button class="btn-close ms-2" (click)="close()"></button>
+    <div class="subheader-right">
+      <app-progress-bar *ngIf="isEnrolled && progress" [progress]="progress" [showLabel]="false" [height]="6" [width]="120" class="hide-mobile"></app-progress-bar>
+      <button class="subheader-action-btn">
+        <i class="fa-solid fa-share-nodes"></i>
+        <span class="hide-mobile">Share</span>
+      </button>
+      <button class="subheader-action-btn show-mobile" (click)="toggleSidebar()">
+        <i class="fa-solid fa-bars"></i>
+      </button>
     </div>
-  </header>
+  </div>
 
-  <div class="player-content">
-    <!-- Main Player Area -->
-    <main class="main-area">
-      <div class="player-wrapper">
-        <div *ngIf="loading" class="loading-overlay">
-          <div class="spinner-border text-light" role="status"></div>
-          <span class="mt-2">Loading lecture...</span>
-        </div>
+  <!-- Main Area -->
+  <div class="player-body">
 
-        <div *ngIf="error" class="error-overlay alert alert-danger m-3">
-          {{ error }}
+    <!-- Video / Content Area -->
+    <main class="player-main">
+
+      <!-- Media stage -->
+      <div class="player-stage">
+        <div *ngIf="loading" class="stage-state">
+          <div class="spinner-border" role="status"></div>
+          <span class="stage-state-text">Loading content…</span>
         </div>
+        <div *ngIf="error" class="stage-error">{{ error }}</div>
 
         <ng-container *ngIf="!loading && !error && content">
-          <!-- Video Player -->
-          <div *ngIf="isVideoContent(content)" class="video-container">
+          <!-- Video -->
+          <div *ngIf="isVideoContent(content)" class="stage-video">
             <app-video-player
               [videoUrl]="content.contentUrl"
               [autoplay]="true"
               [showDownload]="true"
               [downloadTitle]="content.title"
-              [compactMode]="false">
+              [compactMode]="false"
+              class="block w-full h-full">
             </app-video-player>
           </div>
-
-          <!-- File View -->
-          <div *ngIf="!isVideoContent(content)" class="file-container d-flex flex-column align-items-center justify-content-center h-100 p-5 text-center">
-            <i class="fas fa-file-pdf fa-5x mb-4"></i>
-            <h3 class="fw-bold">{{ content.title }}</h3>
-            <p class="text-muted mb-4">This lecture includes a downloadable resource.</p>
-            <div class="d-flex gap-3">
-              <button class="btn btn-primary btn-lg px-5 py-2 fw-bold" (click)="openFile()">
-                View File
+          <!-- Document / File -->
+          <div *ngIf="!isVideoContent(content)" class="stage-file">
+            <i class="fa-regular fa-file-lines stage-file-icon"></i>
+            <h3 class="stage-file-title">{{ content.title }}</h3>
+            <p class="stage-file-desc">This lecture includes a downloadable resource.</p>
+            <div class="stage-file-actions">
+              <button class="btn-primary" (click)="openFile()">
+                <i class="fa-regular fa-eye"></i> View File
               </button>
-              <a [href]="getFullUrl(content.contentUrl)" [download]="content.title" class="btn btn-outline-light btn-lg px-4 py-2 fw-bold">
-                Download
+              <a [href]="getFullUrl(content.contentUrl)" [download]="content.title" class="btn-outline">
+                <i class="fa-solid fa-download"></i> Download
               </a>
             </div>
           </div>
         </ng-container>
       </div>
 
-      <!-- Footer Navigation -->
-      <footer class="player-footer d-flex align-items-center justify-content-between px-4">
-        <div class="d-flex align-items-center gap-3">
+      <!-- Action bar -->
+      <div class="player-action-bar">
+        <h1 class="action-bar-title">{{ content?.order }}. {{ content?.title }}</h1>
+        <div class="action-bar-btns">
           <button class="nav-btn" [disabled]="!previousContent" (click)="goToPrevious()">
-            <i class="fas fa-chevron-left"></i>
+            <i class="fa-solid fa-chevron-left"></i> Previous
+          </button>
+          <button *ngIf="isEnrolled && progress"
+                  class="complete-btn"
+                  [class.is-completed]="isContentCompleted(content?.id ?? '')"
+                  (click)="markCurrentContentComplete()"
+                  [disabled]="!content || isContentCompleted(content.id)">
+            <i class="fa-solid" [class.fa-circle-check]="isContentCompleted(content?.id ?? '')" [class.fa-check]="!isContentCompleted(content?.id ?? '')"></i>
+            {{ isContentCompleted(content?.id ?? '') ? 'Completed' : 'Complete' }}
           </button>
           <button class="nav-btn" [disabled]="!nextContent" (click)="goToNext()">
-            <i class="fas fa-chevron-right"></i>
+            Next <i class="fa-solid fa-chevron-right"></i>
           </button>
-          <span class="lecture-info fw-bold d-none d-sm-block">{{ content?.title }}</span>
         </div>
-        <div class="d-flex align-items-center gap-2">
-            <button class="btn btn-sm btn-success fw-bold"
-                    (click)="markCurrentContentComplete()"
-                    [disabled]="!content || isContentCompleted(content.id)"
-                    *ngIf="isEnrolled && progress">
-                <i class="fas fa-check me-1"></i>
-                {{ isContentCompleted(content?.id ?? '') ? 'Completed' : 'Mark as complete' }}
-            </button>
-            <button class="btn btn-sm btn-dark fw-bold border border-secondary" (click)="goToNext()" [disabled]="!nextContent">
-                Next Lecture <i class="fas fa-arrow-right ms-1"></i>
-            </button>
-        </div>
-      </footer>
+      </div>
+
     </main>
 
-    <!-- Curriculum Sidebar -->
-    <aside class="curriculum-sidebar" [class.sidebar-open]="isSidebarOpen">
-      <div class="sidebar-header p-3 border-bottom border-secondary">
-        <h6 class="fw-bold mb-0">Course Content</h6>
+    <!-- Sidebar -->
+    <aside class="player-sidebar" [class.sidebar-open]="isSidebarOpen">
+
+      <!-- Sidebar header -->
+      <div class="sidebar-head">
+        <div class="sidebar-head-top">
+          <h2 class="sidebar-heading">Course Content</h2>
+          <button class="sidebar-close show-mobile" (click)="toggleSidebar()">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+        <!-- Progress -->
+        <div class="sidebar-progress" *ngIf="isEnrolled && progress">
+          <div class="sidebar-progress-meta">
+            <span>Progress</span>
+            <span class="sidebar-progress-pct">{{ progress.percentComplete }}% Complete</span>
+          </div>
+          <div class="sidebar-progress-track">
+            <div class="sidebar-progress-fill" [style.width.%]="progress.percentComplete"></div>
+          </div>
+        </div>
       </div>
-      <div class="sections-list">
-        <div class="section-group" *ngFor="let section of sections">
-          <div class="section-title p-3 d-flex justify-content-between align-items-center" 
-               (click)="toggleSection(section.id)">
-            <div class="d-flex flex-column">
-              <span class="fw-bold small">Section {{ section.order }}: {{ section.title }}</span>
-              <span class="xs-text opacity-75" *ngIf="progress">{{ getCompletedCountForSection(section) }} / {{ section.contentsCount }} | 15min</span>
-              <span class="xs-text opacity-75" *ngIf="!progress">0 / {{ section.contentsCount }} | 15min</span>
+
+      <!-- Sections list -->
+      <div class="sidebar-body">
+        <div *ngFor="let section of sections" class="section-block">
+
+          <!-- Section toggle -->
+          <button class="section-toggle" [class.is-expanded]="isSectionExpanded(section.id)" (click)="toggleSection(section.id)">
+            <div class="section-toggle-info">
+              <span class="section-label">Section {{ section.order }}</span>
+              <span class="section-title">{{ section.title }}</span>
+              <span class="section-count" *ngIf="isEnrolled && progress">
+                {{ getCompletedCountForSection(section) }} / {{ section.contentsCount }} completed
+              </span>
             </div>
-            <i class="fas" [ngClass]="isSectionExpanded(section.id) ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
-          </div>
-          
-          <div class="contents-list" *ngIf="isSectionExpanded(section.id)">
-            <div class="content-item p-2 d-flex align-items-start gap-3" 
-                 *ngFor="let c of section.contents"
-                 [class.active]="c.id === content?.id"
-                 [class.disabled-content]="isContentRestricted(c)"
-                 [style.cursor]="isContentRestricted(c) ? 'not-allowed' : 'pointer'"
+            <i class="fa-solid fa-chevron-down section-chevron"></i>
+          </button>
+
+          <!-- Contents list -->
+          <div class="section-contents" *ngIf="isSectionExpanded(section.id)">
+            <div *ngFor="let c of section.contents"
+                 class="content-item"
+                 [class.is-active]="c.id === content?.id"
+                 [class.is-restricted]="isContentRestricted(c)"
                  (click)="selectContent(c)">
-              <div class="checkbox-container mt-1" (click)="progress ? toggleContentComplete($event, c) : null" [style.cursor]="progress ? 'pointer' : 'default'">
-                <div class="custom-checkbox" [class.checked]="isContentCompleted(c.id)"></div>
-              </div>
-              <div class="d-flex flex-column flex-grow-1">
-                <span class="content-title small fw-bold" [style.opacity]="isContentRestricted(c) ? '0.5' : '1'">{{ c.order }}. {{ c.title }}</span>
-                <div class="d-flex align-items-center gap-2 mt-1">
-                  <i class="fas" [ngClass]="getContentIcon(c.type)" style="font-size: 12px;"></i>
-                  <span class="xs-text opacity-75">10:00</span>
-                  <i class="fas fa-lock text-muted ms-auto" *ngIf="isContentRestricted(c)" title="Content locked - enroll to access"></i>
-                </div>
+
+              <i class="fa-solid content-item-icon"
+                 [class.fa-lock]="isContentRestricted(c)"
+                 [class.fa-circle-check]="!isContentRestricted(c) && isContentCompleted(c.id)"
+                 [class.fa-circle-play]="!isContentRestricted(c) && !isContentCompleted(c.id) && c.id === content?.id"
+                 [class.fa-circle]="!isContentRestricted(c) && !isContentCompleted(c.id) && c.id !== content?.id"
+                 (click)="progress ? toggleContentComplete($event, c) : null">
+              </i>
+
+              <div class="content-item-info">
+                <span class="content-item-title">{{ c.order }}. {{ c.title }}</span>
+                <span class="content-item-type">
+                  <i class="fa-solid" [class.fa-play]="isVideoContent(c)" [class.fa-file-lines]="!isVideoContent(c)"></i>
+                  {{ isVideoContent(c) ? 'Video' : 'Resource' }}
+                </span>
               </div>
             </div>
           </div>
+
         </div>
       </div>
     </aside>
+
   </div>
-
-  <!-- Sidebar Toggle Button (Mobile) -->
-  <button class="sidebar-toggle-btn" (click)="toggleSidebar()">
-    <i class="fas fa-list"></i>
-  </button>
-
-  <!-- Sidebar Overlay (Mobile) -->
-  <div class="sidebar-overlay" [class.active]="isSidebarOpen" (click)="toggleSidebar()"></div>
 </div>

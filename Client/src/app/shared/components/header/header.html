@@ -18,6 +18,16 @@
         <i class="fa-solid" [class.fa-moon]="!isDarkMode" [class.fa-sun]="isDarkMode"></i>
       </button>
 
+      <!-- Wishlist & Cart — visible to guests and students only -->
+      <ng-container *ngIf="!authService.currentUser() || authService.currentUser()?.roles?.includes('Student')">
+        <button class="icon-action-btn" routerLink="/wishlist" title="Wishlist">
+          <i class="fa-regular fa-heart"></i>
+        </button>
+        <button class="icon-action-btn" routerLink="/cart" title="Cart">
+          <i class="fa-solid fa-cart-shopping"></i>
+        </button>
+      </ng-container>
+
       <div class="auth-buttons">
 
         <!-- Guest -->
@@ -63,7 +73,7 @@
                   <i class="fa-solid fa-gear"></i>
                   <span>Settings</span>
                 </a>
-                <a class="dropdown-item" routerLink="/courses" (click)="isDropdownOpen = false" role="menuitem">
+                <a class="dropdown-item" routerLink="/courses" (click)="isDropdownOpen = false" role="menuitem" *ngIf="user.roles.includes('Student')">
                   <i class="fa-solid fa-book-open"></i>
                   <span>My Courses</span>
                 </a>

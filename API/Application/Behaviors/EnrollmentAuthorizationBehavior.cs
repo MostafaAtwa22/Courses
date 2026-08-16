@@ -17,6 +17,9 @@ namespace Application.Behaviors
 
             if (request.ContentId == Guid.Empty)
             {
+                if (request.AllowPreview)
+                    return await next();
+                
                 var hasEnrollment = await _contentAccessService.HasFullCourseContentAccessAsync(request.CourseId, cancellationToken);
                 if (!hasEnrollment)
                     throw new ForbiddenException("You must be enrolled in this course to access this content.");

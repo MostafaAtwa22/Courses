@@ -1,7 +1,4 @@
-<app-header 
-  [isDarkMode]="isDarkMode" 
-  (themeToggled)="toggleTheme()">
-</app-header>
+<app-header></app-header>
 
 <main class="courses-page">
   <section class="page-header">
@@ -124,29 +121,19 @@
             <button class="btn-primary" (click)="resetFilters()">Clear All Filters</button>
           </div>
 
-          <div class="pagination" *ngIf="coursesResult.totalPages > 1">
-            <button 
-              class="btn-page" 
-              [disabled]="!coursesResult.hasPreviousPage"
-              (click)="onPageChange(params.pageNumber! - 1)">
-              <i class="fa-solid fa-chevron-left"></i>
-            </button>
-            
-            <button 
-              *ngFor="let page of getPagesArray()" 
-              class="btn-page" 
-              [class.active]="params.pageNumber === page"
-              (click)="onPageChange(page)">
-              {{ page }}
-            </button>
-            
-            <button 
-              class="btn-page" 
-              [disabled]="!coursesResult.hasNextPage"
-              (click)="onPageChange(params.pageNumber! + 1)">
-              <i class="fa-solid fa-chevron-right"></i>
-            </button>
-          </div>
+          <!-- Pagination -->
+          <app-pagination
+            *ngIf="coursesResult.totalPages > 1"
+            [currentPage]="params.pageNumber ?? 1"
+            [totalPages]="coursesResult.totalPages"
+            [totalItems]="coursesResult.totalCount"
+            [pageSize]="params.pageSize ?? 9"
+            [hasPreviousPage]="coursesResult.hasPreviousPage"
+            [hasNextPage]="coursesResult.hasNextPage"
+            [showInfo]="true"
+            [variant]="'default'"
+            (pageChange)="onPageChange($event)">
+          </app-pagination>
 
         </div>
       </div>

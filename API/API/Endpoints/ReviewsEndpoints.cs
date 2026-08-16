@@ -1,5 +1,6 @@
 using Application.Features.Reviews.Queries.GetByCourse;
 using Application.Features.Reviews.Queries.GetById;
+using Application.Features.Reviews.Queries.GetUserReview;
 using Application.Features.Reviews.Commands.Create;
 using Application.Features.Reviews.Commands.Update;
 using Application.Features.Reviews.Commands.Delete;
@@ -17,6 +18,12 @@ namespace API.Endpoints
             group.MapGet("/course/{courseId:guid}", GetReviewsByCourse)
                 .WithName(nameof(GetReviewsByCourse))
                 .Produces<PaginatedResult<ReviewResponseDto>>(StatusCodes.Status200OK);
+
+            group.MapGet("/course/{courseId:guid}/user-review", GetUserReview)
+                .WithName(nameof(GetUserReview))
+                .Produces<ReviewResponseDto>(StatusCodes.Status200OK)
+                .Produces(StatusCodes.Status404NotFound)
+                .RequireAuthorization();
 
             group.MapGet("/{id:guid}", GetReviewById)
                 .WithName(nameof(GetReviewById))
@@ -52,10 +59,16 @@ namespace API.Endpoints
                         Role.Student.ToString()));
         }
 
-        public static async Task<Ok<PaginatedResult<ReviewResponseDto>>> GetReviewsByCourse(Guid courseId, [AsParameters] QueryParams queryParams, IMediator mediator)
+        public static async Task<Results<Ok<PaginatedResult<ReviewResponseDto>>, NotFound>> GetReviewsByCourse(Guid courseId, [AsParameters] QueryParams queryParams, IMediator mediator)
         {
             var result = await mediator.Send(new GetReviewsByCourseQuery(courseId, queryParams));
             return TypedResults.Ok(result);
+        }
+
+        public static async Task<Results<Ok<ReviewResponseDto>, NotFound>> GetUserReview(Guid courseId, IMediator mediator)
+        {
+            var result = await mediator.Send(new GetUserReviewQuery(courseId));
+            return result is not null ? TypedResults.Ok(result) : TypedResults.NotFound();
         }
 
         public static async Task<Results<Ok<ReviewResponseDto>, NotFound>> GetReviewById(Guid id, IMediator mediator)

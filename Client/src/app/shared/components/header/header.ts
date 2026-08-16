@@ -1,7 +1,8 @@
-import { Component, Input, Output, EventEmitter, inject, HostListener, ElementRef } from '@angular/core';
+import { Component, inject, HostListener, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { AuthService } from '../../../features/auth/services/auth.service';
+import { ThemeService } from '../../../core/services/theme.service';
 
 @Component({
   selector: 'app-header',
@@ -11,36 +12,38 @@ import { AuthService } from '../../../features/auth/services/auth.service';
   styleUrl: './header.scss'
 })
 export class HeaderComponent {
-  @Input() isDarkMode = false;
-  @Output() themeToggled = new EventEmitter<void>();
-
-  authService  = inject(AuthService);
+  authService   = inject(AuthService);
+  themeService  = inject(ThemeService);
   private router  = inject(Router);
   private elRef   = inject(ElementRef);
 
   isMenuOpen     = false;
   isDropdownOpen = false;
 
-  toggleMenu() {
+  get isDarkMode(): boolean {
+    return this.themeService.isDarkModeSignal();
+  }
+
+  onThemeToggle(): void {
+    this.themeService.toggleTheme();
+  }
+
+  toggleMenu(): void {
     this.isMenuOpen = !this.isMenuOpen;
   }
 
-  onThemeToggle() {
-    this.themeToggled.emit();
-  }
-
-  toggleDropdown() {
+  toggleDropdown(): void {
     this.isDropdownOpen = !this.isDropdownOpen;
   }
 
   @HostListener('document:click', ['$event'])
-  onDocumentClick(event: MouseEvent) {
+  onDocumentClick(event: MouseEvent): void {
     if (!this.elRef.nativeElement.contains(event.target)) {
       this.isDropdownOpen = false;
     }
   }
 
-  logout() {
+  logout(): void {
     this.isDropdownOpen = false;
     this.authService.logout();
     this.router.navigate(['/auth/login']);

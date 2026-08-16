@@ -10,7 +10,6 @@ namespace Application.Behaviors
     {
         public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
         {
-            // Skip validation for course-level queries (ContentId == Guid.Empty)
             if (request.ContentId != Guid.Empty)
             {
                 var courseIdForContent = await _enrollmentRepo.GetCourseIdByContentIdAsync(request.ContentId, cancellationToken);

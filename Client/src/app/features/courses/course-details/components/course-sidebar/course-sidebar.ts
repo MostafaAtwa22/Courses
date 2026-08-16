@@ -29,8 +29,10 @@ export class CourseSidebarComponent implements OnInit, OnChanges {
   isEnrolled = false;
   isCheckingEnrollment = false;
   firstContentId?: string;
+  isInstructorOrAdmin = false;
 
   ngOnInit(): void {
+    this.isInstructorOrAdmin = this.authService.isInstructorOrAdmin();
     this.checkEnrollment();
   }
 
@@ -62,7 +64,7 @@ export class CourseSidebarComponent implements OnInit, OnChanges {
     }
 
     this.isCheckingEnrollment = true;
-    this.progressService.getCourseProgress(this.course.id).subscribe({
+    this.progressService.checkEnrollment(this.course.id).subscribe({
       next: () => {
         this.isEnrolled = true;
         this.isCheckingEnrollment = false;

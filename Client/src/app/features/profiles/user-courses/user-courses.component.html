@@ -41,40 +41,17 @@
       <app-course-card *ngFor="let course of coursesResult.items" [course]="course"></app-course-card>
     </div>
 
-    <!-- Pagination Controls -->
-    <div class="pagination-controls" *ngIf="!isLoading && !errorMessage && coursesResult.totalPages > 1">
-      <div class="pagination-info">
-        Showing {{ coursesRange }} of {{ coursesResult.totalCount }} courses
-      </div>
-      <div class="pagination-buttons">
-        <button 
-          class="pagination-btn" 
-          (click)="onPageChange(currentPage - 1)"
-          [disabled]="currentPage === 1"
-          title="Previous page">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
-        </button>
-        
-        <div class="page-numbers">
-          <button 
-            *ngFor="let page of getPagesArray()" 
-            class="page-number"
-            [class.active]="page === currentPage"
-            [class.ellipsis]="page === -1"
-            (click)="page !== -1 && onPageChange(page)"
-            [disabled]="page === -1">
-            {{ page === -1 ? '...' : page }}
-          </button>
-        </div>
-        
-        <button 
-          class="pagination-btn" 
-          (click)="onPageChange(currentPage + 1)"
-          [disabled]="currentPage === coursesResult.totalPages"
-          title="Next page">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
-        </button>
-      </div>
-    </div>
+    <!-- Pagination -->
+    <app-pagination
+      *ngIf="!isLoading && !errorMessage && coursesResult.totalPages > 1"
+      [currentPage]="currentPage"
+      [totalPages]="coursesResult.totalPages"
+      [totalItems]="coursesResult.totalCount"
+      [pageSize]="params.pageSize ?? 6"
+      [hasPreviousPage]="coursesResult.hasPreviousPage"
+      [hasNextPage]="coursesResult.hasNextPage"
+      [showInfo]="true"
+      (pageChange)="onPageChange($event)">
+    </app-pagination>
   </div>
 </div>

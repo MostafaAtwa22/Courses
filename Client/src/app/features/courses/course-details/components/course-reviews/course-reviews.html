@@ -1,70 +1,281 @@
-<section class="mt-5 pt-5 border-top">
-  <h3 class="fw-bold mb-4" style="color: var(--text-color);">Student Feedback</h3>
-  
-  <div class="row align-items-center mb-5" *ngIf="reviews.length > 0">
-    <div class="col-md-3 text-center mb-4 mb-md-0">
-      <h1 class="display-3 fw-bold text-warning mb-0">{{ averageRating | number:'1.1-1' }}</h1>
-      <div class="stars mb-1">
-        <i class="fas fa-star text-warning" *ngFor="let i of getStars(averageRating)"></i>
-        <i class="fas fa-star-half-alt text-warning" *ngIf="hasHalfStar(averageRating)"></i>
-        <i class="far fa-star text-warning" *ngFor="let i of getEmptyStars(averageRating)"></i>
+<section class="reviews-section">
+
+  <!-- ── Section heading ──────────────────────────────────────── -->
+  <div class="reviews-heading">
+    <h3 class="reviews-title">Student Feedback</h3>
+  </div>
+
+  <!-- ── Rating summary ───────────────────────────────────────── -->
+  <div class="rating-summary" *ngIf="reviews.length > 0">
+    <div class="rating-big">
+      <span class="rating-number">{{ averageRating | number:'1.1-1' }}</span>
+      <div class="rating-stars">
+        <i class="fa-solid fa-star"             *ngFor="let i of getStars(averageRating)"></i>
+        <i class="fa-solid fa-star-half-stroke" *ngIf="hasHalfStar(averageRating)"></i>
+        <i class="fa-regular fa-star"           *ngFor="let i of getEmptyStars(averageRating)"></i>
       </div>
-      <p class="fw-bold text-warning mb-0">Course Rating</p>
+      <span class="rating-label">Course Rating</span>
     </div>
-    <div class="col-md-9">
-      <div class="rating-bars d-flex flex-column gap-2">
-        <div class="d-flex align-items-center gap-3" *ngFor="let item of ratingDistribution">
-          <div class="progress flex-grow-1" style="height: 8px; background-color: var(--surface-variant); border-radius: 4px;">
-            <div class="progress-bar" [style.width.%]="item.percentage" style="background-color: var(--text-muted) !important; border-radius: 4px;"></div>
-          </div>
-          <div class="stars d-none d-sm-block" style="width: 100px;">
-            <i class="fas fa-star text-warning" *ngFor="let s of [].constructor(item.star)"></i>
-            <i class="far fa-star opacity-25" style="color: var(--text-muted);" *ngFor="let s of [].constructor(5 - item.star)"></i>
-          </div>
-          <span class="fw-bold small" style="width: 40px; color: var(--primary-color);">{{ item.percentage | number:'1.0-0' }}%</span>
+    <div class="rating-bars">
+      <div class="rating-bar-row" *ngFor="let item of ratingDistribution">
+        <div class="bar-track"><div class="bar-fill" [style.width.%]="item.percentage"></div></div>
+        <div class="bar-stars">
+          <i class="fa-solid fa-star"  *ngFor="let s of [].constructor(item.star)"></i>
+          <i class="fa-regular fa-star bar-empty" *ngFor="let s of [].constructor(5 - item.star)"></i>
         </div>
+        <span class="bar-pct">{{ item.percentage | number:'1.0-0' }}%</span>
       </div>
     </div>
   </div>
 
-  <!-- Search removed as requested -->
+  <!-- ── User's review (if exists) ──────────────────────────────── -->
+  <div class="user-review-box" *ngIf="userReview && isEnrolled">
+    <div class="review-card user-review-card" *ngIf="editingReviewId !== userReview.id">
+      <div class="rc-avatar-wrap">
+        <img class="rc-avatar-img" [src]="getReviewAvatar(userReview)" [alt]="userReview.studentName" />
+      </div>
+      <div class="rc-body">
+        <div class="rc-meta">
+          <span class="rc-name">{{ userReview.studentName }}</span>
+          <div class="rc-stars">
+            <i class="fa-solid fa-star"             *ngFor="let s of getStars(userReview.rating)"></i>
+            <i class="fa-solid fa-star-half-stroke" *ngIf="hasHalfStar(userReview.rating)"></i>
+            <i class="fa-regular fa-star rc-empty"  *ngFor="let s of getEmptyStars(userReview.rating)"></i>
+          </div>
+          <span class="rc-date">{{ userReview.createdAt | date:'mediumDate' }}</span>
+          <span class="rc-badge">Your Review</span>
 
-  <div class="review-cards d-flex flex-column gap-4" *ngIf="reviews.length > 0; else noReviews">
-    <div class="review-card p-4 rounded-4 shadow-sm" *ngFor="let review of reviews">
-      <div class="row">
-        <div class="col-auto">
-          <div class="avatar rounded-circle d-flex align-items-center justify-content-center fw-bold shadow-sm" style="width: 56px; height: 56px; background-color: var(--primary-light); color: var(--primary-color); font-size: 1.25rem;">
-            {{ getInitials(review.studentName) }}
-          </div>
-        </div>
-        <div class="col">
-          <div class="d-flex justify-content-between align-items-start mb-2">
-            <div>
-              <h5 class="fw-bold mb-1" style="color: var(--text-color);">{{ review.studentName }}</h5>
-              <div class="d-flex align-items-center gap-2">
-                <div class="stars small">
-                  <i class="fas fa-star text-warning" *ngFor="let s of getStars(review.rating)"></i>
-                  <i class="fas fa-star-half-alt text-warning" *ngIf="hasHalfStar(review.rating)"></i>
-                  <i class="far fa-star text-warning opacity-25" *ngFor="let s of getEmptyStars(review.rating)"></i>
-                </div>
-                <span class="small" style="color: var(--text-muted);">• {{ review.createdAt | date:'mediumDate' }}</span>
-              </div>
+          <!-- 3-dot menu for own review -->
+          <div class="rc-menu-wrap">
+            <button class="rc-menu-btn" (click)="toggleMenu(userReview.id, $event)" aria-label="Review options">
+              <i class="fa-solid fa-ellipsis-vertical"></i>
+            </button>
+            <div class="rc-dropdown" *ngIf="openMenuId === userReview.id" (click)="$event.stopPropagation()">
+              <button class="rc-dropdown-item" (click)="startEdit(userReview)">
+                <i class="fa-solid fa-pen"></i> Edit
+              </button>
+              <button class="rc-dropdown-item rc-dropdown-item--danger" (click)="deleteReview(userReview)">
+                <i class="fa-solid fa-trash"></i> Delete
+              </button>
             </div>
-            <button class="btn btn-sm btn-icon"><i class="fas fa-ellipsis-v"></i></button>
           </div>
-          <h6 class="fw-bold mb-2" *ngIf="review.headline" style="color: var(--text-color);">{{ review.headline }}</h6>
-          <p class="mb-0" style="color: var(--text-color); line-height: 1.6; font-size: 1.05rem;">{{ review.comment }}</p>
         </div>
+        <p class="rc-headline" *ngIf="userReview.headline">{{ userReview.headline }}</p>
+        <p class="rc-comment">{{ userReview.comment }}</p>
       </div>
     </div>
-    <button *ngIf="reviews.length > 5" class="btn btn-outline-primary fw-bold w-100 mt-4 py-3 rounded-3 shadow-sm see-all-btn">See all reviews</button>
+
+    <!-- Edit form for user's review -->
+    <div class="rc-edit-form user-edit-form" *ngIf="editingReviewId === userReview.id">
+      <p class="rc-edit-title">Edit your review</p>
+
+      <div class="wr-stars-row">
+        <button *ngFor="let star of stars" class="wr-star-btn" type="button"
+          [class.active]="star <= (editHoveredStar || editRating)"
+          (mouseenter)="editHoveredStar = star" (mouseleave)="editHoveredStar = 0"
+          (click)="editRating = star" [attr.aria-label]="star + ' stars'">
+          <i class="fa-star"
+            [class.fa-solid]="star <= (editHoveredStar || editRating)"
+            [class.fa-regular]="star > (editHoveredStar || editRating)"></i>
+        </button>
+        <span class="wr-star-label" *ngIf="editHoveredStar || editRating">
+          {{ getRatingLabel(editHoveredStar || editRating) }}
+        </span>
+      </div>
+
+      <div class="wr-field">
+        <label class="wr-label" for="edit-headline">Headline</label>
+        <input id="edit-headline" class="wr-input" type="text" [(ngModel)]="editHeadline" maxlength="100" />
+        <span class="wr-count" [class.warn]="editHeadline.length >= 85">{{ editHeadline.length }}/100</span>
+      </div>
+
+      <div class="wr-field">
+        <label class="wr-label" for="edit-comment">Review</label>
+        <textarea id="edit-comment" class="wr-input wr-textarea" [(ngModel)]="editComment"
+          rows="4" maxlength="1000"></textarea>
+        <span class="wr-count" [class.warn]="editComment.length >= 900">{{ editComment.length }}/1000</span>
+      </div>
+
+      <div class="wr-actions">
+        <button class="wr-btn-cancel" type="button" (click)="cancelEdit()" [disabled]="isSubmitting">Cancel</button>
+        <button class="wr-btn-submit" type="button" (click)="saveEdit(userReview)"
+          [disabled]="!isEditFormValid() || isSubmitting">
+          <i class="fa-solid fa-floppy-disk" *ngIf="!isSubmitting"></i>
+          <i class="fa-solid fa-spinner fa-spin" *ngIf="isSubmitting"></i>
+          {{ isSubmitting ? 'Saving…' : 'Save Changes' }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Inline write-a-review ────────────────────────────────── -->
+  <div class="write-review-box" *ngIf="isEnrolled && !hasReviewed && !userReview">
+
+    <!-- Collapsed trigger -->
+    <div class="wr-trigger" *ngIf="!isFormOpen" (click)="isFormOpen = true">
+      <img class="wr-avatar-img" [src]="currentUserAvatar" [alt]="currentUserInitials" />
+      <div class="wr-placeholder">
+        <i class="fa-regular fa-star"></i>
+        Write a review…
+      </div>
+    </div>
+
+    <!-- Expanded form -->
+    <div class="wr-form" *ngIf="isFormOpen">
+      <div class="wr-form-header">
+        <img class="wr-avatar-img" [src]="currentUserAvatar" [alt]="currentUserInitials" />
+        <div>
+          <p class="wr-form-name">Your Review</p>
+          <p class="wr-form-sub">Sharing your experience helps other learners</p>
+        </div>
+        <button class="wr-close-btn" (click)="cancelForm()" aria-label="Cancel">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div class="wr-stars-row">
+        <button *ngFor="let star of stars" class="wr-star-btn" type="button"
+          [class.active]="star <= (hoveredStar || formRating)"
+          (mouseenter)="hoveredStar = star" (mouseleave)="hoveredStar = 0"
+          (click)="formRating = star" [attr.aria-label]="star + ' stars'">
+          <i class="fa-star"
+            [class.fa-solid]="star <= (hoveredStar || formRating)"
+            [class.fa-regular]="star > (hoveredStar || formRating)"></i>
+        </button>
+        <span class="wr-star-label" *ngIf="hoveredStar || formRating">
+          {{ getRatingLabel(hoveredStar || formRating) }}
+        </span>
+      </div>
+
+      <div class="wr-field">
+        <label class="wr-label" for="wr-headline">Headline</label>
+        <input id="wr-headline" class="wr-input" type="text" [(ngModel)]="formHeadline"
+          placeholder="Summarize your experience in one line" maxlength="100" />
+        <span class="wr-count" [class.warn]="formHeadline.length >= 85">{{ formHeadline.length }}/100</span>
+      </div>
+
+      <div class="wr-field">
+        <label class="wr-label" for="wr-comment">Review</label>
+        <textarea id="wr-comment" class="wr-input wr-textarea" [(ngModel)]="formComment" rows="4"
+          placeholder="Share your honest thoughts…" maxlength="1000"></textarea>
+        <span class="wr-count" [class.warn]="formComment.length >= 900">{{ formComment.length }}/1000</span>
+      </div>
+
+      <div class="wr-actions">
+        <button class="wr-btn-cancel" type="button" (click)="cancelForm()" [disabled]="isSubmitting">Cancel</button>
+        <button class="wr-btn-submit" type="button" (click)="submitInlineReview()"
+          [disabled]="!isInlineFormValid() || isSubmitting">
+          <i class="fa-solid fa-paper-plane" *ngIf="!isSubmitting"></i>
+          <i class="fa-solid fa-spinner fa-spin" *ngIf="isSubmitting"></i>
+          {{ isSubmitting ? 'Submitting…' : 'Submit Review' }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Review cards ──────────────────────────────────────────── -->
+  <div class="review-list" *ngIf="reviews.length > 0; else noReviews">
+
+    <div class="review-card" *ngFor="let review of reviews; let i = index" [class.hidden-review]="userReview && review.id === userReview.id">
+
+      <!-- Avatar: photo or gender-default -->
+      <div class="rc-avatar-wrap">
+        <img class="rc-avatar-img" [src]="getReviewAvatar(review)" [alt]="review.studentName" />
+      </div>
+
+      <!-- Body -->
+      <div class="rc-body">
+
+        <!-- ── Normal view ─────────────────────── -->
+        <ng-container *ngIf="editingReviewId !== review.id">
+          <div class="rc-meta">
+            <span class="rc-name">{{ review.studentName }}</span>
+            <div class="rc-stars">
+              <i class="fa-solid fa-star"             *ngFor="let s of getStars(review.rating)"></i>
+              <i class="fa-solid fa-star-half-stroke" *ngIf="hasHalfStar(review.rating)"></i>
+              <i class="fa-regular fa-star rc-empty"  *ngFor="let s of getEmptyStars(review.rating)"></i>
+            </div>
+            <span class="rc-date">{{ review.createdAt | date:'mediumDate' }}</span>
+
+            <!-- 3-dot menu — only for own reviews -->
+            <div class="rc-menu-wrap" *ngIf="isOwnReview(review)">
+              <button class="rc-menu-btn" (click)="toggleMenu(review.id, $event)" aria-label="Review options">
+                <i class="fa-solid fa-ellipsis-vertical"></i>
+              </button>
+              <div class="rc-dropdown" *ngIf="openMenuId === review.id" (click)="$event.stopPropagation()">
+                <button class="rc-dropdown-item" (click)="startEdit(review)">
+                  <i class="fa-solid fa-pen"></i> Edit
+                </button>
+                <button class="rc-dropdown-item rc-dropdown-item--danger" (click)="deleteReview(review)">
+                  <i class="fa-solid fa-trash"></i> Delete
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <p class="rc-headline" *ngIf="review.headline">{{ review.headline }}</p>
+          <p class="rc-comment">{{ review.comment }}</p>
+        </ng-container>
+
+        <!-- ── Edit view ───────────────────────── -->
+        <div class="rc-edit-form" *ngIf="editingReviewId === review.id">
+          <p class="rc-edit-title">Edit your review</p>
+
+          <div class="wr-stars-row">
+            <button *ngFor="let star of stars" class="wr-star-btn" type="button"
+              [class.active]="star <= (editHoveredStar || editRating)"
+              (mouseenter)="editHoveredStar = star" (mouseleave)="editHoveredStar = 0"
+              (click)="editRating = star" [attr.aria-label]="star + ' stars'">
+              <i class="fa-star"
+                [class.fa-solid]="star <= (editHoveredStar || editRating)"
+                [class.fa-regular]="star > (editHoveredStar || editRating)"></i>
+            </button>
+            <span class="wr-star-label" *ngIf="editHoveredStar || editRating">
+              {{ getRatingLabel(editHoveredStar || editRating) }}
+            </span>
+          </div>
+
+          <div class="wr-field">
+            <label class="wr-label" for="edit-headline">Headline</label>
+            <input id="edit-headline" class="wr-input" type="text" [(ngModel)]="editHeadline" maxlength="100" />
+            <span class="wr-count" [class.warn]="editHeadline.length >= 85">{{ editHeadline.length }}/100</span>
+          </div>
+
+          <div class="wr-field">
+            <label class="wr-label" for="edit-comment">Review</label>
+            <textarea id="edit-comment" class="wr-input wr-textarea" [(ngModel)]="editComment"
+              rows="4" maxlength="1000"></textarea>
+            <span class="wr-count" [class.warn]="editComment.length >= 900">{{ editComment.length }}/1000</span>
+          </div>
+
+          <div class="wr-actions">
+            <button class="wr-btn-cancel" type="button" (click)="cancelEdit()" [disabled]="isSubmitting">Cancel</button>
+            <button class="wr-btn-submit" type="button" (click)="saveEdit(review)"
+              [disabled]="!isEditFormValid() || isSubmitting">
+              <i class="fa-solid fa-floppy-disk" *ngIf="!isSubmitting"></i>
+              <i class="fa-solid fa-spinner fa-spin" *ngIf="isSubmitting"></i>
+              {{ isSubmitting ? 'Saving…' : 'Save Changes' }}
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <button *ngIf="reviews.length > 5" class="see-all-btn">See all reviews</button>
   </div>
 
   <ng-template #noReviews>
-    <div class="no-reviews-container text-center py-5 rounded-4 border-2 border-dashed" style="border: 2px dashed var(--border-color); background: var(--surface);">
-      <i class="far fa-comment-dots fa-3x mb-3 opacity-25" style="color: var(--text-muted);"></i>
-      <h5 class="fw-bold" style="color: var(--text-color);">No reviews available for this course yet</h5>
-      <p class="text-muted mb-0">Be the first to share your thoughts after starting the course!</p>
+    <div class="no-reviews">
+      <i class="fa-regular fa-comment-dots no-reviews-icon"></i>
+      <h5 class="no-reviews-title">No reviews yet</h5>
+      <p class="no-reviews-sub">Be the first to share your thoughts!</p>
     </div>
   </ng-template>
+
+  <app-add-review-modal style="display:none"
+    (reviewSubmitted)="onReviewSubmitted($event)"
+    (modalClosed)="addReviewModal.closeModal()">
+  </app-add-review-modal>
+
 </section>

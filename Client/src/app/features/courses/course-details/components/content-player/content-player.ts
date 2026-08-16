@@ -12,10 +12,12 @@ import { ProgressBarComponent } from '../../../../../shared/components/progress-
 import { environment } from '../../../../../../environments/environment';
 import { AuthService } from '../../../../auth/services/auth.service';
 
+import { HeaderComponent } from '../../../../../shared/components/header/header';
+
 @Component({
   selector: 'app-content-player',
   standalone: true,
-  imports: [CommonModule, RouterModule, VideoPlayerComponent, ProgressBarComponent],
+  imports: [CommonModule, RouterModule, VideoPlayerComponent, ProgressBarComponent, HeaderComponent],
   templateUrl: './content-player.html',
   styleUrl: './content-player.scss'
 })

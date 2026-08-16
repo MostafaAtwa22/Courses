@@ -54,6 +54,13 @@ namespace Infrastructure.Repositories
                 "SELECT * FROM reviews WHERE id = @Id", new { Id = id });
         }
 
+        public async Task<ReviewResponseDto?> GetByUserAndCourseAsync(Guid studentId, Guid courseId, CancellationToken ct = default)
+        {
+            using var connection = await CreateConnectionAsync(ct);
+            var sql = $"SELECT {SelectColumns} {FromClause} WHERE r.student_id = @StudentId AND r.course_id = @CourseId";
+            return await connection.QueryFirstOrDefaultAsync<ReviewResponseDto>(sql, new { StudentId = studentId, CourseId = courseId });
+        }
+
         public async Task<bool> IsStudentEnrolledAsync(Guid studentId, Guid courseId, CancellationToken ct = default)
         {
             using var connection = await CreateConnectionAsync(ct);

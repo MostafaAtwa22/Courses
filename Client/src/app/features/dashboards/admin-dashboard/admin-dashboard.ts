@@ -37,7 +37,6 @@ export class AdminDashboardComponent implements OnInit {
   private toastService = inject(ToastService);
 
   isSidebarCollapsed = false;
-  isDarkMode = false;
 
   metrics: DashboardMetric[] = [];
   courses: CourseAnalytics[] = [];
@@ -47,30 +46,6 @@ export class AdminDashboardComponent implements OnInit {
 
   ngOnInit() {
     this.loadAdminData();
-    this.loadTheme();
-  }
-
-  loadTheme() {
-    const savedTheme = localStorage.getItem('theme');
-    this.isDarkMode = savedTheme === 'dark';
-    this.applyTheme();
-  }
-
-  toggleTheme() {
-    this.isDarkMode = !this.isDarkMode;
-    localStorage.setItem('theme', this.isDarkMode ? 'dark' : 'light');
-    this.applyTheme();
-  }
-
-  applyTheme() {
-    const body = document.body;
-    if (this.isDarkMode) {
-      body.classList.add('dark');
-      body.classList.add('dark-theme');
-    } else {
-      body.classList.remove('dark');
-      body.classList.remove('dark-theme');
-    }
   }
 
   loadAdminData() {

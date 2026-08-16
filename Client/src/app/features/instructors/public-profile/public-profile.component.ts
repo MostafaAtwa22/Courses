@@ -10,11 +10,12 @@ import { HeaderComponent } from '../../../shared/components/header/header';
 import { FooterComponent } from '../../../shared/components/footer/footer';
 import { ThemeService } from '../../../core/services/theme.service';
 import { CourseCardComponent } from '../../courses/components/course-card/course-card';
+import { PaginationComponent } from '../../../shared/components/pagination/pagination.component';
 
 @Component({
   selector: 'app-instructor-public-profile',
   standalone: true,
-  imports: [CommonModule, HeaderComponent, FooterComponent, CourseCardComponent],
+  imports: [CommonModule, HeaderComponent, FooterComponent, CourseCardComponent, PaginationComponent],
   templateUrl: './public-profile.component.html',
   styleUrl: './public-profile.component.scss'
 })
@@ -26,12 +27,13 @@ export class InstructorPublicProfileComponent implements OnInit {
   error: string | null = null;
   isBioExpanded = false;
   private themeService = inject(ThemeService);
-  isDarkMode = this.themeService.isDarkModeSignal();
   
   currentPage = 1;
   pageSize = 3;
   totalCourses = 0;
   totalPages = 0;
+  hasPreviousPage = false;
+  hasNextPage = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -79,6 +81,8 @@ export class InstructorPublicProfileComponent implements OnInit {
         this.courses = result.items || [];
         this.totalCourses = result.totalCount || 0;
         this.totalPages = Math.ceil(this.totalCourses / this.pageSize);
+        this.hasPreviousPage = result.hasPreviousPage || false;
+        this.hasNextPage = result.hasNextPage || false;
         this.isLoadingCourses = false;
       },
       error: (err) => {
@@ -89,7 +93,6 @@ export class InstructorPublicProfileComponent implements OnInit {
   }
 
   onPageChange(page: number) {
-    if (page < 1 || page > this.totalPages || page === this.currentPage) return;
     this.currentPage = page;
     this.isLoadingCourses = true;
     if (this.instructor) {
@@ -116,48 +119,6 @@ export class InstructorPublicProfileComponent implements OnInit {
       students: this.instructor.totalStudents.toLocaleString(),
       courses: this.instructor.totalCourses.toLocaleString()
     };
-  }
-
-  get coursesRange(): string {
-    if (this.totalCourses === 0) return '0-0';
-    const start = (this.currentPage - 1) * this.pageSize + 1;
-    const end = Math.min(this.currentPage * this.pageSize, this.totalCourses);
-    return `${start}-${end}`;
-  }
-
-  getPageNumbers(): number[] {
-    const pages: number[] = [];
-    const maxVisiblePages = 5;
-    
-    if (this.totalPages <= maxVisiblePages) {
-      for (let i = 1; i <= this.totalPages; i++) {
-        pages.push(i);
-      }
-    } else {
-      if (this.currentPage <= 3) {
-        for (let i = 1; i <= 4; i++) {
-          pages.push(i);
-        }
-        pages.push(-1);
-        pages.push(this.totalPages);
-      } else if (this.currentPage >= this.totalPages - 2) {
-        pages.push(1);
-        pages.push(-1);
-        for (let i = this.totalPages - 3; i <= this.totalPages; i++) {
-          pages.push(i);
-        }
-      } else {
-        pages.push(1);
-        pages.push(-1);
-        pages.push(this.currentPage - 1);
-        pages.push(this.currentPage);
-        pages.push(this.currentPage + 1);
-        pages.push(-1);
-        pages.push(this.totalPages);
-      }
-    }
-    
-    return pages;
   }
 
   toggleTheme() {
