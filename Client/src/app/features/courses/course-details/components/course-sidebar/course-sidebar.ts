@@ -63,6 +63,12 @@ export class CourseSidebarComponent implements OnInit, OnChanges {
       return;
     }
 
+    // Check if user has Student role before calling progress API
+    if (!this.authService.isStudent()) {
+      this.isEnrolled = false;
+      return;
+    }
+
     this.isCheckingEnrollment = true;
     this.progressService.checkEnrollment(this.course.id).subscribe({
       next: () => {
@@ -70,7 +76,8 @@ export class CourseSidebarComponent implements OnInit, OnChanges {
         this.isCheckingEnrollment = false;
         this.loadFirstContent();
       },
-      error: () => {
+      error: (err) => {
+        // Expected for non-enrolled students - silently handle
         this.isEnrolled = false;
         this.isCheckingEnrollment = false;
       }

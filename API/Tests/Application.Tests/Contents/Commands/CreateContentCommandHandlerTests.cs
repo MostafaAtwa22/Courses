@@ -3,7 +3,6 @@ using Application.Common.Interfaces;
 using Application.DTOs.Content;
 using Application.Features.Contents.Commands.Create;
 using Domain.Entities;
-using Domain.Enums;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Moq;
@@ -15,6 +14,7 @@ namespace Application.Tests.Contents.Commands
         private readonly Mock<IContentRepository> _repoMock;
         private readonly Mock<IFileService> _fileServiceMock;
         private readonly Mock<ISectionRepository> _sectionRepoMock;
+        private readonly Mock<IContentFileRepository> _contentFileRepoMock;
         private readonly CreateContentCommandHandler _handler;
 
         public CreateContentCommandHandlerTests()
@@ -22,7 +22,8 @@ namespace Application.Tests.Contents.Commands
             _repoMock = new Mock<IContentRepository>();
             _fileServiceMock = new Mock<IFileService>();
             _sectionRepoMock = new Mock<ISectionRepository>();
-            _handler = new CreateContentCommandHandler(_repoMock.Object, _fileServiceMock.Object, _sectionRepoMock.Object);
+            _contentFileRepoMock = new Mock<IContentFileRepository>();
+            _handler = new CreateContentCommandHandler(_repoMock.Object, _fileServiceMock.Object, _sectionRepoMock.Object, _contentFileRepoMock.Object);
         }
 
         [Fact]
@@ -31,13 +32,13 @@ namespace Application.Tests.Contents.Commands
             var sectionId = Guid.NewGuid();
             var fileMock = new Mock<IFormFile>();
             fileMock.Setup(f => f.FileName).Returns("test.mp4");
-            
+
             var dto = new ContentCreateDto
             {
                 Title = "Test Video",
-                Type = ContentType.Video,
                 SectionId = sectionId,
-                File = fileMock.Object
+                VideoFile = fileMock.Object,
+                Attachments = new List<IFormFile>()
             };
             var command = new CreateContentCommand(dto);
 

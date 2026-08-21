@@ -106,6 +106,21 @@ export class CourseReviewsComponent implements OnChanges {
 
   loadUserReview(): void {
     if (!this.courseId) return;
+    // Only load user review if user is authenticated
+    if (!this.authService.isLoggedIn()) {
+      this.userReview = null;
+      return;
+    }
+    // Only load user review if user has Student role
+    if (!this.authService.isStudent()) {
+      this.userReview = null;
+      return;
+    }
+    // Only load user review if user is enrolled in the course
+    if (!this.isEnrolled) {
+      this.userReview = null;
+      return;
+    }
     this.reviewService.getUserReview(this.courseId).subscribe({
       next: (review) => {
         this.userReview = review;
@@ -152,7 +167,6 @@ export class CourseReviewsComponent implements OnChanges {
     return name.split(' ').map(n => n[0]).join('').toUpperCase();
   }
 
-  // ── Write form ────────────────────────────────────────────────────────────
   cancelForm(): void {
     this.isFormOpen   = false;
     this.formRating   = 0;

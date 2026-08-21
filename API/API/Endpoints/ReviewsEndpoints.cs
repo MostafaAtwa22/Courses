@@ -23,7 +23,9 @@ namespace API.Endpoints
                 .WithName(nameof(GetUserReview))
                 .Produces<ReviewResponseDto>(StatusCodes.Status200OK)
                 .Produces(StatusCodes.Status404NotFound)
-                .RequireAuthorization();
+                .RequireAuthorization(policy =>
+                    policy.RequireRole(
+                        Role.Student.ToString()));
 
             group.MapGet("/{id:guid}", GetReviewById)
                 .WithName(nameof(GetReviewById))

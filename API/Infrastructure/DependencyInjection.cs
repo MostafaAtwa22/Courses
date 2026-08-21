@@ -54,6 +54,7 @@ public static class DependencyInjection
         services.AddScoped<IReviewRepository, ReviewRepository>();
         services.AddScoped<ISectionRepository, SectionRepository>();
         services.AddScoped<IContentRepository, ContentRepository>();
+        services.AddScoped<IContentFileRepository, ContentFileRepository>();
         services.AddScoped<IInstructorRepository, InstructorRepository>();
         services.AddScoped<IStudentRepository, StudentRepository>();
         services.AddScoped<ICourseDiscountRepository, CourseDiscountRepository>();

@@ -10,8 +10,9 @@ namespace Application.Features.Contents.Commands.Update
                 .MaximumLength(200)
                 .NotEmpty();
 
-            RuleFor(v => v.Dto.Type)
-                .IsInEnum();
+            RuleFor(v => v.Dto.AttachmentsToAdd)
+                .Must(attachments => attachments == null || attachments.Count <= 5)
+                .WithMessage("Maximum 5 attachments allowed");
 
             RuleFor(v => v.Dto.SectionId)
                 .NotEmpty();

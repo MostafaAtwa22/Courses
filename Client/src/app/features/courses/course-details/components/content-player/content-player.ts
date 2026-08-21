@@ -5,7 +5,7 @@ import { ContentService } from '../../../services/content.service';
 import { CourseService } from '../../../services/course.service';
 import { SectionService } from '../../../services/section.service';
 import { ProgressService } from '../../../services/progress.service';
-import { ContentResponse, ContentType, CourseProgress, CourseResponse, SectionResponse } from '../../../models/course.models';
+import { ContentResponse, CourseProgress, CourseResponse, SectionResponse } from '../../../models/course.models';
 import { forkJoin } from 'rxjs';
 import { VideoPlayerComponent } from '../../../../../shared/components/video-player/video-player.component';
 import { ProgressBarComponent } from '../../../../../shared/components/progress-bar/progress-bar';
@@ -38,7 +38,6 @@ export class ContentPlayerComponent implements OnInit, OnDestroy {
   
   loading = true;
   error: string | null = null;
-  ContentType = ContentType;
 
   expandedSections = new Set<string>();
   
@@ -79,13 +78,6 @@ export class ContentPlayerComponent implements OnInit, OnDestroy {
     document.body.style.overflow = 'auto';
   }
 
-  isVideoContent(content: ContentResponse | undefined): boolean {
-    if (!content) return false;
-    // Check both numeric type (0) and string type ("Video")
-    const typeValue = content.type as any;
-    return typeValue === ContentType.Video || typeValue === 'Video' || typeValue === 'video';
-  }
-
   loadCurrentContent(id: string): void {
     this.loading = true;
     const courseId = this.route.snapshot.parent?.paramMap.get('id') || '';
@@ -108,19 +100,24 @@ export class ContentPlayerComponent implements OnInit, OnDestroy {
     // 1. Get Course details
     this.courseService.getById(courseId).subscribe(c => this.course = c);
 
-    // 2. Load progress (only if authenticated)
+    // 2. Load progress (only if authenticated and has Student role)
     if (this.authService.isLoggedIn()) {
-      this.progressService.checkEnrollment(courseId).subscribe({
-        next: (progress) => {
-          this.progress = progress;
-          this.isEnrolled = true;
-        },
-        error: (err) => {
-          // User might not be enrolled - that's fine
-          this.isEnrolled = false;
-          console.log('Could not load progress (user may not be enrolled)');
-        }
-      });
+      // Check if user has Student role before calling progress API
+      if (!this.authService.isStudent()) {
+        this.isEnrolled = false;
+      } else {
+        this.progressService.checkEnrollment(courseId).subscribe({
+          next: (progress) => {
+            this.progress = progress;
+            this.isEnrolled = true;
+          },
+          error: (err) => {
+            // User might not be enrolled - that's fine
+            this.isEnrolled = false;
+            console.log('Could not load progress (user may not be enrolled)');
+          }
+        });
+      }
     } else {
       this.isEnrolled = false;
     }
@@ -205,13 +202,14 @@ export class ContentPlayerComponent implements OnInit, OnDestroy {
     }
   }
 
-  getContentIcon(type: number): string {
-    switch (type) {
-      case 0: return 'fa-play-circle'; // Video
-      case 1: return 'fa-file-alt'; // Document
-      case 2: return 'fa-question-circle'; // Quiz
-      default: return 'fa-play-circle';
-    }
+  openAttachment(fileUrl: string): void {
+    window.open(fileUrl, '_blank');
+  }
+
+  formatDuration(seconds: number): string {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = Math.floor(seconds % 60);
+    return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
   }
 
   isContentCompleted(contentId: string): boolean {

@@ -97,6 +97,12 @@ export class AuthService {
     return user.roles.includes('Admin');
   }
 
+  isStudent(): boolean {
+    const user = this.currentUser();
+    if (!user) return false;
+    return user.roles.includes('Student');
+  }
+
   isInstructorOrAdmin(): boolean {
     return this.isInstructor() || this.isAdmin();
   }

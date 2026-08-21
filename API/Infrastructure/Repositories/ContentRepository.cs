@@ -12,10 +12,11 @@ namespace Infrastructure.Repositories
         : BaseRepository(factory), IContentRepository
     {
         private string SelectColumns =>
-            $@"c.id, c.title, c.type, 
+            $@"c.id, c.title, 
                CASE WHEN c.content_url IS NOT NULL 
                     THEN CONCAT('{urlsOptions.Value.API}/', c.content_url) 
                     ELSE NULL END AS content_url,
+               c.duration_in_seconds,
                c.""order"", c.is_preview, c.section_id, c.created_at, c.updated_at";
 
         private const string FromClause =
@@ -71,15 +72,15 @@ namespace Infrastructure.Repositories
         public async Task<Guid> CreateAsync(Content content, CancellationToken ct = default)
         {
             using var connection = await CreateConnectionAsync(ct);
-            var sql = @"INSERT INTO contents (id, title, type, content_url, ""order"", is_preview, section_id, created_at, updated_at)
-                        VALUES (@Id, @Title, @Type, @ContentUrl, @Order, @IsPreview, @SectionId, @CreatedAt, @UpdatedAt);";
+            var sql = @"INSERT INTO contents (id, title, content_url, duration_in_seconds, ""order"", is_preview, section_id, created_at, updated_at)
+                        VALUES (@Id, @Title, @ContentUrl, @DurationInSeconds, @Order, @IsPreview, @SectionId, @CreatedAt, @UpdatedAt);";
 
             await connection.ExecuteAsync(sql, new
             {
                 content.Id,
                 content.Title,
-                content.Type,
                 content.ContentUrl,
+                content.DurationInSeconds,
                 content.Order,
                 content.IsPreview,
                 content.SectionId,
@@ -94,8 +95,8 @@ namespace Infrastructure.Repositories
             using var connection = await CreateConnectionAsync(ct);
             var sql = @"UPDATE contents
                         SET title       = @Title,
-                            type        = @Type,
                             content_url = @ContentUrl,
+                            duration_in_seconds = @DurationInSeconds,
                             ""order""     = @Order,
                             is_preview  = @IsPreview,
                             section_id  = @SectionId,
@@ -106,8 +107,8 @@ namespace Infrastructure.Repositories
             {
                 content.Id,
                 content.Title,
-                content.Type,
                 content.ContentUrl,
+                content.DurationInSeconds,
                 content.Order,
                 content.IsPreview,
                 content.SectionId,

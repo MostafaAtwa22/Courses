@@ -38,6 +38,11 @@ export class CourseCardComponent implements OnInit {
       return;
     }
 
+    if (!this.authService.isStudent()) {
+      this.isEnrolled = false;
+      return;
+    }
+
     this.isCheckingEnrollment = true;
     // Use progress service to check enrollment - it will fail for non-enrolled users
     this.progressService.checkEnrollment(this.course.id).subscribe({

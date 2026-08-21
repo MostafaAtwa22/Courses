@@ -3,7 +3,6 @@ using Application.Common.Interfaces;
 using Application.DTOs.Content;
 using Application.Features.Contents.Commands.Update;
 using Domain.Entities;
-using Domain.Enums;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Moq;
@@ -15,6 +14,7 @@ namespace Application.Tests.Contents.Commands
         private readonly Mock<IContentRepository> _repoMock;
         private readonly Mock<IFileService> _fileServiceMock;
         private readonly Mock<ISectionRepository> _sectionRepoMock;
+        private readonly Mock<IContentFileRepository> _contentFileRepoMock;
         private readonly UpdateContentCommandHandler _handler;
 
         public UpdateContentCommandHandlerTests()
@@ -22,7 +22,8 @@ namespace Application.Tests.Contents.Commands
             _repoMock = new Mock<IContentRepository>();
             _fileServiceMock = new Mock<IFileService>();
             _sectionRepoMock = new Mock<ISectionRepository>();
-            _handler = new UpdateContentCommandHandler(_repoMock.Object, _fileServiceMock.Object, _sectionRepoMock.Object);
+            _contentFileRepoMock = new Mock<IContentFileRepository>();
+            _handler = new UpdateContentCommandHandler(_repoMock.Object, _fileServiceMock.Object, _sectionRepoMock.Object, _contentFileRepoMock.Object);
         }
 
         [Fact]
@@ -41,7 +42,7 @@ namespace Application.Tests.Contents.Commands
         {
             _repoMock.Setup(x => x.GetEntityByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new Content { Id = Guid.NewGuid() });
-            
+
             _sectionRepoMock.Setup(x => x.GetEntityByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync((Section?)null);
 
@@ -61,6 +62,8 @@ namespace Application.Tests.Contents.Commands
                 .ReturnsAsync(content);
             _sectionRepoMock.Setup(x => x.GetEntityByIdAsync(sectionId, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new Section { Id = sectionId });
+            _contentFileRepoMock.Setup(x => x.GetByContentIdAsync(contentId, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new List<ContentFile>());
 
             var command = new UpdateContentCommand(contentId, new ContentUpdateDto { Title = "Updated", SectionId = sectionId });
 
@@ -76,7 +79,7 @@ namespace Application.Tests.Contents.Commands
             var contentId = Guid.NewGuid();
             var sectionId = Guid.NewGuid();
             var content = new Content { Id = contentId, ContentUrl = "old.mp4" };
-            
+
             var fileMock = new Mock<IFormFile>();
             fileMock.Setup(f => f.FileName).Returns("new.mp4");
 
@@ -86,8 +89,10 @@ namespace Application.Tests.Contents.Commands
                 .ReturnsAsync(new Section { Id = sectionId });
             _fileServiceMock.Setup(x => x.UploadAsync(It.IsAny<Stream>(), It.IsAny<string>(), It.IsAny<string>()))
                 .ReturnsAsync("videos/new.mp4");
+            _contentFileRepoMock.Setup(x => x.GetByContentIdAsync(contentId, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new List<ContentFile>());
 
-            var command = new UpdateContentCommand(contentId, new ContentUpdateDto { Title = "Updated", SectionId = sectionId, File = fileMock.Object, Type = ContentType.Video });
+            var command = new UpdateContentCommand(contentId, new ContentUpdateDto { Title = "Updated", SectionId = sectionId, VideoFile = fileMock.Object });
 
             await _handler.Handle(command, CancellationToken.None);
 

@@ -5,21 +5,21 @@ export enum CourseStatus {
     Done = 1
 }
 
-export enum ContentType {
-    Video = 0,
-    Document = 1,
-    Quiz = 2,
-    Other = 3
+export interface ContentFileResponse {
+    id: string;
+    fileName: string;
+    fileUrl: string;
 }
 
 export interface ContentResponse extends BaseResponseModel {
     title: string;
-    type: ContentType;
     contentUrl: string;
+    durationInSeconds: number;
     order: number;
     isPreview: boolean;
     sectionId: string;
-    isCompleted?: boolean; 
+    files: ContentFileResponse[];
+    isCompleted?: boolean;
 }
 
 export interface SectionResponse extends BaseResponseModel {
@@ -101,8 +101,8 @@ export interface CourseRequest {
 
 export interface ContentCreateRequest {
     title: string;
-    type: ContentType;
-    file: File;
+    videoFile: File;
+    attachments?: File[];
     order: number;
     isPreview: boolean;
     sectionId: string;
@@ -111,8 +111,9 @@ export interface ContentCreateRequest {
 
 export interface ContentUpdateRequest {
     title: string;
-    type: ContentType;
-    file?: File;
+    videoFile?: File;
+    attachmentsToAdd?: File[];
+    attachmentIdsToRemove?: string[];
     order: number;
     isPreview: boolean;
     sectionId: string;

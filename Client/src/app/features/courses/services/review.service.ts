@@ -52,6 +52,7 @@ export class ReviewService {
     return this.http.get<ReviewResponse>(`${this.apiUrl}/course/${courseId}/user-review`).pipe(
       catchError((error: any) => {
         if (error.status === 404) return of(null);
+        if (error.status === 401) return of(null); // Handle unauthorized errors gracefully
         throw error;
       })
     );

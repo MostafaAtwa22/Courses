@@ -90,8 +90,15 @@ export class CourseDetailsComponent implements OnInit {
   }
 
   loadProgress(courseId: string): void {
-    // Only load progress if user is authenticated
+    // Only load progress if user is authenticated and has Student role
     if (!this.authService.isLoggedIn()) {
+      this.isEnrolled = false;
+      this.hasReviewed = false;
+      return;
+    }
+
+    // Check if user has Student role before calling progress API
+    if (!this.authService.isStudent()) {
       this.isEnrolled = false;
       this.hasReviewed = false;
       return;
@@ -193,6 +200,18 @@ export class CourseDetailsComponent implements OnInit {
   checkUserReviewStatus(courseId: string): void {
     // Only check if user is authenticated
     if (!this.authService.isLoggedIn()) {
+      this.hasReviewed = false;
+      return;
+    }
+
+    // Only check if user has Student role
+    if (!this.authService.isStudent()) {
+      this.hasReviewed = false;
+      return;
+    }
+
+    // Only check if user is enrolled in the course
+    if (!this.isEnrolled) {
       this.hasReviewed = false;
       return;
     }

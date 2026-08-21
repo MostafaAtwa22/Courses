@@ -42,8 +42,8 @@
         <div *ngIf="error" class="stage-error">{{ error }}</div>
 
         <ng-container *ngIf="!loading && !error && content">
-          <!-- Video -->
-          <div *ngIf="isVideoContent(content)" class="stage-video">
+          <!-- Video (all content is now video) -->
+          <div class="stage-video">
             <app-video-player
               [videoUrl]="content.contentUrl"
               [autoplay]="true"
@@ -53,21 +53,25 @@
               class="block w-full h-full">
             </app-video-player>
           </div>
-          <!-- Document / File -->
-          <div *ngIf="!isVideoContent(content)" class="stage-file">
-            <i class="fa-regular fa-file-lines stage-file-icon"></i>
-            <h3 class="stage-file-title">{{ content.title }}</h3>
-            <p class="stage-file-desc">This lecture includes a downloadable resource.</p>
-            <div class="stage-file-actions">
-              <button class="btn-primary" (click)="openFile()">
-                <i class="fa-regular fa-eye"></i> View File
-              </button>
-              <a [href]="getFullUrl(content.contentUrl)" [download]="content.title" class="btn-outline">
-                <i class="fa-solid fa-download"></i> Download
-              </a>
-            </div>
-          </div>
         </ng-container>
+      </div>
+
+      <!-- Attachments Section -->
+      <div *ngIf="!loading && !error && content" class="stage-attachments">
+        <h4 class="stage-attachments-title">Attachments</h4>
+        <div *ngIf="content.files && content.files.length > 0" class="stage-attachments-list">
+          <div *ngFor="let file of content.files" class="stage-attachment-item">
+            <i class="fa-solid fa-paperclip stage-attachment-icon"></i>
+            <span class="stage-attachment-name">{{ file.fileName }}</span>
+            <button class="stage-attachment-btn" (click)="openAttachment(file.fileUrl)">
+              <i class="fa-solid fa-download"></i>
+            </button>
+          </div>
+        </div>
+        <div *ngIf="!content.files || content.files.length === 0" class="stage-attachments-empty">
+          <i class="fa-solid fa-folder-open stage-attachments-empty-icon"></i>
+          <span class="stage-attachments-empty-text">No attachments available for this lesson</span>
+        </div>
       </div>
 
       <!-- Action bar -->
@@ -151,8 +155,8 @@
               <div class="content-item-info">
                 <span class="content-item-title">{{ c.order }}. {{ c.title }}</span>
                 <span class="content-item-type">
-                  <i class="fa-solid" [class.fa-play]="isVideoContent(c)" [class.fa-file-lines]="!isVideoContent(c)"></i>
-                  {{ isVideoContent(c) ? 'Video' : 'Resource' }}
+                  <i class="fa-solid fa-play"></i>
+                  {{ formatDuration(c.durationInSeconds) }}
                 </span>
               </div>
             </div>

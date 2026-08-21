@@ -14,6 +14,6 @@ namespace Domain.Entities.Identity
         public virtual ApplicationUser User { get; set; } = null!;
 
         public bool IsExpired => DateTime.UtcNow >= ExpiryDate;
-        public bool IsActive => !IsRevoked && !IsExpired;
+        public bool IsActive => !IsRevoked && !IsExpired && !IsUsed;
     }
 }

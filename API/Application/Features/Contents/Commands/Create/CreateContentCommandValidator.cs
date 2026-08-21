@@ -10,14 +10,15 @@ namespace Application.Features.Contents.Commands.Create
                 .MaximumLength(200)
                 .NotEmpty();
 
-            RuleFor(v => v.Dto.Type)
-                .IsInEnum();
+            RuleFor(v => v.Dto.VideoFile)
+                .NotNull();
+
+            RuleFor(v => v.Dto.Attachments)
+                .Must(attachments => attachments == null || attachments.Count <= 5)
+                .WithMessage("Maximum 5 attachments allowed");
 
             RuleFor(v => v.Dto.SectionId)
                 .NotEmpty();
-                
-            RuleFor(v => v.Dto.File)
-                .NotNull();
         }
     }
 }
