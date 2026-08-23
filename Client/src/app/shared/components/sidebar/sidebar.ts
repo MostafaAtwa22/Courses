@@ -18,7 +18,7 @@ export interface NavItem {
   styleUrl: './sidebar.scss'
 })
 export class SidebarComponent {
-  @Input() role: 'admin' | 'instructor' | 'general' = 'general';
+  @Input() role: 'admin' | 'instructor' | 'student' | 'general' = 'general';
   @Input() isCollapsed = false;
   @Output() toggleCollapse = new EventEmitter<boolean>();
 
@@ -38,6 +38,13 @@ export class SidebarComponent {
     { label: 'My Profile', icon: 'fa-solid fa-id-card', route: '/profile' }
   ];
 
+  studentNavItems: NavItem[] = [
+    { label: 'My Courses', icon: 'fa-solid fa-laptop-code', route: '/student/dashboard' },
+    { label: 'All Courses', icon: 'fa-solid fa-book-open', route: '/courses' },
+    { label: 'My Profile', icon: 'fa-solid fa-id-card', route: '/profile' },
+    { label: 'Settings', icon: 'fa-solid fa-sliders', route: '/settings' }
+  ];
+
   generalNavItems: NavItem[] = [
     { label: 'Home', icon: 'fa-solid fa-house', route: '/' },
     { label: 'All Courses', icon: 'fa-solid fa-graduation-cap', route: '/courses' },
@@ -48,6 +55,7 @@ export class SidebarComponent {
   get navItems(): NavItem[] {
     if (this.role === 'admin') return this.adminNavItems;
     if (this.role === 'instructor') return this.instructorNavItems;
+    if (this.role === 'student') return this.studentNavItems;
     return this.generalNavItems;
   }
 

@@ -30,12 +30,14 @@ namespace Infrastructure.Repositories
                          WHERE c.section_id = @SectionId 
                          ORDER BY c.""order"" ASC";
             
-            return (await connection.QueryAsync<ContentResponseDto>(sql, new { SectionId = sectionId })).AsList();
+            var contents = (await connection.QueryAsync<ContentResponseDto>(sql, new { SectionId = sectionId })).AsList();
+            await PopulateFilesAsync(contents, ct);
+            return contents;
         }
 
-        public Task<PaginatedResult<ContentResponseDto>> GetByCourseAsync(Guid courseId, QueryParams queryParams, CancellationToken ct = default)
+        public async Task<PaginatedResult<ContentResponseDto>> GetByCourseAsync(Guid courseId, QueryParams queryParams, CancellationToken ct = default)
         {
-            return ExecutePaginatedQueryAsync<ContentResponseDto>(
+            var result = await ExecutePaginatedQueryAsync<ContentResponseDto>(
                 queryParams,
                 countSql: $"SELECT COUNT(1) {FromClause} WHERE s.course_id = @CourseId",
                 selectSql: $"SELECT {SelectColumns} {FromClause} WHERE s.course_id = @CourseId",
@@ -53,13 +55,57 @@ namespace Infrastructure.Repositories
                     parameters.Add("CourseId", courseId);
                 },
                 ct);
+
+            await PopulateFilesAsync(result.Items, ct);
+            return result;
         }
 
         public async Task<ContentResponseDto?> GetByIdAsync(Guid id, CancellationToken ct = default)
         {
             using var connection = await CreateConnectionAsync(ct);
             var sql = $"SELECT {SelectColumns} {FromClause} WHERE c.id = @Id";
-            return await connection.QueryFirstOrDefaultAsync<ContentResponseDto>(sql, new { Id = id });
+            var content = await connection.QueryFirstOrDefaultAsync<ContentResponseDto>(sql, new { Id = id });
+
+            if (content != null)
+            {
+                await PopulateFilesAsync(new[] { content }, ct);
+            }
+
+            return content;
+        }
+
+        private class ContentFileWithContentIdDto : ContentFileResponseDto
+        {
+            public Guid ContentId { get; set; }
+        }
+
+        private async Task PopulateFilesAsync(IEnumerable<ContentResponseDto> contents, CancellationToken ct)
+        {
+            var contentList = contents.ToList();
+            if (contentList.Count == 0) return;
+
+            var contentIds = contentList.Select(c => c.Id).ToList();
+
+            using var connection = await CreateConnectionAsync(ct);
+            var fileSql = $@"SELECT id as Id, file_name as FileName, 
+                                    CASE WHEN file_url IS NOT NULL 
+                                         THEN CONCAT('{urlsOptions.Value.API}/', file_url) 
+                                         ELSE NULL END as FileUrl,
+                                    content_id as ContentId
+                             FROM content_files 
+                             WHERE content_id = ANY(@ContentIds)";
+            
+            var files = await connection.QueryAsync<ContentFileWithContentIdDto>(fileSql, new { ContentIds = contentIds });
+            
+            var filesByContentId = files.GroupBy(f => f.ContentId).ToDictionary(g => g.Key, g => g.Cast<ContentFileResponseDto>().ToList());
+
+            foreach (var content in contentList)
+            {
+                if (filesByContentId.TryGetValue(content.Id, out var contentFiles))
+                {
+                    content.Files = contentFiles;
+                }
+            }
         }
 
         public async Task<Content?> GetEntityByIdAsync(Guid id, CancellationToken ct = default)

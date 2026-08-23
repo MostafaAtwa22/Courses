@@ -6,6 +6,8 @@ import { AddReviewModalComponent } from '../add-review-modal/add-review-modal';
 import { ReviewService } from '../../../services/review.service';
 import { AuthService } from '../../../../../features/auth/services/auth.service';
 import { Gender } from '../../../../../shared/models/identity.models';
+import Swal from 'sweetalert2';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-course-reviews',
@@ -25,6 +27,7 @@ export class CourseReviewsComponent implements OnChanges {
   @ViewChild(AddReviewModalComponent) addReviewModal!: AddReviewModalComponent;
   private reviewService = inject(ReviewService);
   private authService  = inject(AuthService);
+  private toastr = inject(ToastrService);
 
   isSubmitting = false;
   userReview: ReviewResponse | null = null;
@@ -102,6 +105,9 @@ export class CourseReviewsComponent implements OnChanges {
     if (changes['courseId'] && this.courseId) {
       this.loadUserReview();
     }
+    if (changes['isEnrolled'] && this.isEnrolled && this.courseId) {
+      this.loadUserReview();
+    }
   }
 
   loadUserReview(): void {
@@ -151,7 +157,6 @@ export class CourseReviewsComponent implements OnChanges {
     }));
   }
 
-  // ── Star helpers ──────────────────────────────────────────────────────────
   getStars(rating: number): number[]      { return Array(Math.floor(rating)).fill(0); }
   hasHalfStar(rating: number): boolean    { return rating % 1 >= 0.5; }
   getEmptyStars(rating: number): number[] {
@@ -191,12 +196,20 @@ export class CourseReviewsComponent implements OnChanges {
       rating:   this.formRating,
     };
     this.reviewService.createReview(request).subscribe({
-      next: () => { this.isSubmitting = false; this.cancelForm(); this.reviewAdded.emit(); },
-      error: (err) => { this.isSubmitting = false; console.error(err); },
+      next: () => {
+        this.isSubmitting = false;
+        this.cancelForm();
+        this.reviewAdded.emit();
+        this.toastr.success('Review submitted successfully', 'Success');
+      },
+      error: (err) => {
+        this.isSubmitting = false;
+        console.error(err);
+        this.toastr.error('Failed to submit review', 'Error');
+      },
     });
   }
 
-  // ── 3-dot menu ────────────────────────────────────────────────────────────
   toggleMenu(reviewId: string, event: Event): void {
     event.stopPropagation();
     this.openMenuId = this.openMenuId === reviewId ? null : reviewId;
@@ -209,7 +222,6 @@ export class CourseReviewsComponent implements OnChanges {
   @HostListener('document:click')
   closeMenu(): void { this.openMenuId = null; }
 
-  // ── Edit ──────────────────────────────────────────────────────────────────
   startEdit(review: ReviewResponse): void {
     this.openMenuId      = null;
     this.editingReviewId = review.id;
@@ -243,7 +255,6 @@ export class CourseReviewsComponent implements OnChanges {
     };
     this.reviewService.updateReview(review.id, req).subscribe({
       next: () => {
-        // update locally
         review.headline = req.headline;
         review.comment  = req.comment;
         review.rating   = req.rating;
@@ -251,31 +262,57 @@ export class CourseReviewsComponent implements OnChanges {
         this.isSubmitting = false;
         this.cancelEdit();
         this.calculateFeedback();
+        this.toastr.success('Review updated successfully', 'Success');
       },
-      error: (err) => { this.isSubmitting = false; console.error(err); },
+      error: (err) => {
+        this.isSubmitting = false;
+        console.error(err);
+        this.toastr.error('Failed to update review', 'Error');
+      },
     });
   }
 
-  // ── Delete ────────────────────────────────────────────────────────────────
   deleteReview(review: ReviewResponse): void {
     this.openMenuId = null;
-    if (!confirm('Delete your review?')) return;
-    this.reviewService.deleteReview(review.id).subscribe({
-      next: () => {
-        this.userReview = null;
-        this.reviewAdded.emit(); /* parent reloads list */
-      },
-      error: (err) => console.error(err),
+    Swal.fire({
+      title: 'Delete your review?',
+      text: 'This action cannot be undone.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#dc3545',
+      cancelButtonColor: '#6c757d',
+      confirmButtonText: 'Yes, delete it!',
+      cancelButtonText: 'Cancel'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.reviewService.deleteReview(review.id).subscribe({
+          next: () => {
+            this.userReview = null;
+            this.reviewAdded.emit(); /* parent reloads list */
+            this.toastr.success('Review deleted successfully', 'Success');
+          },
+          error: (err) => {
+            console.error(err);
+            this.toastr.error('Failed to delete review', 'Error');
+          },
+        });
+      }
     });
   }
 
-  // ── Legacy (keeps ViewChild alive) ────────────────────────────────────────
   openAddReviewModal(): void { this.addReviewModal.openModal(); }
   onReviewSubmitted(request: ReviewCreateRequest): void {
     request.courseId = this.courseId;
     this.reviewService.createReview(request).subscribe({
-      next: () => { this.reviewAdded.emit(); this.addReviewModal.closeModal(); },
-      error: (err) => console.error(err),
+      next: () => {
+        this.reviewAdded.emit();
+        this.addReviewModal.closeModal();
+        this.toastr.success('Review submitted successfully', 'Success');
+      },
+      error: (err) => {
+        console.error(err);
+        this.toastr.error('Failed to submit review', 'Error');
+      },
     });
   }
 }

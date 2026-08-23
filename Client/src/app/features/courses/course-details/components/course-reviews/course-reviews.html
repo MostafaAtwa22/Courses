@@ -198,7 +198,7 @@
             <span class="rc-date">{{ review.createdAt | date:'mediumDate' }}</span>
 
             <!-- 3-dot menu — only for own reviews -->
-            <div class="rc-menu-wrap" *ngIf="isOwnReview(review)">
+            <div class="rc-menu-wrap" *ngIf="review.id === userReview?.id">
               <button class="rc-menu-btn" (click)="toggleMenu(review.id, $event)" aria-label="Review options">
                 <i class="fa-solid fa-ellipsis-vertical"></i>
               </button>

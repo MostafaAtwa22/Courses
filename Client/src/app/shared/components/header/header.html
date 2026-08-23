@@ -65,6 +65,18 @@
 
               <!-- Nav items -->
               <div class="dropdown-items">
+                <a class="dropdown-item" routerLink="/student/dashboard" (click)="isDropdownOpen = false" role="menuitem" *ngIf="user.roles.includes('Student')">
+                  <i class="fa-solid fa-laptop-code"></i>
+                  <span>Dashboard</span>
+                </a>
+                <a class="dropdown-item" routerLink="/instructor/dashboard" (click)="isDropdownOpen = false" role="menuitem" *ngIf="user.roles.includes('Instructor')">
+                  <i class="fa-solid fa-chalkboard-user"></i>
+                  <span>Dashboard</span>
+                </a>
+                <a class="dropdown-item" routerLink="/admin/dashboard" (click)="isDropdownOpen = false" role="menuitem" *ngIf="user.roles.includes('Admin')">
+                  <i class="fa-solid fa-chart-line"></i>
+                  <span>Dashboard</span>
+                </a>
                 <a class="dropdown-item" routerLink="/profile" (click)="isDropdownOpen = false" role="menuitem">
                   <i class="fa-regular fa-user"></i>
                   <span>My Profile</span>
@@ -72,10 +84,6 @@
                 <a class="dropdown-item" routerLink="/settings" (click)="isDropdownOpen = false" role="menuitem">
                   <i class="fa-solid fa-gear"></i>
                   <span>Settings</span>
-                </a>
-                <a class="dropdown-item" routerLink="/courses" (click)="isDropdownOpen = false" role="menuitem" *ngIf="user.roles.includes('Student')">
-                  <i class="fa-solid fa-book-open"></i>
-                  <span>My Courses</span>
                 </a>
               </div>
 
