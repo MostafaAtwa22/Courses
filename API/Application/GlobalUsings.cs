@@ -12,3 +12,7 @@ global using Domain.Constants;
 global using FluentValidation;
 global using Application.DTOs.Authentication;
 global using Domain.Enums;
+global using Application.DTOs.Authorization;
+global using Domain.Entities.Identity;
+global using Microsoft.AspNetCore.Identity;
+global using Microsoft.EntityFrameworkCore;
