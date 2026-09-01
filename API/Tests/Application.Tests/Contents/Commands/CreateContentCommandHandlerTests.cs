@@ -14,7 +14,8 @@ namespace Application.Tests.Contents.Commands
         private readonly Mock<IContentRepository> _repoMock;
         private readonly Mock<IFileService> _fileServiceMock;
         private readonly Mock<ISectionRepository> _sectionRepoMock;
-        private readonly Mock<IContentFileRepository> _contentFileRepoMock;
+        private readonly Mock<IVideoDurationService> _videoDurationServiceMock;
+        private readonly Mock<IContentAttachmentService> _attachmentServiceMock;
         private readonly CreateContentCommandHandler _handler;
 
         public CreateContentCommandHandlerTests()
@@ -22,8 +23,9 @@ namespace Application.Tests.Contents.Commands
             _repoMock = new Mock<IContentRepository>();
             _fileServiceMock = new Mock<IFileService>();
             _sectionRepoMock = new Mock<ISectionRepository>();
-            _contentFileRepoMock = new Mock<IContentFileRepository>();
-            _handler = new CreateContentCommandHandler(_repoMock.Object, _fileServiceMock.Object, _sectionRepoMock.Object, _contentFileRepoMock.Object);
+            _videoDurationServiceMock = new Mock<IVideoDurationService>();
+            _attachmentServiceMock = new Mock<IContentAttachmentService>();
+            _handler = new CreateContentCommandHandler(_repoMock.Object, _fileServiceMock.Object, _sectionRepoMock.Object, _videoDurationServiceMock.Object, _attachmentServiceMock.Object);
         }
 
         [Fact]
@@ -47,6 +49,9 @@ namespace Application.Tests.Contents.Commands
 
             _fileServiceMock.Setup(x => x.UploadAsync(It.IsAny<Stream>(), It.IsAny<string>(), It.IsAny<string>()))
                 .ReturnsAsync("videos/test.mp4");
+
+            _videoDurationServiceMock.Setup(x => x.GetDurationAsync(It.IsAny<IFormFile>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(120.0);
 
             var expectedId = Guid.NewGuid();
             _repoMock.Setup(x => x.CreateAsync(It.IsAny<Content>(), It.IsAny<CancellationToken>()))

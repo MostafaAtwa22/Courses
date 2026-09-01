@@ -14,7 +14,8 @@ namespace Application.Tests.Contents.Commands
         private readonly Mock<IContentRepository> _repoMock;
         private readonly Mock<IFileService> _fileServiceMock;
         private readonly Mock<ISectionRepository> _sectionRepoMock;
-        private readonly Mock<IContentFileRepository> _contentFileRepoMock;
+        private readonly Mock<IVideoDurationService> _videoDurationServiceMock;
+        private readonly Mock<IContentAttachmentService> _attachmentServiceMock;
         private readonly UpdateContentCommandHandler _handler;
 
         public UpdateContentCommandHandlerTests()
@@ -22,8 +23,9 @@ namespace Application.Tests.Contents.Commands
             _repoMock = new Mock<IContentRepository>();
             _fileServiceMock = new Mock<IFileService>();
             _sectionRepoMock = new Mock<ISectionRepository>();
-            _contentFileRepoMock = new Mock<IContentFileRepository>();
-            _handler = new UpdateContentCommandHandler(_repoMock.Object, _fileServiceMock.Object, _sectionRepoMock.Object, _contentFileRepoMock.Object);
+            _videoDurationServiceMock = new Mock<IVideoDurationService>();
+            _attachmentServiceMock = new Mock<IContentAttachmentService>();
+            _handler = new UpdateContentCommandHandler(_repoMock.Object, _fileServiceMock.Object, _sectionRepoMock.Object, _videoDurationServiceMock.Object, _attachmentServiceMock.Object);
         }
 
         [Fact]
@@ -62,8 +64,8 @@ namespace Application.Tests.Contents.Commands
                 .ReturnsAsync(content);
             _sectionRepoMock.Setup(x => x.GetEntityByIdAsync(sectionId, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new Section { Id = sectionId });
-            _contentFileRepoMock.Setup(x => x.GetByContentIdAsync(contentId, It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new List<ContentFile>());
+            _attachmentServiceMock.Setup(x => x.ValidateAttachmentCountAsync(contentId, 0, 0, It.IsAny<CancellationToken>()))
+                .Returns(Task.CompletedTask);
 
             var command = new UpdateContentCommand(contentId, new ContentUpdateDto { Title = "Updated", SectionId = sectionId });
 
@@ -89,8 +91,10 @@ namespace Application.Tests.Contents.Commands
                 .ReturnsAsync(new Section { Id = sectionId });
             _fileServiceMock.Setup(x => x.UploadAsync(It.IsAny<Stream>(), It.IsAny<string>(), It.IsAny<string>()))
                 .ReturnsAsync("videos/new.mp4");
-            _contentFileRepoMock.Setup(x => x.GetByContentIdAsync(contentId, It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new List<ContentFile>());
+            _videoDurationServiceMock.Setup(x => x.GetDurationAsync(It.IsAny<IFormFile>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(120.0);
+            _attachmentServiceMock.Setup(x => x.ValidateAttachmentCountAsync(contentId, 0, 0, It.IsAny<CancellationToken>()))
+                .Returns(Task.CompletedTask);
 
             var command = new UpdateContentCommand(contentId, new ContentUpdateDto { Title = "Updated", SectionId = sectionId, VideoFile = fileMock.Object });
 

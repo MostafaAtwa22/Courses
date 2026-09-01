@@ -11,15 +11,15 @@ namespace Application.Tests.Contents.Commands
     {
         private readonly Mock<IContentRepository> _repoMock;
         private readonly Mock<IFileService> _fileServiceMock;
-        private readonly Mock<IContentFileRepository> _contentFileRepoMock;
+        private readonly Mock<IContentAttachmentService> _attachmentServiceMock;
         private readonly DeleteContentCommandHandler _handler;
 
         public DeleteContentCommandHandlerTests()
         {
             _repoMock = new Mock<IContentRepository>();
             _fileServiceMock = new Mock<IFileService>();
-            _contentFileRepoMock = new Mock<IContentFileRepository>();
-            _handler = new DeleteContentCommandHandler(_repoMock.Object, _fileServiceMock.Object, _contentFileRepoMock.Object);
+            _attachmentServiceMock = new Mock<IContentAttachmentService>();
+            _handler = new DeleteContentCommandHandler(_repoMock.Object, _fileServiceMock.Object, _attachmentServiceMock.Object);
         }
 
         [Fact]
@@ -28,8 +28,8 @@ namespace Application.Tests.Contents.Commands
             var id = Guid.NewGuid();
             _repoMock.Setup(x => x.GetEntityByIdAsync(id, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new Content { Id = id, ContentUrl = "videos/test.mp4" });
-            _contentFileRepoMock.Setup(x => x.GetByContentIdAsync(id, It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new List<ContentFile>());
+            _attachmentServiceMock.Setup(x => x.DeleteAllAttachmentsAsync(id, It.IsAny<CancellationToken>()))
+                .Returns(Task.CompletedTask);
 
             await _handler.Handle(new DeleteContentCommand(id), CancellationToken.None);
 

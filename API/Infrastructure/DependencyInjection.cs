@@ -141,6 +141,8 @@ public static class DependencyInjection
         services.AddSingleton<IUrlProvider, UrlProvider>();
         services.AddScoped<IDiscountJobService, DiscountJobService>();
         services.AddScoped<IContentAccessService, ContentAccessService>();
+        services.AddScoped<IVideoDurationService, VideoDurationService>();
+        services.AddScoped<IContentAttachmentService, ContentAttachmentService>();
         services.AddHttpContextAccessor();
         
         return services;

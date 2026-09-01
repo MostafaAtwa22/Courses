@@ -17,6 +17,7 @@
   </ItemGroup>
   
   <ItemGroup>
+    <Folder Include="Features\Authorization\" />
     <Folder Include="Features\Instructors\Queries\" />
   </ItemGroup>
 

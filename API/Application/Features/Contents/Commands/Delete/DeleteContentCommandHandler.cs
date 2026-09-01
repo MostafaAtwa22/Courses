@@ -1,9 +1,11 @@
+using Application.Common.Interfaces;
+
 namespace Application.Features.Contents.Commands.Delete
 {
     public sealed class DeleteContentCommandHandler(
         IContentRepository _repo,
         IFileService _fileService,
-        IContentFileRepository _contentFileRepo)
+        IContentAttachmentService _attachmentService)
         : IRequestHandler<DeleteContentCommand>
     {
         public async Task Handle(DeleteContentCommand request, CancellationToken cancellationToken)
@@ -15,12 +17,7 @@ namespace Application.Features.Contents.Commands.Delete
             await _fileService.DeleteAsync(content.ContentUrl);
 
             // Delete all attachment files
-            var attachments = await _contentFileRepo.GetByContentIdAsync(request.Id, cancellationToken);
-            foreach (var attachment in attachments)
-            {
-                await _fileService.DeleteAsync(attachment.FileUrl);
-                await _contentFileRepo.DeleteAsync(attachment.Id, cancellationToken);
-            }
+            await _attachmentService.DeleteAllAttachmentsAsync(request.Id, cancellationToken);
 
             await _repo.DeleteAsync(request.Id, cancellationToken);
         }
