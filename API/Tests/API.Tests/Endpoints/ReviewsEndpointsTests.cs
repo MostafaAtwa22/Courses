@@ -37,7 +37,7 @@ namespace API.Tests.Endpoints
             var result = await ReviewsEndpoints.GetReviewsByCourse(courseId, queryParams, _mediatorMock.Object);
 
             // Assert
-            var okResult = result as Ok<PaginatedResult<ReviewResponseDto>>;
+            var okResult = result.Result as Ok<PaginatedResult<ReviewResponseDto>>;
             okResult.Should().NotBeNull();
             okResult!.Value.Should().BeEquivalentTo(expectedResult);
         }

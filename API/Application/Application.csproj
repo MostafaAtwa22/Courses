@@ -9,6 +9,7 @@
     <PackageReference Include="Google.Apis.Auth" Version="1.75.0" />
     <PackageReference Include="MediatR" Version="14.1.0" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.18.0" />
+    <PackageReference Include="TagLibSharp" Version="2.3.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -16,6 +17,7 @@
   </ItemGroup>
   
   <ItemGroup>
+    <Folder Include="Features\Authorization\" />
     <Folder Include="Features\Instructors\Queries\" />
   </ItemGroup>
 

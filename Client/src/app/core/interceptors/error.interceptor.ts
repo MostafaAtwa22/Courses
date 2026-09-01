@@ -11,6 +11,8 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
 
   // Skip toast for course-related endpoints that may fail for non-enrolled users
   const isCourseEndpoint = req.url.includes('/contents/') || req.url.includes('/sections/') || req.url.includes('/progress/');
+  // Skip toast for review endpoints that may fail for unauthenticated users
+  const isReviewEndpoint = req.url.includes('/reviews/');
 
   return next(req).pipe(
     catchError((error: HttpErrorResponse) => {
@@ -26,6 +28,16 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
 
       // Skip toast for 404 errors on course endpoints (content not found for non-enrolled)
       if (isCourseEndpoint && error.status === 404) {
+        return throwError(() => error);
+      }
+
+      // Skip toast for 401 errors on review endpoints (unauthenticated users)
+      if (isReviewEndpoint && error.status === 401) {
+        return throwError(() => error);
+      }
+
+      // Skip toast for 404 errors on review endpoints (user review not found)
+      if (isReviewEndpoint && error.status === 404) {
         return throwError(() => error);
       }
 

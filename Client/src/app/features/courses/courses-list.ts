@@ -9,7 +9,7 @@ import { CategoryService } from '../categories/services/category.service';
 import { createCourseQueryParams, createQueryParams, CourseQueryParams } from '../../shared/models/query-params.model';
 import { PaginatedResultModel } from '../../shared/models/paginated-result.model';
 import { CourseSummary } from './models/course.models';
-import { ThemeService } from '../../core/services/theme.service';
+import { PaginationComponent } from '../../shared/components/pagination/pagination.component';
 
 @Component({
   selector: 'app-courses-list',
@@ -18,7 +18,8 @@ import { ThemeService } from '../../core/services/theme.service';
     CommonModule,
     HeaderComponent,
     FooterComponent,
-    CourseCardComponent
+    CourseCardComponent,
+    PaginationComponent
   ],
   templateUrl: './courses-list.html',
   styleUrl: './courses-list.scss'
@@ -28,9 +29,8 @@ export class CoursesListComponent implements OnInit, OnDestroy {
   private categoryService = inject(CategoryService);
   private destroy$ = new Subject<void>();
   private searchSubject = new Subject<string>();
-  private themeService = inject(ThemeService);
 
-  isDarkMode = this.themeService.isDarkModeSignal();
+  isDarkMode = false; // kept for template bindings if any
   isFilterOpen = false;
 
   categories: string[] = ['All'];
@@ -82,11 +82,6 @@ export class CoursesListComponent implements OnInit, OnDestroy {
         this.coursesResult = res;
       }
     });
-  }
-
-  toggleTheme() {
-    this.themeService.toggleTheme();
-    this.isDarkMode = this.themeService.isDarkModeSignal();
   }
 
   setCategory(cat: string) {
@@ -153,18 +148,13 @@ export class CoursesListComponent implements OnInit, OnDestroy {
   }
 
   onPageChange(page: number) {
-    if (page < 1 || page > this.coursesResult.totalPages) return;
     this.params.pageNumber = page;
     this.loadCourses();
   }
 
-  getPagesArray(): number[] {
-    return Array.from({ length: this.coursesResult.totalPages }, (_, i) => i + 1);
-  }
-
   resetFilters() {
     this.selectedCategory = 'All';
-    this.params = createCourseQueryParams({ pageSize: 6 });
+    this.params = createCourseQueryParams({ pageSize: 9 });
     this.loadCourses();
   }
 }

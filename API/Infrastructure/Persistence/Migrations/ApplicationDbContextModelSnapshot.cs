@@ -80,6 +80,10 @@ namespace Infrastructure.Persistence.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at");
 
+                    b.Property<double>("DurationInSeconds")
+                        .HasColumnType("double precision")
+                        .HasColumnName("duration_in_seconds");
+
                     b.Property<bool>("IsPreview")
                         .HasColumnType("boolean")
                         .HasColumnName("is_preview");
@@ -98,11 +102,6 @@ namespace Infrastructure.Persistence.Migrations
                         .HasColumnType("character varying(1000)")
                         .HasColumnName("title");
 
-                    b.Property<string>("Type")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("type");
-
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_at");
@@ -114,6 +113,46 @@ namespace Infrastructure.Persistence.Migrations
                         .HasDatabaseName("ix_contents_section_id");
 
                     b.ToTable("contents", (string)null);
+                });
+
+            modelBuilder.Entity("Domain.Entities.ContentFile", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<Guid>("ContentId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("content_id");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<string>("FileName")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("file_name");
+
+                    b.Property<string>("FileUrl")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("character varying(1000)")
+                        .HasColumnName("file_url");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
+
+                    b.HasKey("Id")
+                        .HasName("pk_content_files");
+
+                    b.HasIndex("ContentId")
+                        .HasDatabaseName("ix_content_files_content_id");
+
+                    b.ToTable("content_files", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.ContentProgress", b =>
@@ -869,6 +908,18 @@ namespace Infrastructure.Persistence.Migrations
                     b.Navigation("Section");
                 });
 
+            modelBuilder.Entity("Domain.Entities.ContentFile", b =>
+                {
+                    b.HasOne("Domain.Entities.Content", "Content")
+                        .WithMany("Files")
+                        .HasForeignKey("ContentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_content_files_contents_content_id");
+
+                    b.Navigation("Content");
+                });
+
             modelBuilder.Entity("Domain.Entities.ContentProgress", b =>
                 {
                     b.HasOne("Domain.Entities.Content", "Content")
@@ -1086,6 +1137,8 @@ namespace Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("Domain.Entities.Content", b =>
                 {
+                    b.Navigation("Files");
+
                     b.Navigation("Progress");
                 });
 

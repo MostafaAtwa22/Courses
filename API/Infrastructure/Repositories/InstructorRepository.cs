@@ -88,6 +88,13 @@ namespace Infrastructure.Repositories
             var sql = $"SELECT {PrivateSelectColumns} {FromClause} WHERE i.id = @Id";
             return await connection.QueryFirstOrDefaultAsync<InstructorPrivateResponseDto>(sql, new { Id = id });
         }
+
+        public async Task<InstructorPrivateResponseDto?> GetPrivateByUserIdAsync(string userId, CancellationToken ct = default)
+        {
+            using var connection = await CreateConnectionAsync(ct);
+            var sql = $"SELECT {PrivateSelectColumns} {FromClause} WHERE i.user_id = @UserId";
+            return await connection.QueryFirstOrDefaultAsync<InstructorPrivateResponseDto>(sql, new { UserId = userId });
+        }
     
         public async Task<Guid> CreateAsync(Instructor instructor, CancellationToken ct = default)
         {
@@ -159,6 +166,17 @@ namespace Infrastructure.Repositories
             using var connection = await CreateConnectionAsync(ct);
             var sql = @"UPDATE instructors SET status = @Status, updated_at = @UpdatedAt WHERE id = @Id";
             await connection.ExecuteAsync(sql, new { Id = id, Status = status, UpdatedAt = DateTime.UtcNow });
+        }
+
+        public async Task<Guid?> GetInstructorIdByUserIdAsync(string userId, CancellationToken ct = default)
+        {
+            using var connection = await CreateConnectionAsync(ct);
+            var sql = @"
+                SELECT id 
+                FROM instructors
+                WHERE user_id = @UserId";
+            
+            return await connection.QueryFirstOrDefaultAsync<Guid?>(sql, new { UserId = userId });
         }
     }
 }

@@ -25,13 +25,20 @@ export class CourseCardComponent implements OnInit {
   isEnrolled = false;
   isCheckingEnrollment = false;
   firstContentId?: string;
+  isInstructorOrAdmin = false;
 
   ngOnInit(): void {
+    this.isInstructorOrAdmin = this.authService.isInstructorOrAdmin();
     this.checkEnrollment();
   }
 
   private checkEnrollment(): void {
     if (!this.authService.isLoggedIn()) {
+      this.isEnrolled = false;
+      return;
+    }
+
+    if (!this.authService.isStudent()) {
       this.isEnrolled = false;
       return;
     }

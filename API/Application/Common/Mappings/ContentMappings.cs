@@ -5,14 +5,14 @@ namespace Application.Common.Mappings
 {
     public static class ContentMappings
     {
-        public static Content ToEntity(this ContentCreateDto dto, string contentUrl)
+        public static Content ToEntity(this ContentCreateDto dto, string contentUrl, double durationInSeconds)
         {
             return new Content
             {
                 Id = Guid.NewGuid(),
                 Title = dto.Title,
-                Type = dto.Type,
                 ContentUrl = contentUrl,
+                DurationInSeconds = durationInSeconds,
                 Order = dto.Order,
                 IsPreview = dto.IsPreview,
                 SectionId = dto.SectionId,
@@ -20,14 +20,18 @@ namespace Application.Common.Mappings
             };
         }
 
-        public static void UpdateEntity(this ContentUpdateDto dto, Content entity, string? newContentUrl = null)
+        public static void UpdateEntity(this ContentUpdateDto dto, Content entity, string? newContentUrl = null, double? newDurationInSeconds = null)
         {
             entity.Title = dto.Title;
-            entity.Type = dto.Type;
             
             if (newContentUrl != null)
             {
                 entity.ContentUrl = newContentUrl;
+            }
+
+            if (newDurationInSeconds != null)
+            {
+                entity.DurationInSeconds = newDurationInSeconds.Value;
             }
 
             entity.Order = dto.Order;

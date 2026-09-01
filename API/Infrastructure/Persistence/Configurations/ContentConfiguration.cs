@@ -1,5 +1,3 @@
-using Domain.Enums;
-
 namespace Infrastructure.Persistence.Configurations
 {
     public class ContentConfiguration : IEntityTypeConfiguration<Content>
@@ -14,11 +12,8 @@ namespace Infrastructure.Persistence.Configurations
                 .HasMaxLength(1000)
                 .IsRequired();
 
-            builder.Property(c => c.Type)
-                .HasConversion(
-                    c => c.ToString(),
-                    c => (ContentType)Enum.Parse(typeof(ContentType), c)
-                );
+            builder.Property(c => c.DurationInSeconds)
+                .IsRequired();
 
             builder.Property(c => c.Order)
                 .IsRequired();
@@ -26,6 +21,11 @@ namespace Infrastructure.Persistence.Configurations
             builder.HasOne(c => c.Section)
                 .WithMany(s => s.Contents)
                 .HasForeignKey(c => c.SectionId);
+
+            builder.HasMany(c => c.Files)
+                .WithOne(f => f.Content)
+                .HasForeignKey(f => f.ContentId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

@@ -5,7 +5,7 @@ namespace Domain.Constants
         public const string Courses = "images/courses";
         public const string CVs = "files/cv";
         public const string Users = "images/users";
-        public const string sectionContentFiles = "files/courses";
         public const string sectionContentVideos = "videos/courses";
+        public const string contentAttachments = "files/attachments";
     }
 }

@@ -29,8 +29,10 @@ export class CourseSidebarComponent implements OnInit, OnChanges {
   isEnrolled = false;
   isCheckingEnrollment = false;
   firstContentId?: string;
+  isInstructorOrAdmin = false;
 
   ngOnInit(): void {
+    this.isInstructorOrAdmin = this.authService.isInstructorOrAdmin();
     this.checkEnrollment();
   }
 
@@ -61,14 +63,21 @@ export class CourseSidebarComponent implements OnInit, OnChanges {
       return;
     }
 
+    // Check if user has Student role before calling progress API
+    if (!this.authService.isStudent()) {
+      this.isEnrolled = false;
+      return;
+    }
+
     this.isCheckingEnrollment = true;
-    this.progressService.getCourseProgress(this.course.id).subscribe({
+    this.progressService.checkEnrollment(this.course.id).subscribe({
       next: () => {
         this.isEnrolled = true;
         this.isCheckingEnrollment = false;
         this.loadFirstContent();
       },
-      error: () => {
+      error: (err) => {
+        // Expected for non-enrolled students - silently handle
         this.isEnrolled = false;
         this.isCheckingEnrollment = false;
       }

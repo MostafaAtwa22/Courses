@@ -4,9 +4,9 @@ namespace Domain.Entities
     {
         public string Title { get; set; } = string.Empty;
 
-        public ContentType Type { get; set; }
-
         public string ContentUrl { get; set; } = string.Empty;
+
+        public double DurationInSeconds { get; set; }
 
         public int Order { get; set; }
 
@@ -14,6 +14,8 @@ namespace Domain.Entities
 
         public Guid SectionId { get; set; }
         public Section Section { get; set; } = default!;
+
+        public ICollection<ContentFile> Files { get; set; } = new List<ContentFile>();
 
         public ICollection<ContentProgress> Progress { get; set; } = [];
     }

@@ -37,11 +37,12 @@
       svg {
         color: var(--primary-color);
         padding: 6px;
-        background: rgba(37, 99, 235, 0.1);
+        background: rgba(99, 102, 241, 0.15);
         border-radius: 50%;
         width: 32px;
         height: 32px;
         flex-shrink: 0;
+        stroke-width: 2.5;
       }
 
       h2 {

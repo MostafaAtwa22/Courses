@@ -12,25 +12,24 @@ import { InstructorStatsComponent } from '../instructor-profile/instructor-stats
 import { InstructorAboutComponent } from '../instructor-profile/instructor-about/instructor-about.component';
 import { InstructorAdditionalDataComponent } from '../instructor-profile/instructor-additional-data/instructor-additional-data.component';
 import { RouterLink } from '@angular/router';
+import { UserCoursesComponent } from '../user-courses/user-courses.component';
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [CommonModule, HeaderComponent, FooterComponent, InstructorStatsComponent, InstructorAboutComponent, InstructorAdditionalDataComponent, RouterLink],
+  imports: [CommonModule, HeaderComponent, FooterComponent, InstructorStatsComponent, InstructorAboutComponent, InstructorAdditionalDataComponent, RouterLink, UserCoursesComponent],
   templateUrl: './profile.html',
   styleUrl: './profile.scss'
 })
 export class ProfileComponent implements OnInit {
   private themeService = inject(ThemeService);
   private instructorService = inject(InstructorService);
-  isDarkMode = this.themeService.isDarkModeSignal();
+  private sessionService = inject(SessionService);
   currentUser: BaseIdentityResponse | null = null;
   instructorData: InstructorPrivateResponse | null = null;
 
   private readonly defaultMalePic   = 'assets/users/default-male.png';
   private readonly defaultFemalePic = 'assets/users/default-female.png';
-
-  constructor(private sessionService: SessionService) {}
 
   ngOnInit() {
     this.currentUser = this.sessionService.currentUser();
@@ -41,11 +40,8 @@ export class ProfileComponent implements OnInit {
 
   private async loadInstructorData() {
     try {
-      const instructorId = this.sessionService.currentUser()?.id;
-      if (instructorId) {
-        const data = await this.instructorService.getInstructorById(instructorId).toPromise();
-        this.instructorData = data ?? null;
-      }
+      const data = await this.instructorService.getCurrentInstructor().toPromise();
+      this.instructorData = data ?? null;
     } catch (error) {
       console.error('Failed to load instructor data:', error);
     }
@@ -53,7 +49,6 @@ export class ProfileComponent implements OnInit {
 
   toggleTheme() {
     this.themeService.toggleTheme();
-    this.isDarkMode = this.themeService.isDarkModeSignal();
   }
 
   get fullName(): string {

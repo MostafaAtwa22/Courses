@@ -6,7 +6,7 @@ import { SectionService } from '../services/section.service';
 import { ContentService } from '../services/content.service';
 import { ReviewService } from '../services/review.service';
 import { ProgressService } from '../services/progress.service';
-import { CourseResponse, SectionResponse, ReviewResponse, ContentResponse, CourseProgress } from '../models/course.models';
+import { CourseResponse, SectionResponse, ReviewResponse, ContentResponse, CourseProgress, ReviewCreateRequest } from '../models/course.models';
 import { CourseHeroComponent } from './components/course-hero/course-hero';
 import { CourseSidebarComponent } from './components/course-sidebar/course-sidebar';
 import { CourseContentComponent } from './components/course-content/course-content';
@@ -15,6 +15,7 @@ import { CourseReviewsComponent } from './components/course-reviews/course-revie
 import { HeaderComponent } from '../../../shared/components/header/header';
 import { FooterComponent } from '../../../shared/components/footer/footer';
 import { ThemeService } from '../../../core/services/theme.service';
+import { AuthService } from '../../auth/services/auth.service';
 
 @Component({
   selector: 'app-course-details',
@@ -42,18 +43,19 @@ export class CourseDetailsComponent implements OnInit {
   private reviewService = inject(ReviewService);
   private progressService = inject(ProgressService);
   private themeService = inject(ThemeService);
+  private authService = inject(AuthService);
 
   course?: CourseResponse;
   sections: SectionResponse[] = [];
   reviews: ReviewResponse[] = [];
   progress?: CourseProgress;
   isEnrolled = false;
+  hasReviewed = false;
   sectionsLoading = false;
   hasMoreSections = false;
   totalSections = 0;
   currentPage = 1;
   pageSize = 5;
-  isDarkMode = this.themeService.isDarkModeSignal();
 
   // Track which sections have had their contents loaded
   private loadedSectionIds = new Set<string>();
@@ -78,7 +80,7 @@ export class CourseDetailsComponent implements OnInit {
           this.requirements = course.requirements || [];
           this.loadSections(course.id);
           this.loadReviews(course.id);
-          this.loadProgress(course.id);
+          this.loadProgress(course.id); // will trigger checkUserReviewStatus after enrollment is confirmed
         },
         error: (err) => {
           console.error('Error fetching course:', err);
@@ -88,14 +90,31 @@ export class CourseDetailsComponent implements OnInit {
   }
 
   loadProgress(courseId: string): void {
+    // Only load progress if user is authenticated and has Student role
+    if (!this.authService.isLoggedIn()) {
+      this.isEnrolled = false;
+      this.hasReviewed = false;
+      return;
+    }
+
+    // Check if user has Student role before calling progress API
+    if (!this.authService.isStudent()) {
+      this.isEnrolled = false;
+      this.hasReviewed = false;
+      return;
+    }
+
     this.progressService.checkEnrollment(courseId).subscribe({
       next: (progress) => {
         this.progress = progress;
         this.isEnrolled = true;
+        // Now that we know the user is enrolled, check if they've reviewed
+        this.checkUserReviewStatus(courseId);
       },
       error: (err) => {
-        // User might not be enrolled or not logged in - that's fine
+        // User might not be enrolled - that's fine
         this.isEnrolled = false;
+        this.hasReviewed = false;
         console.log('Could not load progress (user may not be enrolled)');
       }
     });
@@ -178,19 +197,53 @@ export class CourseDetailsComponent implements OnInit {
     });
   }
 
+  checkUserReviewStatus(courseId: string): void {
+    // Only check if user is authenticated
+    if (!this.authService.isLoggedIn()) {
+      this.hasReviewed = false;
+      return;
+    }
+
+    // Only check if user has Student role
+    if (!this.authService.isStudent()) {
+      this.hasReviewed = false;
+      return;
+    }
+
+    // Only check if user is enrolled in the course
+    if (!this.isEnrolled) {
+      this.hasReviewed = false;
+      return;
+    }
+
+    this.reviewService.hasUserReviewed(courseId).subscribe({
+      next: (hasReviewed) => {
+        this.hasReviewed = hasReviewed;
+      },
+      error: (err) => {
+        // If error, assume not reviewed
+        this.hasReviewed = false;
+        console.log('Could not check review status');
+      }
+    });
+  }
+
   loadMoreSections(): void {
     if (!this.course || this.sectionsLoading || !this.hasMoreSections) return;
     this.currentPage++;
     this.loadSections(this.course.id);
   }
 
-  toggleTheme() {
-    this.themeService.toggleTheme();
-    this.isDarkMode = this.themeService.isDarkModeSignal();
-  }
-
   handleContentSelected(content: ContentResponse): void {
     if (!this.course) return;
     this.router.navigate(['content', content.id], { relativeTo: this.route });
+  }
+
+  onReviewAdded(): void {
+    if (!this.course) return;
+    // Reload reviews to show the new/updated review
+    this.loadReviews(this.course.id);
+    // Re-check if user has reviewed (handles add, edit, delete)
+    this.checkUserReviewStatus(this.course.id);
   }
 }

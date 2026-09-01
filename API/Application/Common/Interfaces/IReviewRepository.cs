@@ -7,6 +7,7 @@ namespace Application.Common.Interfaces
         Task<PaginatedResult<ReviewResponseDto>> GetByCourseAsync(Guid courseId, QueryParams queryParams, CancellationToken ct = default!);
         Task<ReviewResponseDto?> GetByIdAsync(Guid id, CancellationToken ct = default!);
         Task<Review?> GetEntityByIdAsync(Guid id, CancellationToken ct = default!);
+        Task<ReviewResponseDto?> GetByUserAndCourseAsync(Guid userId, Guid courseId, CancellationToken ct = default!);
         Task<bool> IsStudentEnrolledAsync(Guid studentId, Guid courseId, CancellationToken ct = default!);
         Task<bool> HasStudentReviewedAsync(Guid studentId, Guid courseId, CancellationToken ct = default!);
         Task<Guid?> GetStudentIdByUserIdAsync(string userId, CancellationToken ct = default!);

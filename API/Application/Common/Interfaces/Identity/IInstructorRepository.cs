@@ -11,10 +11,12 @@ namespace Application.Common.Interfaces.Identity
         Task<InstructorPublicResponseDto?> GetPublicByIdAsync(Guid id, CancellationToken ct = default);
         Task<InstructorPublicResponseDto?> GetPublicByCourseIdAsync(Guid courseId, CancellationToken ct = default);
         Task<InstructorPrivateResponseDto?> GetPrivateByIdAsync(Guid id, CancellationToken ct = default);
+        Task<InstructorPrivateResponseDto?> GetPrivateByUserIdAsync(string userId, CancellationToken ct = default);
         Task<PaginatedResult<InstructorPrivateResponseDto>> GetAllAsync(InstructorQueryParams queryParams, CancellationToken ct = default);
         Task<Guid> CreateAsync(Instructor instructor, CancellationToken ct = default);
         Task UpdateAsync(Instructor instructor, CancellationToken ct = default);
         Task UpdateStatusAsync(Guid id, InstructorStatus status, CancellationToken ct = default);
         Task DeleteAsync(Guid id, CancellationToken ct = default);
+        Task<Guid?> GetInstructorIdByUserIdAsync(string userId, CancellationToken ct = default);
     }
 }

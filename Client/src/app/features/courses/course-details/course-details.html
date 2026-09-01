@@ -1,4 +1,4 @@
-<app-header [isDarkMode]="isDarkMode" (themeToggled)="toggleTheme()"></app-header>
+<app-header></app-header>
 
 <div class="course-details-page">
   <app-course-hero [course]="course"></app-course-hero>
@@ -48,7 +48,14 @@
         
         <app-course-instructor [course]="course"></app-course-instructor>
         
-        <app-course-reviews [reviews]="reviews" [course]="course"></app-course-reviews>
+        <app-course-reviews 
+          [reviews]="reviews" 
+          [course]="course"
+          [isEnrolled]="isEnrolled"
+          [hasReviewed]="hasReviewed"
+          [courseId]="course?.id || ''"
+          (reviewAdded)="onReviewAdded()">
+        </app-course-reviews>
       </div>
 
       <!-- Sticky Sidebar Area (Desktop only) -->

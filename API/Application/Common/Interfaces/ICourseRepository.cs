@@ -1,3 +1,4 @@
+using Application.Common.Models;
 using Application.DTOs.Course;
 
 namespace Application.Common.Interfaces
@@ -7,6 +8,9 @@ namespace Application.Common.Interfaces
         Task<PaginatedResult<CourseSummaryDto>> GetAllAsync(CourseQueryParams queryParams, CancellationToken ct = default!);
         Task<CourseResponseDto?> GetByIdAsync(Guid id, CancellationToken ct = default!);
         Task<Course?> GetEntityByIdAsync(Guid id, CancellationToken ct = default!);
+        Task<PaginatedResult<CourseSummaryDto>> GetCoursesByStudentIdAsync(Guid studentId, CourseQueryParams queryParams, CancellationToken ct = default!);
+        Task<PaginatedResult<CourseSummaryDto>> GetCoursesByInstructorIdAsync(Guid instructorId, CourseQueryParams queryParams, CancellationToken ct = default!);
+        Task<PaginatedResult<CourseSummaryDto>> GetPublishedCoursesByInstructorIdAsync(Guid instructorId, CourseQueryParams queryParams, CancellationToken ct = default!);
         Task<Guid> CreateAsync(Course course, CancellationToken ct = default!);
         Task UpdateAsync(Course course, CancellationToken ct = default!);
         Task DeleteAsync(Guid id, CancellationToken ct = default!);

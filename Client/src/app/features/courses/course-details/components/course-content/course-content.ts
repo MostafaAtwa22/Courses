@@ -41,13 +41,10 @@ export class CourseContentComponent implements OnChanges {
     return this.sections?.reduce((acc, s) => acc + (s.contentsCount || 0), 0) || 0;
   }
 
-  getContentIcon(type: number): string {
-    switch (type) {
-      case 0: return 'fa-play-circle'; // Video
-      case 1: return 'fa-file-alt'; // Document
-      case 2: return 'fa-question-circle'; // Quiz
-      default: return 'fa-play-circle';
-    }
+  formatDuration(seconds: number): string {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = Math.floor(seconds % 60);
+    return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
   }
 
   toggleSection(section: SectionResponse): void {

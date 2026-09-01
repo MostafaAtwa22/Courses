@@ -54,6 +54,7 @@ public static class DependencyInjection
         services.AddScoped<IReviewRepository, ReviewRepository>();
         services.AddScoped<ISectionRepository, SectionRepository>();
         services.AddScoped<IContentRepository, ContentRepository>();
+        services.AddScoped<IContentFileRepository, ContentFileRepository>();
         services.AddScoped<IInstructorRepository, InstructorRepository>();
         services.AddScoped<IStudentRepository, StudentRepository>();
         services.AddScoped<ICourseDiscountRepository, CourseDiscountRepository>();
@@ -140,6 +141,8 @@ public static class DependencyInjection
         services.AddSingleton<IUrlProvider, UrlProvider>();
         services.AddScoped<IDiscountJobService, DiscountJobService>();
         services.AddScoped<IContentAccessService, ContentAccessService>();
+        services.AddScoped<IVideoDurationService, VideoDurationService>();
+        services.AddScoped<IContentAttachmentService, ContentAttachmentService>();
         services.AddHttpContextAccessor();
         
         return services;

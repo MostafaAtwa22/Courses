@@ -64,7 +64,6 @@ export class ContentService {
   private toFormData(request: ContentCreateRequest | ContentUpdateRequest): FormData {
     const formData = new FormData();
     formData.append('title', request.title);
-    formData.append('type', request.type.toString());
     formData.append('order', request.order.toString());
     formData.append('isPreview', request.isPreview.toString());
     formData.append('sectionId', request.sectionId);
@@ -73,8 +72,26 @@ export class ContentService {
       formData.append('courseId', request.courseId);
     }
 
-    if (request.file) {
-      formData.append('file', request.file);
+    if ('videoFile' in request && request.videoFile) {
+      formData.append('videoFile', request.videoFile);
+    }
+
+    if ('attachments' in request && request.attachments) {
+      request.attachments.forEach((file) => {
+        formData.append('attachments', file);
+      });
+    }
+
+    if ('attachmentsToAdd' in request && request.attachmentsToAdd) {
+      request.attachmentsToAdd.forEach((file) => {
+        formData.append('attachmentsToAdd', file);
+      });
+    }
+
+    if ('attachmentIdsToRemove' in request && request.attachmentIdsToRemove) {
+      request.attachmentIdsToRemove.forEach((id) => {
+        formData.append('attachmentIdsToRemove', id);
+      });
     }
 
     return formData;

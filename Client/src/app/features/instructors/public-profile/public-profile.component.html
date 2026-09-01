@@ -1,4 +1,4 @@
-<app-header [isDarkMode]="isDarkMode" (themeToggled)="toggleTheme()"></app-header>
+<app-header></app-header>
 
 <div class="instructor-public-profile">
   <!-- Loading State -->
@@ -18,19 +18,19 @@
 
   <!-- Instructor Profile -->
   <div class="profile-container" *ngIf="instructor && !isLoading">
-    <!-- Header Section -->
-    <div class="profile-header">
-      <div class="header-background"></div>
-      <div class="header-content">
-        <div class="profile-image-wrapper">
-          <img [src]="instructorProfilePicture" [alt]="instructorName" class="profile-image">
+    <!-- Banner Card -->
+    <div class="card banner-card">
+      <div class="banner-content">
+        <div class="banner-avatar">
+          <img [src]="instructorProfilePicture" [alt]="instructorName">
         </div>
-        <div class="profile-info">
-          <h1 class="instructor-name">{{ instructorName }}</h1>
-          <p class="instructor-title">{{ instructor?.title || 'Instructor' }}</p>
-          <div class="instructor-meta">
-            <span class="meta-item">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+        <div class="banner-info">
+          <h1>{{ instructorName }}</h1>
+          <p class="email">{{ instructor?.title || 'Instructor' }}</p>
+          <div class="roles">
+            <span class="role-badge instructor">Instructor</span>
+            <span class="role-badge email-badge">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
               {{ instructor?.email }}
             </span>
           </div>
@@ -42,48 +42,51 @@
     <div class="stats-section">
       <div class="stats-grid">
         <div class="stat-card">
-          <div class="stat-icon rating">
+          <div class="stat-icon icon-primary">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
           </div>
-          <div class="stat-content">
-            <span class="stat-value">{{ formattedStats?.rating || '0.0' }}</span>
+          <div class="stat-info">
             <span class="stat-label">Rating</span>
+            <span class="stat-value">{{ formattedStats?.rating || '0.0' }}</span>
           </div>
         </div>
         <div class="stat-card">
-          <div class="stat-icon reviews">
+          <div class="stat-icon icon-secondary">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
           </div>
-          <div class="stat-content">
-            <span class="stat-value">{{ formattedStats?.reviews || '0' }}</span>
+          <div class="stat-info">
             <span class="stat-label">Reviews</span>
+            <span class="stat-value">{{ formattedStats?.reviews || '0' }}</span>
           </div>
         </div>
         <div class="stat-card">
-          <div class="stat-icon students">
+          <div class="stat-icon icon-tertiary">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
           </div>
-          <div class="stat-content">
-            <span class="stat-value">{{ formattedStats?.students || '0' }}</span>
+          <div class="stat-info">
             <span class="stat-label">Students</span>
+            <span class="stat-value">{{ formattedStats?.students || '0' }}</span>
           </div>
         </div>
         <div class="stat-card">
-          <div class="stat-icon courses">
+          <div class="stat-icon icon-error">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
           </div>
-          <div class="stat-content">
-            <span class="stat-value">{{ formattedStats?.courses || '0' }}</span>
+          <div class="stat-info">
             <span class="stat-label">Courses</span>
+            <span class="stat-value">{{ formattedStats?.courses || '0' }}</span>
           </div>
         </div>
       </div>
     </div>
 
     <!-- About Section -->
-    <div class="about-section">
-      <div class="section-header">
-        <h2>About</h2>
+    <div class="card info-card">
+      <div class="card-header">
+        <div class="header-title">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+          <h2>About</h2>
+        </div>
       </div>
       <div class="about-content">
         <p [class]="{ 'bio-text': true, 'collapsed': !isBioExpanded }">
@@ -97,9 +100,12 @@
     </div>
 
     <!-- Social Links Section -->
-    <div class="social-section" *ngIf="instructor?.linkedInProfileUrl || instructor?.gitHubProfileUrl">
-      <div class="section-header">
-        <h2>Connect</h2>
+    <div class="card info-card" *ngIf="instructor?.linkedInProfileUrl || instructor?.gitHubProfileUrl">
+      <div class="card-header">
+        <div class="header-title">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+          <h2>Connect</h2>
+        </div>
       </div>
       <div class="social-links">
         <a *ngIf="instructor?.linkedInProfileUrl" [href]="instructor.linkedInProfileUrl" target="_blank" rel="noopener noreferrer" class="social-link linkedin">
@@ -111,6 +117,43 @@
           <span>GitHub</span>
         </a>
       </div>
+    </div>
+
+    <!-- Courses Section -->
+    <div class="card info-card courses-card">
+      <div class="card-header">
+        <div class="header-title">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"></path></svg>
+          <h2>Courses</h2>
+        </div>
+        <div class="header-actions">
+          <span class="courses-count">{{ totalCourses }} {{ totalCourses === 1 ? 'course' : 'courses' }}</span>
+        </div>
+      </div>
+      <div class="courses-loading" *ngIf="isLoadingCourses">
+        <div class="spinner"></div>
+        <p>Loading courses...</p>
+      </div>
+      <div class="courses-grid" *ngIf="!isLoadingCourses">
+        <app-course-card *ngFor="let course of courses" [course]="course"></app-course-card>
+        <div class="no-courses" *ngIf="courses.length === 0">
+          <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
+          <p>No courses available yet</p>
+        </div>
+      </div>
+      
+      <!-- Pagination -->
+      <app-pagination
+        *ngIf="!isLoadingCourses && totalPages > 1"
+        [currentPage]="currentPage"
+        [totalPages]="totalPages"
+        [totalItems]="totalCourses"
+        [pageSize]="pageSize"
+        [hasPreviousPage]="hasPreviousPage"
+        [hasNextPage]="hasNextPage"
+        [showInfo]="true"
+        (pageChange)="onPageChange($event)">
+      </app-pagination>
     </div>
   </div>
 </div>

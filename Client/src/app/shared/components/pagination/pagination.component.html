@@ -1,0 +1,48 @@
+<div class="pagination-container" [class.compact]="variant === 'compact'" *ngIf="totalPages > 1">
+  <!-- Pagination Info -->
+  <div class="pagination-info" *ngIf="showInfo">
+    <span>Showing {{ itemsRange }} of {{ totalItems }} {{ totalItems === 1 ? 'item' : 'items' }}</span>
+  </div>
+
+  <!-- Pagination Controls -->
+  <div class="pagination-controls">
+    <!-- Previous Button -->
+    <button 
+      class="pagination-btn prev-btn"
+      [disabled]="isPreviousDisabled"
+      (click)="onPageChange(currentPage - 1)"
+      [title]="'Previous page'"
+      aria-label="Previous page">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="15 18 9 12 15 6"></polyline>
+      </svg>
+    </button>
+
+    <!-- Page Numbers -->
+    <div class="page-numbers">
+      <button 
+        *ngFor="let page of getPageNumbers()" 
+        class="page-btn"
+        [class.active]="page === currentPage"
+        [class.ellipsis]="page === -1"
+        [disabled]="page === -1"
+        (click)="page !== -1 && onPageChange(page)"
+        [attr.aria-label]="page === -1 ? 'More pages' : 'Page ' + page"
+        [attr.aria-current]="page === currentPage ? 'page' : null">
+        {{ page === -1 ? '...' : page }}
+      </button>
+    </div>
+
+    <!-- Next Button -->
+    <button 
+      class="pagination-btn next-btn"
+      [disabled]="isNextDisabled"
+      (click)="onPageChange(currentPage + 1)"
+      [title]="'Next page'"
+      aria-label="Next page">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="9 18 15 12 9 6"></polyline>
+      </svg>
+    </button>
+  </div>
+</div>

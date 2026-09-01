@@ -97,6 +97,11 @@ export const routes: Routes = [
         loadComponent: () => import('./features/dashboards/instructor-dashboard/instructor-dashboard').then(m => m.InstructorDashboardComponent)
     },
     {
+        path: 'student/dashboard',
+        loadComponent: () => import('./features/dashboards/student-dashboard/student-dashboard').then(m => m.StudentDashboardComponent),
+        canActivate: [authGuard]
+    },
+    {
         path: 'settings',
         loadComponent: () => import('./features/settings/settings-layout/settings-layout.component').then(m => m.SettingsLayoutComponent),
         canActivate: [authGuard],

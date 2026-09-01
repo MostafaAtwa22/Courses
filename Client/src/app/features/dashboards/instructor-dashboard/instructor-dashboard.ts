@@ -32,7 +32,6 @@ export class InstructorDashboardComponent implements OnInit {
   private toastService = inject(ToastService);
 
   isSidebarCollapsed = false;
-  isDarkMode = false;
 
   metrics: DashboardMetric[] = [];
   schedule: ScheduleItem[] = [];
@@ -41,30 +40,6 @@ export class InstructorDashboardComponent implements OnInit {
 
   ngOnInit() {
     this.loadInstructorData();
-    this.loadTheme();
-  }
-
-  loadTheme() {
-    const savedTheme = localStorage.getItem('theme');
-    this.isDarkMode = savedTheme === 'dark';
-    this.applyTheme();
-  }
-
-  toggleTheme() {
-    this.isDarkMode = !this.isDarkMode;
-    localStorage.setItem('theme', this.isDarkMode ? 'dark' : 'light');
-    this.applyTheme();
-  }
-
-  applyTheme() {
-    const body = document.body;
-    if (this.isDarkMode) {
-      body.classList.add('dark');
-      body.classList.add('dark-theme');
-    } else {
-      body.classList.remove('dark');
-      body.classList.remove('dark-theme');
-    }
   }
 
   loadInstructorData() {

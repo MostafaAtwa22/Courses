@@ -1,6 +1,9 @@
 using Application.Features.Courses.Queries.GetAll;
 using Application.Features.Courses.Queries.GetSuggestions;
 using Application.Features.Courses.Queries.GetById;
+using Application.Features.Courses.Queries.GetByStudentId;
+using Application.Features.Courses.Queries.GetByInstructorId;
+using Application.Features.Courses.Queries.GetByInstructorIdPublic;
 using Application.DTOs.Course;
 using Application.Features.Courses.Commands.Create;
 using Application.Features.Courses.Commands.Update;
@@ -27,6 +30,23 @@ namespace API.Endpoints
             group.MapGet("/{id:guid}", GetCourseById)
                 .WithName(nameof(GetCourseById))
                 .Produces(StatusCodes.Status200OK)
+                .Produces(StatusCodes.Status404NotFound);
+
+            group.MapGet("/by-student", GetCoursesByStudentId)
+                .WithName(nameof(GetCoursesByStudentId))
+                .Produces<PaginatedResult<CourseSummaryDto>>(StatusCodes.Status200OK)
+                .Produces(StatusCodes.Status404NotFound)
+                .RequireAuthorization();
+
+            group.MapGet("/by-instructor", GetCoursesByInstructorId)
+                .WithName(nameof(GetCoursesByInstructorId))
+                .Produces<PaginatedResult<CourseSummaryDto>>(StatusCodes.Status200OK)
+                .Produces(StatusCodes.Status404NotFound)
+                .RequireAuthorization();
+
+            group.MapGet("/public/by-instructor/{instructorId:guid}", GetCoursesByInstructorIdPublic)
+                .WithName(nameof(GetCoursesByInstructorIdPublic))
+                .Produces<PaginatedResult<CourseSummaryDto>>(StatusCodes.Status200OK)
                 .Produces(StatusCodes.Status404NotFound);
 
             group.MapPost("/", CreateCourse)
@@ -101,6 +121,27 @@ namespace API.Endpoints
             await mediator.Send(new DeleteCourseCommand(id));
 
             return TypedResults.NoContent();
+        }
+
+        public static async Task<Results<Ok<PaginatedResult<CourseSummaryDto>>, NotFound>> GetCoursesByStudentId(
+            [AsParameters] CourseQueryParams queryParams, IMediator mediator)
+        {
+            var result = await mediator.Send(new GetCoursesByStudentIdQuery(queryParams));
+            return TypedResults.Ok(result);
+        }
+
+        public static async Task<Results<Ok<PaginatedResult<CourseSummaryDto>>, NotFound>> GetCoursesByInstructorId(
+            [AsParameters] CourseQueryParams queryParams, IMediator mediator)
+        {
+            var result = await mediator.Send(new GetCoursesByInstructorIdQuery(queryParams));
+            return TypedResults.Ok(result);
+        }
+
+        public static async Task<Results<Ok<PaginatedResult<CourseSummaryDto>>, NotFound>> GetCoursesByInstructorIdPublic(
+            Guid instructorId, [AsParameters] CourseQueryParams queryParams, IMediator mediator)
+        {
+            var result = await mediator.Send(new GetCoursesByInstructorIdPublicQuery(instructorId, queryParams));
+            return TypedResults.Ok(result);
         }
     }
 }

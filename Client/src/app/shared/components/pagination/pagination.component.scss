@@ -1,0 +1,212 @@
+.pagination-container {
+  width: 100%;
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+
+  @media (min-width: 640px) {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  // Compact variant - smaller spacing and padding
+  &.compact {
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    gap: 1rem;
+  }
+}
+
+.pagination-info {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  font-weight: 500;
+  text-align: center;
+
+  @media (min-width: 640px) {
+    text-align: left;
+  }
+}
+
+.pagination-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.pagination-btn {
+  min-width: 40px;
+  height: 40px;
+  border: 1px solid var(--border-color);
+  background-color: var(--surface);
+  border-radius: var(--radius-md, 8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: var(--text-color);
+  padding: 0;
+
+  svg {
+    width: 16px;
+    height: 16px;
+    stroke: currentColor;
+  }
+
+  &:hover:not(:disabled) {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(0);
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    background-color: var(--surface);
+    color: var(--text-muted);
+
+    &:hover {
+      transform: none;
+      box-shadow: none;
+    }
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+  }
+}
+
+.page-numbers {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.page-btn {
+  min-width: 40px;
+  height: 40px;
+  border: 1px solid var(--border-color);
+  background-color: var(--surface);
+  border-radius: var(--radius-md, 8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: var(--text-color);
+  font-weight: 500;
+  font-size: 0.875rem;
+  padding: 0 0.5rem;
+
+  &:hover:not(:disabled):not(.active):not(.ellipsis) {
+    background-color: var(--surface-variant, #f3f4f6);
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+    transform: translateY(-1px);
+  }
+
+  &:active:not(:disabled):not(.ellipsis) {
+    transform: translateY(0);
+  }
+
+  &.active {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: white;
+    font-weight: 600;
+    cursor: default;
+  }
+
+  &.ellipsis {
+    border: none;
+    background: transparent;
+    cursor: default;
+    color: var(--text-muted);
+    font-weight: 600;
+    pointer-events: none;
+
+    &:hover {
+      background: transparent;
+      border: none;
+      transform: none;
+    }
+  }
+
+  &:disabled:not(.ellipsis) {
+    cursor: default;
+    opacity: 0.5;
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 639px) {
+  .pagination-container {
+    gap: 1rem;
+
+    &.compact {
+      gap: 0.75rem;
+    }
+  }
+
+  .pagination-btn,
+  .page-btn {
+    min-width: 36px;
+    height: 36px;
+    font-size: 0.8125rem;
+  }
+
+  .pagination-info {
+    font-size: 0.8125rem;
+    width: 100%;
+  }
+
+  .page-numbers {
+    gap: 0.125rem;
+  }
+}
+
+// Dark mode adjustments (if needed)
+@media (prefers-color-scheme: dark) {
+  .pagination-btn:not(:disabled):not(.active),
+  .page-btn:not(:disabled):not(.active):not(.ellipsis) {
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+  }
+}
+
+// Animation for page transitions
+@keyframes pageChange {
+  0% {
+    opacity: 0.6;
+    transform: scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.page-btn.active {
+  animation: pageChange 0.2s ease;
+}

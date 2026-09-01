@@ -6,6 +6,7 @@ using Application.Features.Instructors.Queries.GetAll;
 using Application.Features.Instructors.Queries.GetPublicById;
 using Application.Features.Instructors.Queries.GetPublicByCourseId;
 using Application.Features.Instructors.Queries.GetPrivateById;
+using Application.Features.Instructors.Queries.GetCurrentInstructor;
 using Application.Features.Instructors.Commands.Delete;
 
 
@@ -27,6 +28,13 @@ namespace API.Endpoints
                 .WithName(nameof(GetPublicInstructorByCourseId))
                 .Produces<InstructorPublicResponseDto>(StatusCodes.Status200OK)
                 .Produces(StatusCodes.Status404NotFound);
+
+            group.MapGet("/private/me", GetCurrentInstructor)
+                .WithName(nameof(GetCurrentInstructor))
+                .Produces<InstructorPrivateResponseDto>(StatusCodes.Status200OK)
+                .Produces(StatusCodes.Status404NotFound)
+                .RequireAuthorization(policy =>
+                    policy.RequireRole(Role.Instructor.ToString()));
 
             group.MapGet("/private/{id:guid}", GetPrivateInstructor)
                 .WithName(nameof(GetPrivateInstructor))
@@ -100,6 +108,13 @@ namespace API.Endpoints
             Guid id, IMediator mediator)
         {
             var result = await mediator.Send(new GetPrivateInstructorByIdQuery(id));
+            return result is not null ? TypedResults.Ok(result) : TypedResults.NotFound();
+        }
+
+        public static async Task<Results<Ok<InstructorPrivateResponseDto>, NotFound>> GetCurrentInstructor(
+            IMediator mediator)
+        {
+            var result = await mediator.Send(new GetCurrentInstructorQuery());
             return result is not null ? TypedResults.Ok(result) : TypedResults.NotFound();
         }
 
