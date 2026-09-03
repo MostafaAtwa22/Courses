@@ -4,6 +4,7 @@ namespace Application.Common.Interfaces
 {
     public interface IRoleRepository
     {
-        Task<IReadOnlyCollection<RoleResponseDto>> GetAllRolesAsync(CancellationToken cancellationToken = default);
+        Task<IReadOnlyCollection<RolesResponseDto>> GetAllRolesAsync(CancellationToken cancellationToken = default);
+        Task<IReadOnlyCollection<CheckBoxRoleManageDto>> GetUserRolesAsync(string userId, CancellationToken cancellationToken = default);
     }
 }

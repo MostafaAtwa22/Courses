@@ -1,17 +1,29 @@
 using Application.DTOs.Authorization;
+using Domain.Entities.Identity;
 using Microsoft.AspNetCore.Identity;
 
 namespace Application.Common.Mappings
 {
     public static class AuthorizationMappings
     {
-        public static RoleResponseDto ToRoleResponseDto(this IdentityRole role, int userCount)
+        public static RolesResponseDto ToRoleResponseDto(this IdentityRole role, int userCount)
         {
-            return new RoleResponseDto
+            return new RolesResponseDto
             {
-                Id = Guid.Parse(role.Id),
+                Id = role.Id,
                 Name = role.Name ?? string.Empty,
                 UserCount = userCount
+            };
+        }
+
+        public static UserRolesManageDto ToUserRolesManageDto(this ApplicationUser user, IReadOnlyCollection<CheckBoxRoleManageDto> roles)
+        {
+            return new UserRolesManageDto
+            {
+                UserId = user.Id,
+                UserName = user.UserName ?? string.Empty,
+                Email = user.Email ?? string.Empty,
+                Roles = roles.ToList()
             };
         }
     }

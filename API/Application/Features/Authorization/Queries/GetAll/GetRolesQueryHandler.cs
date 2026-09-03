@@ -1,12 +1,9 @@
-using Application.Common.Interfaces;
-using Application.DTOs.Authorization;
-
 namespace Application.Features.Authorization.Queries.GetAll;
 
 public sealed record GetRolesQueryHandler(IRoleRepository _roleRepo) :
-    IRequestHandler<GetRolesQuery, IReadOnlyCollection<RoleResponseDto>>
+    IRequestHandler<GetRolesQuery, IReadOnlyCollection<RolesResponseDto>>
 {
-    public async Task<IReadOnlyCollection<RoleResponseDto>> Handle(GetRolesQuery request, CancellationToken cancellationToken)
+    public async Task<IReadOnlyCollection<RolesResponseDto>> Handle(GetRolesQuery request, CancellationToken cancellationToken)
     {
         return await _roleRepo.GetAllRolesAsync(cancellationToken);
     }
