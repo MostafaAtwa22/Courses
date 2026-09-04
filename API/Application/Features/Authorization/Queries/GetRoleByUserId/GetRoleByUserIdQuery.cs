@@ -1,6 +1,4 @@
-using Application.DTOs.Authorization;
-
-namespace Application.Features.Authorization.Queries.GetAll
+namespace Application.Features.Authorization.Queries.GetRoleByUserId
 {
-    public sealed record GetRoleByUserIdQuery(string UserId) : IRequest<UserRolesManageDto>;
+    public sealed record GetRoleByUserIdQuery(string UserId) : IRequest<UserRolesResponseDto>;
 }

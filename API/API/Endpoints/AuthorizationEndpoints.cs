@@ -1,5 +1,7 @@
 using Application.DTOs.Authorization;
+using Application.Features.Authorization.Commands.UpdateUserRoles;
 using Application.Features.Authorization.Queries.GetAll;
+using Application.Features.Authorization.Queries.GetRoleByUserId;
 
 namespace API.Endpoints;
 
@@ -14,16 +16,23 @@ public class AuthorizationEndpoints : ICarterModule
                     Role.Admin.ToString(),
                     Role.SuperAdmin.ToString()));
             
-        group.Map("/roles", GetRoles)
+        group.MapGet("/roles", GetRoles)
             .WithName(nameof(GetRoles))
             .WithTags(nameof(GetRoles))
             .Produces<IReadOnlyCollection<RolesResponseDto>>(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status400BadRequest);
 
-        group.Map("/users/{userId}/roles", GetRoleByUserId)
+        group.MapGet("/users/{userId}/roles", GetRoleByUserId)
             .WithName(nameof(GetRoleByUserId))
             .WithTags(nameof(GetRoleByUserId))
-            .Produces<UserRolesManageDto>(StatusCodes.Status200OK)
+            .Produces<UserRolesResponseDto>(StatusCodes.Status200OK)
+            .Produces(StatusCodes.Status404NotFound);
+
+        group.MapPatch("/users/{userId}/roles", UpdateUserRoles)
+            .WithName(nameof(UpdateUserRoles))
+            .WithTags(nameof(UpdateUserRoles))
+            .Produces(StatusCodes.Status204NoContent)
+            .Produces(StatusCodes.Status400BadRequest)
             .Produces(StatusCodes.Status404NotFound);
     }
         
@@ -33,9 +42,15 @@ public class AuthorizationEndpoints : ICarterModule
         return TypedResults.Ok(result);
     }
 
-    public static async Task<Results<Ok<UserRolesManageDto>, NotFound>> GetRoleByUserId(string userId, IMediator mediator)
+    public static async Task<Ok<UserRolesResponseDto>> GetRoleByUserId(string userId, IMediator mediator)
     {
         var result = await mediator.Send(new GetRoleByUserIdQuery(userId));
-        return result is null ? TypedResults.NotFound() : TypedResults.Ok(result);
+        return TypedResults.Ok(result);
+    }
+
+    public static async Task<Results<NoContent, BadRequest, NotFound>> UpdateUserRoles(string userId, UserRolesManageDto dto, IMediator mediator)
+    {
+        await mediator.Send(new UpdateUserRolesCommand(userId, dto));
+        return TypedResults.NoContent();
     }
 }

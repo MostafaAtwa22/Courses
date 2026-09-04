@@ -16,9 +16,9 @@ namespace Application.Common.Mappings
             };
         }
 
-        public static UserRolesManageDto ToUserRolesManageDto(this ApplicationUser user, IReadOnlyCollection<CheckBoxRoleManageDto> roles)
+        public static UserRolesResponseDto ToUserRolesManageDto(this ApplicationUser user, IReadOnlyCollection<CheckBoxRoleManageDto> roles)
         {
-            return new UserRolesManageDto
+            return new UserRolesResponseDto
             {
                 UserId = user.Id,
                 UserName = user.UserName ?? string.Empty,

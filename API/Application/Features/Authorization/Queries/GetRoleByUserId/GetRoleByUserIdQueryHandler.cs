@@ -1,11 +1,11 @@
-namespace Application.Features.Authorization.Queries.GetAll;
+namespace Application.Features.Authorization.Queries.GetRoleByUserId;
 
 public sealed record GetRoleByUserIdQueryHandler(
     IRoleRepository _roleRepo,
     UserManager<ApplicationUser> _userManager) :
-    IRequestHandler<GetRoleByUserIdQuery, UserRolesManageDto>
+    IRequestHandler<GetRoleByUserIdQuery, UserRolesResponseDto>
 {
-    public async Task<UserRolesManageDto> Handle(GetRoleByUserIdQuery request, CancellationToken cancellationToken)
+    public async Task<UserRolesResponseDto> Handle(GetRoleByUserIdQuery request, CancellationToken cancellationToken)
     {
         var user = await _userManager.FindByIdAsync(request.UserId)
             ?? throw new NotFoundException(nameof(ApplicationUser), Guid.Parse(request.UserId));
