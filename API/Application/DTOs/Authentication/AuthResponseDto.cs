@@ -1,5 +1,3 @@
-using Domain.Enums;
-
 namespace Application.DTOs.Authentication
 {
     public class AuthResponseDto : BaseIdentityResponseDto

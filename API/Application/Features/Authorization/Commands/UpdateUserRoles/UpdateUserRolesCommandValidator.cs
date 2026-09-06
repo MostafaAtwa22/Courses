@@ -17,7 +17,7 @@ public class UpdateUserRolesCommandValidator : AbstractValidator<UpdateUserRoles
         RuleForEach(x => x.Dto.Roles)
             .ChildRules(role =>
             {
-                rule.RuleFor(r => r.RoleName)
+                role.RuleFor(r => r.RoleName)
                     .NotEmpty()
                     .WithMessage("Role name is required.");
             });

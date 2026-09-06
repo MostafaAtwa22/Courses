@@ -42,10 +42,10 @@ public class AuthorizationEndpoints : ICarterModule
         return TypedResults.Ok(result);
     }
 
-    public static async Task<Ok<UserRolesResponseDto>> GetRoleByUserId(string userId, IMediator mediator)
+    public static async Task<Results<Ok<UserRolesResponseDto>, NotFound>> GetRoleByUserId(string userId, IMediator mediator)
     {
         var result = await mediator.Send(new GetRoleByUserIdQuery(userId));
-        return TypedResults.Ok(result);
+        return result is null ? TypedResults.NotFound() : TypedResults.Ok(result);
     }
 
     public static async Task<Results<NoContent, BadRequest, NotFound>> UpdateUserRoles(string userId, UserRolesManageDto dto, IMediator mediator)

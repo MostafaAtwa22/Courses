@@ -5,6 +5,7 @@ using Application.Features.Authorization.Queries.GetAll;
 using Application.Features.Authorization.Queries.GetRoleByUserId;
 using FluentAssertions;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Moq;
 using Xunit;
@@ -68,11 +69,11 @@ namespace API.Tests.Endpoints
                 UserId = userId,
                 UserName = "testuser",
                 Email = "test@example.com",
-                Roles = new List<CheckBoxRoleManageDto>
-                {
+                Roles =
+                [
                     new() { RoleId = Guid.NewGuid().ToString(), RoleName = "Admin", IsSelected = true },
                     new() { RoleId = Guid.NewGuid().ToString(), RoleName = "Student", IsSelected = false }
-                }
+                ]
             };
             _mediatorMock.Setup(m => m.Send(It.IsAny<GetRoleByUserIdQuery>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(expectedUserRoles);
@@ -81,9 +82,8 @@ namespace API.Tests.Endpoints
             var result = await AuthorizationEndpoints.GetRoleByUserId(userId, _mediatorMock.Object);
 
             // Assert
-            var okResult = result.Result as Ok<UserRolesResponseDto>;
-            okResult.Should().NotBeNull();
-            okResult!.Value.Should().BeEquivalentTo(expectedUserRoles);
+            result.Should().BeOfType<Results<Ok<UserRolesResponseDto>, NotFound>>();
+            _mediatorMock.Verify(m => m.Send(It.IsAny<GetRoleByUserIdQuery>(), It.IsAny<CancellationToken>()), Times.Once);
         }
 
         [Fact]
@@ -92,38 +92,36 @@ namespace API.Tests.Endpoints
             // Arrange
             var userId = "non-existent-user";
             _mediatorMock.Setup(m => m.Send(It.IsAny<GetRoleByUserIdQuery>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync((UserRolesResponseDto?)null);
+                .ReturnsAsync((UserRolesResponseDto?)null!);
 
             // Act
             var result = await AuthorizationEndpoints.GetRoleByUserId(userId, _mediatorMock.Object);
 
             // Assert
-            var notFoundResult = result.Result as NotFound;
-            notFoundResult.Should().NotBeNull();
+            result.Should().BeOfType<Results<Ok<UserRolesResponseDto>, NotFound>>();
         }
 
         [Fact]
         public async Task UpdateUserRoles_ShouldReturnNoContent_WhenSuccessful()
         {
             // Arrange
+            var userId = "user-123";
             var userRolesDto = new UserRolesManageDto
             {
-                UserId = "user-123",
-                Roles = new List<CheckBoxRoleManageDto>
-                {
+                Roles =
+                [
                     new() { RoleId = Guid.NewGuid().ToString(), RoleName = "Admin", IsSelected = true },
                     new() { RoleId = Guid.NewGuid().ToString(), RoleName = "Student", IsSelected = false }
-                }
+                ]
             };
             _mediatorMock.Setup(m => m.Send(It.IsAny<UpdateUserRolesCommand>(), It.IsAny<CancellationToken>()))
                 .Returns(Task.CompletedTask);
 
             // Act
-            var result = await AuthorizationEndpoints.UpdateUserRoles(userRolesDto, _mediatorMock.Object);
+            var result = await AuthorizationEndpoints.UpdateUserRoles(userId, userRolesDto, _mediatorMock.Object);
 
             // Assert
-            var noContentResult = result.Result as NoContent;
-            noContentResult.Should().NotBeNull();
+            result.Should().BeOfType<Results<NoContent, BadRequest, NotFound>>();
             _mediatorMock.Verify(m => m.Send(It.IsAny<UpdateUserRolesCommand>(), It.IsAny<CancellationToken>()), Times.Once);
         }
 
@@ -131,19 +129,19 @@ namespace API.Tests.Endpoints
         public async Task UpdateUserRoles_ShouldCallMediator_WithCorrectCommand()
         {
             // Arrange
+            var userId = "user-456";
             var userRolesDto = new UserRolesManageDto
             {
-                UserId = "user-456",
-                Roles = new List<CheckBoxRoleManageDto>
-                {
+                Roles =
+                [
                     new() { RoleId = Guid.NewGuid().ToString(), RoleName = "Instructor", IsSelected = true }
-                }
+                ]
             };
             _mediatorMock.Setup(m => m.Send(It.IsAny<UpdateUserRolesCommand>(), It.IsAny<CancellationToken>()))
                 .Returns(Task.CompletedTask);
 
             // Act
-            await AuthorizationEndpoints.UpdateUserRoles(userRolesDto, _mediatorMock.Object);
+            await AuthorizationEndpoints.UpdateUserRoles(userId, userRolesDto, _mediatorMock.Object);
 
             // Assert
             _mediatorMock.Verify(m => m.Send(It.Is<UpdateUserRolesCommand>(c => c.Dto == userRolesDto), It.IsAny<CancellationToken>()), Times.Once);

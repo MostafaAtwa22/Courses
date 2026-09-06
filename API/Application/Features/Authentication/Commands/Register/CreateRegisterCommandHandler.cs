@@ -1,6 +1,4 @@
-using Domain.Entities.Identity;
 using Domain.Enums.Identity;
-using Microsoft.AspNetCore.Identity;
 
 namespace Application.Features.Authentication.Commands.Register
 {

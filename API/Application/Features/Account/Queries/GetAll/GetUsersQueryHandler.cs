@@ -1,8 +1,5 @@
 using Application.Common.Extensions;
 using Application.DTOs.Account;
-using Domain.Entities.Identity;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 
 namespace Application.Features.Account.Queries.GetAll
 {
