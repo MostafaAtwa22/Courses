@@ -28,6 +28,8 @@ export interface InstructorPrivateResponse extends InstructorResponse {
   phoneNumber: string;
   cvUrl: string;
   status: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface InstructorPublicResponse extends InstructorResponse {

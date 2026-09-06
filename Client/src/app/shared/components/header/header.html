@@ -73,7 +73,7 @@
                   <i class="fa-solid fa-chalkboard-user"></i>
                   <span>Dashboard</span>
                 </a>
-                <a class="dropdown-item" routerLink="/admin/dashboard" (click)="isDropdownOpen = false" role="menuitem" *ngIf="user.roles.includes('Admin')">
+                <a class="dropdown-item" routerLink="/admin/dashboard" (click)="isDropdownOpen = false" role="menuitem" *ngIf="user.roles.includes('Admin') || user.roles.includes('SuperAdmin')">
                   <i class="fa-solid fa-chart-line"></i>
                   <span>Dashboard</span>
                 </a>

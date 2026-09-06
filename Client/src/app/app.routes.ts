@@ -84,13 +84,28 @@ export const routes: Routes = [
         loadComponent: () => import('./features/instructors/public-profile/public-profile.component').then(m => m.InstructorPublicProfileComponent)
     },
     {
-        path: 'admin/instructors',
-        loadComponent: () => import('./features/admin/instructors-list/instructors-list.component').then(m => m.InstructorsListComponent),
-        canActivate: [authGuard]
-    },
-    {
         path: 'admin/dashboard',
-        loadComponent: () => import('./features/dashboards/admin-dashboard/admin-dashboard').then(m => m.AdminDashboardComponent)
+        loadComponent: () => import('./features/dashboards/admin-dashboard/admin-dashboard').then(m => m.AdminDashboardComponent),
+        canActivate: [authGuard],
+        children: [
+            {
+                path: '',
+                redirectTo: 'overview',
+                pathMatch: 'full'
+            },
+            {
+                path: 'overview',
+                loadComponent: () => import('./features/dashboards/admin-dashboard/admin-overview/admin-overview').then(m => m.AdminOverviewComponent)
+            },
+            {
+                path: 'instructors',
+                loadComponent: () => import('./features/admin/instructors-list/instructors-list.component').then(m => m.InstructorsListComponent)
+            },
+            {
+                path: 'instructors/:id',
+                loadComponent: () => import('./features/admin/instructor-details/instructor-details.component').then(m => m.InstructorDetailsComponent)
+            }
+        ]
     },
     {
         path: 'instructor/dashboard',

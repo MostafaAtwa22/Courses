@@ -1,0 +1,187 @@
+.admin-banner {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  border-radius: 20px;
+  padding: 1.75rem 2rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+
+  .banner-title {
+    font-size: 1.65rem;
+    font-weight: 800;
+    color: #0f172a;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.25rem;
+  }
+
+  .banner-subtitle {
+    font-size: 0.92rem;
+    color: #64748b;
+    margin: 0;
+  }
+}
+
+.admin-card {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  border-radius: 16px;
+  padding: 1.25rem 1.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+
+  .card-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0;
+  }
+
+  .card-subtitle {
+    font-size: 0.78rem;
+    margin: 0;
+  }
+
+  .verification-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+  }
+
+  .verification-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.85rem 1rem;
+    background: #f8fafc;
+    border: 1px solid #f1f5f9;
+    border-radius: 12px;
+
+    .applicant-avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      object-fit: cover;
+      flex-shrink: 0;
+    }
+
+    .applicant-info {
+      flex-grow: 1;
+
+      .applicant-name {
+        font-size: 0.9rem;
+        font-weight: 700;
+        color: #0f172a;
+        margin: 0;
+      }
+
+      .applicant-expertise {
+        font-size: 0.78rem;
+        font-weight: 600;
+        color: #4f46e5;
+      }
+
+      .applicant-email {
+        font-size: 0.72rem;
+      }
+    }
+
+    .applicant-actions {
+      display: flex;
+      align-items: center;
+    }
+  }
+
+  .pagination-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #f1f5f9;
+
+    .pagination-btn {
+      min-width: 40px;
+      height: 40px;
+      padding: 0 0.75rem;
+      border: 1px solid #e2e8f0;
+      background: white;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #64748b;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      &:hover:not(:disabled) {
+        background: #f8fafc;
+        border-color: #4f46e5;
+        color: #4f46e5;
+      }
+
+      &:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+      }
+
+      &.active {
+        background: #4f46e5;
+        color: white;
+        border-color: #4f46e5;
+        box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
+      }
+
+      span {
+        display: flex;
+        gap: 0.25rem;
+      }
+    }
+  }
+}
+
+:host-context(.dark) .admin-banner,
+:host-context(.dark-theme) .admin-banner {
+  background: rgba(30, 41, 59, 0.85);
+  border-color: rgba(51, 65, 85, 0.8);
+  .banner-title { color: #f8fafc; }
+  .banner-subtitle { color: #cbd5e1; }
+}
+
+:host-context(.dark) .admin-card,
+:host-context(.dark-theme) .admin-card {
+  background: rgba(30, 41, 59, 0.85);
+  border-color: rgba(51, 65, 85, 0.8);
+  .card-title { color: #f8fafc; }
+
+  .verification-item {
+    background: rgba(15, 23, 42, 0.5);
+    border-color: rgba(51, 65, 85, 0.5);
+    .applicant-info .applicant-name { color: #f8fafc; }
+    .applicant-info .applicant-expertise { color: #818cf8; }
+  }
+
+  .pagination-wrapper {
+    border-top-color: rgba(51, 65, 85, 0.5);
+
+    .pagination-btn {
+      background: rgba(15, 23, 42, 0.5);
+      border-color: rgba(51, 65, 85, 0.5);
+      color: #cbd5e1;
+
+      &:hover:not(:disabled) {
+        background: rgba(15, 23, 42, 0.8);
+        border-color: #818cf8;
+        color: #818cf8;
+      }
+
+      &.active {
+        background: #4f46e5;
+        border-color: #4f46e5;
+        color: white;
+      }
+    }
+  }
+}

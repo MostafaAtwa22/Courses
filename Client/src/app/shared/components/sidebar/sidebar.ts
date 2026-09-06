@@ -23,8 +23,8 @@ export class SidebarComponent {
   @Output() toggleCollapse = new EventEmitter<boolean>();
 
   adminNavItems: NavItem[] = [
-    { label: 'Admin Overview', icon: 'fa-solid fa-chart-line', route: '/admin/dashboard' },
-    { label: 'Instructors', icon: 'fa-solid fa-user-tie', route: '/admin/instructors', badge: '5 Pending', badgeColor: 'bg-warning' },
+    { label: 'Admin Overview', icon: 'fa-solid fa-chart-line', route: '/admin/dashboard/overview' },
+    { label: 'Instructors', icon: 'fa-solid fa-user-tie', route: '/admin/dashboard/instructors', badge: '5 Pending', badgeColor: 'bg-warning' },
     { label: 'Courses Catalog', icon: 'fa-solid fa-book-open', route: '/courses' },
     { label: 'User Management', icon: 'fa-solid fa-users-gear', route: '/admin/users' },
     { label: 'System Settings', icon: 'fa-solid fa-sliders', route: '/settings' }

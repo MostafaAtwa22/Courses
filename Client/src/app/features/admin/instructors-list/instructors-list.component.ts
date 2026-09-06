@@ -1,6 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { InstructorService } from '../../instructors/services/instructor.service';
 import { InstructorPrivateResponse } from '../../instructors/models/instructor.models';
 import { PaginatedResultModel } from '../../../shared/models/paginated-result.model';
@@ -15,13 +16,21 @@ import { QueryParams, createQueryParams } from '../../../shared/models/query-par
 })
 export class InstructorsListComponent implements OnInit {
   private instructorService = inject(InstructorService);
+  private router = inject(Router);
 
   instructorsResult: PaginatedResultModel<InstructorPrivateResponse> = new PaginatedResultModel<InstructorPrivateResponse>();
   params: QueryParams = createQueryParams({ pageSize: 10 });
   searchQuery = '';
+  statusFilter = '';
+  sortBy = 'name';
+  isFilterDropdownOpen = false;
 
   ngOnInit() {
     this.loadInstructors();
+  }
+
+  toggleFilterDropdown() {
+    this.isFilterDropdownOpen = !this.isFilterDropdownOpen;
   }
 
   loadInstructors() {
@@ -67,5 +76,9 @@ export class InstructorsListComponent implements OnInit {
 
   getPagesArray(): number[] {
     return Array.from({ length: this.instructorsResult.totalPages }, (_, i) => i + 1);
+  }
+
+  viewInstructorDetails(instructorId: string) {
+    this.router.navigate(['/admin/dashboard/instructors', instructorId]);
   }
 }

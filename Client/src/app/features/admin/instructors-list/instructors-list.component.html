@@ -1,79 +1,148 @@
 <div class="instructors-list-container">
-  <div class="header">
-    <h1>Instructors Management</h1>
-    <div class="search-bar">
-      <input 
-        type="text" 
-        [(ngModel)]="searchQuery" 
-        placeholder="Search instructors..." 
-        (keyup.enter)="onSearch()"
-      >
-      <button (click)="onSearch()">Search</button>
+  <!-- Page Header -->
+  <div class="admin-banner mb-4">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+      <div>
+        <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-1 mb-2 rounded-pill">
+          <i class="fa-solid fa-user-tie me-1"></i> Instructors Management
+        </span>
+        <h2 class="banner-title">All Instructors</h2>
+        <p class="banner-subtitle">View, verify, and manage instructor accounts across the platform.</p>
+      </div>
+      <div class="d-flex align-items-center gap-2">
+        <div class="dropdown" [class.open]="isFilterDropdownOpen">
+          <button class="btn btn-outline-secondary d-flex align-items-center gap-2" (click)="toggleFilterDropdown()">
+            <i class="fa-solid fa-filter"></i> Filters
+            <i class="fa-solid fa-chevron-down" [class.fa-chevron-up]="isFilterDropdownOpen"></i>
+          </button>
+          <div class="dropdown-menu" *ngIf="isFilterDropdownOpen">
+            <div class="dropdown-item">
+              <label class="filter-label">Status</label>
+              <select [(ngModel)]="statusFilter" (change)="onSearch(); isFilterDropdownOpen = false" class="dropdown-select">
+                <option value="">All Statuses</option>
+                <option value="Verfied">Verified</option>
+                <option value="Pending">Pending</option>
+                <option value="Unverfied">Unverified</option>
+              </select>
+            </div>
+            <div class="dropdown-item">
+              <label class="filter-label">Sort By</label>
+              <select [(ngModel)]="sortBy" (change)="onSearch(); isFilterDropdownOpen = false" class="dropdown-select">
+                <option value="name">Name</option>
+                <option value="email">Email</option>
+                <option value="title">Title</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <button class="btn btn-primary d-flex align-items-center gap-2" (click)="loadInstructors()">
+          <i class="fa-solid fa-sync"></i> Refresh
+        </button>
+      </div>
     </div>
   </div>
 
-  <div class="table-container">
-    <table class="instructors-table">
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Email</th>
-          <th>Title</th>
-          <th>Status</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let instructor of instructorsResult.items">
-          <td>{{ instructor.firstName }} {{ instructor.lastName }}</td>
-          <td>{{ instructor.email }}</td>
-          <td>{{ instructor.title }}</td>
-          <td>
-            <span [class]="getStatusClass(instructor.status)">{{ instructor.status }}</span>
-          </td>
-          <td>
-            <div class="actions">
-              <button 
-                *ngIf="instructor.status !== 'Verfied'"
-                class="btn-verify"
-                (click)="changeStatus(instructor.id, 'Verfied')"
-              >
-                Verify
-              </button>
-              <button 
-                *ngIf="instructor.status !== 'Unverfied'"
-                class="btn-unverify"
-                (click)="changeStatus(instructor.id, 'Unverfied')"
-              >
-                Unverify
-              </button>
-            </div>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+  <!-- Search -->
+  <div class="admin-card mb-4">
+    <div class="filters-row">
+      <div class="search-input-wrapper">
+        <i class="fa-solid fa-search search-icon"></i>
+        <input 
+          type="text" 
+          [(ngModel)]="searchQuery" 
+          placeholder="Search by name, email, or title..." 
+          (keyup.enter)="onSearch()"
+          class="search-input"
+        >
+      </div>
+    </div>
   </div>
 
-  <div class="pagination" *ngIf="instructorsResult.totalPages > 1">
-    <button 
-      (click)="onPageChange(instructorsResult.pageNumber - 1)"
-      [disabled]="!instructorsResult.hasPreviousPage"
-    >
-      Previous
-    </button>
-    <span *ngFor="let page of getPagesArray()">
+  <!-- Instructors Table -->
+  <div class="admin-card">
+    <div class="table-responsive">
+      <table class="instructors-table">
+        <thead>
+          <tr>
+            <th>Instructor</th>
+            <th>Email</th>
+            <th>Title</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let instructor of instructorsResult.items">
+            <td>
+              <div class="instructor-cell">
+                <img [src]="instructor.profilePicture || (instructor.gender === 'Female' ? 'assets/users/default-female.png' : 'assets/users/default-male.png')" [alt]="instructor.firstName" class="instructor-avatar" />
+                <div class="instructor-info">
+                  <span class="instructor-name">{{ instructor.firstName }} {{ instructor.lastName }}</span>
+                </div>
+              </div>
+            </td>
+            <td>{{ instructor.email }}</td>
+            <td>{{ instructor.title }}</td>
+            <td>
+              <span [class]="getStatusClass(instructor.status)" class="status-badge">{{ instructor.status }}</span>
+            </td>
+            <td>
+              <div class="actions">
+                <button 
+                  class="btn-action btn-view"
+                  (click)="viewInstructorDetails(instructor.id)"
+                  title="View Details"
+                >
+                  <i class="fa-solid fa-eye"></i>
+                </button>
+                <button 
+                  *ngIf="instructor.status !== 'Verfied'"
+                  class="btn-action btn-verify"
+                  (click)="changeStatus(instructor.id, 'Verfied')"
+                  title="Verify Instructor"
+                >
+                  <i class="fa-solid fa-check"></i>
+                </button>
+                <button 
+                  *ngIf="instructor.status !== 'Unverfied'"
+                  class="btn-action btn-unverify"
+                  (click)="changeStatus(instructor.id, 'Unverfied')"
+                  title="Unverify Instructor"
+                >
+                  <i class="fa-solid fa-xmark"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination-wrapper" *ngIf="instructorsResult.totalPages > 1">
       <button 
-        (click)="onPageChange(page)"
-        [class.active]="page === instructorsResult.pageNumber"
+        class="pagination-btn"
+        (click)="onPageChange(instructorsResult.pageNumber - 1)"
+        [disabled]="!instructorsResult.hasPreviousPage"
       >
-        {{ page }}
+        <i class="fa-solid fa-chevron-left"></i>
       </button>
-    </span>
-    <button 
-      (click)="onPageChange(instructorsResult.pageNumber + 1)"
-      [disabled]="!instructorsResult.hasNextPage"
-    >
-      Next
-    </button>
+      <span *ngFor="let page of getPagesArray()">
+        <button 
+          class="pagination-btn"
+          (click)="onPageChange(page)"
+          [class.active]="page === instructorsResult.pageNumber"
+        >
+          {{ page }}
+        </button>
+      </span>
+      <button 
+        class="pagination-btn"
+        (click)="onPageChange(instructorsResult.pageNumber + 1)"
+        [disabled]="!instructorsResult.hasNextPage"
+      >
+        <i class="fa-solid fa-chevron-right"></i>
+      </button>
+    </div>
   </div>
 </div>
