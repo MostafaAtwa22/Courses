@@ -78,7 +78,12 @@ namespace API.Tests.Endpoints
         {
             // Arrange
             var id = Guid.NewGuid();
-            var expectedUser = new UserResponseDto { Id = id };
+            var expectedUser = new UserResponseDto
+            {
+                Id = id,
+                PhoneNumber = "1234567890",
+                Roles = ["Admin", "Student"]
+            };
             _mediatorMock.Setup(m => m.Send(It.IsAny<GetUserByIdQuery>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(expectedUser);
 

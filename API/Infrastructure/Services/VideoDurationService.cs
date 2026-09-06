@@ -1,7 +1,4 @@
-using Application.Common.Interfaces;
 using Microsoft.AspNetCore.Http;
-using TagLib;
-using System.IO;
 
 namespace Infrastructure.Services
 {

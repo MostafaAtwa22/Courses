@@ -60,6 +60,7 @@ public static class DependencyInjection
         services.AddScoped<ICourseDiscountRepository, CourseDiscountRepository>();
         services.AddScoped<IEnrollmentRepository, EnrollmentRepository>();
         services.AddScoped<IContentProgressRepository, ContentProgressRepository>();
+        services.AddScoped<IRoleRepository, RoleRepository>();
         services.AddScoped<IExternalAuthService, ExternalAuthService>();
         
         return services;

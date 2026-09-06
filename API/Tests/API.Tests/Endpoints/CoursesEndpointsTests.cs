@@ -186,7 +186,7 @@ namespace API.Tests.Endpoints
             // Assert
             var okResult = result.Result as Ok<PaginatedResult<CourseSummaryDto>>;
             okResult.Should().NotBeNull();
-            okResult!.Value.TotalCount.Should().Be(0);
+            okResult?.Value!.TotalCount.Should().Be(0);
         }
 
         [Fact]
@@ -222,7 +222,7 @@ namespace API.Tests.Endpoints
             // Assert
             var okResult = result.Result as Ok<PaginatedResult<CourseSummaryDto>>;
             okResult.Should().NotBeNull();
-            okResult!.Value.TotalCount.Should().Be(0);
+            okResult?.Value!.TotalCount.Should().Be(0);
         }
 
         [Fact]
@@ -260,7 +260,7 @@ namespace API.Tests.Endpoints
             // Assert
             var okResult = result.Result as Ok<PaginatedResult<CourseSummaryDto>>;
             okResult.Should().NotBeNull();
-            okResult!.Value.TotalCount.Should().Be(0);
+            okResult!.Value?.TotalCount.Should().Be(0);
         }
 
         [Fact]

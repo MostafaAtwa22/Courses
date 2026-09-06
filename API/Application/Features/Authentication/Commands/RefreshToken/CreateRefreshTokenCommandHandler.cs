@@ -1,6 +1,3 @@
-using Application.Common.Interfaces.Identity;
-using Domain.Entities.Identity;
-
 namespace Application.Features.Authentication.Commands.RefreshToken;
 
 public sealed class CreateRefreshTokenCommandHandler(
