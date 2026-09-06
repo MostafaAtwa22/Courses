@@ -1,9 +1,9 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-import { InstructorService } from '../../instructors/services/instructor.service';
-import { InstructorPrivateResponse } from '../../instructors/models/instructor.models';
-import { ToastService } from '../../../core/services/toast.service';
+import { InstructorService } from '../../../../instructors/services/instructor.service';
+import { InstructorPrivateResponse } from '../../../../instructors/models/instructor.models';
+import { ToastService } from '../../../../../core/services/toast.service';
 
 @Component({
   selector: 'app-instructor-details',

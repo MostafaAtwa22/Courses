@@ -99,11 +99,19 @@ export const routes: Routes = [
             },
             {
                 path: 'instructors',
-                loadComponent: () => import('./features/admin/instructors-list/instructors-list.component').then(m => m.InstructorsListComponent)
+                loadComponent: () => import('./features/dashboards/admin-dashboard/instructors-list/instructors-list.component').then(m => m.InstructorsListComponent)
             },
             {
                 path: 'instructors/:id',
-                loadComponent: () => import('./features/admin/instructor-details/instructor-details.component').then(m => m.InstructorDetailsComponent)
+                loadComponent: () => import('./features/dashboards/admin-dashboard/instructors-list/instructor-details/instructor-details.component').then(m => m.InstructorDetailsComponent)
+            },
+            {
+                path: 'students',
+                loadComponent: () => import('./features/dashboards/admin-dashboard/students-list/students-list.component').then(m => m.StudentsListComponent)
+            },
+            {
+                path: 'students/:id',
+                loadComponent: () => import('./features/dashboards/admin-dashboard/students-list/student-details/student-details.component').then(m => m.StudentDetailsComponent)
             }
         ]
     },

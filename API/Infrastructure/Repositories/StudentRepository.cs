@@ -10,7 +10,7 @@ public class StudentRepository(IDbConnectionFactory factory, IOptions<UrlsOption
 {
     private static readonly Dictionary<string, string> AllowedSortColumns = new(StringComparer.OrdinalIgnoreCase)
     {
-        { "name", "FullName" },
+        { "name", "u.first_name" },
         { "total_enrollments", "TotalEnrollments" },
         { "created_at", "s.created_at" }
     };

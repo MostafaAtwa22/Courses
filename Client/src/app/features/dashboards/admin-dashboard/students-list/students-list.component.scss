@@ -1,0 +1,45 @@
+@import '../shared/admin-list-shared';
+
+.students-list-container {
+  position: relative;
+  overflow: visible;
+
+  .admin-card {
+    .table-responsive {
+      .students-table {
+        .student-cell {
+          display: flex;
+          align-items: center;
+          gap: 0.85rem;
+
+          .student-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            flex-shrink: 0;
+          }
+
+          .student-info {
+            .student-name {
+              font-weight: 600;
+              color: #0f172a;
+              font-size: 0.9rem;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+:host-context(.dark) .students-list-container,
+:host-context(.dark-theme) .students-list-container {
+  .admin-card {
+    .table-responsive {
+      .students-table {
+        .student-cell .student-info .student-name { color: #f8fafc; }
+      }
+    }
+  }
+}

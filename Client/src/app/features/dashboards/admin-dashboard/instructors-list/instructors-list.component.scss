@@ -1,0 +1,126 @@
+@import '../shared/admin-list-shared';
+
+.instructors-list-container {
+  position: relative;
+  overflow: visible;
+
+  .admin-card {
+    .table-responsive {
+      .instructors-table {
+        .instructor-cell {
+          display: flex;
+          align-items: center;
+          gap: 0.85rem;
+
+          .instructor-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            flex-shrink: 0;
+          }
+
+          .instructor-info {
+            .instructor-name {
+              font-weight: 600;
+              color: #0f172a;
+              font-size: 0.9rem;
+            }
+          }
+        }
+
+        .status-badge {
+          display: inline-block;
+          padding: 0.35rem 0.85rem;
+          border-radius: 20px;
+          font-size: 0.75rem;
+          font-weight: 700;
+          text-transform: uppercase;
+          letter-spacing: 0.05em;
+
+          &.status-verified {
+            background: rgba(34, 197, 94, 0.1);
+            color: #16a34a;
+            border: 1px solid rgba(34, 197, 94, 0.2);
+          }
+
+          &.status-pending {
+            background: rgba(234, 179, 8, 0.1);
+            color: #ca8a04;
+            border: 1px solid rgba(234, 179, 8, 0.2);
+          }
+
+          &.status-unverified {
+            background: rgba(239, 68, 68, 0.1);
+            color: #dc2626;
+            border: 1px solid rgba(239, 68, 68, 0.2);
+          }
+        }
+
+        .actions {
+          .btn-action {
+            &.btn-verify {
+              background: rgba(34, 197, 94, 0.1);
+              color: #16a34a;
+
+              &:hover {
+                background: #16a34a;
+                color: white;
+              }
+            }
+
+            &.btn-unverify {
+              background: rgba(239, 68, 68, 0.1);
+              color: #dc2626;
+
+              &:hover {
+                background: #dc2626;
+                color: white;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+:host-context(.dark) .instructors-list-container,
+:host-context(.dark-theme) .instructors-list-container {
+  .admin-card {
+    .table-responsive {
+      .instructors-table {
+        .instructor-cell .instructor-info .instructor-name { color: #f8fafc; }
+        .status-badge {
+          &.status-verified {
+            background: rgba(34, 197, 94, 0.15);
+            color: #4ade80;
+            border-color: rgba(34, 197, 94, 0.3);
+          }
+          &.status-pending {
+            background: rgba(234, 179, 8, 0.15);
+            color: #facc15;
+            border-color: rgba(234, 179, 8, 0.3);
+          }
+          &.status-unverified {
+            background: rgba(239, 68, 68, 0.15);
+            color: #f87171;
+            border-color: rgba(239, 68, 68, 0.3);
+          }
+        }
+        .actions .btn-action {
+          &.btn-verify {
+            background: rgba(34, 197, 94, 0.15);
+            color: #4ade80;
+            &:hover { background: #16a34a; color: white; }
+          }
+          &.btn-unverify {
+            background: rgba(239, 68, 68, 0.15);
+            color: #f87171;
+            &:hover { background: #dc2626; color: white; }
+          }
+        }
+      }
+    }
+  }
+}

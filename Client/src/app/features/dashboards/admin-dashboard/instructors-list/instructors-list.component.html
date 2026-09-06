@@ -10,37 +10,101 @@
         <p class="banner-subtitle">View, verify, and manage instructor accounts across the platform.</p>
       </div>
       <div class="d-flex align-items-center gap-2">
-        <div class="dropdown" [class.open]="isFilterDropdownOpen">
-          <button class="btn btn-outline-secondary d-flex align-items-center gap-2" (click)="toggleFilterDropdown()">
-            <i class="fa-solid fa-filter"></i> Filters
-            <i class="fa-solid fa-chevron-down" [class.fa-chevron-up]="isFilterDropdownOpen"></i>
-          </button>
-          <div class="dropdown-menu" *ngIf="isFilterDropdownOpen">
-            <div class="dropdown-item">
-              <label class="filter-label">Status</label>
-              <select [(ngModel)]="statusFilter" (change)="onSearch(); isFilterDropdownOpen = false" class="dropdown-select">
-                <option value="">All Statuses</option>
-                <option value="Verfied">Verified</option>
-                <option value="Pending">Pending</option>
-                <option value="Unverfied">Unverified</option>
-              </select>
-            </div>
-            <div class="dropdown-item">
-              <label class="filter-label">Sort By</label>
-              <select [(ngModel)]="sortBy" (change)="onSearch(); isFilterDropdownOpen = false" class="dropdown-select">
-                <option value="name">Name</option>
-                <option value="email">Email</option>
-                <option value="title">Title</option>
-              </select>
-            </div>
-          </div>
-        </div>
+        <!-- Filter Toggle Button -->
+        <button class="btn-filter-toggle" (click)="toggleFilterDropdown(); $event.stopPropagation()">
+          <i class="fa-solid fa-sliders"></i>
+          <span>Filters</span>
+        </button>
         <button class="btn btn-primary d-flex align-items-center gap-2" (click)="loadInstructors()">
           <i class="fa-solid fa-sync"></i> Refresh
         </button>
       </div>
     </div>
   </div>
+
+  <!-- Filters Sidebar -->
+  <aside class="filters-sidebar" [class.open]="isFilterDropdownOpen">
+    <div class="sidebar-header">
+      <h3>Filters</h3>
+      <button class="sidebar-close-btn" (click)="isFilterDropdownOpen = false">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+
+    <div class="filter-group">
+      <h3>Status</h3>
+      <div class="filter-options">
+        <button 
+          [class.active]="statusFilter === ''"
+          (click)="statusFilter = ''; onSearch()">
+          All Statuses
+        </button>
+        <button 
+          [class.active]="statusFilter === 'Verfied'"
+          (click)="statusFilter = 'Verfied'; onSearch()">
+          Verified
+        </button>
+        <button 
+          [class.active]="statusFilter === 'Pending'"
+          (click)="statusFilter = 'Pending'; onSearch()">
+          Pending
+        </button>
+        <button 
+          [class.active]="statusFilter === 'Unverfied'"
+          (click)="statusFilter = 'Unverfied'; onSearch()">
+          Unverified
+        </button>
+      </div>
+    </div>
+
+    <div class="filter-group">
+      <h3>Sort By</h3>
+      <div class="radio-group">
+        <label>
+          <input type="radio" name="sortBy" [value]="''" [(ngModel)]="sortBy" (change)="onSearch()">
+          Default
+        </label>
+        <label>
+          <input type="radio" name="sortBy" [value]="'name'" [(ngModel)]="sortBy" (change)="onSearch()">
+          Name
+        </label>
+        <label>
+          <input type="radio" name="sortBy" [value]="'email'" [(ngModel)]="sortBy" (change)="onSearch()">
+          Email
+        </label>
+        <label>
+          <input type="radio" name="sortBy" [value]="'title'" [(ngModel)]="sortBy" (change)="onSearch()">
+          Title
+        </label>
+      </div>
+    </div>
+
+    <div class="filter-group">
+      <h3>Sort Order</h3>
+      <div class="radio-group">
+        <label>
+          <input type="radio" name="sortOrder" [value]="false" [(ngModel)]="sortDescending" (change)="onSearch()">
+          Ascending
+        </label>
+        <label>
+          <input type="radio" name="sortOrder" [value]="true" [(ngModel)]="sortDescending" (change)="onSearch()">
+          Descending
+        </label>
+      </div>
+    </div>
+
+    <div class="sidebar-footer">
+      <button class="btn-clear" (click)="clearFilters()">
+        <i class="fa-solid fa-times me-1"></i> Clear Filters
+      </button>
+      <button class="btn-apply" (click)="isFilterDropdownOpen = false">
+        <i class="fa-solid fa-check me-1"></i> Show Results
+      </button>
+    </div>
+  </aside>
+
+  <!-- Overlay for sidebar -->
+  <div class="sidebar-overlay" *ngIf="isFilterDropdownOpen" (click)="isFilterDropdownOpen = false"></div>
 
   <!-- Search -->
   <div class="admin-card mb-4">
@@ -61,7 +125,7 @@
   <!-- Instructors Table -->
   <div class="admin-card">
     <div class="table-responsive">
-      <table class="instructors-table">
+      <table class="instructors-table" *ngIf="instructorsResult.items.length > 0">
         <thead>
           <tr>
             <th>Instructor</th>
@@ -116,6 +180,25 @@
           </tr>
         </tbody>
       </table>
+
+      <!-- Empty State -->
+      <div class="empty-state" *ngIf="instructorsResult.items.length === 0">
+        <div class="empty-state-icon">
+          <i class="fa-solid fa-user-slash"></i>
+        </div>
+        <h3 class="empty-state-title">No Instructors Found</h3>
+        <p class="empty-state-message">
+          <span *ngIf="searchQuery || statusFilter">
+            No instructors match your current filters. Try adjusting your search criteria.
+          </span>
+          <span *ngIf="!searchQuery && !statusFilter">
+            There are no instructors in the system yet.
+          </span>
+        </p>
+        <button class="btn-clear-filters" *ngIf="searchQuery || statusFilter" (click)="clearFilters()">
+          <i class="fa-solid fa-filter-circle-xmark me-2"></i> Clear Filters
+        </button>
+      </div>
     </div>
 
     <!-- Pagination -->

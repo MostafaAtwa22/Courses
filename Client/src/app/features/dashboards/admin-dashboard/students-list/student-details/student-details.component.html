@@ -1,0 +1,118 @@
+<div class="student-details-container" *ngIf="student">
+  <!-- Back Button -->
+  <button class="btn-back mb-4" (click)="goBack()">
+    <i class="fa-solid fa-arrow-left me-2"></i> Back to Students
+  </button>
+
+  <!-- Page Header -->
+  <div class="admin-banner mb-4">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+      <div class="d-flex align-items-center gap-3">
+        <img [src]="student.profilePicture || (student.gender === 'Female' ? 'assets/users/default-female.png' : 'assets/users/default-male.png')" [alt]="student.firstName" class="student-avatar-large" />
+        <div>
+          <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-1 mb-2 rounded-pill">
+            <i class="fa-solid fa-user-graduate me-1"></i> Student Profile
+          </span>
+          <h2 class="banner-title">{{ student.firstName }} {{ student.lastName }}</h2>
+          <p class="banner-subtitle">{{ student.userName }} &bull; {{ student.email }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Statistics -->
+  <div class="row g-4 mb-4">
+    <div class="col-12 col-sm-6 col-lg-3">
+      <div class="stat-card">
+        <div class="stat-icon">
+          <i class="fa-solid fa-book-open"></i>
+        </div>
+        <div class="stat-content">
+          <span class="stat-value">{{ student.totalEnrollments || 0 }}</span>
+          <span class="stat-label">Total Enrollments</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Details Grid -->
+  <div class="row g-4 mb-4">
+    <!-- Personal Information -->
+    <div class="col-12 col-lg-6">
+      <div class="admin-card">
+        <div class="card-header mb-3">
+          <h5 class="card-title">
+            <i class="fa-solid fa-user me-2"></i> Personal Information
+          </h5>
+        </div>
+        <div class="info-grid">
+          <div class="info-item">
+            <span class="info-label">Full Name</span>
+            <span class="info-value">{{ student.firstName }} {{ student.lastName }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Email</span>
+            <span class="info-value">{{ student.email }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Username</span>
+            <span class="info-value">{{ student.userName }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Gender</span>
+            <span class="info-value">{{ student.gender }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Account Information -->
+    <div class="col-12 col-lg-6">
+      <div class="admin-card">
+        <div class="card-header mb-3">
+          <h5 class="card-title">
+            <i class="fa-solid fa-id-card me-2"></i> Account Information
+          </h5>
+        </div>
+        <div class="info-grid">
+          <div class="info-item">
+            <span class="info-label">Student ID</span>
+            <span class="info-value">{{ student.id }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Total Enrollments</span>
+            <span class="info-value">{{ student.totalEnrollments }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Actions -->
+  <div class="row g-4">
+    <div class="col-12">
+      <div class="admin-card">
+        <div class="card-header mb-3">
+          <h5 class="card-title">
+            <i class="fa-solid fa-gears me-2"></i> Account Actions
+          </h5>
+        </div>
+        <div class="actions-row">
+          <button 
+            class="btn btn-outline-danger"
+            (click)="deleteStudent()"
+          >
+            <i class="fa-solid fa-trash me-2"></i> Delete Student
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Loading State -->
+<div class="loading-state" *ngIf="!student">
+  <div class="spinner-border text-primary" role="status">
+    <span class="visually-hidden">Loading...</span>
+  </div>
+</div>

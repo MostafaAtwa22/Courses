@@ -11,7 +11,9 @@ namespace Infrastructure.Repositories
     {
         private static readonly Dictionary<string, string> AllowedSortColumns = new(StringComparer.OrdinalIgnoreCase)
         {
-            { "name", "FullName" },
+            { "name", "u.first_name" },
+            { "email", "u.email" },
+            { "title", "i.title" },
             { "average_rate", "AverageRate" },
             { "created_at", "i.created_at" }
         };
@@ -124,7 +126,7 @@ namespace Infrastructure.Repositories
                         WHERE id = @Id";
 
             instructor.UpdatedAt = DateTime.UtcNow;
-            await connection.ExecuteAsync(sql, instructor);
+                await connection.ExecuteAsync(sql, instructor);
         }
 
         public async Task DeleteAsync(Guid id, CancellationToken ct = default)
@@ -149,13 +151,13 @@ namespace Infrastructure.Repositories
                 selectSql: $"SELECT {PrivateSelectColumns} {FromClause}",
                 allowedSortColumns: AllowedSortColumns, 
                 defaultSortColumn: "i.created_at",
-                searchCondition: "(i.bio ILIKE @SearchTerm OR i.title ILIKE @SearchTerm)",
+                searchCondition: "(u.first_name ILIKE @SearchTerm OR u.last_name ILIKE @SearchTerm OR u.email ILIKE @SearchTerm OR i.title ILIKE @SearchTerm OR i.bio ILIKE @SearchTerm)",
                 extraConditions: extraConditions,
                 configureParameters: parameters =>
                 {
                     if (queryParams.Status.HasValue)
                     {
-                        parameters.Add("Status", queryParams.Status.Value);
+                        parameters.Add("Status", queryParams.Status.Value.ToString());
                     }
                 },
                 ct);

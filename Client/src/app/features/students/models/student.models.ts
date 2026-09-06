@@ -15,4 +15,6 @@ export interface StudentQueryParams {
   searchTerm?: string;
   gender?: string;
   courseId?: string;
+  sortBy?: string;
+  sortDescending?: boolean;
 }

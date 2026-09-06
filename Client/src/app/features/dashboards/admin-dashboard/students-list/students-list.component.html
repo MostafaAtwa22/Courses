@@ -1,0 +1,217 @@
+<div class="students-list-container">
+  <!-- Page Header -->
+  <div class="admin-banner mb-4">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+      <div>
+        <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-1 mb-2 rounded-pill">
+          <i class="fa-solid fa-user-graduate me-1"></i> Students Management
+        </span>
+        <h2 class="banner-title">All Students</h2>
+        <p class="banner-subtitle">View and manage student accounts across the platform.</p>
+      </div>
+      <div class="d-flex align-items-center gap-2">
+        <!-- Filter Toggle Button -->
+        <button class="btn-filter-toggle" (click)="toggleFilterDropdown(); $event.stopPropagation()">
+          <i class="fa-solid fa-sliders"></i>
+          <span>Filters</span>
+        </button>
+        <button class="btn btn-primary d-flex align-items-center gap-2" (click)="loadStudents()">
+          <i class="fa-solid fa-sync"></i> Refresh
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filters Sidebar -->
+  <aside class="filters-sidebar" [class.open]="isFilterDropdownOpen">
+    <div class="sidebar-header">
+      <h3>Filters</h3>
+      <button class="sidebar-close-btn" (click)="isFilterDropdownOpen = false">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+
+    <div class="filter-group">
+      <h3>Gender</h3>
+      <div class="filter-options">
+        <button 
+          [class.active]="genderFilter === ''"
+          (click)="genderFilter = ''; onSearch()">
+          All Genders
+        </button>
+        <button 
+          [class.active]="genderFilter === 'Male'"
+          (click)="genderFilter = 'Male'; onSearch()">
+          Male
+        </button>
+        <button 
+          [class.active]="genderFilter === 'Female'"
+          (click)="genderFilter = 'Female'; onSearch()">
+          Female
+        </button>
+      </div>
+    </div>
+
+    <div class="filter-group">
+      <h3>Sort By</h3>
+      <div class="radio-group">
+        <label>
+          <input type="radio" name="sortBy" [value]="''" [(ngModel)]="sortBy" (change)="onSearch()">
+          Default
+        </label>
+        <label>
+          <input type="radio" name="sortBy" [value]="'name'" [(ngModel)]="sortBy" (change)="onSearch()">
+          Name
+        </label>
+        <label>
+          <input type="radio" name="sortBy" [value]="'email'" [(ngModel)]="sortBy" (change)="onSearch()">
+          Email
+        </label>
+        <label>
+          <input type="radio" name="sortBy" [value]="'userName'" [(ngModel)]="sortBy" (change)="onSearch()">
+          Username
+        </label>
+      </div>
+    </div>
+
+    <div class="filter-group">
+      <h3>Sort Order</h3>
+      <div class="radio-group">
+        <label>
+          <input type="radio" name="sortOrder" [value]="false" [(ngModel)]="sortDescending" (change)="onSearch()">
+          Ascending
+        </label>
+        <label>
+          <input type="radio" name="sortOrder" [value]="true" [(ngModel)]="sortDescending" (change)="onSearch()">
+          Descending
+        </label>
+      </div>
+    </div>
+
+    <div class="sidebar-footer">
+      <button class="btn-clear" (click)="clearFilters()">
+        <i class="fa-solid fa-times me-1"></i> Clear Filters
+      </button>
+      <button class="btn-apply" (click)="isFilterDropdownOpen = false">
+        <i class="fa-solid fa-check me-1"></i> Show Results
+      </button>
+    </div>
+  </aside>
+
+  <!-- Overlay for sidebar -->
+  <div class="sidebar-overlay" *ngIf="isFilterDropdownOpen" (click)="isFilterDropdownOpen = false"></div>
+
+  <!-- Search -->
+  <div class="admin-card mb-4">
+    <div class="filters-row">
+      <div class="search-input-wrapper">
+        <i class="fa-solid fa-search search-icon"></i>
+        <input 
+          type="text" 
+          [(ngModel)]="searchQuery" 
+          placeholder="Search by name, email, or username..." 
+          (keyup.enter)="onSearch()"
+          class="search-input"
+        >
+      </div>
+    </div>
+  </div>
+
+  <!-- Students Table -->
+  <div class="admin-card">
+    <div class="table-responsive">
+      <table class="students-table" *ngIf="studentsResult.items.length > 0">
+        <thead>
+          <tr>
+            <th>Student</th>
+            <th>Email</th>
+            <th>Username</th>
+            <th>Gender</th>
+            <th>Total Enrollments</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let student of studentsResult.items">
+            <td>
+              <div class="student-cell">
+                <img [src]="student.profilePicture || (student.gender === 'Female' ? 'assets/users/default-female.png' : 'assets/users/default-male.png')" [alt]="student.firstName" class="student-avatar" />
+                <div class="student-info">
+                  <span class="student-name">{{ student.firstName }} {{ student.lastName }}</span>
+                </div>
+              </div>
+            </td>
+            <td>{{ student.email }}</td>
+            <td>{{ student.userName }}</td>
+            <td>{{ student.gender }}</td>
+            <td>{{ student.totalEnrollments }}</td>
+            <td>
+              <div class="actions">
+                <button 
+                  class="btn-action btn-view"
+                  (click)="viewStudentDetails(student.id)"
+                  title="View Details"
+                >
+                  <i class="fa-solid fa-eye"></i>
+                </button>
+                <button 
+                  class="btn-action btn-delete"
+                  (click)="deleteStudent(student.id)"
+                  title="Delete Student"
+                >
+                  <i class="fa-solid fa-trash"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Empty State -->
+      <div class="empty-state" *ngIf="studentsResult.items.length === 0">
+        <div class="empty-state-icon">
+          <i class="fa-solid fa-user-graduate"></i>
+        </div>
+        <h3 class="empty-state-title">No Students Found</h3>
+        <p class="empty-state-message">
+          <span *ngIf="searchQuery || genderFilter">
+            No students match your current filters. Try adjusting your search criteria.
+          </span>
+          <span *ngIf="!searchQuery && !genderFilter">
+            There are no students in the system yet.
+          </span>
+        </p>
+        <button class="btn-clear-filters" *ngIf="searchQuery || genderFilter" (click)="clearFilters()">
+          <i class="fa-solid fa-filter-circle-xmark me-2"></i> Clear Filters
+        </button>
+      </div>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination-wrapper" *ngIf="studentsResult.totalPages > 1">
+      <button 
+        class="pagination-btn"
+        (click)="onPageChange(studentsResult.pageNumber - 1)"
+        [disabled]="!studentsResult.hasPreviousPage"
+      >
+        <i class="fa-solid fa-chevron-left"></i>
+      </button>
+      <span *ngFor="let page of getPagesArray()">
+        <button 
+          class="pagination-btn"
+          (click)="onPageChange(page)"
+          [class.active]="page === studentsResult.pageNumber"
+        >
+          {{ page }}
+        </button>
+      </span>
+      <button 
+        class="pagination-btn"
+        (click)="onPageChange(studentsResult.pageNumber + 1)"
+        [disabled]="!studentsResult.hasNextPage"
+      >
+        <i class="fa-solid fa-chevron-right"></i>
+      </button>
+    </div>
+  </div>
+</div>

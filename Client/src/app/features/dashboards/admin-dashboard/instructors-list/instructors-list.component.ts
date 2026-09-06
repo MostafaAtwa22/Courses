@@ -1,11 +1,11 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { InstructorService } from '../../instructors/services/instructor.service';
-import { InstructorPrivateResponse } from '../../instructors/models/instructor.models';
-import { PaginatedResultModel } from '../../../shared/models/paginated-result.model';
-import { QueryParams, createQueryParams } from '../../../shared/models/query-params.model';
+import { InstructorService } from '../../../instructors/services/instructor.service';
+import { InstructorPrivateResponse } from '../../../instructors/models/instructor.models';
+import { PaginatedResultModel } from '../../../../shared/models/paginated-result.model';
+import { InstructorQueryParams, createInstructorQueryParams } from '../../../../shared/models/query-params.model';
 
 @Component({
   selector: 'app-instructors-list',
@@ -19,11 +19,22 @@ export class InstructorsListComponent implements OnInit {
   private router = inject(Router);
 
   instructorsResult: PaginatedResultModel<InstructorPrivateResponse> = new PaginatedResultModel<InstructorPrivateResponse>();
-  params: QueryParams = createQueryParams({ pageSize: 10 });
+  params: InstructorQueryParams = createInstructorQueryParams({ pageSize: 10 });
   searchQuery = '';
   statusFilter = '';
   sortBy = 'name';
+  sortDescending = false;
   isFilterDropdownOpen = false;
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent) {
+    const target = event.target as HTMLElement;
+    const dropdown = target.closest('.dropdown');
+    
+    if (!dropdown && this.isFilterDropdownOpen) {
+      this.isFilterDropdownOpen = false;
+    }
+  }
 
   ngOnInit() {
     this.loadInstructors();
@@ -31,11 +42,31 @@ export class InstructorsListComponent implements OnInit {
 
   toggleFilterDropdown() {
     this.isFilterDropdownOpen = !this.isFilterDropdownOpen;
+    console.log('Dropdown open:', this.isFilterDropdownOpen);
   }
 
   loadInstructors() {
-    this.params.searchTerm = this.searchQuery || '';
-    this.instructorService.getAllInstructors(this.params).subscribe({
+    // Build params object, only including properties with values
+    const params: InstructorQueryParams = {
+      pageNumber: this.params.pageNumber,
+      pageSize: this.params.pageSize,
+      sortDescending: this.sortDescending
+    };
+
+    // Only add optional params if they have values
+    if (this.searchQuery) {
+      params.searchTerm = this.searchQuery;
+    }
+    
+    if (this.statusFilter) {
+      params.status = this.statusFilter;
+    }
+    
+    if (this.sortBy) {
+      params.sortBy = this.sortBy;
+    }
+    
+    this.instructorService.getAllInstructors(params).subscribe({
       next: (res: PaginatedResultModel<InstructorPrivateResponse>) => {
         this.instructorsResult = res;
       }
@@ -45,6 +76,15 @@ export class InstructorsListComponent implements OnInit {
   onSearch() {
     this.params.pageNumber = 1;
     this.loadInstructors();
+  }
+
+  clearFilters() {
+    this.searchQuery = '';
+    this.statusFilter = '';
+    this.sortBy = '';
+    this.sortDescending = false;
+    this.onSearch();
+    this.isFilterDropdownOpen = false;
   }
 
   onPageChange(page: number) {
