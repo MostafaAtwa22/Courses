@@ -24,8 +24,8 @@ export class SidebarComponent {
 
   adminNavItems: NavItem[] = [
     { label: 'Admin Overview', icon: 'fa-solid fa-chart-line', route: '/admin/dashboard/overview' },
-    { label: 'Instructors', icon: 'fa-solid fa-user-tie', route: '/admin/dashboard/instructors', badge: '5 Pending', badgeColor: 'bg-warning' },
     { label: 'Admins', icon: 'fa-solid fa-user-shield', route: '/admin/dashboard/admins' },
+    { label: 'Instructors', icon: 'fa-solid fa-user-tie', route: '/admin/dashboard/instructors', badge: '5 Pending', badgeColor: 'bg-warning' },
     { label: 'Students', icon: 'fa-solid fa-user-graduate', route: '/admin/dashboard/students' },
     { label: 'Courses Catalog', icon: 'fa-solid fa-book-open', route: '/courses' },
     { label: 'User Management', icon: 'fa-solid fa-users-gear', route: '/admin/users' },

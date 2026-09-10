@@ -5,7 +5,7 @@ export interface DashboardMetric {
   change: string;
   isPositive: boolean;
   icon: string;
-  color: 'primary' | 'success' | 'warning' | 'info' | 'purple';
+  color: 'primary' | 'success' | 'warning' | 'info' | 'purple' | 'danger';
   description: string;
 }
 
@@ -65,4 +65,15 @@ export interface QuickAction {
   badge?: string;
   actionKey: string;
   colorClass: string;
+}
+
+export interface RoleStatistics {
+  superAdminCount: number;
+  superAdminChange: number;
+  adminCount: number;
+  adminChange: number;
+  instructorCount: number;
+  instructorChange: number;
+  studentCount: number;
+  studentChange: number;
 }

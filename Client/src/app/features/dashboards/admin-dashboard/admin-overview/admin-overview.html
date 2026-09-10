@@ -1,19 +1,22 @@
 <!-- Admin Top Banner -->
 <div class="admin-banner mb-4">
-  <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
-    <div>
-      <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-3 py-1 mb-2 rounded-pill">
-        <i class="fa-solid fa-user-shield me-1"></i> System Administrator Control Center
-      </span>
-      <h2 class="banner-title">Institution Management & Governance</h2>
-      <p class="banner-subtitle">Overview of platform metrics, instructor verifications, and active course catalogs.</p>
+  <div class="banner-content">
+    <div class="banner-header">
+      <div class="admin-badge">
+        <i class="fa-solid fa-shield-halved"></i>
+        <span>Admin Console</span>
+      </div>
+      <h1 class="banner-title">Platform Management</h1>
+      <p class="banner-subtitle">Monitor metrics, manage instructor verifications, and oversee course catalogs</p>
     </div>
-    <div class="d-flex align-items-center gap-2">
-      <button class="btn btn-outline-secondary d-flex align-items-center gap-2">
-        <i class="fa-solid fa-download"></i> System Audit Export
+    <div class="banner-actions">
+      <button class="action-btn action-btn--secondary">
+        <i class="fa-solid fa-file-export"></i>
+        <span>Export Report</span>
       </button>
-      <button class="btn btn-primary d-flex align-items-center gap-2" (click)="loadAdminData()">
-        <i class="fa-solid fa-sync"></i> Refresh Analytics
+      <button class="action-btn action-btn--primary" (click)="loadAdminData()">
+        <i class="fa-solid fa-arrows-rotate"></i>
+        <span>Refresh Data</span>
       </button>
     </div>
   </div>
@@ -21,92 +24,21 @@
 
 <!-- Key Metrics Row -->
 <div class="row g-3 mb-4">
-  <div class="col-12 col-sm-6 col-xl-3" *ngFor="let metric of metrics">
+  <div class="col-12 col-sm-6 col-xl-3" *ngFor="let metric of roleMetrics">
     <app-stat-card [metric]="metric"></app-stat-card>
   </div>
 </div>
 
 <!-- Main Admin Panels Grid -->
 <div class="row g-4 mb-4">
-  <!-- Left Panel: Pending Instructors & Top Courses -->
-  <div class="col-12 col-xl-8">
+  <!-- Full Width Panel: Pending Instructors & Top Courses -->
+  <div class="col-12">
     <div class="d-flex flex-column gap-4">
       <!-- Pending Instructor Verification Card -->
-      <div class="admin-card">
-        <div class="card-header d-flex justify-content-between align-items-center mb-3">
-          <div>
-            <h5 class="card-title">
-              <i class="fa-solid fa-user-clock text-warning me-2"></i> Pending Instructor Verifications
-            </h5>
-            <p class="card-subtitle text-muted">Review credentials and approve new instructor accounts</p>
-          </div>
-          <span class="badge bg-warning text-dark">{{ pendingInstructors.length }} Action Required</span>
-        </div>
-
-        <div class="verification-list" *ngIf="pendingInstructors.length > 0; else noPending">
-          <div class="verification-item" *ngFor="let item of paginatedPendingInstructors">
-            <img [src]="item.avatar" [alt]="item.name" class="applicant-avatar" />
-            <div class="applicant-info">
-              <h6 class="applicant-name">{{ item.name }}</h6>
-              <span class="applicant-expertise"><i class="fa-solid fa-graduation-cap me-1"></i>{{ item.expertise }}</span>
-              <small class="applicant-email text-muted d-block">{{ item.email }} &bull; Applied {{ item.appliedDate }}</small>
-            </div>
-            <div class="applicant-actions">
-              <button class="btn btn-sm btn-success me-2" (click)="approveInstructor(item.id, item.name)">
-                <i class="fa-solid fa-check me-1"></i> Approve
-              </button>
-              <button class="btn btn-sm btn-outline-danger" (click)="rejectInstructor(item.id, item.name)">
-                <i class="fa-solid fa-xmark me-1"></i> Decline
-              </button>
-            </div>
-          </div>
-          
-          <!-- Pagination -->
-          <div class="pagination-wrapper" *ngIf="pendingInstructorsTotalPages > 1">
-            <button 
-              class="pagination-btn"
-              (click)="onPendingInstructorsPageChange(pendingInstructorsCurrentPage - 1)"
-              [disabled]="pendingInstructorsCurrentPage === 1"
-            >
-              <i class="fa-solid fa-chevron-left"></i>
-            </button>
-            <span *ngFor="let page of getPendingInstructorsPagesArray()">
-              <button 
-                class="pagination-btn"
-                (click)="onPendingInstructorsPageChange(page)"
-                [class.active]="page === pendingInstructorsCurrentPage"
-              >
-                {{ page }}
-              </button>
-            </span>
-            <button 
-              class="pagination-btn"
-              (click)="onPendingInstructorsPageChange(pendingInstructorsCurrentPage + 1)"
-              [disabled]="pendingInstructorsCurrentPage === pendingInstructorsTotalPages"
-            >
-              <i class="fa-solid fa-chevron-right"></i>
-            </button>
-          </div>
-        </div>
-
-        <ng-template #noPending>
-          <div class="text-center py-4 text-muted">
-            <i class="fa-solid fa-circle-check text-success fs-2 mb-2 d-block"></i>
-            All instructor verifications are up to date!
-          </div>
-        </ng-template>
-      </div>
+      <app-pending-instructors-card [pendingInstructors]="pendingInstructors"></app-pending-instructors-card>
 
       <!-- Top Courses Performance Table -->
       <app-course-analytics [courses]="courses"></app-course-analytics>
-    </div>
-  </div>
-
-  <!-- Right Panel: Attendance & Activity Stream -->
-  <div class="col-12 col-xl-4">
-    <div class="d-flex flex-column gap-4">
-      <app-attendance-overview [summary]="attendance"></app-attendance-overview>
-      <app-recent-activity-log [activities]="activities"></app-recent-activity-log>
     </div>
   </div>
 </div>

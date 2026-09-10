@@ -107,11 +107,150 @@
 .filters-sidebar.open ~ .sidebar-overlay, .sidebar-overlay { opacity: 1; visibility: visible; }
 
 .admin-banner {
-  background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(16px);
-  border: 1px solid rgba(226, 232, 240, 0.9); border-radius: 20px;
-  padding: 1.75rem 2rem; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
-  .banner-title { font-size: 1.65rem; font-weight: 800; color: #0f172a; letter-spacing: -0.02em; margin-bottom: 0.25rem; }
-  .banner-subtitle { font-size: 0.92rem; color: #64748b; margin: 0; }
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.9) 100%);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(226, 232, 240, 0.6);
+  border-radius: 24px;
+  padding: 2rem 2.5rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.04), 0 2px 8px rgba(0, 0, 0, 0.02);
+
+  .banner-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+
+    @media (min-width: 768px) {
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+    }
+  }
+
+  .banner-header {
+    flex: 1;
+  }
+
+  .admin-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%);
+    color: white;
+    padding: 0.4rem 1rem;
+    border-radius: 50px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
+
+    &.badge-purple {
+      background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+      box-shadow: 0 4px 12px rgba(139, 92, 246, 0.25);
+    }
+
+    &.badge-red {
+      background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+      box-shadow: 0 4px 12px rgba(220, 38, 38, 0.25);
+    }
+
+    i {
+      font-size: 0.85rem;
+    }
+  }
+
+  .banner-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #0f172a;
+    letter-spacing: -0.03em;
+    margin-bottom: 0.5rem;
+    line-height: 1.2;
+  }
+
+  .banner-subtitle {
+    font-size: 0.95rem;
+    color: #64748b;
+    margin: 0;
+    line-height: 1.5;
+    max-width: 600px;
+  }
+
+  .banner-actions {
+    display: flex;
+    gap: 0.75rem;
+    flex-shrink: 0;
+  }
+
+  .action-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.25rem;
+    border-radius: 12px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    border: none;
+
+    i {
+      font-size: 0.9rem;
+    }
+
+    &--primary {
+      background: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%);
+      color: white;
+      box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(79, 70, 229, 0.4);
+      }
+
+      &:active {
+        transform: translateY(0);
+      }
+    }
+
+    &--secondary {
+      background: white;
+      color: #475569;
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+
+      &:hover {
+        background: #f8fafc;
+        border-color: #cbd5e1;
+        transform: translateY(-1px);
+      }
+
+      &:active {
+        transform: translateY(0);
+      }
+    }
+  }
+}
+
+:host-context(.dark) .admin-banner,
+:host-context(.dark-theme) .admin-banner {
+  background: linear-gradient(135deg, rgba(30, 41, 59, 0.95) 0%, rgba(15, 23, 42, 0.9) 100%);
+  border-color: rgba(51, 65, 85, 0.6);
+
+  .banner-title { color: #f8fafc; }
+  .banner-subtitle { color: #cbd5e1; }
+
+  .action-btn--secondary {
+    background: rgba(30, 41, 59, 0.8);
+    color: #cbd5e1;
+    border-color: rgba(71, 85, 105, 0.6);
+
+    &:hover {
+      background: rgba(15, 23, 42, 0.9);
+      border-color: rgba(99, 115, 137, 0.8);
+    }
+  }
 }
 
 .admin-card {
@@ -225,14 +364,6 @@
       &.btn-apply { background: #4f46e5; color: white; &:hover { background: #4338ca; } }
     }
   }
-}
-
-:host-context(.dark) .admin-banner,
-:host-context(.dark-theme) .admin-banner {
-  background: rgba(30, 41, 59, 0.85);
-  border-color: rgba(51, 65, 85, 0.8);
-  .banner-title { color: #f8fafc; }
-  .banner-subtitle { color: #cbd5e1; }
 }
 
 :host-context(.dark) .admin-card,

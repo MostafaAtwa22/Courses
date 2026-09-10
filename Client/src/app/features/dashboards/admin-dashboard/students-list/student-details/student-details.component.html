@@ -20,25 +20,10 @@
     </div>
   </div>
 
-  <!-- Statistics -->
-  <div class="row g-4 mb-4">
-    <div class="col-12 col-sm-6 col-lg-3">
-      <div class="stat-card">
-        <div class="stat-icon">
-          <i class="fa-solid fa-book-open"></i>
-        </div>
-        <div class="stat-content">
-          <span class="stat-value">{{ student.totalEnrollments || 0 }}</span>
-          <span class="stat-label">Total Enrollments</span>
-        </div>
-      </div>
-    </div>
-  </div>
-
   <!-- Details Grid -->
   <div class="row g-4 mb-4">
     <!-- Personal Information -->
-    <div class="col-12 col-lg-6">
+    <div class="col-12">
       <div class="admin-card">
         <div class="card-header mb-3">
           <h5 class="card-title">
@@ -67,7 +52,7 @@
     </div>
 
     <!-- Account Information -->
-    <div class="col-12 col-lg-6">
+    <div class="col-12">
       <div class="admin-card">
         <div class="card-header mb-3">
           <h5 class="card-title">
@@ -88,26 +73,6 @@
     </div>
   </div>
 
-  <!-- Actions -->
-  <div class="row g-4">
-    <div class="col-12">
-      <div class="admin-card">
-        <div class="card-header mb-3">
-          <h5 class="card-title">
-            <i class="fa-solid fa-gears me-2"></i> Account Actions
-          </h5>
-        </div>
-        <div class="actions-row">
-          <button 
-            class="btn btn-outline-danger"
-            (click)="deleteStudent()"
-          >
-            <i class="fa-solid fa-trash me-2"></i> Delete Student
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
 </div>
 
 <!-- Loading State -->

@@ -1,22 +1,23 @@
 <div class="instructors-list-container">
   <!-- Page Header -->
   <div class="admin-banner mb-4">
-    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
-      <div>
-        <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-1 mb-2 rounded-pill">
-          <i class="fa-solid fa-user-tie me-1"></i> Instructors Management
-        </span>
-        <h2 class="banner-title">All Instructors</h2>
-        <p class="banner-subtitle">View, verify, and manage instructor accounts across the platform.</p>
+    <div class="banner-content">
+      <div class="banner-header">
+        <div class="admin-badge">
+          <i class="fa-solid fa-chalkboard-user"></i>
+          <span>Instructors Console</span>
+        </div>
+        <h1 class="banner-title">Instructor Management</h1>
+        <p class="banner-subtitle">View, verify, and manage instructor accounts across the platform</p>
       </div>
-      <div class="d-flex align-items-center gap-2">
-        <!-- Filter Toggle Button -->
-        <button class="btn-filter-toggle" (click)="toggleFilterDropdown(); $event.stopPropagation()">
+      <div class="banner-actions">
+        <button class="action-btn action-btn--secondary" (click)="toggleFilterDropdown(); $event.stopPropagation()">
           <i class="fa-solid fa-sliders"></i>
           <span>Filters</span>
         </button>
-        <button class="btn btn-primary d-flex align-items-center gap-2" (click)="loadInstructors()">
-          <i class="fa-solid fa-sync"></i> Refresh
+        <button class="action-btn action-btn--primary" (click)="loadInstructors()">
+          <i class="fa-solid fa-arrows-rotate"></i>
+          <span>Refresh</span>
         </button>
       </div>
     </div>
@@ -106,15 +107,22 @@
   <!-- Overlay for sidebar -->
   <div class="sidebar-overlay" *ngIf="isFilterDropdownOpen" (click)="isFilterDropdownOpen = false"></div>
 
+  <!-- Instructor Status Statistics -->
+  <div class="row g-3 mb-4" *ngIf="instructorStatusMetrics.length > 0">
+    <div class="col-12 col-md-4" *ngFor="let metric of instructorStatusMetrics">
+      <app-stat-card [metric]="metric"></app-stat-card>
+    </div>
+  </div>
+
   <!-- Search -->
   <div class="admin-card mb-4">
     <div class="filters-row">
       <div class="search-input-wrapper">
         <i class="fa-solid fa-search search-icon"></i>
-        <input 
-          type="text" 
-          [(ngModel)]="searchQuery" 
-          placeholder="Search by name, email, or title..." 
+        <input
+          type="text"
+          [(ngModel)]="searchQuery"
+          placeholder="Search by name, email, or title..."
           (keyup.enter)="onSearch()"
           class="search-input"
         >
