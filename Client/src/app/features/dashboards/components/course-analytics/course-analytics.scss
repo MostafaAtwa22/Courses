@@ -3,7 +3,7 @@
   backdrop-filter: blur(12px);
   border: 1px solid rgba(226, 232, 240, 0.8);
   border-radius: 16px;
-  padding: 1.25rem 1.5rem;
+  padding: 1.5rem;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
 
   .card-title {
@@ -14,38 +14,90 @@
   }
 
   .card-subtitle {
-    font-size: 0.78rem;
+    font-size: 0.8rem;
     margin: 0;
+    color: #64748b;
   }
 
   .text-indigo { color: #4f46e5; }
 
+  .btn-outline-secondary {
+    border-color: #e2e8f0;
+    color: #475569;
+    background: white;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    font-weight: 600;
+    padding: 0.5rem 1rem;
+
+    &:hover {
+      background: #f8fafc;
+      border-color: #cbd5e1;
+      color: #0f172a;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+  }
+
+  .table-responsive {
+    overflow-x: auto;
+    background: transparent !important;
+  }
+
+  .table-responsive .table,
   .custom-table {
     margin: 0;
+    width: 100%;
+    border-collapse: collapse;
+    background: transparent !important;
+    --bs-table-bg: transparent !important;
 
     th {
-      font-size: 0.78rem;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-      color: #64748b;
+      padding: 1rem;
+      text-align: left;
       font-weight: 700;
-      border-bottom: 1px solid #f1f5f9;
-      padding: 0.75rem 0.5rem;
+      font-size: 0.85rem;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border-bottom: 2px solid #e2e8f0;
+      background: transparent !important;
+      --bs-table-bg: transparent !important;
+    }
+
+    tbody tr {
+      transition: background-color 0.2s ease;
+      background: transparent !important;
+      --bs-table-bg: transparent !important;
+
+      &:hover {
+        background-color: #f8fafc !important;
+        --bs-table-bg: #f8fafc !important;
+      }
     }
 
     td {
-      padding: 0.85rem 0.5rem;
-      border-bottom: 1px solid #f8fafc;
-      font-size: 0.85rem;
+      padding: 1rem;
+      border-bottom: 1px solid #f1f5f9;
+      vertical-align: middle;
+      color: #334155;
+      background: transparent !important;
+      --bs-table-bg: transparent !important;
     }
 
     .course-info {
       display: flex;
       flex-direction: column;
+      gap: 0.25rem;
 
       .course-title {
-        font-weight: 700;
-        color: #1e293b;
+        font-weight: 600;
+        color: #0f172a;
+        font-size: 0.9rem;
       }
 
       .course-category {
@@ -54,20 +106,43 @@
       }
     }
 
-    .completion-val {
-      font-size: 0.78rem;
-      font-weight: 700;
-      color: #334155;
+    .instructor-name {
+      font-weight: 600;
+      color: #475569;
+      font-size: 0.875rem;
     }
 
     .rating-badge {
-      font-weight: 700;
+      font-weight: 600;
       color: #0f172a;
-      font-size: 0.82rem;
+      font-size: 0.85rem;
+
+      .rating-icon {
+        color: #f59e0b;
+      }
+    }
+
+    .badge {
+      background: rgba(248, 250, 252, 0.9);
+      border: 1px solid #e2e8f0;
+      color: #475569;
+      font-weight: 500;
+      font-size: 0.8rem;
+      padding: 0.35rem 0.65rem;
+      border-radius: 6px;
+
+      &.students-badge .students-icon {
+        color: #4f46e5;
+      }
+
+      &.sections-badge .sections-icon {
+        color: #0ea5e9;
+      }
     }
   }
 }
 
+/* Dark mode styles */
 :host-context(.dark) .analytics-card,
 :host-context(.dark-theme) .analytics-card {
   background: rgba(30, 41, 59, 0.85);
@@ -75,17 +150,78 @@
 
   .card-title { color: #f8fafc; }
 
+  .card-subtitle { color: #cbd5e1; }
+
+  .text-muted { color: #cbd5e1 !important; }
+
+  .btn-outline-secondary {
+    background: rgba(30, 41, 59, 0.8);
+    color: #cbd5e1;
+    border-color: rgba(71, 85, 105, 0.6);
+    font-weight: 600;
+    padding: 0.5rem 1rem;
+
+    &:hover {
+      background: rgba(15, 23, 42, 0.9);
+      border-color: rgba(99, 115, 137, 0.8);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+  }
+
+  .table-responsive {
+    overflow-x: auto;
+    background: transparent !important;
+  }
+
+  .table-responsive .table,
   .custom-table {
+    background: transparent !important;
+    --bs-table-bg: transparent !important;
+
     th {
       color: #94a3b8;
       border-bottom-color: rgba(51, 65, 85, 0.5);
+      background: transparent !important;
+      --bs-table-bg: transparent !important;
     }
+
+    tbody tr {
+      background: transparent !important;
+      --bs-table-bg: transparent !important;
+
+      &:hover {
+        background-color: rgba(15, 23, 42, 0.5) !important;
+        --bs-table-bg: rgba(15, 23, 42, 0.5) !important;
+      }
+    }
+
     td {
       border-bottom-color: rgba(51, 65, 85, 0.3);
+      color: #cbd5e1;
+      background: transparent !important;
+      --bs-table-bg: transparent !important;
     }
-    .course-info .course-title { color: #f1f5f9; }
+
+    .course-info .course-title { color: #f8fafc; }
     .course-info .course-category { color: #64748b; }
-    .completion-val { color: #cbd5e1; }
+    .instructor-name { color: #cbd5e1; }
     .rating-badge { color: #f8fafc; }
+    .badge {
+      background: rgba(15, 23, 42, 0.5);
+      border-color: rgba(51, 65, 85, 0.5);
+      color: #cbd5e1;
+
+      &.students-badge .students-icon {
+        color: #818cf8;
+      }
+
+      &.sections-badge .sections-icon {
+        color: #38bdf8;
+      }
+    }
+
+    .rating-badge .rating-icon {
+      color: #fbbf24;
+    }
   }
 }

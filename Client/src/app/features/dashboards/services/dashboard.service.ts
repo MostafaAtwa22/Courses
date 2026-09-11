@@ -152,9 +152,11 @@ export class DashboardService {
 
   getCoursesAnalytics(): Observable<CourseAnalytics[]> {
     return of([
-      { id: 'c1', title: 'Advanced Full-Stack Web Development', category: 'Computer Science', instructor: 'Dr. Sarah Jenkins', enrolledStudents: 412, completionRate: 92, avgRating: 4.9, status: 'Active', progressColor: '#4f46e5' },
-      { id: 'c2', title: 'Data Structures & Algorithms in Python', category: 'Software Engineering', instructor: 'Prof. Alex Rivera', enrolledStudents: 380, completionRate: 85, avgRating: 4.8, status: 'Active', progressColor: '#06b6d4' },
-      { id: 'c3', title: 'UI/UX Design Systems & Micro-Interactions', category: 'Design & Arts', instructor: 'Elena Rostova', enrolledStudents: 295, completionRate: 78, avgRating: 4.7, status: 'Active', progressColor: '#ec4899' }
+      { id: 'c1', title: 'Advanced Full-Stack Web Development', category: 'Computer Science', instructor: 'Dr. Sarah Jenkins', enrolledStudents: 412, completionRate: 92, avgRating: 4.9, status: 'Active', progressColor: '#4f46e5', sectionsCount: 24 },
+      { id: 'c2', title: 'Data Structures & Algorithms in Python', category: 'Software Engineering', instructor: 'Prof. Alex Rivera', enrolledStudents: 380, completionRate: 85, avgRating: 4.8, status: 'Active', progressColor: '#06b6d4', sectionsCount: 18 },
+      { id: 'c3', title: 'UI/UX Design Systems & Micro-Interactions', category: 'Design & Arts', instructor: 'Elena Rostova', enrolledStudents: 295, completionRate: 78, avgRating: 4.7, status: 'Active', progressColor: '#ec4899', sectionsCount: 15 },
+      { id: 'c4', title: 'Machine Learning Fundamentals', category: 'Data Science', instructor: 'Dr. Michael Chen', enrolledStudents: 267, completionRate: 81, avgRating: 4.6, status: 'Active', progressColor: '#10b981', sectionsCount: 20 },
+      { id: 'c5', title: 'Cloud Architecture with AWS', category: 'DevOps', instructor: 'Sarah Williams', enrolledStudents: 198, completionRate: 76, avgRating: 4.5, status: 'Active', progressColor: '#f59e0b', sectionsCount: 16 }
     ]);
   }
 

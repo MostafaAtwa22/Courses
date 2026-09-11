@@ -31,9 +31,12 @@
 
 <!-- Main Admin Panels Grid -->
 <div class="row g-4 mb-4">
-  <!-- Full Width Panel: Pending Instructors & Top Courses -->
+  <!-- Full Width Panel: Category Histogram, Pending Instructors & Top Courses -->
   <div class="col-12">
     <div class="d-flex flex-column gap-4">
+      <!-- Category Histogram Card -->
+      <app-category-histogram-card [categoryData]="categoryHistogramData"></app-category-histogram-card>
+
       <!-- Pending Instructor Verification Card -->
       <app-pending-instructors-card [pendingInstructors]="pendingInstructors"></app-pending-instructors-card>
 

@@ -1,0 +1,75 @@
+<div class="modal-overlay" (click)="onClose()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2 class="modal-title">
+        <i class="fa-solid fa-tags"></i>
+        {{ category ? 'Edit Category' : 'Create New Category' }}
+      </h2>
+      <button class="modal-close-btn" (click)="onClose()">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+
+    <div class="modal-body">
+      <form (ngSubmit)="onSubmit()">
+        <div class="form-group">
+          <label for="categoryName">Category Name *</label>
+          <input 
+            type="text" 
+            id="categoryName"
+            name="categoryName"
+            [(ngModel)]="formData.name"
+            (input)="generateSlug()"
+            placeholder="e.g., Web Development"
+            class="form-control"
+            required
+          >
+          <small class="form-hint">The display name for the category</small>
+        </div>
+
+        <div class="form-group">
+          <label for="categorySlug">Slug *</label>
+          <div class="input-group">
+            <input 
+              type="text" 
+              id="categorySlug"
+              name="categorySlug"
+              [(ngModel)]="formData.slug"
+              placeholder="e.g., web-development"
+              class="form-control"
+              required
+            >
+            <button 
+              type="button" 
+              class="btn-regenerate"
+              (click)="generateSlug()"
+              title="Regenerate from name"
+            >
+              <i class="fa-solid fa-rotate"></i>
+            </button>
+          </div>
+          <small class="form-hint">URL-friendly identifier (auto-generated from name)</small>
+        </div>
+
+        <div class="modal-footer">
+          <button 
+            type="button" 
+            class="btn btn-secondary"
+            (click)="onClose()"
+            [disabled]="isSubmitting"
+          >
+            Cancel
+          </button>
+          <button 
+            type="submit" 
+            class="btn btn-primary"
+            [disabled]="isSubmitting"
+          >
+            <i *ngIf="isSubmitting" class="fa-solid fa-spinner fa-spin me-2"></i>
+            {{ isSubmitting ? 'Saving...' : (category ? 'Update Category' : 'Create Category') }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

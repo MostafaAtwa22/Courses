@@ -1,0 +1,43 @@
+@import '../shared/admin-list-shared';
+
+.categories-list-container {
+  .category-name {
+    font-weight: 600;
+    color: #0f172a;
+  }
+
+  .category-slug {
+    font-family: 'Courier New', monospace;
+    font-size: 0.85rem;
+    color: #64748b;
+    background: rgba(226, 232, 240, 0.5);
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+  }
+
+  .course-count {
+    font-weight: 700;
+    color: #4f46e5;
+    background: rgba(79, 70, 229, 0.1);
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+  }
+}
+
+:host-context(.dark) .categories-list-container,
+:host-context(.dark-theme) .categories-list-container {
+  .category-name {
+    color: #f8fafc;
+  }
+
+  .category-slug {
+    color: #cbd5e1;
+    background: rgba(51, 65, 85, 0.5);
+  }
+
+  .course-count {
+    color: #818cf8;
+    background: rgba(79, 70, 229, 0.2);
+  }
+}

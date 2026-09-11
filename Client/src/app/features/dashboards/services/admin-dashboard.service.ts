@@ -3,7 +3,8 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
-import { DashboardMetric } from '../models/dashboard.model';
+import { DashboardMetric, CategoryHistogramData, CourseAnalytics } from '../models/dashboard.model';
+import { CategoryService } from '../../categories/services/category.service';
 
 export interface RoleStatistics {
   superAdminCount: number;
@@ -69,6 +70,7 @@ export interface InstructorItem {
 })
 export class AdminDashboardService {
   private http = inject(HttpClient);
+  private categoryService = inject(CategoryService);
   private apiUrl = `${environment.apiUrl}/api/admin/dashboard`;
 
   getRoleStatistics(): Observable<DashboardMetric[]> {
@@ -153,5 +155,47 @@ export class AdminDashboardService {
 
   changeInstructorStatus(id: string, status: string): Observable<void> {
     return this.http.put<void>(`${environment.apiUrl}/instructors/admin/${id}/status`, { status });
+  }
+
+  getTopCategoriesByCourseCount(): Observable<CategoryHistogramData[]> {
+    return this.categoryService.getAll({ pageNumber: 1, pageSize: 100 }).pipe(
+      map((response) => {
+        const sortedCategories = response.items
+          .sort((a: any, b: any) => b.numberOfCourses - a.numberOfCourses)
+          .slice(0, 10);
+
+        return sortedCategories.map((category: any) => ({
+          id: category.id,
+          categoryName: category.name,
+          courseCount: category.numberOfCourses
+        }));
+      })
+    );
+  }
+
+  getTopPerformingCourses(limit: number = 5): Observable<CourseAnalytics[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/courses/top-performing`, {
+      params: { limit: limit.toString() }
+    }).pipe(
+      map((courses) => courses.map((course) => ({
+        id: course.id,
+        title: course.title,
+        category: course.category,
+        instructor: course.instructorName,
+        enrolledStudents: course.enrolledStudents,
+        completionRate: course.completionRate,
+        avgRating: course.averageRating,
+        status: course.status,
+        progressColor: this.getProgressColor(course.averageRating),
+        sectionsCount: course.sectionsCount
+      })))
+    );
+  }
+
+  private getProgressColor(rating: number): string {
+    if (rating >= 4.5) return '#10b981';
+    if (rating >= 4.0) return '#4f46e5';
+    if (rating >= 3.5) return '#f59e0b';
+    return '#ef4444';
   }
 }

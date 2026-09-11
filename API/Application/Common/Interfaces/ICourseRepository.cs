@@ -11,6 +11,7 @@ namespace Application.Common.Interfaces
         Task<PaginatedResult<CourseSummaryDto>> GetCoursesByStudentIdAsync(Guid studentId, CourseQueryParams queryParams, CancellationToken ct = default!);
         Task<PaginatedResult<CourseSummaryDto>> GetCoursesByInstructorIdAsync(Guid instructorId, CourseQueryParams queryParams, CancellationToken ct = default!);
         Task<PaginatedResult<CourseSummaryDto>> GetPublishedCoursesByInstructorIdAsync(Guid instructorId, CourseQueryParams queryParams, CancellationToken ct = default!);
+        Task<IEnumerable<AdminCourseAnalyticsDto>> GetTopPerformingCoursesAsync(int limit, CancellationToken ct = default!);
         Task<Guid> CreateAsync(Course course, CancellationToken ct = default!);
         Task UpdateAsync(Course course, CancellationToken ct = default!);
         Task DeleteAsync(Guid id, CancellationToken ct = default!);

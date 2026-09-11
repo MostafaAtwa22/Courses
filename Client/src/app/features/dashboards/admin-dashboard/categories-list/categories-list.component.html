@@ -1,0 +1,207 @@
+<div class="categories-list-container">
+  <!-- Page Header -->
+  <div class="admin-banner mb-4">
+    <div class="banner-content">
+      <div class="banner-header">
+        <div class="admin-badge badge-red">
+          <i class="fa-solid fa-tags"></i>
+          <span>Categories Console</span>
+        </div>
+        <h1 class="banner-title">Category Management</h1>
+        <p class="banner-subtitle">Create, edit, and manage course categories across the platform</p>
+      </div>
+      <div class="banner-actions">
+        <button class="action-btn action-btn--secondary" (click)="toggleFilterDropdown(); $event.stopPropagation()">
+          <i class="fa-solid fa-sliders"></i>
+          <span>Filters</span>
+        </button>
+        <button class="action-btn action-btn--primary" (click)="loadCategories()">
+          <i class="fa-solid fa-arrows-rotate"></i>
+          <span>Refresh</span>
+        </button>
+        <button class="action-btn action-btn--primary" (click)="openCreateModal()">
+          <i class="fa-solid fa-plus"></i>
+          <span>New Category</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filters Sidebar -->
+  <aside class="filters-sidebar" [class.open]="isFilterDropdownOpen">
+    <div class="sidebar-header">
+      <h3>Filters</h3>
+      <button class="sidebar-close-btn" (click)="isFilterDropdownOpen = false">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+
+    <div class="filter-group">
+      <h3>Sort By</h3>
+      <div class="radio-group">
+        <label>
+          <input type="radio" name="sortBy" [value]="''" [(ngModel)]="sortBy" (change)="onSearch()">
+          Default
+        </label>
+        <label>
+          <input type="radio" name="sortBy" [value]="'name'" [(ngModel)]="sortBy" (change)="onSearch()">
+          Name
+        </label>
+        <label>
+          <input type="radio" name="sortBy" [value]="'slug'" [(ngModel)]="sortBy" (change)="onSearch()">
+          Slug
+        </label>
+        <label>
+          <input type="radio" name="sortBy" [value]="'numberOfCourses'" [(ngModel)]="sortBy" (change)="onSearch()">
+          Course Count
+        </label>
+      </div>
+    </div>
+
+    <div class="filter-group">
+      <h3>Sort Order</h3>
+      <div class="radio-group">
+        <label>
+          <input type="radio" name="sortOrder" [value]="false" [(ngModel)]="sortDescending" (change)="onSearch()">
+          Ascending
+        </label>
+        <label>
+          <input type="radio" name="sortOrder" [value]="true" [(ngModel)]="sortDescending" (change)="onSearch()">
+          Descending
+        </label>
+      </div>
+    </div>
+
+    <div class="sidebar-footer">
+      <button class="btn-clear" (click)="clearFilters()">
+        <i class="fa-solid fa-times me-1"></i> Clear Filters
+      </button>
+      <button class="btn-apply" (click)="isFilterDropdownOpen = false">
+        <i class="fa-solid fa-check me-1"></i> Show Results
+      </button>
+    </div>
+  </aside>
+
+  <!-- Overlay for sidebar -->
+  <div class="sidebar-overlay" *ngIf="isFilterDropdownOpen" (click)="isFilterDropdownOpen = false"></div>
+
+  <!-- Search -->
+  <div class="admin-card mb-4">
+    <div class="filters-row">
+      <div class="search-input-wrapper">
+        <i class="fa-solid fa-search search-icon"></i>
+        <input 
+          type="text" 
+          [(ngModel)]="searchQuery" 
+          placeholder="Search by name or slug..." 
+          (keyup.enter)="onSearch()"
+          class="search-input"
+        >
+      </div>
+    </div>
+  </div>
+
+  <!-- Categories Table -->
+  <div class="admin-card">
+    <div class="table-responsive">
+      <table class="categories-table" *ngIf="categoriesResult.items.length > 0">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Slug</th>
+            <th>Course Count</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let category of categoriesResult.items">
+            <td>
+              <span class="category-name">{{ category.name }}</span>
+            </td>
+            <td>
+              <span class="category-slug">{{ category.slug }}</span>
+            </td>
+            <td>
+              <span class="course-count">{{ category.numberOfCourses }}</span>
+            </td>
+            <td>
+              <div class="actions">
+                <button 
+                  class="btn-action btn-view"
+                  (click)="openEditModal(category)"
+                  title="Edit Category"
+                >
+                  <i class="fa-solid fa-pen"></i>
+                </button>
+                <button 
+                  class="btn-action btn-delete"
+                  (click)="deleteCategory(category.id, category.name)"
+                  title="Delete Category"
+                >
+                  <i class="fa-solid fa-trash"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Empty State -->
+      <div class="empty-state" *ngIf="categoriesResult.items.length === 0">
+        <div class="empty-state-icon">
+          <i class="fa-solid fa-tags"></i>
+        </div>
+        <h3 class="empty-state-title">No Categories Found</h3>
+        <p class="empty-state-message">
+          <span *ngIf="searchQuery">
+            No categories match your current search. Try adjusting your search criteria.
+          </span>
+          <span *ngIf="!searchQuery">
+            There are no categories in the system yet. Create your first category to get started.
+          </span>
+        </p>
+        <button class="btn-clear-filters" *ngIf="searchQuery" (click)="clearFilters()">
+          <i class="fa-solid fa-filter-circle-xmark me-2"></i> Clear Filters
+        </button>
+        <button class="btn-clear-filters" *ngIf="!searchQuery" (click)="openCreateModal()">
+          <i class="fa-solid fa-plus me-2"></i> Create Category
+        </button>
+      </div>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination-wrapper" *ngIf="categoriesResult.totalPages > 1">
+      <button 
+        class="pagination-btn"
+        (click)="onPageChange(categoriesResult.pageNumber - 1)"
+        [disabled]="!categoriesResult.hasPreviousPage"
+      >
+        <i class="fa-solid fa-chevron-left"></i>
+      </button>
+      <span *ngFor="let page of getPagesArray()">
+        <button 
+          class="pagination-btn"
+          (click)="onPageChange(page)"
+          [class.active]="page === categoriesResult.pageNumber"
+        >
+          {{ page }}
+        </button>
+      </span>
+      <button 
+        class="pagination-btn"
+        (click)="onPageChange(categoriesResult.pageNumber + 1)"
+        [disabled]="!categoriesResult.hasNextPage"
+      >
+        <i class="fa-solid fa-chevron-right"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Category Modal -->
+  <app-category-modal 
+    *ngIf="isModalOpen"
+    [category]="editingCategory"
+    (close)="closeModal()"
+    (submit)="onModalSubmit()"
+  ></app-category-modal>
+</div>

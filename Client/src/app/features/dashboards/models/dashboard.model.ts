@@ -15,10 +15,11 @@ export interface CourseAnalytics {
   category: string;
   instructor: string;
   enrolledStudents: number;
-  completionRate: number; // 0 - 100
+  completionRate: number; 
   avgRating: number;
   status: 'Active' | 'Draft' | 'Archived';
   progressColor: string;
+  sectionsCount: number;
 }
 
 export interface AttendanceSummary {
@@ -76,4 +77,10 @@ export interface RoleStatistics {
   instructorChange: number;
   studentCount: number;
   studentChange: number;
+}
+
+export interface CategoryHistogramData {
+  id: string;
+  categoryName: string;
+  courseCount: number;
 }

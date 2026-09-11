@@ -1,7 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../../../environments/environment';
-import { CategoryRequest, CategoryResponse } from '../models/category.models';
+import { CategoryRequest, CategoryResponse, CategoryCreateDto, CategoryUpdateDto } from '../models/category.models';
 import { PaginatedResultModel } from '../../../shared/models/paginated-result.model';
 import { QueryParams } from '../../../shared/models/query-params.model';
 import { map, Observable } from 'rxjs';
@@ -41,11 +41,11 @@ export class CategoryService {
     return this.http.get<CategoryResponse>(`${this.apiUrl}/${id}`);
   }
 
-  create(category: CategoryRequest): Observable<string> {
+  create(category: CategoryCreateDto): Observable<string> {
     return this.http.post<string>(this.apiUrl, category);
   }
 
-  update(id: string, category: CategoryRequest): Observable<void> {
+  update(id: string, category: CategoryUpdateDto): Observable<void> {
     return this.http.put<void>(`${this.apiUrl}/${id}`, category);
   }
 

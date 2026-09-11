@@ -4,11 +4,13 @@ import { FormsModule } from '@angular/forms';
 import { StatCardComponent } from '../../../../shared/components/stat-card/stat-card';
 import { CourseAnalyticsComponent } from '../../components/course-analytics/course-analytics';
 import { PendingInstructorsCardComponent } from './pending-instructors-card/pending-instructors-card.component';
+import { CategoryHistogramCardComponent } from './category-histogram-card/category-histogram-card.component';
 import { AdminDashboardService, PendingInstructor } from '../../services/admin-dashboard.service';
 import { DashboardService } from '../../services/dashboard.service';
 import {
   DashboardMetric,
-  CourseAnalytics
+  CourseAnalytics,
+  CategoryHistogramData
 } from '../../models/dashboard.model';
 
 @Component({
@@ -19,6 +21,7 @@ import {
     FormsModule,
     StatCardComponent,
     CourseAnalyticsComponent,
+    CategoryHistogramCardComponent,
     PendingInstructorsCardComponent
   ],
   templateUrl: './admin-overview.html',
@@ -32,6 +35,7 @@ export class AdminOverviewComponent implements OnInit {
   roleMetrics: DashboardMetric[] = [];
   courses: CourseAnalytics[] = [];
   pendingInstructors: PendingInstructor[] = [];
+  categoryHistogramData: CategoryHistogramData[] = [];
 
   ngOnInit() {
     this.loadAdminData();
@@ -40,7 +44,8 @@ export class AdminOverviewComponent implements OnInit {
   loadAdminData() {
     this.dashboardService.getAdminMetrics().subscribe(m => (this.metrics = m));
     this.adminDashboardService.getRoleStatistics().subscribe(rm => (this.roleMetrics = rm));
-    this.dashboardService.getCoursesAnalytics().subscribe(c => (this.courses = c));
+    this.adminDashboardService.getTopPerformingCourses().subscribe(c => (this.courses = c));
     this.adminDashboardService.getPendingInstructors().subscribe(pi => (this.pendingInstructors = pi));
+    this.adminDashboardService.getTopCategoriesByCourseCount().subscribe(ch => (this.categoryHistogramData = ch));
   }
 }
