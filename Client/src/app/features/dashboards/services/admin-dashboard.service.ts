@@ -6,6 +6,11 @@ import { environment } from '../../../../environments/environment';
 import { DashboardMetric, CategoryHistogramData, CourseAnalytics } from '../models/dashboard.model';
 import { CategoryService } from '../../categories/services/category.service';
 
+export interface EnrollmentStatistics {
+  period: string;
+  enrollmentCount: number;
+}
+
 export interface RoleStatistics {
   superAdminCount: number;
   superAdminChange: number;
@@ -197,5 +202,9 @@ export class AdminDashboardService {
     if (rating >= 4.0) return '#4f46e5';
     if (rating >= 3.5) return '#f59e0b';
     return '#ef4444';
+  }
+
+  getEnrollmentStatistics(): Observable<EnrollmentStatistics[]> {
+    return this.http.get<EnrollmentStatistics[]>(`${this.apiUrl}/enrollment-statistics`);
   }
 }

@@ -124,16 +124,20 @@
       <table class="students-table" *ngIf="studentsResult.items.length > 0">
         <thead>
           <tr>
+            <th>ID</th>
             <th>Student</th>
             <th>Email</th>
             <th>Username</th>
             <th>Gender</th>
             <th>Total Enrollments</th>
+            <th>Created At</th>
+            <th>Updated At</th>
             <th>Actions</th>
           </tr>
         </thead>
         <tbody>
           <tr *ngFor="let student of studentsResult.items">
+            <td><span class="id-cell">{{ student.id.substring(0, 8) }}...</span></td>
             <td>
               <div class="student-cell">
                 <img [src]="student.profilePicture || (student.gender === 'Female' ? 'assets/users/default-female.png' : 'assets/users/default-male.png')" [alt]="student.firstName" class="student-avatar" />
@@ -146,6 +150,8 @@
             <td>{{ student.userName }}</td>
             <td>{{ student.gender }}</td>
             <td>{{ student.totalEnrollments }}</td>
+            <td>{{ student.createdAt | date: 'short' }}</td>
+            <td>{{ student.updatedAt | date: 'short' }}</td>
             <td>
               <div class="actions">
                 <button 

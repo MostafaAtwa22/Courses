@@ -1,5 +1,6 @@
 using API.Endpoints;
 using Application.DTOs.AdminDashboard;
+using Application.Features.AdminDashboard.Queries.GetEnrollmentStatistics;
 using Application.Features.AdminDashboard.Queries.GetRoleStatistics;
 using FluentAssertions;
 using MediatR;
@@ -67,6 +68,66 @@ namespace API.Tests.Endpoints
 
             // Assert
             _mediatorMock.Verify(m => m.Send(It.IsAny<GetRoleStatisticsQuery>(), It.IsAny<CancellationToken>()), Times.Once);
+        }
+
+        [Fact]
+        public async Task GetEnrollmentStatistics_ShouldReturnOk_WithEnrollmentStatistics()
+        {
+            // Arrange
+            var expectedData = new List<EnrollmentStatisticsDto>
+            {
+                new() { Period = "Jan", EnrollmentCount = 100 },
+                new() { Period = "Feb", EnrollmentCount = 150 },
+                new() { Period = "Mar", EnrollmentCount = 200 }
+            };
+
+            _mediatorMock.Setup(m => m.Send(It.IsAny<GetEnrollmentStatisticsQuery>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(expectedData);
+
+            // Act
+            var result = await AdminDashboardEndpoints.GetEnrollmentStatistics(_mediatorMock.Object);
+
+            // Assert
+            var okResult = result as Ok<IEnumerable<EnrollmentStatisticsDto>>;
+            okResult.Should().NotBeNull();
+            okResult!.Value.Should().BeEquivalentTo(expectedData);
+        }
+
+        [Fact]
+        public async Task GetEnrollmentStatistics_ShouldCallMediator_Once()
+        {
+            // Arrange
+            var expectedData = new List<EnrollmentStatisticsDto>
+            {
+                new() { Period = "Jan", EnrollmentCount = 100 }
+            };
+
+            _mediatorMock.Setup(m => m.Send(It.IsAny<GetEnrollmentStatisticsQuery>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(expectedData);
+
+            // Act
+            await AdminDashboardEndpoints.GetEnrollmentStatistics(_mediatorMock.Object);
+
+            // Assert
+            _mediatorMock.Verify(m => m.Send(It.IsAny<GetEnrollmentStatisticsQuery>(), It.IsAny<CancellationToken>()), Times.Once);
+        }
+
+        [Fact]
+        public async Task GetEnrollmentStatistics_ShouldReturnEmptyList_WhenNoData()
+        {
+            // Arrange
+            var expectedData = new List<EnrollmentStatisticsDto>();
+
+            _mediatorMock.Setup(m => m.Send(It.IsAny<GetEnrollmentStatisticsQuery>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(expectedData);
+
+            // Act
+            var result = await AdminDashboardEndpoints.GetEnrollmentStatistics(_mediatorMock.Object);
+
+            // Assert
+            var okResult = result as Ok<IEnumerable<EnrollmentStatisticsDto>>;
+            okResult.Should().NotBeNull();
+            okResult!.Value.Should().BeEmpty();
         }
     }
 }

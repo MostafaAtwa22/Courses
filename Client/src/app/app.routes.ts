@@ -116,6 +116,10 @@ export const routes: Routes = [
             {
                 path: 'categories',
                 loadComponent: () => import('./features/dashboards/admin-dashboard/categories-list/categories-list.component').then(m => m.CategoriesListComponent)
+            },
+            {
+                path: 'courses',
+                loadComponent: () => import('./features/dashboards/admin-dashboard/courses-list/courses-list.component').then(m => m.CoursesListComponent)
             }
         ]
     },

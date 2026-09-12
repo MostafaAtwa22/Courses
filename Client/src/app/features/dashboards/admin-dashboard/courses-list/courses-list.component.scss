@@ -1,0 +1,123 @@
+@import '../shared/admin-list-shared';
+
+.courses-list-container {
+  position: relative;
+  overflow: visible;
+
+  .admin-card {
+    .table-responsive {
+      .courses-table {
+        .course-cell {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+
+          .course-thumbnail {
+            width: 60px;
+            height: 40px;
+            object-fit: cover;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+          }
+
+          .course-info {
+            display: flex;
+            flex-direction: column;
+
+            .course-title {
+              font-weight: 500;
+              color: var(--text-primary);
+              line-height: 1.4;
+              display: -webkit-box;
+              -webkit-line-clamp: 2;
+              -webkit-box-orient: vertical;
+              overflow: hidden;
+              max-width: 300px;
+            }
+          }
+        }
+
+        .badge-category {
+          background-color: var(--primary-light);
+          color: var(--primary);
+          padding: 4px 12px;
+          border-radius: 12px;
+          font-size: 0.875rem;
+          font-weight: 500;
+        }
+
+        .price-cell {
+          display: flex;
+          flex-direction: column;
+          gap: 2px;
+
+          .price-original {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            text-decoration: line-through;
+          }
+
+          .price-current {
+            font-weight: 600;
+            color: var(--success);
+            font-size: 1rem;
+          }
+        }
+
+        .rating-cell {
+          display: flex;
+          align-items: center;
+          gap: 4px;
+
+          i {
+            color: #fbbf24;
+            font-size: 0.875rem;
+          }
+
+          .rating-value {
+            margin-left: 4px;
+            font-weight: 500;
+            color: var(--text-primary);
+          }
+        }
+
+        .id-cell {
+          font-family: 'Courier New', monospace;
+          font-size: 0.875rem;
+          color: var(--text-secondary);
+          background-color: var(--bg-secondary);
+          padding: 4px 8px;
+          border-radius: 4px;
+        }
+
+        .badge-green {
+          background-color: #dcfce7;
+          color: #16a34a;
+        }
+
+        // Responsive adjustments
+        @media (max-width: 1200px) {
+          .course-cell .course-info .course-title { max-width: 200px; }
+        }
+
+        @media (max-width: 768px) {
+          .course-cell {
+            .course-thumbnail { width: 50px; height: 35px; }
+            .course-info .course-title { max-width: 150px; font-size: 0.875rem; }
+          }
+        }
+      }
+    }
+  }
+}
+
+:host-context(.dark) .courses-list-container,
+:host-context(.dark-theme) .courses-list-container {
+  .admin-card {
+    .table-responsive {
+      .courses-table {
+        .course-cell .course-info .course-title { color: #f8fafc; }
+      }
+    }
+  }
+}

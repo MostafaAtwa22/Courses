@@ -11,12 +11,18 @@ public class StudentRepository(IDbConnectionFactory factory, IOptions<UrlsOption
     private static readonly Dictionary<string, string> AllowedSortColumns = new(StringComparer.OrdinalIgnoreCase)
     {
         { "name", "u.first_name" },
+        { "firstName", "u.first_name" },
+        { "lastName", "u.last_name" },
+        { "email", "u.email" },
+        { "userName", "u.user_name" },
+        { "gender", "u.gender" },
         { "total_enrollments", "TotalEnrollments" },
-        { "created_at", "s.created_at" }
+        { "created_at", "s.created_at" },
+        { "updated_at", "s.updated_at" }
     };
 
     private string SelectColumns =>
-        $@"s.id, 
+        $@"s.id AS Id, 
            s.created_at AS CreatedAt,
            s.updated_at AS UpdatedAt,
            u.first_name AS FirstName,
@@ -106,7 +112,7 @@ public class StudentRepository(IDbConnectionFactory factory, IOptions<UrlsOption
             {
                 if (queryParams.Gender.HasValue)
                 {
-                    parameters.Add("Gender", queryParams.Gender.Value);
+                    parameters.Add("Gender", queryParams.Gender.Value.ToString());
                 }
                 if (queryParams.CourseId.HasValue)
                 {

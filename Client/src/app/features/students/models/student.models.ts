@@ -1,5 +1,6 @@
-export interface StudentResponse {
-  id: string;
+import { BaseResponseModel } from "../../../shared/models/base-response.model";
+
+export interface StudentResponse extends BaseResponseModel {
   firstName: string;
   lastName: string;
   email: string;

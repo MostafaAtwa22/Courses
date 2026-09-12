@@ -31,9 +31,19 @@
 
 <!-- Main Admin Panels Grid -->
 <div class="row g-4 mb-4">
-  <!-- Full Width Panel: Category Histogram, Pending Instructors & Top Courses -->
+  <!-- Full Width Panel: Category Histogram, Enrollment Chart, Pending Instructors & Top Courses -->
   <div class="col-12">
     <div class="d-flex flex-column gap-4">
+      <!-- Enrollment Chart and Summary Row -->
+      <div class="row g-4">
+        <div class="col-12 col-lg-8">
+          <app-enrollment-chart-card [enrollmentData]="enrollmentData"></app-enrollment-chart-card>
+        </div>
+        <div class="col-12 col-lg-4">
+          <app-enrollment-summary-table [enrollmentData]="enrollmentData"></app-enrollment-summary-table>
+        </div>
+      </div>
+
       <!-- Category Histogram Card -->
       <app-category-histogram-card [categoryData]="categoryHistogramData"></app-category-histogram-card>
 

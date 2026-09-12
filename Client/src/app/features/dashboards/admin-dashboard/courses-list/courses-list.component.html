@@ -1,0 +1,231 @@
+<div class="courses-list-container">
+  <!-- Page Header -->
+  <div class="admin-banner mb-4">
+    <div class="banner-content">
+      <div class="banner-header">
+        <div class="admin-badge badge-green">
+          <i class="fa-solid fa-graduation-cap"></i>
+          <span>Courses Console</span>
+        </div>
+        <h1 class="banner-title">Course Catalog</h1>
+        <p class="banner-subtitle">View and manage all courses on the platform</p>
+      </div>
+      <div class="banner-actions">
+        <button class="action-btn action-btn--secondary" (click)="toggleFilterDropdown(); $event.stopPropagation()">
+          <i class="fa-solid fa-sliders"></i>
+          <span>Filters</span>
+        </button>
+        <button class="action-btn action-btn--primary" (click)="loadCourses()">
+          <i class="fa-solid fa-arrows-rotate"></i>
+          <span>Refresh</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filters Sidebar -->
+  <aside class="filters-sidebar" [class.open]="isFilterDropdownOpen">
+    <div class="sidebar-header">
+      <h3>Filters</h3>
+      <button class="sidebar-close-btn" (click)="isFilterDropdownOpen = false">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+
+    <div class="filter-group">
+      <h3>Category</h3>
+      <div class="filter-options">
+        <button 
+          [class.active]="categoryFilter === ''"
+          (click)="categoryFilter = ''; onSearch()">
+          All Categories
+        </button>
+        <button 
+          *ngFor="let category of categories"
+          [class.active]="categoryFilter === category.slug"
+          (click)="categoryFilter = category.slug; onSearch()">
+          {{ category.name }}
+        </button>
+      </div>
+    </div>
+
+    <div class="filter-group">
+      <h3>Sort By</h3>
+      <div class="radio-group">
+        <label>
+          <input type="radio" name="sortBy" [value]="'averageRate'" [(ngModel)]="sortBy" (change)="onSearch()">
+          Rating
+        </label>
+        <label>
+          <input type="radio" name="sortBy" [value]="'title'" [(ngModel)]="sortBy" (change)="onSearch()">
+          Title
+        </label>
+        <label>
+          <input type="radio" name="sortBy" [value]="'cost'" [(ngModel)]="sortBy" (change)="onSearch()">
+          Price
+        </label>
+        <label>
+          <input type="radio" name="sortBy" [value]="'createdAt'" [(ngModel)]="sortBy" (change)="onSearch()">
+          Date Added
+        </label>
+      </div>
+    </div>
+
+    <div class="filter-group">
+      <h3>Sort Order</h3>
+      <div class="radio-group">
+        <label>
+          <input type="radio" name="sortOrder" [value]="false" [(ngModel)]="sortDescending" (change)="onSearch()">
+          Ascending
+        </label>
+        <label>
+          <input type="radio" name="sortOrder" [value]="true" [(ngModel)]="sortDescending" (change)="onSearch()">
+          Descending
+        </label>
+      </div>
+    </div>
+
+    <div class="sidebar-footer">
+      <button class="btn-clear" (click)="clearFilters()">
+        <i class="fa-solid fa-times me-1"></i> Clear Filters
+      </button>
+      <button class="btn-apply" (click)="isFilterDropdownOpen = false">
+        <i class="fa-solid fa-check me-1"></i> Show Results
+      </button>
+    </div>
+  </aside>
+
+  <!-- Overlay for sidebar -->
+  <div class="sidebar-overlay" *ngIf="isFilterDropdownOpen" (click)="isFilterDropdownOpen = false"></div>
+
+  <!-- Search -->
+  <div class="admin-card mb-4">
+    <div class="filters-row">
+      <div class="search-input-wrapper">
+        <i class="fa-solid fa-search search-icon"></i>
+        <input 
+          type="text" 
+          [(ngModel)]="searchQuery" 
+          placeholder="Search by course title..." 
+          (keyup.enter)="onSearch()"
+          class="search-input"
+        >
+      </div>
+    </div>
+  </div>
+
+  <!-- Courses Table -->
+  <div class="admin-card">
+    <div class="table-responsive">
+      <table class="courses-table" *ngIf="coursesResult.items.length > 0">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Course</th>
+            <th>Instructor</th>
+            <th>Category</th>
+            <th>Language</th>
+            <th>Price</th>
+            <th>Rating</th>
+            <th>Reviews</th>
+            <th>Created At</th>
+            <th>Updated At</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let course of coursesResult.items">
+            <td><span class="id-cell">{{ course.id.substring(0, 8) }}...</span></td>
+            <td>
+              <div class="course-cell">
+                <img [src]="course.pictureUrl" [alt]="course.title" class="course-thumbnail" />
+                <div class="course-info">
+                  <span class="course-title">{{ course.title }}</span>
+                </div>
+              </div>
+            </td>
+            <td>{{ course.instructorName }}</td>
+            <td>
+              <span class="badge badge-category">{{ course.category }}</span>
+            </td>
+            <td>{{ course.language }}</td>
+            <td>
+              <div class="price-cell">
+                <span class="price-original" *ngIf="course.priceAfterDiscount < course.cost">${{ course.cost }}</span>
+                <span class="price-current">${{ course.priceAfterDiscount }}</span>
+              </div>
+            </td>
+            <td>
+              <div class="rating-cell">
+                <i class="fa-solid fa-star" *ngFor="let star of [].constructor(getStars(course.averageRate).full)"></i>
+                <i class="fa-solid fa-star-half-stroke" *ngIf="getStars(course.averageRate).half"></i>
+                <i class="fa-regular fa-star" *ngFor="let star of [].constructor(getStars(course.averageRate).empty)"></i>
+                <span class="rating-value">{{ course.averageRate.toFixed(1) }}</span>
+              </div>
+            </td>
+            <td>{{ course.totalReviews }}</td>
+            <td>{{ course.createdAt | date: 'short' }}</td>
+            <td>{{ course.updatedAt | date: 'short' }}</td>
+            <td>
+              <div class="actions">
+                <button 
+                  class="btn-action btn-view"
+                  (click)="viewCourseDetails(course.id)"
+                  title="View Details"
+                >
+                  <i class="fa-solid fa-eye"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Empty State -->
+      <div class="empty-state" *ngIf="coursesResult.items.length === 0">
+        <div class="empty-state-icon">
+          <i class="fa-solid fa-graduation-cap"></i>
+        </div>
+        <h3 class="empty-state-title">No Courses Found</h3>
+        <p class="empty-state-message">
+          <span *ngIf="searchQuery || categoryFilter">
+            No courses match your current filters. Try adjusting your search criteria.
+          </span>
+          <span *ngIf="!searchQuery && !categoryFilter">
+            There are no courses in the system yet.
+          </span>
+        </p>
+        <button class="btn-clear-filters" *ngIf="searchQuery || categoryFilter" (click)="clearFilters()">
+          <i class="fa-solid fa-filter-circle-xmark me-2"></i> Clear Filters
+        </button>
+      </div>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination-wrapper" *ngIf="coursesResult.totalPages > 1">
+      <button 
+        class="pagination-btn"
+        (click)="onPageChange(coursesResult.pageNumber - 1)"
+        [disabled]="!coursesResult.hasPreviousPage"
+      >
+        <i class="fa-solid fa-chevron-left"></i>
+      </button>
+      <span *ngFor="let page of getPagesArray()">
+        <button 
+          class="pagination-btn"
+          (click)="onPageChange(page)"
+          [class.active]="page === coursesResult.pageNumber"
+        >
+          {{ page }}
+        </button>
+      </span>
+      <button 
+        class="pagination-btn"
+        (click)="onPageChange(coursesResult.pageNumber + 1)"
+        [disabled]="!coursesResult.hasNextPage"
+      >
+        <i class="fa-solid fa-chevron-right"></i>
+      </button>
+    </div>
+  </div>
+</div>

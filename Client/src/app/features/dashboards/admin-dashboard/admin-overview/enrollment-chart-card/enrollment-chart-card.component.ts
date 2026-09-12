@@ -1,22 +1,26 @@
-import { Component, Input, OnChanges, SimpleChanges, ElementRef, Renderer2, OnInit } from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges, ElementRef, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Chart, ChartConfiguration, ChartData, ChartOptions, registerables } from 'chart.js';
 import { BaseChartDirective } from 'ng2-charts';
-import { CategoryHistogramData } from '../../../models/dashboard.model';
+
+export interface EnrollmentData {
+  period: string;
+  enrollmentCount: number;
+}
 
 @Component({
-  selector: 'app-category-histogram-card',
+  selector: 'app-enrollment-chart-card',
   standalone: true,
   imports: [CommonModule, BaseChartDirective],
-  templateUrl: './category-histogram-card.component.html',
-  styleUrl: './category-histogram-card.component.scss'
+  templateUrl: './enrollment-chart-card.component.html',
+  styleUrl: './enrollment-chart-card.component.scss'
 })
-export class CategoryHistogramCardComponent implements OnInit, OnChanges {
-  @Input() categoryData: CategoryHistogramData[] = [];
+export class EnrollmentChartCardComponent implements OnInit, OnChanges {
+  @Input() enrollmentData: EnrollmentData[] = [];
 
   isDarkMode = false;
 
-  public barChartOptions: ChartOptions = {
+  public lineChartOptions: ChartOptions = {
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
@@ -34,7 +38,10 @@ export class CategoryHistogramCardComponent implements OnInit, OnChanges {
         },
         padding: 20,
         cornerRadius: 8,
-        displayColors: false
+        displayColors: false,
+        callbacks: {
+          label: (context) => `Enrollments: ${context.parsed.y}`
+        }
       }
     },
     scales: {
@@ -46,8 +53,6 @@ export class CategoryHistogramCardComponent implements OnInit, OnChanges {
           font: {
             size: 11
           },
-          maxRotation: 45,
-          minRotation: 45,
           color: '#64748b'
         }
       },
@@ -60,60 +65,43 @@ export class CategoryHistogramCardComponent implements OnInit, OnChanges {
           font: {
             size: 11
           },
-          stepSize: 1,
           color: '#64748b'
         }
       }
     }
   };
 
-  public barChartData: ChartData<'bar'> = {
+  public lineChartData: ChartData<'line'> = {
     labels: [],
     datasets: [
       {
+        label: 'Enrollments',
         data: [],
-        backgroundColor: [
-          'rgba(79, 70, 229, 0.8)',
-          'rgba(6, 182, 212, 0.8)',
-          'rgba(236, 72, 153, 0.8)',
-          'rgba(16, 185, 129, 0.8)',
-          'rgba(245, 158, 11, 0.8)',
-          'rgba(139, 92, 246, 0.8)',
-          'rgba(239, 68, 68, 0.8)',
-          'rgba(34, 197, 94, 0.8)',
-          'rgba(251, 191, 36, 0.8)',
-          'rgba(59, 130, 246, 0.8)'
-        ],
-        borderColor: [
-          'rgba(79, 70, 229, 1)',
-          'rgba(6, 182, 212, 1)',
-          'rgba(236, 72, 153, 1)',
-          'rgba(16, 185, 129, 1)',
-          'rgba(245, 158, 11, 1)',
-          'rgba(139, 92, 246, 1)',
-          'rgba(239, 68, 68, 1)',
-          'rgba(34, 197, 94, 1)',
-          'rgba(251, 191, 36, 1)',
-          'rgba(59, 130, 246, 1)'
-        ],
-        borderWidth: 2,
-        borderRadius: 6
+        borderColor: '#4f46e5',
+        backgroundColor: 'rgba(79, 70, 229, 0.1)',
+        borderWidth: 3,
+        fill: true,
+        tension: 0.4,
+        pointBackgroundColor: '#4f46e5',
+        pointBorderColor: '#ffffff',
+        pointBorderWidth: 2,
+        pointRadius: 5,
+        pointHoverRadius: 7
       }
     ]
   };
 
-  public barChartType: ChartConfiguration['type'] = 'bar';
+  public lineChartType: ChartConfiguration['type'] = 'line';
 
   constructor(private elementRef: ElementRef) {}
 
   ngOnInit(): void {
-    // Register Chart.js components
     Chart.register(...registerables);
     this.checkDarkMode();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['categoryData'] && this.categoryData) {
+    if (changes['enrollmentData'] && this.enrollmentData) {
       this.updateChartData();
     }
   }
@@ -127,7 +115,6 @@ export class CategoryHistogramCardComponent implements OnInit, OnChanges {
 
     checkTheme();
 
-    // Listen for theme changes
     const observer = new MutationObserver(() => {
       checkTheme();
     });
@@ -141,13 +128,14 @@ export class CategoryHistogramCardComponent implements OnInit, OnChanges {
   private updateChartTheme(): void {
     const isDark = this.isDarkMode;
 
-    // Update chart colors based on theme
     const textColor = isDark ? '#cbd5e1' : '#64748b';
     const gridColor = isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.05)';
     const tooltipBg = isDark ? 'rgba(15, 23, 42, 0.9)' : 'rgba(0, 0, 0, 0.8)';
+    const lineColor = isDark ? '#818cf8' : '#4f46e5';
+    const fillColor = isDark ? 'rgba(129, 140, 248, 0.15)' : 'rgba(79, 70, 229, 0.1)';
+    const pointColor = isDark ? '#818cf8' : '#4f46e5';
 
-    // Use bracket notation to avoid TypeScript strict typing issues
-    const options = this.barChartOptions as any;
+    const options = this.lineChartOptions as any;
 
     if (options.scales?.x?.ticks) {
       options.scales.x.ticks.color = textColor;
@@ -164,10 +152,14 @@ export class CategoryHistogramCardComponent implements OnInit, OnChanges {
     if (options.plugins?.tooltip) {
       options.plugins.tooltip.backgroundColor = tooltipBg;
     }
+
+    this.lineChartData.datasets[0].borderColor = lineColor;
+    this.lineChartData.datasets[0].backgroundColor = fillColor;
+    this.lineChartData.datasets[0].pointBackgroundColor = pointColor;
   }
 
   private updateChartData(): void {
-    this.barChartData.labels = this.categoryData.map(item => item.categoryName);
-    this.barChartData.datasets[0].data = this.categoryData.map(item => item.courseCount);
+    this.lineChartData.labels = this.enrollmentData.map(item => item.period);
+    this.lineChartData.datasets[0].data = this.enrollmentData.map(item => item.enrollmentCount);
   }
 }

@@ -5,7 +5,9 @@ import { StatCardComponent } from '../../../../shared/components/stat-card/stat-
 import { CourseAnalyticsComponent } from '../../components/course-analytics/course-analytics';
 import { PendingInstructorsCardComponent } from './pending-instructors-card/pending-instructors-card.component';
 import { CategoryHistogramCardComponent } from './category-histogram-card/category-histogram-card.component';
-import { AdminDashboardService, PendingInstructor } from '../../services/admin-dashboard.service';
+import { EnrollmentChartCardComponent } from './enrollment-chart-card/enrollment-chart-card.component';
+import { EnrollmentSummaryTableComponent } from './enrollment-summary-table/enrollment-summary-table.component';
+import { AdminDashboardService, PendingInstructor, EnrollmentStatistics } from '../../services/admin-dashboard.service';
 import { DashboardService } from '../../services/dashboard.service';
 import {
   DashboardMetric,
@@ -22,6 +24,8 @@ import {
     StatCardComponent,
     CourseAnalyticsComponent,
     CategoryHistogramCardComponent,
+    EnrollmentChartCardComponent,
+    EnrollmentSummaryTableComponent,
     PendingInstructorsCardComponent
   ],
   templateUrl: './admin-overview.html',
@@ -36,6 +40,7 @@ export class AdminOverviewComponent implements OnInit {
   courses: CourseAnalytics[] = [];
   pendingInstructors: PendingInstructor[] = [];
   categoryHistogramData: CategoryHistogramData[] = [];
+  enrollmentData: EnrollmentStatistics[] = [];
 
   ngOnInit() {
     this.loadAdminData();
@@ -47,5 +52,6 @@ export class AdminOverviewComponent implements OnInit {
     this.adminDashboardService.getTopPerformingCourses().subscribe(c => (this.courses = c));
     this.adminDashboardService.getPendingInstructors().subscribe(pi => (this.pendingInstructors = pi));
     this.adminDashboardService.getTopCategoriesByCourseCount().subscribe(ch => (this.categoryHistogramData = ch));
+    this.adminDashboardService.getEnrollmentStatistics().subscribe(e => (this.enrollmentData = e));
   }
 }

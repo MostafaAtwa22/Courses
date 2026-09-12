@@ -68,6 +68,14 @@
             <span class="info-label">Total Enrollments</span>
             <span class="info-value">{{ student.totalEnrollments }}</span>
           </div>
+          <div class="info-item">
+            <span class="info-label">Joined Date</span>
+            <span class="info-value">{{ student.createdAt | date:'mediumDate' }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Last Updated</span>
+            <span class="info-value">{{ student.updatedAt | date:'mediumDate' }}</span>
+          </div>
         </div>
       </div>
     </div>

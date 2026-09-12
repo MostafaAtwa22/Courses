@@ -19,7 +19,9 @@ namespace Infrastructure.Repositories
         };
 
         private string SelectColumns =>
-            $@"i.id, i.bio, i.title, 
+            $@"i.id AS Id, 
+               i.bio, 
+               i.title, 
                i.linked_in_profile_url AS LinkedInProfileUrl, 
                i.git_hub_profile_url AS GitHubProfileUrl, 
                i.status,

@@ -1,3 +1,5 @@
+import { BaseResponseModel } from "../../../shared/models/base-response.model";
+
 export interface InstructorCreateRequest {
   bio: string;
   title: string;
@@ -6,8 +8,7 @@ export interface InstructorCreateRequest {
   cvUrl: File;
 }
 
-export interface InstructorResponse {
-  id: string;
+export interface InstructorResponse extends BaseResponseModel {
   firstName: string;
   lastName: string;
   email: string;

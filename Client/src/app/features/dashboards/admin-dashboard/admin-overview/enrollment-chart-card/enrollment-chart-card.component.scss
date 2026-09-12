@@ -1,0 +1,47 @@
+.admin-card {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  border-radius: 16px;
+  padding: 1.25rem 1.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+
+  .card-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0;
+  }
+
+  .card-subtitle {
+    font-size: 0.78rem;
+    margin: 0;
+  }
+
+  .card-body {
+    padding: 0;
+  }
+
+  .chart-container {
+    position: relative;
+    height: 300px;
+    width: 100%;
+  }
+}
+
+/* Dark mode styles */
+:host-context(.dark) .admin-card,
+:host-context(.dark-theme) .admin-card {
+  background: rgba(30, 41, 59, 0.85);
+  border-color: rgba(51, 65, 85, 0.8);
+  .card-title { color: #f8fafc; }
+  .card-subtitle { color: #cbd5e1; }
+  .text-muted { color: #cbd5e1 !important; }
+}
