@@ -120,6 +120,10 @@ export const routes: Routes = [
             {
                 path: 'courses',
                 loadComponent: () => import('./features/dashboards/admin-dashboard/courses-list/courses-list.component').then(m => m.CoursesListComponent)
+            },
+            {
+                path: 'users',
+                loadComponent: () => import('./features/dashboards/admin-dashboard/user-management/user-management.component').then(m => m.UserManagementComponent)
             }
         ]
     },

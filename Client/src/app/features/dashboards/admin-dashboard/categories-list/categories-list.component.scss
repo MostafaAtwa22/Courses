@@ -1,4 +1,4 @@
-@import '../shared/admin-list-shared';
+@use '../shared/admin-list-shared' as *;
 
 .categories-list-container {
   .category-name {

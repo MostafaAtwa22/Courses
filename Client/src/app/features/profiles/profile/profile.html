@@ -130,7 +130,7 @@
     [status]="instructorStatus">
   </app-instructor-additional-data>
 
-  <app-user-courses></app-user-courses>
+  <app-user-courses *ngIf="isStudent"></app-user-courses>
 </div>
 
 <app-footer></app-footer>

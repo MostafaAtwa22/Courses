@@ -16,7 +16,9 @@ export class CourseAnalyticsComponent {
   constructor(private router: Router) {}
 
   get topCourses(): CourseAnalytics[] {
-    return this.courses.slice(0, 5);
+    return [...this.courses]
+      .sort((a, b) => b.avgRating - a.avgRating)
+      .slice(0, 5);
   }
 
   viewAllCourses() {

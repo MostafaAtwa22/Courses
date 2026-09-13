@@ -159,7 +159,15 @@ export class EnrollmentChartCardComponent implements OnInit, OnChanges {
   }
 
   private updateChartData(): void {
-    this.lineChartData.labels = this.enrollmentData.map(item => item.period);
-    this.lineChartData.datasets[0].data = this.enrollmentData.map(item => item.enrollmentCount);
+    this.lineChartData = {
+      ...this.lineChartData,
+      labels: [...this.enrollmentData.map(item => item.period)],
+      datasets: [
+        {
+          ...this.lineChartData.datasets[0],
+          data: [...this.enrollmentData.map(item => item.enrollmentCount)]
+        }
+      ]
+    };
   }
 }

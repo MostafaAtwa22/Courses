@@ -68,6 +68,10 @@ export class ProfileComponent implements OnInit {
     return this.currentUser?.roles?.includes('Instructor') || false;
   }
 
+  get isStudent(): boolean {
+    return this.currentUser?.roles?.includes('Student') || false;
+  }
+
   get emailStatus(): string {
     return 'Verified';
   }
