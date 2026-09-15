@@ -1,0 +1,50 @@
+<div class="modal-overlay" *ngIf="isVisible" (click)="onCancel()">
+  <div class="modal-container" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2 class="modal-title">Assign Roles</h2>
+      <button class="modal-close-btn" (click)="onCancel()">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+
+    <div class="modal-body">
+      <!-- User Info -->
+      <div class="user-info-section">
+        <div class="user-avatar">
+          <img 
+            [src]="user?.profilePicture || (user?.gender === 'Female' ? 'assets/users/default-female.png' : 'assets/users/default-male.png')" 
+            [alt]="user?.userName"
+          />
+        </div>
+        <div class="user-details">
+          <h3 class="user-name">{{ user?.firstName }} {{ user?.lastName }}</h3>
+          <p class="user-email">{{ user?.email }}</p>
+        </div>
+      </div>
+
+      <!-- Roles Selection -->
+      <div class="roles-section">
+        <h4 class="roles-section-title">SELECT USER ROLES</h4>
+        <div class="roles-list">
+          <label 
+            class="role-checkbox" 
+            *ngFor="let role of selectedRoles"
+          >
+            <input 
+              type="checkbox" 
+              [checked]="role.isSelected" 
+              (change)="onRoleChange(role)"
+            />
+            <span class="checkbox-custom"></span>
+            <span class="role-name">{{ role.roleName }}</span>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn btn-cancel" (click)="onCancel()">Cancel</button>
+      <button class="btn btn-save" (click)="onSave()">Save Assignments</button>
+    </div>
+  </div>
+</div>

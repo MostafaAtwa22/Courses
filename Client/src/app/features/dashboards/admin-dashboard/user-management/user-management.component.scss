@@ -58,6 +58,27 @@
       background: rgba(79, 70, 229, 0.1);
       padding: 0.25rem 0.5rem;
       border-radius: 4px;
+
+      // Role-specific colors based on class
+      &.role-superadmin {
+        color: #dc2626 !important;
+        background: rgba(220, 38, 38, 0.1) !important;
+      }
+
+      &.role-admin {
+        color: #4f46e5 !important;
+        background: rgba(79, 70, 229, 0.1) !important;
+      }
+
+      &.role-student {
+        color: #16a34a !important;
+        background: rgba(22, 163, 74, 0.1) !important;
+      }
+
+      &.role-instructor {
+        color: #ea580c !important;
+        background: rgba(234, 88, 12, 0.1) !important;
+      }
     }
   }
 

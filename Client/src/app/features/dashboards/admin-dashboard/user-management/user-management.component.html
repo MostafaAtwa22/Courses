@@ -68,6 +68,20 @@
       </div>
     </div>
 
+    <div class="filter-group">
+      <h3>Filter by Role</h3>
+      <div class="radio-group">
+        <label>
+          <input type="radio" name="roleFilter" [value]="''" [(ngModel)]="selectedRole" (change)="onSearch()">
+          All Roles
+        </label>
+        <label *ngFor="let role of availableRoles">
+          <input type="radio" name="roleFilter" [value]="role.name" [(ngModel)]="selectedRole" (change)="onSearch()">
+          {{ role.name }}
+        </label>
+      </div>
+    </div>
+
     <div class="sidebar-footer">
       <button class="btn-clear" (click)="clearFilters()">
         <i class="fa-solid fa-times me-1"></i> Clear Filters
@@ -128,7 +142,7 @@
             <td>{{ user.phoneNumber || '-' }}</td>
             <td>
               <div class="roles-container">
-                <span class="role-badge" *ngFor="let role of user.roles">{{ role }}</span>
+                <span class="role-badge" [ngClass]="getRoleClass(role)" *ngFor="let role of user.roles">{{ role }}</span>
               </div>
             </td>
             <td>
@@ -208,4 +222,9 @@
       </button>
     </div>
   </div>
+
+  <!-- Role Assignment Modal -->
+  <app-role-assignment-modal 
+    (save)="onRoleAssignmentSaved($event.dto, $event.user)"
+  ></app-role-assignment-modal>
 </div>

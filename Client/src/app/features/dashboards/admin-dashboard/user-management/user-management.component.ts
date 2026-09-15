@@ -1,17 +1,18 @@
-import { Component, inject, OnInit, HostListener, ChangeDetectorRef } from '@angular/core';
+import { Component, inject, OnInit, HostListener, ChangeDetectorRef, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { UserService } from '../../../admin/services/user.service';
 import { UserResponse, UserRolesManage, CheckBoxRoleManage, RolesResponse, LockUserDto } from '../../../admin/models/user.models';
 import { PaginatedResultModel } from '../../../../shared/models/paginated-result.model';
-import { QueryParams } from '../../../../shared/models/query-params.model';
+import { QueryParams, UserQueryParams } from '../../../../shared/models/query-params.model';
 import Swal from 'sweetalert2';
 import { ToastrService } from 'ngx-toastr';
+import { RoleAssignmentModalComponent } from './role-assignment-modal/role-assignment-modal.component';
 
 @Component({
   selector: 'app-user-management',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RoleAssignmentModalComponent],
   templateUrl: './user-management.component.html',
   styleUrl: './user-management.component.scss'
 })
@@ -20,6 +21,8 @@ export class UserManagementComponent implements OnInit {
   private toastr = inject(ToastrService);
   private cdr = inject(ChangeDetectorRef);
 
+  @ViewChild(RoleAssignmentModalComponent) roleModal!: RoleAssignmentModalComponent;
+
   usersResult: PaginatedResultModel<UserResponse> = new PaginatedResultModel<UserResponse>();
   searchQuery = '';
   sortBy = 'userName';
@@ -27,6 +30,8 @@ export class UserManagementComponent implements OnInit {
   isFilterDropdownOpen = false;
   availableRoles: RolesResponse[] = [];
   currentPage = 1;
+  selectedUserForRoleChange: UserResponse | null = null;
+  selectedRole = '';
 
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent) {
@@ -48,7 +53,7 @@ export class UserManagementComponent implements OnInit {
   }
 
   loadUsers() {
-    const params: QueryParams = {
+    const params: UserQueryParams = {
       pageNumber: this.currentPage,
       pageSize: 10,
       sortDescending: this.sortDescending
@@ -61,13 +66,21 @@ export class UserManagementComponent implements OnInit {
     if (this.sortBy) {
       params.sortBy = this.sortBy;
     }
+
+    if (this.selectedRole) {
+      params.role = this.selectedRole;
+    }
+
+    console.log('Loading users with params:', params);
     
     this.userService.getAll(params).subscribe({
       next: (res: PaginatedResultModel<UserResponse>) => {
         this.usersResult = res;
+        console.log('Users loaded:', res);
         this.cdr.detectChanges();
       },
       error: (error) => {
+        console.error('Failed to load users:', error);
         this.toastr.error('Failed to load users', 'Error');
       }
     });
@@ -77,8 +90,10 @@ export class UserManagementComponent implements OnInit {
     this.userService.getAllRoles().subscribe({
       next: (roles) => {
         this.availableRoles = roles;
+        console.log('Available roles loaded:', roles);
       },
       error: (error) => {
+        console.error('Failed to load roles:', error);
         this.toastr.error('Failed to load roles', 'Error');
       }
     });
@@ -93,6 +108,7 @@ export class UserManagementComponent implements OnInit {
     this.searchQuery = '';
     this.sortBy = 'userName';
     this.sortDescending = false;
+    this.selectedRole = '';
     this.onSearch();
     this.isFilterDropdownOpen = false;
   }
@@ -132,7 +148,7 @@ export class UserManagementComponent implements OnInit {
         this.userService.lockUser(user.id, dto).subscribe({
           next: () => {
             this.toastr.success('User locked successfully', 'Success');
-            this.loadUsers();
+            user.lockoutEnd = dto.lockoutEnd;
             this.cdr.detectChanges();
           },
           error: (error) => {
@@ -165,7 +181,7 @@ export class UserManagementComponent implements OnInit {
         this.userService.unlockUser(user.id).subscribe({
           next: () => {
             this.toastr.success('User unlocked successfully', 'Success');
-            this.loadUsers();
+            user.lockoutEnd = undefined;
             this.cdr.detectChanges();
           },
           error: (error) => {
@@ -177,9 +193,10 @@ export class UserManagementComponent implements OnInit {
   }
 
   changeRoles(user: UserResponse) {
+    this.selectedUserForRoleChange = user;
     this.userService.getUserRoles(user.id).subscribe({
       next: (userRoles) => {
-        this.showRoleChangeModal(user, userRoles);
+        this.roleModal.open(user, this.availableRoles, userRoles);
       },
       error: (error) => {
         this.toastr.error('Failed to load user roles', 'Error');
@@ -187,76 +204,15 @@ export class UserManagementComponent implements OnInit {
     });
   }
 
-  showRoleChangeModal(user: UserResponse, userRoles: UserRolesManage) {
-    const currentRoles = new Set(userRoles.roles.map(r => r.roleName));
-    
-    let html = '<div style="display: flex; flex-direction: column; gap: 10px;">';
-    
-    this.availableRoles.forEach(role => {
-      const isChecked = currentRoles.has(role.name) ? 'checked' : '';
-      html += `
-        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-          <input type="checkbox" value="${role.id}" data-role-name="${role.name}" ${isChecked} style="width: 18px; height: 18px;">
-          <span>${role.name}</span>
-        </label>
-      `;
-    });
-    
-    html += '</div>';
-
-    Swal.fire({
-      title: 'Change User Roles',
-      text: `Select roles for ${user.firstName} ${user.lastName}`,
-      icon: 'info',
-      html: html,
-      showCancelButton: true,
-      confirmButtonColor: '#4f46e5',
-      cancelButtonColor: '#64748b',
-      confirmButtonText: 'Save Changes',
-      cancelButtonText: 'Cancel',
-      customClass: {
-        popup: 'custom-swal-popup',
-        title: 'custom-swal-title',
-        htmlContainer: 'custom-swal-content',
-        confirmButton: 'custom-swal-confirm',
-        cancelButton: 'custom-swal-cancel'
+  onRoleAssignmentSaved(dto: UserRolesManage, user: UserResponse) {
+    this.userService.updateUserRoles(user.id, dto).subscribe({
+      next: () => {
+        this.toastr.success('User roles updated successfully', 'Success');
+        this.loadUsers();
+        this.cdr.detectChanges();
       },
-      didOpen: () => {
-        const checkboxes = Swal.getPopup()?.querySelectorAll('input[type="checkbox"]');
-        checkboxes?.forEach(checkbox => {
-          checkbox.addEventListener('change', (e) => {
-            const target = e.target as HTMLInputElement;
-          });
-        });
-      },
-      preConfirm: () => {
-        const checkboxes = Swal.getPopup()?.querySelectorAll('input[type="checkbox"]:checked') as NodeListOf<HTMLInputElement>;
-        const selectedRoles: CheckBoxRoleManage[] = [];
-        
-        checkboxes.forEach(checkbox => {
-          selectedRoles.push({
-            roleId: checkbox.value,
-            roleName: checkbox.getAttribute('data-role-name') || '',
-            isSelected: true
-          });
-        });
-
-        return { roles: selectedRoles };
-      }
-    }).then((result) => {
-      if (result.isConfirmed && result.value) {
-        const dto: UserRolesManage = result.value;
-        
-        this.userService.updateUserRoles(user.id, dto).subscribe({
-          next: () => {
-            this.toastr.success('User roles updated successfully', 'Success');
-            this.loadUsers();
-            this.cdr.detectChanges();
-          },
-          error: (error) => {
-            this.toastr.error('Failed to update user roles', 'Error');
-          }
-        });
+      error: (error) => {
+        this.toastr.error('Failed to update user roles', 'Error');
       }
     });
   }
@@ -273,5 +229,14 @@ export class UserManagementComponent implements OnInit {
 
   isSuperAdmin(user: UserResponse): boolean {
     return user.roles.includes('SuperAdmin');
+  }
+
+  getRoleClass(roleName: string): string {
+    const roleLower = roleName.toLowerCase();
+    if (roleLower === 'superadmin') return 'role-superadmin';
+    if (roleLower === 'admin') return 'role-admin';
+    if (roleLower === 'student') return 'role-student';
+    if (roleLower === 'instructor') return 'role-instructor';
+    return 'role-default';
   }
 }

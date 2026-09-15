@@ -1,6 +1,9 @@
 <aside class="dashboard-sidebar" [class.collapsed]="isCollapsed">
   <div class="sidebar-header d-flex align-items-center justify-content-between">
-    <div class="brand-info d-flex align-items-center gap-2" *ngIf="!isCollapsed">
+    <div class="brand-icon standalone-icon">
+      <i class="fa-solid fa-graduation-cap"></i>
+    </div>
+    <div class="brand-info d-flex align-items-center gap-2">
       <div class="brand-icon">
         <i class="fa-solid fa-graduation-cap"></i>
       </div>
@@ -42,10 +45,10 @@
     </nav>
   </div>
 
-  <div class="sidebar-footer" *ngIf="!isCollapsed">
-    <button class="logout-btn" (click)="onLogout()">
+  <div class="sidebar-footer">
+    <button class="logout-btn" (click)="onLogout()" [title]="isCollapsed ? 'Sign Out' : ''">
       <i class="fa-solid fa-right-from-bracket logout-icon"></i>
-      <span class="logout-label">Sign Out</span>
+      <span class="logout-label" *ngIf="!isCollapsed">Sign Out</span>
     </button>
   </div>
 </aside>

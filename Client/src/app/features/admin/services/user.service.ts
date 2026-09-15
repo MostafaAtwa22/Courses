@@ -3,7 +3,7 @@ import { inject, Injectable } from '@angular/core';
 import { environment } from '../../../../environments/environment';
 import { UserResponse, UserRolesManage, RolesResponse, LockUserDto } from '../models/user.models';
 import { PaginatedResultModel } from '../../../shared/models/paginated-result.model';
-import { QueryParams } from '../../../shared/models/query-params.model';
+import { QueryParams, UserQueryParams } from '../../../shared/models/query-params.model';
 import { map, Observable } from 'rxjs';
 
 @Injectable({
@@ -14,7 +14,7 @@ export class UserService {
   private accountApiUrl = `${environment.apiUrl}/account`;
   private authApiUrl = `${environment.apiUrl}/authorization`;
 
-  getAll(params: QueryParams): Observable<PaginatedResultModel<UserResponse>> {
+  getAll(params: QueryParams | UserQueryParams): Observable<PaginatedResultModel<UserResponse>> {
     let httpParams = new HttpParams();
 
     if (params.pageNumber) {
@@ -31,6 +31,9 @@ export class UserService {
     }
     if (params.sortDescending !== undefined) {
       httpParams = httpParams.set('sortDescending', params.sortDescending.toString());
+    }
+    if ('role' in params && params.role) {
+      httpParams = httpParams.set('role', params.role);
     }
 
     return this.http

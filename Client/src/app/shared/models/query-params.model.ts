@@ -16,6 +16,10 @@ export interface InstructorQueryParams extends QueryParams {
   status?: string;
 }
 
+export interface UserQueryParams extends QueryParams {
+  role?: string;
+}
+
 export function createQueryParams(
   params?: Partial<QueryParams>
 ): QueryParams {
