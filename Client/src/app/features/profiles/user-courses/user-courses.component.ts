@@ -52,7 +52,7 @@ export class UserCoursesComponent implements OnInit {
           console.error('Error loading instructor courses:', err);
         }
       });
-    } else {
+    } else if (currentUser.roles?.includes('Student')) {
       this.courseService.getCoursesByStudentId(this.params).subscribe({
         next: (res) => {
           this.coursesResult = res;
@@ -64,6 +64,9 @@ export class UserCoursesComponent implements OnInit {
           console.error('Error loading student courses:', err);
         }
       });
+    } else {
+      this.errorMessage = 'No courses available for this role';
+      this.isLoading = false;
     }
   }
 

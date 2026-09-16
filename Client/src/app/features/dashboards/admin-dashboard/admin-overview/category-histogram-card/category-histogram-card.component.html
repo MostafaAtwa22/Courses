@@ -1,0 +1,29 @@
+<div class="admin-card">
+  <div class="card-header d-flex justify-content-between align-items-center mb-3">
+    <div>
+      <h5 class="card-title">
+        <i class="fa-solid fa-chart-simple text-primary me-2"></i> Top Categories by Course Count
+      </h5>
+      <p class="card-subtitle text-muted">Most popular course categories across the platform</p>
+    </div>
+    <div class="d-flex align-items-center gap-2">
+      <span class="badge bg-primary">Top 10</span>
+    </div>
+  </div>
+
+  <div class="chart-container" *ngIf="categoryData.length > 0; else noData">
+    <canvas
+      baseChart
+      [type]="barChartType"
+      [data]="barChartData"
+      [options]="barChartOptions"
+    ></canvas>
+  </div>
+
+  <ng-template #noData>
+    <div class="text-center py-4 text-muted">
+      <i class="fa-solid fa-chart-simple text-secondary fs-2 mb-2 d-block"></i>
+      No category data available
+    </div>
+  </ng-template>
+</div>

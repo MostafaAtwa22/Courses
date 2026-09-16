@@ -1,0 +1,319 @@
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+}
+
+.modal-container {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  max-width: 500px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  animation: modalSlideIn 0.3s ease-out;
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.modal-title {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.modal-close-btn {
+  background: none;
+  border: none;
+  font-size: 1.25rem;
+  color: #64748b;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 6px;
+  transition: all 0.2s;
+
+  &:hover {
+    background: #f1f5f9;
+    color: #0f172a;
+  }
+}
+
+.modal-body {
+  padding: 1.5rem;
+}
+
+.user-info-section {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid #e2e8f0;
+  margin-bottom: 1.5rem;
+}
+
+.user-avatar {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: #e2e8f0;
+  flex-shrink: 0;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+.user-details {
+  flex: 1;
+}
+
+.user-name {
+  margin: 0 0 0.25rem 0;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.user-email {
+  margin: 0;
+  font-size: 0.875rem;
+  color: #64748b;
+}
+
+.roles-section {
+  .roles-section-title {
+    margin: 0 0 1rem 0;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #64748b;
+    letter-spacing: 0.05em;
+  }
+}
+
+.roles-list {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+}
+
+.role-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  cursor: pointer;
+  padding: 0.75rem;
+  border-radius: 8px;
+  transition: background 0.2s;
+
+  &:hover {
+    background: #f8fafc;
+  }
+
+  input[type="checkbox"] {
+    display: none;
+  }
+
+  .checkbox-custom {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #cbd5e1;
+    border-radius: 4px;
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    flex-shrink: 0;
+
+    &::after {
+      content: '\f00c';
+      font-family: 'Font Awesome 6 Free';
+      font-weight: 900;
+      font-size: 0.75rem;
+      color: white;
+      opacity: 0;
+      transform: scale(0);
+      transition: all 0.2s;
+    }
+  }
+
+  input[type="checkbox"]:checked + .checkbox-custom {
+    background: #4f46e5;
+    border-color: #4f46e5;
+
+    &::after {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  .role-name {
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: #334155;
+  }
+
+  // Role-specific colors based on class
+  &.role-superadmin .role-name {
+    color: #dc2626 !important;
+  }
+
+  &.role-admin .role-name {
+    color: #4f46e5 !important;
+  }
+
+  &.role-student .role-name {
+    color: #16a34a !important;
+  }
+
+  &.role-instructor .role-name {
+    color: #ea580c !important;
+  }
+}
+
+.modal-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  padding: 1.5rem;
+  border-top: 1px solid #e2e8f0;
+}
+
+.btn {
+  padding: 0.625rem 1.25rem;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+
+  &.btn-cancel {
+    background: #f1f5f9;
+    color: #64748b;
+
+    &:hover {
+      background: #e2e8f0;
+      color: #475569;
+    }
+  }
+
+  &.btn-save {
+    background: #4f46e5;
+    color: white;
+
+    &:hover {
+      background: #4338ca;
+    }
+  }
+}
+
+// Dark theme support
+:host-context(.dark) .modal-container,
+:host-context(.dark-theme) .modal-container {
+  background: #1e293b;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
+}
+
+:host-context(.dark) .modal-header,
+:host-context(.dark-theme) .modal-header {
+  border-bottom-color: #334155;
+}
+
+:host-context(.dark) .modal-title,
+:host-context(.dark-theme) .modal-title {
+  color: #f8fafc;
+}
+
+:host-context(.dark) .modal-close-btn,
+:host-context(.dark-theme) .modal-close-btn {
+  color: #94a3b8;
+
+  &:hover {
+    background: #334155;
+    color: #f8fafc;
+  }
+}
+
+:host-context(.dark) .user-info-section,
+:host-context(.dark-theme) .user-info-section {
+  border-bottom-color: #334155;
+}
+
+:host-context(.dark) .user-avatar,
+:host-context(.dark-theme) .user-avatar {
+  background: #334155;
+}
+
+:host-context(.dark) .user-name,
+:host-context(.dark-theme) .user-name {
+  color: #f8fafc;
+}
+
+:host-context(.dark) .user-email,
+:host-context(.dark-theme) .user-email {
+  color: #94a3b8;
+}
+
+:host-context(.dark) .role-checkbox,
+:host-context(.dark-theme) .role-checkbox {
+  &:hover {
+    background: #334155;
+  }
+
+  .checkbox-custom {
+    background: #1e293b;
+    border-color: #475569;
+  }
+
+  .role-name {
+    color: #cbd5e1;
+  }
+}
+
+:host-context(.dark) .modal-footer,
+:host-context(.dark-theme) .modal-footer {
+  border-top-color: #334155;
+}
+
+:host-context(.dark) .btn-cancel,
+:host-context(.dark-theme) .btn-cancel {
+  background: #334155;
+  color: #94a3b8;
+
+  &:hover {
+    background: #475569;
+    color: #cbd5e1;
+  }
+}

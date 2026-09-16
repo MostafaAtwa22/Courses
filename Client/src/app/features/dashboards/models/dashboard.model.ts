@@ -5,7 +5,7 @@ export interface DashboardMetric {
   change: string;
   isPositive: boolean;
   icon: string;
-  color: 'primary' | 'success' | 'warning' | 'info' | 'purple';
+  color: 'primary' | 'success' | 'warning' | 'info' | 'purple' | 'danger';
   description: string;
 }
 
@@ -15,10 +15,11 @@ export interface CourseAnalytics {
   category: string;
   instructor: string;
   enrolledStudents: number;
-  completionRate: number; // 0 - 100
+  completionRate: number; 
   avgRating: number;
   status: 'Active' | 'Draft' | 'Archived';
   progressColor: string;
+  sectionsCount: number;
 }
 
 export interface AttendanceSummary {
@@ -65,4 +66,21 @@ export interface QuickAction {
   badge?: string;
   actionKey: string;
   colorClass: string;
+}
+
+export interface RoleStatistics {
+  superAdminCount: number;
+  superAdminChange: number;
+  adminCount: number;
+  adminChange: number;
+  instructorCount: number;
+  instructorChange: number;
+  studentCount: number;
+  studentChange: number;
+}
+
+export interface CategoryHistogramData {
+  id: string;
+  categoryName: string;
+  courseCount: number;
 }

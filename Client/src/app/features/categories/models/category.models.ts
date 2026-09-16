@@ -10,3 +10,13 @@ export interface CategoryRequest {
     name: string;
     slug: string;
 }
+
+export interface CategoryCreateDto {
+    name: string;
+    slug: string;
+}
+
+export interface CategoryUpdateDto {
+    name: string;
+    slug: string;
+}

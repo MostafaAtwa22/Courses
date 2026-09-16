@@ -1,6 +1,9 @@
 <aside class="dashboard-sidebar" [class.collapsed]="isCollapsed">
   <div class="sidebar-header d-flex align-items-center justify-content-between">
-    <div class="brand-info d-flex align-items-center gap-2" *ngIf="!isCollapsed">
+    <div class="brand-icon standalone-icon">
+      <i class="fa-solid fa-graduation-cap"></i>
+    </div>
+    <div class="brand-info d-flex align-items-center gap-2">
       <div class="brand-icon">
         <i class="fa-solid fa-graduation-cap"></i>
       </div>
@@ -16,35 +19,36 @@
 
   <div class="sidebar-body">
     <nav class="nav-list">
-      <a
-        *ngFor="let item of navItems"
-        [routerLink]="item.route"
-        routerLinkActive="active"
-        class="nav-link-item"
-        [title]="isCollapsed ? item.label : ''"
-      >
-        <i [class]="item.icon + ' nav-icon'"></i>
-        <span class="nav-label" *ngIf="!isCollapsed">{{ item.label }}</span>
-        <span
-          *ngIf="item.badge && !isCollapsed"
-          class="badge nav-badge"
-          [ngClass]="item.badgeColor || 'bg-primary'"
+      <ng-container *ngFor="let item of navItems">
+        <div *ngIf="item.isSection && !isCollapsed" class="nav-section-label">
+          {{ item.label }}
+        </div>
+        <hr *ngIf="item.isSection && !isCollapsed" class="nav-section-divider">
+        <a
+          *ngIf="!item.isSection"
+          [routerLink]="item.route"
+          routerLinkActive="active"
+          class="nav-link-item"
+          [title]="isCollapsed ? item.label : ''"
         >
-          {{ item.badge }}
-        </span>
-      </a>
+          <i [class]="item.icon + ' nav-icon'"></i>
+          <span class="nav-label" *ngIf="!isCollapsed">{{ item.label }}</span>
+          <span
+            *ngIf="item.badge && !isCollapsed"
+            class="badge nav-badge"
+            [ngClass]="item.badgeColor || 'bg-primary'"
+          >
+            {{ item.badge }}
+          </span>
+        </a>
+      </ng-container>
     </nav>
   </div>
 
-  <div class="sidebar-footer" *ngIf="!isCollapsed">
-    <div class="user-mini-card">
-      <div class="user-avatar-placeholder">
-        <i class="fa-solid fa-user"></i>
-      </div>
-      <div class="user-meta">
-        <span class="user-name">Active Session</span>
-        <span class="user-status text-success">&bull; Online</span>
-      </div>
-    </div>
+  <div class="sidebar-footer">
+    <button class="logout-btn" (click)="onLogout()" [title]="isCollapsed ? 'Sign Out' : ''">
+      <i class="fa-solid fa-right-from-bracket logout-icon"></i>
+      <span class="logout-label" *ngIf="!isCollapsed">Sign Out</span>
+    </button>
   </div>
 </aside>

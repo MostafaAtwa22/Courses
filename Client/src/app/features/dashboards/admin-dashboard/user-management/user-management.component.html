@@ -1,0 +1,230 @@
+<div class="user-management-container">
+  <!-- Page Header -->
+  <div class="admin-banner mb-4">
+    <div class="banner-content">
+      <div class="banner-header">
+        <div class="admin-badge badge-red">
+          <i class="fa-solid fa-users-gear"></i>
+          <span>User Management</span>
+        </div>
+        <h1 class="banner-title">System Users</h1>
+        <p class="banner-subtitle">Manage all system users, roles, and access permissions</p>
+      </div>
+      <div class="banner-actions">
+        <button class="action-btn action-btn--secondary" (click)="toggleFilterDropdown(); $event.stopPropagation()">
+          <i class="fa-solid fa-sliders"></i>
+          <span>Filters</span>
+        </button>
+        <button class="action-btn action-btn--primary" (click)="loadUsers()">
+          <i class="fa-solid fa-arrows-rotate"></i>
+          <span>Refresh</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filters Sidebar -->
+  <aside class="filters-sidebar" [class.open]="isFilterDropdownOpen">
+    <div class="sidebar-header">
+      <h3>Filters</h3>
+      <button class="sidebar-close-btn" (click)="isFilterDropdownOpen = false">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+
+    <div class="filter-group">
+      <h3>Sort By</h3>
+      <div class="radio-group">
+        <label>
+          <input type="radio" name="sortBy" [value]="'userName'" [(ngModel)]="sortBy" (change)="onSearch()">
+          Username
+        </label>
+        <label>
+          <input type="radio" name="sortBy" [value]="'email'" [(ngModel)]="sortBy" (change)="onSearch()">
+          Email
+        </label>
+        <label>
+          <input type="radio" name="sortBy" [value]="'firstName'" [(ngModel)]="sortBy" (change)="onSearch()">
+          First Name
+        </label>
+        <label>
+          <input type="radio" name="sortBy" [value]="'lastName'" [(ngModel)]="sortBy" (change)="onSearch()">
+          Last Name
+        </label>
+      </div>
+    </div>
+
+    <div class="filter-group">
+      <h3>Sort Order</h3>
+      <div class="radio-group">
+        <label>
+          <input type="radio" name="sortOrder" [value]="false" [(ngModel)]="sortDescending" (change)="onSearch()">
+          Ascending
+        </label>
+        <label>
+          <input type="radio" name="sortOrder" [value]="true" [(ngModel)]="sortDescending" (change)="onSearch()">
+          Descending
+        </label>
+      </div>
+    </div>
+
+    <div class="filter-group">
+      <h3>Filter by Role</h3>
+      <div class="radio-group">
+        <label>
+          <input type="radio" name="roleFilter" [value]="''" [(ngModel)]="selectedRole" (change)="onSearch()">
+          All Roles
+        </label>
+        <label *ngFor="let role of availableRoles">
+          <input type="radio" name="roleFilter" [value]="role.name" [(ngModel)]="selectedRole" (change)="onSearch()">
+          {{ role.name }}
+        </label>
+      </div>
+    </div>
+
+    <div class="sidebar-footer">
+      <button class="btn-clear" (click)="clearFilters()">
+        <i class="fa-solid fa-times me-1"></i> Clear Filters
+      </button>
+      <button class="btn-apply" (click)="isFilterDropdownOpen = false">
+        <i class="fa-solid fa-check me-1"></i> Show Results
+      </button>
+    </div>
+  </aside>
+
+  <!-- Overlay for sidebar -->
+  <div class="sidebar-overlay" *ngIf="isFilterDropdownOpen" (click)="isFilterDropdownOpen = false"></div>
+
+  <!-- Search -->
+  <div class="admin-card mb-4">
+    <div class="filters-row">
+      <div class="search-input-wrapper">
+        <i class="fa-solid fa-search search-icon"></i>
+        <input 
+          type="text" 
+          [(ngModel)]="searchQuery" 
+          placeholder="Search by name, email, or username..." 
+          (keyup.enter)="onSearch()"
+          class="search-input"
+        >
+      </div>
+    </div>
+  </div>
+
+  <!-- Users Table -->
+  <div class="admin-card">
+    <div class="table-responsive">
+      <table class="users-table" *ngIf="usersResult.items.length > 0">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>User</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Roles</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let user of usersResult.items">
+            <td><span class="id-cell">{{ user.id.substring(0, 8) }}...</span></td>
+            <td>
+              <div class="user-cell">
+                <img [src]="user.profilePicture || (user.gender === 'Female' ? 'assets/users/default-female.png' : 'assets/users/default-male.png')" [alt]="user.userName" class="user-avatar" />
+                <div class="user-info">
+                  <span class="user-name">{{ user.firstName }} {{ user.lastName }}</span>
+                  <span class="user-username">@{{ user.userName }}</span>
+                </div>
+              </div>
+            </td>
+            <td>{{ user.email }}</td>
+            <td>{{ user.phoneNumber || '-' }}</td>
+            <td>
+              <div class="roles-container">
+                <span class="role-badge" [ngClass]="getRoleClass(role)" *ngFor="let role of user.roles">{{ role }}</span>
+              </div>
+            </td>
+            <td>
+              <span class="status-badge" [class.locked]="isUserLocked(user)" [class.active]="!isUserLocked(user)">
+                <i [class]="isUserLocked(user) ? 'fa-solid fa-lock' : 'fa-solid fa-check'"></i>
+                {{ isUserLocked(user) ? 'Locked' : 'Active' }}
+              </span>
+            </td>
+            <td>
+              <div class="actions">
+                <button 
+                  class="btn-action btn-lock"
+                  [class.btn-unlock]="isUserLocked(user)"
+                  (click)="isUserLocked(user) ? unlockUser(user) : lockUser(user)"
+                  [title]="isUserLocked(user) ? 'Unlock User' : 'Lock User'"
+                  [disabled]="isSuperAdmin(user)"
+                >
+                  <i [class]="isUserLocked(user) ? 'fa-solid fa-unlock' : 'fa-solid fa-lock'"></i>
+                </button>
+                <button 
+                  class="btn-action btn-role"
+                  (click)="changeRoles(user)"
+                  title="Change Roles"
+                >
+                  <i class="fa-solid fa-user-shield"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Empty State -->
+      <div class="empty-state" *ngIf="usersResult.items.length === 0">
+        <div class="empty-state-icon">
+          <i class="fa-solid fa-users"></i>
+        </div>
+        <h3 class="empty-state-title">No Users Found</h3>
+        <p class="empty-state-message">
+          <span *ngIf="searchQuery">
+            No users match your current search. Try adjusting your search criteria.
+          </span>
+          <span *ngIf="!searchQuery">
+            There are no users in the system yet.
+          </span>
+        </p>
+        <button class="btn-clear-filters" *ngIf="searchQuery" (click)="clearFilters()">
+          <i class="fa-solid fa-filter-circle-xmark me-2"></i> Clear Search
+        </button>
+      </div>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination-wrapper" *ngIf="usersResult.totalPages > 1">
+      <button 
+        class="pagination-btn"
+        (click)="onPageChange(usersResult.pageNumber - 1)"
+        [disabled]="!usersResult.hasPreviousPage"
+      >
+        <i class="fa-solid fa-chevron-left"></i>
+      </button>
+      <span *ngFor="let page of getPagesArray()">
+        <button 
+          class="pagination-btn"
+          (click)="onPageChange(page)"
+          [class.active]="page === usersResult.pageNumber"
+        >
+          {{ page }}
+        </button>
+      </span>
+      <button 
+        class="pagination-btn"
+        (click)="onPageChange(usersResult.pageNumber + 1)"
+        [disabled]="!usersResult.hasNextPage"
+      >
+        <i class="fa-solid fa-chevron-right"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Role Assignment Modal -->
+  <app-role-assignment-modal 
+    (save)="onRoleAssignmentSaved($event.dto, $event.user)"
+  ></app-role-assignment-modal>
+</div>

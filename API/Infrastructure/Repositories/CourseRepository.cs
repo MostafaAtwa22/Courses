@@ -233,8 +233,37 @@ namespace Infrastructure.Repositories
                     SELECT DISTINCT name FROM categories WHERE name ILIKE @Term
                 ) AS suggestions
                 LIMIT 10";
-            
+
             return await connection.QueryAsync<string>(sql, new { Term = $"%{term}%" });
+        }
+
+        public async Task<IEnumerable<AdminCourseAnalyticsDto>> GetTopPerformingCoursesAsync(int limit, CancellationToken ct = default)
+        {
+            using var connection = await CreateConnectionAsync(ct);
+            var sql = $@"
+                SELECT 
+                    c.id,
+                    c.title,
+                    cat.name AS Category,
+                    (SELECT CONCAT(u.first_name, ' ', u.last_name) 
+                     FROM instructors ins 
+                     JOIN ""AspNetUsers"" u ON ins.user_id = u.id 
+                     WHERE ins.id = c.instructor_id LIMIT 1) AS InstructorName,
+                    c.student_count AS EnrolledStudents,
+                    0.0 AS CompletionRate,
+                    c.average_rate AS AverageRating,
+                    c.status AS Status,
+                    (SELECT COUNT(*) FROM sections s WHERE s.course_id = c.id) AS SectionsCount
+                {FromClause}
+                WHERE c.status = @Status
+                ORDER BY c.student_count DESC
+                LIMIT @Limit";
+
+            return await connection.QueryAsync<AdminCourseAnalyticsDto>(sql, new 
+            { 
+                Status = CourseStatus.Done.ToString(),
+                Limit = limit 
+            });
         }
     }
 }

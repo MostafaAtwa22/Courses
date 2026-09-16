@@ -19,7 +19,13 @@ namespace Infrastructure.Repositories
             return await ExecutePaginatedQueryAsync<CategoryResponseDto>(
                 queryParams,
                 countSql: "SELECT COUNT(1) FROM categories",
-                selectSql: "SELECT id, name, slug, created_at, updated_at, (SELECT COUNT(1) FROM courses WHERE category_id = categories.id) as number_of_courses FROM categories",
+                selectSql: @"SELECT id AS Id, 
+                                    name AS Name, 
+                                    slug AS Slug, 
+                                    created_at AS CreatedAt, 
+                                    updated_at AS UpdatedAt, 
+                                    (SELECT COUNT(1) FROM courses WHERE category_id = categories.id) AS NumberOfCourses 
+                             FROM categories",
                 allowedSortColumns: AllowedSortColumns,
                 defaultSortColumn: "created_at",
                 searchCondition: "(name ILIKE @SearchTerm OR slug ILIKE @SearchTerm)",
@@ -31,8 +37,12 @@ namespace Infrastructure.Repositories
         public async Task<CategoryResponseDto?> GetByIdAsync(Guid id, CancellationToken ct = default)
         {
             using var connection = await CreateConnectionAsync(ct);
-            var sql = @"SELECT id, name, slug, created_at, updated_at,
-                               (SELECT COUNT(1) FROM courses WHERE category_id = categories.id) as number_of_courses
+            var sql = @"SELECT id AS Id, 
+                               name AS Name, 
+                               slug AS Slug, 
+                               created_at AS CreatedAt, 
+                               updated_at AS UpdatedAt,
+                               (SELECT COUNT(1) FROM courses WHERE category_id = categories.id) AS NumberOfCourses
                         FROM categories
                         WHERE id = @Id";
             return await connection.QueryFirstOrDefaultAsync<CategoryResponseDto>(sql, new { Id = id });

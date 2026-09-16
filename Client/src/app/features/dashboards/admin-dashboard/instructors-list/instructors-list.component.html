@@ -1,0 +1,245 @@
+<div class="instructors-list-container">
+  <!-- Page Header -->
+  <div class="admin-banner mb-4">
+    <div class="banner-content">
+      <div class="banner-header">
+        <div class="admin-badge">
+          <i class="fa-solid fa-chalkboard-user"></i>
+          <span>Instructors Console</span>
+        </div>
+        <h1 class="banner-title">Instructor Management</h1>
+        <p class="banner-subtitle">View, verify, and manage instructor accounts across the platform</p>
+      </div>
+      <div class="banner-actions">
+        <button class="action-btn action-btn--secondary" (click)="toggleFilterDropdown(); $event.stopPropagation()">
+          <i class="fa-solid fa-sliders"></i>
+          <span>Filters</span>
+        </button>
+        <button class="action-btn action-btn--primary" (click)="loadInstructors()">
+          <i class="fa-solid fa-arrows-rotate"></i>
+          <span>Refresh</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filters Sidebar -->
+  <aside class="filters-sidebar" [class.open]="isFilterDropdownOpen">
+    <div class="sidebar-header">
+      <h3>Filters</h3>
+      <button class="sidebar-close-btn" (click)="isFilterDropdownOpen = false">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+
+    <div class="filter-group">
+      <h3>Status</h3>
+      <div class="filter-options">
+        <button 
+          [class.active]="statusFilter === ''"
+          (click)="statusFilter = ''; onSearch()">
+          All Statuses
+        </button>
+        <button 
+          [class.active]="statusFilter === 'Verfied'"
+          (click)="statusFilter = 'Verfied'; onSearch()">
+          Verified
+        </button>
+        <button 
+          [class.active]="statusFilter === 'Pending'"
+          (click)="statusFilter = 'Pending'; onSearch()">
+          Pending
+        </button>
+        <button 
+          [class.active]="statusFilter === 'Unverfied'"
+          (click)="statusFilter = 'Unverfied'; onSearch()">
+          Unverified
+        </button>
+      </div>
+    </div>
+
+    <div class="filter-group">
+      <h3>Sort By</h3>
+      <div class="radio-group">
+        <label>
+          <input type="radio" name="sortBy" [value]="''" [(ngModel)]="sortBy" (change)="onSearch()">
+          Default
+        </label>
+        <label>
+          <input type="radio" name="sortBy" [value]="'name'" [(ngModel)]="sortBy" (change)="onSearch()">
+          Name
+        </label>
+        <label>
+          <input type="radio" name="sortBy" [value]="'email'" [(ngModel)]="sortBy" (change)="onSearch()">
+          Email
+        </label>
+        <label>
+          <input type="radio" name="sortBy" [value]="'title'" [(ngModel)]="sortBy" (change)="onSearch()">
+          Title
+        </label>
+      </div>
+    </div>
+
+    <div class="filter-group">
+      <h3>Sort Order</h3>
+      <div class="radio-group">
+        <label>
+          <input type="radio" name="sortOrder" [value]="false" [(ngModel)]="sortDescending" (change)="onSearch()">
+          Ascending
+        </label>
+        <label>
+          <input type="radio" name="sortOrder" [value]="true" [(ngModel)]="sortDescending" (change)="onSearch()">
+          Descending
+        </label>
+      </div>
+    </div>
+
+    <div class="sidebar-footer">
+      <button class="btn-clear" (click)="clearFilters()">
+        <i class="fa-solid fa-times me-1"></i> Clear Filters
+      </button>
+      <button class="btn-apply" (click)="isFilterDropdownOpen = false">
+        <i class="fa-solid fa-check me-1"></i> Show Results
+      </button>
+    </div>
+  </aside>
+
+  <!-- Overlay for sidebar -->
+  <div class="sidebar-overlay" *ngIf="isFilterDropdownOpen" (click)="isFilterDropdownOpen = false"></div>
+
+  <!-- Instructor Status Statistics -->
+  <div class="row g-3 mb-4" *ngIf="instructorStatusMetrics.length > 0">
+    <div class="col-12 col-md-4" *ngFor="let metric of instructorStatusMetrics">
+      <app-stat-card [metric]="metric"></app-stat-card>
+    </div>
+  </div>
+
+  <!-- Search -->
+  <div class="admin-card mb-4">
+    <div class="filters-row">
+      <div class="search-input-wrapper">
+        <i class="fa-solid fa-search search-icon"></i>
+        <input
+          type="text"
+          [(ngModel)]="searchQuery"
+          placeholder="Search by name, email, or title..."
+          (keyup.enter)="onSearch()"
+          class="search-input"
+        >
+      </div>
+    </div>
+  </div>
+
+  <!-- Instructors Table -->
+  <div class="admin-card">
+    <div class="table-responsive">
+      <table class="instructors-table" *ngIf="instructorsResult.items.length > 0">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Instructor</th>
+            <th>Email</th>
+            <th>Title</th>
+            <th>Status</th>
+            <th>Created At</th>
+            <th>Updated At</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let instructor of instructorsResult.items">
+            <td><span class="id-cell">{{ instructor.id.substring(0, 8) }}...</span></td>
+            <td>
+              <div class="instructor-cell">
+                <img [src]="instructor.profilePicture || (instructor.gender === 'Female' ? 'assets/users/default-female.png' : 'assets/users/default-male.png')" [alt]="instructor.firstName" class="instructor-avatar" />
+                <div class="instructor-info">
+                  <span class="instructor-name">{{ instructor.firstName }} {{ instructor.lastName }}</span>
+                </div>
+              </div>
+            </td>
+            <td>{{ instructor.email }}</td>
+            <td>{{ instructor.title }}</td>
+            <td>
+              <span [class]="getStatusClass(instructor.status)" class="status-badge">{{ instructor.status }}</span>
+            </td>
+            <td>{{ instructor.createdAt | date: 'short' }}</td>
+            <td>{{ instructor.updatedAt | date: 'short' }}</td>
+            <td>
+              <div class="actions">
+                <button 
+                  class="btn-action btn-view"
+                  (click)="viewInstructorDetails(instructor.id)"
+                  title="View Details"
+                >
+                  <i class="fa-solid fa-eye"></i>
+                </button>
+                <button 
+                  *ngIf="instructor.status !== 'Verfied'"
+                  class="btn-action btn-verify"
+                  (click)="changeStatus(instructor.id, 'Verfied')"
+                  title="Verify Instructor"
+                >
+                  <i class="fa-solid fa-check"></i>
+                </button>
+                <button 
+                  *ngIf="instructor.status !== 'Unverfied'"
+                  class="btn-action btn-unverify"
+                  (click)="changeStatus(instructor.id, 'Unverfied')"
+                  title="Unverify Instructor"
+                >
+                  <i class="fa-solid fa-xmark"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Empty State -->
+      <div class="empty-state" *ngIf="instructorsResult.items.length === 0">
+        <div class="empty-state-icon">
+          <i class="fa-solid fa-user-slash"></i>
+        </div>
+        <h3 class="empty-state-title">No Instructors Found</h3>
+        <p class="empty-state-message">
+          <span *ngIf="searchQuery || statusFilter">
+            No instructors match your current filters. Try adjusting your search criteria.
+          </span>
+          <span *ngIf="!searchQuery && !statusFilter">
+            There are no instructors in the system yet.
+          </span>
+        </p>
+        <button class="btn-clear-filters" *ngIf="searchQuery || statusFilter" (click)="clearFilters()">
+          <i class="fa-solid fa-filter-circle-xmark me-2"></i> Clear Filters
+        </button>
+      </div>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination-wrapper" *ngIf="instructorsResult.totalPages > 1">
+      <button 
+        class="pagination-btn"
+        (click)="onPageChange(instructorsResult.pageNumber - 1)"
+        [disabled]="!instructorsResult.hasPreviousPage"
+      >
+        <i class="fa-solid fa-chevron-left"></i>
+      </button>
+      <span *ngFor="let page of getPagesArray()">
+        <button 
+          class="pagination-btn"
+          (click)="onPageChange(page)"
+          [class.active]="page === instructorsResult.pageNumber"
+        >
+          {{ page }}
+        </button>
+      </span>
+      <button 
+        class="pagination-btn"
+        (click)="onPageChange(instructorsResult.pageNumber + 1)"
+        [disabled]="!instructorsResult.hasNextPage"
+      >
+        <i class="fa-solid fa-chevron-right"></i>
+      </button>
+    </div>
+  </div>
+</div>

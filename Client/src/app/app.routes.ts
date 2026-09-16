@@ -84,13 +84,48 @@ export const routes: Routes = [
         loadComponent: () => import('./features/instructors/public-profile/public-profile.component').then(m => m.InstructorPublicProfileComponent)
     },
     {
-        path: 'admin/instructors',
-        loadComponent: () => import('./features/admin/instructors-list/instructors-list.component').then(m => m.InstructorsListComponent),
-        canActivate: [authGuard]
-    },
-    {
         path: 'admin/dashboard',
-        loadComponent: () => import('./features/dashboards/admin-dashboard/admin-dashboard').then(m => m.AdminDashboardComponent)
+        loadComponent: () => import('./features/dashboards/admin-dashboard/admin-dashboard').then(m => m.AdminDashboardComponent),
+        canActivate: [authGuard],
+        children: [
+            {
+                path: '',
+                redirectTo: 'overview',
+                pathMatch: 'full'
+            },
+            {
+                path: 'overview',
+                loadComponent: () => import('./features/dashboards/admin-dashboard/admin-overview/admin-overview').then(m => m.AdminOverviewComponent)
+            },
+            {
+                path: 'instructors',
+                loadComponent: () => import('./features/dashboards/admin-dashboard/instructors-list/instructors-list.component').then(m => m.InstructorsListComponent)
+            },
+            {
+                path: 'instructors/:id',
+                loadComponent: () => import('./features/dashboards/admin-dashboard/instructors-list/instructor-details/instructor-details.component').then(m => m.InstructorDetailsComponent)
+            },
+            {
+                path: 'students',
+                loadComponent: () => import('./features/dashboards/admin-dashboard/students-list/students-list.component').then(m => m.StudentsListComponent)
+            },
+            {
+                path: 'students/:id',
+                loadComponent: () => import('./features/dashboards/admin-dashboard/students-list/student-details/student-details.component').then(m => m.StudentDetailsComponent)
+            },
+            {
+                path: 'categories',
+                loadComponent: () => import('./features/dashboards/admin-dashboard/categories-list/categories-list.component').then(m => m.CategoriesListComponent)
+            },
+            {
+                path: 'courses',
+                loadComponent: () => import('./features/dashboards/admin-dashboard/courses-list/courses-list.component').then(m => m.CoursesListComponent)
+            },
+            {
+                path: 'users',
+                loadComponent: () => import('./features/dashboards/admin-dashboard/user-management/user-management.component').then(m => m.UserManagementComponent)
+            }
+        ]
     },
     {
         path: 'instructor/dashboard',

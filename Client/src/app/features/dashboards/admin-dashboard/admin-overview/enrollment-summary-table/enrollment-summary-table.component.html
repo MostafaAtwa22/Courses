@@ -1,0 +1,49 @@
+<div class="admin-card">
+  <div class="card-header">
+    <div class="card-icon">
+      <i class="fa-solid fa-chart-line"></i>
+    </div>
+    <h5 class="card-title">Enrollment Summary</h5>
+  </div>
+  <div class="card-body">
+    <div class="summary-grid">
+      <div class="summary-item">
+        <div class="summary-label">
+          <i class="fa-solid fa-users summary-label-icon"></i>
+          Total Enrollments
+        </div>
+        <div class="summary-value">{{ totalEnrollments }}</div>
+      </div>
+      <div class="summary-item">
+        <div class="summary-label">
+          <i class="fa-solid fa-calculator summary-label-icon"></i>
+          Average/Month
+        </div>
+        <div class="summary-value">{{ averageEnrollments }}</div>
+      </div>
+      <div class="summary-item">
+        <div class="summary-label">
+          <i class="fa-solid fa-trophy summary-label-icon"></i>
+          Peak Month
+        </div>
+        <div class="summary-value">{{ highestMonth }}</div>
+      </div>
+      <div class="summary-item">
+        <div class="summary-label">
+          <i class="fa-solid fa-star summary-label-icon"></i>
+          Peak Count
+        </div>
+        <div class="summary-value">{{ highestCount }}</div>
+      </div>
+      <div class="summary-item summary-item--full">
+        <div class="summary-label">
+          <i class="fa-solid fa-arrow-trend-up summary-label-icon"></i>
+          Growth Rate
+        </div>
+        <div class="summary-value" [class.positive]="growthRate >= 0" [class.negative]="growthRate < 0">
+          {{ growthRate >= 0 ? '+' : '' }}{{ growthRate }}%
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

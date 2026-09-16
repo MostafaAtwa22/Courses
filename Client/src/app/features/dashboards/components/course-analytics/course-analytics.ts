@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { CourseAnalytics } from '../../models/dashboard.model';
 
 @Component({
@@ -11,4 +12,16 @@ import { CourseAnalytics } from '../../models/dashboard.model';
 })
 export class CourseAnalyticsComponent {
   @Input() courses: CourseAnalytics[] = [];
+
+  constructor(private router: Router) {}
+
+  get topCourses(): CourseAnalytics[] {
+    return [...this.courses]
+      .sort((a, b) => b.avgRating - a.avgRating)
+      .slice(0, 5);
+  }
+
+  viewAllCourses() {
+    this.router.navigate(['/admin/dashboard/courses']);
+  }
 }
