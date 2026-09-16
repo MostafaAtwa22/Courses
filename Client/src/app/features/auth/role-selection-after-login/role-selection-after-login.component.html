@@ -1,0 +1,33 @@
+<div class="role-selection-container">
+  <div class="role-select-card">
+    <div class="role-header">
+      <h2>Select Your Role</h2>
+      <p>You have multiple roles. Choose how you want to use EduFocus.</p>
+    </div>
+
+    <div class="role-options">
+      <div class="role-card" 
+           *ngFor="let role of availableRoles"
+           [class.selected]="selectedRole === role" 
+           (click)="selectRole(role)">
+        <div class="role-radio">
+          <div class="radio-dot" *ngIf="selectedRole === role"></div>
+        </div>
+        <div class="role-icon">
+          <i class="fa-solid" [ngClass]="getRoleIcon(role)"></i>
+        </div>
+        <h3>I'm a {{ getRoleLabel(role) }}</h3>
+        <p>{{ getRoleDescription(role) }}</p>
+      </div>
+    </div>
+
+    <button class="btn-primary btn-block" [disabled]="!selectedRole" (click)="continue()">
+      <span>Continue as {{ selectedRole ? getRoleLabel(selectedRole) : '' }}</span>
+      <i class="fa-solid fa-arrow-right"></i>
+    </button>
+
+    <div class="role-footer">
+      <p>You can switch roles anytime from your profile menu.</p>
+    </div>
+  </div>
+</div>

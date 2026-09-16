@@ -7,6 +7,18 @@ export const authGuard: CanActivateFn = (route, state) => {
   const router = inject(Router);
 
   if (authService.isLoggedIn()) {
+    // Check if user needs to select a role
+    const user = authService.currentUser();
+    if (user && user.roles.length > 1) {
+      const selectedRole = authService.getSelectedRole();
+      if (!selectedRole || !user.roles.includes(selectedRole)) {
+        // No valid role selected, redirect to role selection page
+        if (state.url !== '/auth/role-selection-after-login') {
+          router.navigate(['/auth/role-selection-after-login']);
+          return false;
+        }
+      }
+    }
     return true;
   }
 

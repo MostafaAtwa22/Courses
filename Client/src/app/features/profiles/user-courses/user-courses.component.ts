@@ -40,7 +40,8 @@ export class UserCoursesComponent implements OnInit {
       return;
     }
 
-    if (currentUser.roles?.includes('Instructor')) {
+    const selectedRole = this.sessionService.getSelectedRole();
+    if (selectedRole === 'Instructor') {
       this.courseService.getCoursesByInstructorId(this.params).subscribe({
         next: (res) => {
           this.coursesResult = res;
@@ -52,7 +53,7 @@ export class UserCoursesComponent implements OnInit {
           console.error('Error loading instructor courses:', err);
         }
       });
-    } else if (currentUser.roles?.includes('Student')) {
+    } else if (selectedRole === 'Student') {
       this.courseService.getCoursesByStudentId(this.params).subscribe({
         next: (res) => {
           this.coursesResult = res;
@@ -80,12 +81,10 @@ export class UserCoursesComponent implements OnInit {
   }
 
   get isInstructor(): boolean {
-    const currentUser = this.sessionService.currentUser();
-    return currentUser?.roles?.includes('Instructor') || false;
+    return this.sessionService.getSelectedRole() === 'Instructor';
   }
 
   get isStudent(): boolean {
-    const currentUser = this.sessionService.currentUser();
-    return currentUser?.roles?.includes('Student') || false;
+    return this.sessionService.getSelectedRole() === 'Student';
   }
 }
