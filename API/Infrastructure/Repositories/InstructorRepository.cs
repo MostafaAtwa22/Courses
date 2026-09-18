@@ -182,5 +182,25 @@ namespace Infrastructure.Repositories
             
             return await connection.QueryFirstOrDefaultAsync<Guid?>(sql, new { UserId = userId });
         }
+
+        public async Task DeleteByUserIdAsync(string userId, CancellationToken ct = default)
+        {
+            using var connection = await CreateConnectionAsync(ct);
+            var sql = @"DELETE FROM instructors WHERE user_id = @UserId";
+            await connection.ExecuteAsync(sql, new { UserId = userId });
+        }
+
+        public async Task<bool> HasCoursesAsync(string userId, CancellationToken ct = default)
+        {
+            using var connection = await CreateConnectionAsync(ct);
+            var sql = @"
+                SELECT COUNT(*) 
+                FROM courses c
+                JOIN instructors i ON c.instructor_id = i.id
+                WHERE i.user_id = @UserId";
+            
+            var count = await connection.QueryFirstOrDefaultAsync<int>(sql, new { UserId = userId });
+            return count > 0;
+        }
     }
 }

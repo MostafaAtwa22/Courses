@@ -105,6 +105,7 @@ public static class DependencyInjection
         services.AddTransient<IIdentityEmailService, IdentityEmailService>();
         services.AddTransient<ITwoFactorService, TwoFactorService>();
         services.AddScoped<IStudentProfileService, StudentProfileService>();
+        services.AddScoped<IInstructorProfileService, InstructorProfileService>();
 
         services.Configure<GoogleOptions>(config.GetSection(GoogleOptions.SectionName));
         services.Configure<FacebookOptions>(config.GetSection(FacebookOptions.SectionName));
