@@ -9,7 +9,6 @@ services:
   #     dockerfile: Dockerfile
   #   ports:
   #     - 5296:5296
-  #     - 7297:7297
 
   database:
     image: postgres:latest

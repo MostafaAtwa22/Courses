@@ -138,7 +138,13 @@ export class LoginComponent implements OnInit {
         queryParams: { email: response.email ?? this.loginForm.value.email }
       });
     } else {
-      this.router.navigate(['/']);
+      // Role selection is handled in AuthService.saveOnSuccess
+      // Navigate to home only if user has single role (auto-selected)
+      // If user has multiple roles, they will be redirected to role selection page
+      if (!this.authService.hasMultipleRoles()) {
+        this.router.navigate(['/']);
+      }
+      // For multiple roles, the handleRoleSelectionAfterLogin in AuthService will redirect
     }
   }
 

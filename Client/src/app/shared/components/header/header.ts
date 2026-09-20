@@ -2,6 +2,7 @@ import { Component, inject, HostListener, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { AuthService } from '../../../features/auth/services/auth.service';
+import { SessionService } from '../../../features/auth/services/session.service';
 import { ThemeService } from '../../../core/services/theme.service';
 
 @Component({
@@ -13,6 +14,7 @@ import { ThemeService } from '../../../core/services/theme.service';
 })
 export class HeaderComponent {
   authService   = inject(AuthService);
+  sessionService = inject(SessionService);
   themeService  = inject(ThemeService);
   private router  = inject(Router);
   private elRef   = inject(ElementRef);
@@ -47,5 +49,19 @@ export class HeaderComponent {
     this.isDropdownOpen = false;
     this.authService.logout();
     this.router.navigate(['/auth/login']);
+  }
+
+  switchRole(): void {
+    this.isDropdownOpen = false;
+    this.router.navigate(['/auth/role-selection-after-login']);
+  }
+
+  get selectedRole(): string | null {
+    return this.sessionService.getSelectedRole();
+  }
+
+  get hasMultipleRoles(): boolean {
+    const user = this.authService.currentUser();
+    return user ? user.roles.length > 1 : false;
   }
 }

@@ -14,6 +14,11 @@ export const routes: Routes = [
         loadComponent: () => import('./features/auth/github-callback/github-callback.component').then(m => m.GithubCallbackComponent)
     },
     {
+        path: 'auth/role-selection-after-login',
+        loadComponent: () => import('./features/auth/role-selection-after-login/role-selection-after-login.component').then(m => m.RoleSelectionAfterLoginComponent),
+        canActivate: [authGuard]
+    },
+    {
         path: 'auth',
         loadComponent: () => import('./features/auth/auth-layout/auth-layout.component').then(m => m.AuthLayoutComponent),
         canActivate: [guestGuard],
@@ -129,7 +134,8 @@ export const routes: Routes = [
     },
     {
         path: 'instructor/dashboard',
-        loadComponent: () => import('./features/dashboards/instructor-dashboard/instructor-dashboard').then(m => m.InstructorDashboardComponent)
+        loadComponent: () => import('./features/dashboards/instructor-dashboard/instructor-dashboard').then(m => m.InstructorDashboardComponent),
+        canActivate: [authGuard]
     },
     {
         path: 'student/dashboard',

@@ -1,7 +1,12 @@
+using Application.Common.Interfaces.Identity;
+using Domain.Enums.Identity;
+
 namespace Application.Features.Authorization.Commands.UpdateUserRoles;
 
 public sealed class UpdateUserRolesCommandHandler(
-    UserManager<ApplicationUser> _userManager) : IRequestHandler<UpdateUserRolesCommand>
+    UserManager<ApplicationUser> _userManager,
+    IStudentProfileService _studentProfileService,
+    IInstructorProfileService _instructorProfileService) : IRequestHandler<UpdateUserRolesCommand>
 {
     public async Task Handle(UpdateUserRolesCommand request, CancellationToken cancellationToken)
     {
@@ -22,6 +27,12 @@ public sealed class UpdateUserRolesCommandHandler(
             var removeResult = await _userManager.RemoveFromRolesAsync(user, rolesToRemove);
             if (!removeResult.Succeeded)
                 throw new BadRequestException(removeResult.Errors.Select(e => e.Description));
+
+            if (rolesToRemove.Contains(Role.Student.ToString()))
+                await _studentProfileService.RemoveStudentProfileAsync(user.Id, cancellationToken);
+
+            if (rolesToRemove.Contains(Role.Instructor.ToString()))
+                await _instructorProfileService.RemoveInstructorProfileAsync(user.Id, cancellationToken);
         }
 
         if (rolesToAdd.Any())
@@ -29,6 +40,9 @@ public sealed class UpdateUserRolesCommandHandler(
             var addResult = await _userManager.AddToRolesAsync(user, rolesToAdd);
             if (!addResult.Succeeded)
                 throw new BadRequestException(addResult.Errors.Select(e => e.Description));
+
+            if (rolesToAdd.Contains(Role.Student.ToString()))
+                await _studentProfileService.EnsureStudentProfileAsync(user.Id, cancellationToken);
         }
     }
 }

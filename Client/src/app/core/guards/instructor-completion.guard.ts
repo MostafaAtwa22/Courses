@@ -13,8 +13,9 @@ export const instructorCompletionGuard: CanActivateFn = (route, state) => {
     return true;
   }
 
-  // If user is not an instructor, allow access
-  if (!currentUser.roles.includes('Instructor')) {
+  // Check if user's selected role is Instructor
+  const selectedRole = authService.getSelectedRole();
+  if (selectedRole !== 'Instructor') {
     return true;
   }
 

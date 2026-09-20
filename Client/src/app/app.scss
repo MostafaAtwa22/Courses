@@ -1,0 +1,201 @@
+// SweetAlert2 Custom Styles for Dark/Light Mode Support
+.custom-swal-popup {
+  background: var(--surface) !important;
+  border: 1px solid var(--border-color) !important;
+  border-radius: var(--radius-lg, 12px) !important;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15) !important;
+}
+
+.custom-swal-title {
+  color: var(--text-color) !important;
+  font-size: 1.5rem !important;
+  font-weight: 700 !important;
+  margin-bottom: 8px !important;
+}
+
+.custom-swal-content {
+  color: var(--text-muted) !important;
+  font-size: 1rem !important;
+  line-height: 1.5 !important;
+}
+
+.custom-swal-confirm {
+  background: var(--primary-color) !important;
+  color: white !important;
+  border: none !important;
+  border-radius: var(--radius-md, 8px) !important;
+  padding: 12px 24px !important;
+  font-size: 1rem !important;
+  font-weight: 600 !important;
+  transition: all 0.2s ease !important;
+
+  &:hover {
+    background: var(--primary-hover, var(--primary-color)) !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+  }
+
+  &:active {
+    transform: translateY(0) !important;
+  }
+}
+
+.custom-swal-deny {
+  background: #ef4444 !important;
+  color: white !important;
+  border: none !important;
+  border-radius: var(--radius-md, 8px) !important;
+  padding: 12px 24px !important;
+  font-size: 1rem !important;
+  font-weight: 600 !important;
+  transition: all 0.2s ease !important;
+
+  &:hover {
+    background: #dc2626 !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+  }
+
+  &:active {
+    transform: translateY(0) !important;
+  }
+}
+
+.custom-swal-cancel {
+  background: var(--surface-variant) !important;
+  color: var(--text-color) !important;
+  border: 1px solid var(--border-color) !important;
+  border-radius: var(--radius-md, 8px) !important;
+  padding: 12px 24px !important;
+  font-size: 1rem !important;
+  font-weight: 600 !important;
+  transition: all 0.2s ease !important;
+
+  &:hover {
+    background: var(--surface) !important;
+    border-color: var(--primary-color) !important;
+    color: var(--primary-color) !important;
+    transform: translateY(-1px) !important;
+  }
+
+  &:active {
+    transform: translateY(0) !important;
+  }
+}
+
+.custom-swal-input {
+  background: var(--surface-variant) !important;
+  border: 1.5px solid var(--border-color) !important;
+  border-radius: var(--radius-md, 8px) !important;
+  color: var(--text-color) !important;
+  padding: 12px 16px !important;
+  font-size: 1rem !important;
+
+  &:focus {
+    border-color: var(--primary-color) !important;
+    outline: none !important;
+    box-shadow: 0 0 0 4px var(--primary-light) !important;
+  }
+
+  &::placeholder {
+    color: var(--text-muted) !important;
+  }
+}
+
+// SweetAlert2 icon styling
+.swal2-icon {
+  border: none !important;
+  width: 80px !important;
+  height: 80px !important;
+  margin: 0 auto 20px !important;
+}
+
+.swal2-icon-success {
+  background: rgba(34, 197, 94, 0.1) !important;
+  color: #22c55e !important;
+  border-radius: 50% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  .swal2-success-ring {
+    background: rgba(34, 197, 94, 0.2) !important;
+  }
+
+  .swal2-success-fix {
+    background: #22c55e !important;
+  }
+}
+
+.swal2-icon-error {
+  background: rgba(239, 68, 68, 0.1) !important;
+  color: #ef4444 !important;
+  border-radius: 50% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.swal2-icon-warning {
+  background: rgba(245, 158, 11, 0.1) !important;
+  color: #f59e0b !important;
+  border-radius: 50% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.swal2-icon-info {
+  background: rgba(59, 130, 246, 0.1) !important;
+  color: #3b82f6 !important;
+  border-radius: 50% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.swal2-icon-question {
+  background: rgba(99, 102, 241, 0.1) !important;
+  color: #6366f1 !important;
+  border-radius: 50% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+// SweetAlert2 backdrop
+.swal2-backdrop-show {
+  background: rgba(0, 0, 0, 0.5) !important;
+  backdrop-filter: blur(4px) !important;
+}
+
+// SweetAlert2 animations
+.swal2-show {
+  animation: swal2-show 0.3s ease-out !important;
+}
+
+.swal2-hide {
+  animation: swal2-hide 0.3s ease-in !important;
+}
+
+@keyframes swal2-show {
+  from {
+    opacity: 0;
+    transform: scale(0.9) translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes swal2-hide {
+  from {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.9) translateY(-20px);
+  }
+}

@@ -61,15 +61,15 @@ export class ProfileComponent implements OnInit {
   }
 
   get userRole(): string {
-    return this.currentUser?.roles?.[0] || 'Student';
+    return this.sessionService.getSelectedRole() || 'Student';
   }
 
   get isInstructor(): boolean {
-    return this.currentUser?.roles?.includes('Instructor') || false;
+    return this.sessionService.getSelectedRole() === 'Instructor';
   }
 
   get isStudent(): boolean {
-    return this.currentUser?.roles?.includes('Student') || false;
+    return this.sessionService.getSelectedRole() === 'Student';
   }
 
   get emailStatus(): string {

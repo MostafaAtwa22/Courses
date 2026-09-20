@@ -86,6 +86,26 @@ public class StudentRepository(IDbConnectionFactory factory, IOptions<UrlsOption
         return await connection.QueryFirstOrDefaultAsync<Guid?>(sql, new { UserId = userId });
     }
 
+    public async Task DeleteByUserIdAsync(string userId, CancellationToken ct = default)
+    {
+        using var connection = await CreateConnectionAsync(ct);
+        var sql = @"DELETE FROM students WHERE user_id = @UserId";
+        await connection.ExecuteAsync(sql, new { UserId = userId });
+    }
+
+    public async Task<bool> HasEnrollmentsAsync(string userId, CancellationToken ct = default)
+    {
+        using var connection = await CreateConnectionAsync(ct);
+        var sql = @"
+            SELECT COUNT(*) 
+            FROM enrollments e
+            JOIN students s ON e.student_id = s.id
+            WHERE s.user_id = @UserId";
+        
+        var count = await connection.QueryFirstOrDefaultAsync<int>(sql, new { UserId = userId });
+        return count > 0;
+    }
+
     public Task<PaginatedResult<StudentResponseDto>> GetAllAsync(StudentQueryParams queryParams, CancellationToken ct = default)
     {
         var extraConditions = new List<string>();

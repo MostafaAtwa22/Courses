@@ -18,5 +18,7 @@ namespace Application.Common.Interfaces.Identity
         Task UpdateStatusAsync(Guid id, InstructorStatus status, CancellationToken ct = default);
         Task DeleteAsync(Guid id, CancellationToken ct = default);
         Task<Guid?> GetInstructorIdByUserIdAsync(string userId, CancellationToken ct = default);
+        Task DeleteByUserIdAsync(string userId, CancellationToken ct = default);
+        Task<bool> HasCoursesAsync(string userId, CancellationToken ct = default);
     }
 }

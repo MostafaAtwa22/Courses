@@ -12,4 +12,6 @@ public interface IStudentRepository
     Task<Guid> CreateAsync(Student student, CancellationToken ct = default);
     Task DeleteAsync(Guid id, CancellationToken ct = default);
     Task<Guid?> GetStudentIdByUserIdAsync(string userId, CancellationToken ct = default);
+    Task DeleteByUserIdAsync(string userId, CancellationToken ct = default);
+    Task<bool> HasEnrollmentsAsync(string userId, CancellationToken ct = default);
 }

@@ -49,7 +49,13 @@ export class TwoFactorComponent implements OnInit {
       next: (response) => {
         if (response.token) {
           this.authService.saveSession(response.token, response);
-          this.router.navigate(['/']);
+          // Manually trigger role selection since we called saveSession directly
+          this.authService.handleRoleSelectionAfterLogin();
+          // Navigate to home only if user has single role (auto-selected)
+          // If user has multiple roles, they will be redirected to role selection page
+          if (!this.authService.hasMultipleRoles()) {
+            this.router.navigate(['/']);
+          }
         }
       },
       error: (err) => {

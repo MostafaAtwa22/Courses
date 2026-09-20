@@ -25,7 +25,7 @@ namespace Infrastructure.Tests.Repositories
             _connectionMock = new Mock<IDbConnection>();
             _urlsOptionsMock = new Mock<IOptions<UrlsOptions>>();
 
-            _urlsOptionsMock.Setup(o => o.Value).Returns(new UrlsOptions { API = "https://localhost:7297" });
+            _urlsOptionsMock.Setup(o => o.Value).Returns(new UrlsOptions { API = "http://localhost:5296" });
 
             _factoryMock.Setup(f => f.CreateConnectionAsync(It.IsAny<CancellationToken>()))
                         .ReturnsAsync(_connectionMock.Object);
