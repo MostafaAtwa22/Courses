@@ -1,4 +1,5 @@
 using Application.Common.Interfaces;
+using Application.Common.Interfaces.Cache;
 using Application.DTOs.Review;
 using Application.Features.Reviews.Commands.Update;
 using Domain.Entities;
@@ -12,13 +13,15 @@ namespace Application.Tests.Reviews.Command
     {
         private readonly Mock<IReviewRepository> _repoMock;
         private readonly Mock<ICurrentUserService> _currentUserServiceMock;
+        private readonly Mock<IAppCache> _cacheMock;
         private readonly UpdateReviewCommandHandler _handler;
 
         public UpdateReviewCommandHandlerTests()
         {
             _repoMock = new Mock<IReviewRepository>();
             _currentUserServiceMock = new Mock<ICurrentUserService>();
-            _handler = new UpdateReviewCommandHandler(_repoMock.Object, _currentUserServiceMock.Object);
+            _cacheMock = new Mock<IAppCache>();
+            _handler = new UpdateReviewCommandHandler(_repoMock.Object, _currentUserServiceMock.Object, _cacheMock.Object);
         }
 
         [Fact]

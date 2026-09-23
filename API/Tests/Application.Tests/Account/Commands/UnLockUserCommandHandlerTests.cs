@@ -1,4 +1,5 @@
 using Application.Common.Exceptions;
+using Application.Common.Interfaces.Cache;
 using Application.Common.Interfaces.Identity;
 using Application.Features.Account.Commands.UnLock;
 using Domain.Entities.Identity;
@@ -11,6 +12,7 @@ public class UnLockUserCommandHandlerTests
     private readonly Mock<IUserIdentityService> _userIdentityServiceMock;
     private readonly Mock<IPasswordService> _passwordServiceMock;
     private readonly Mock<IIdentityEmailService> _identityEmailServiceMock;
+    private readonly Mock<IAppCache> _cacheMock;
     private readonly UnLockUserCommandHandler _handler;
 
     public UnLockUserCommandHandlerTests()
@@ -18,7 +20,8 @@ public class UnLockUserCommandHandlerTests
         _userIdentityServiceMock = new Mock<IUserIdentityService>();
         _passwordServiceMock = new Mock<IPasswordService>();
         _identityEmailServiceMock = new Mock<IIdentityEmailService>();
-        _handler = new UnLockUserCommandHandler(_userIdentityServiceMock.Object, _passwordServiceMock.Object, _identityEmailServiceMock.Object);
+        _cacheMock = new Mock<IAppCache>();
+        _handler = new UnLockUserCommandHandler(_userIdentityServiceMock.Object, _passwordServiceMock.Object, _identityEmailServiceMock.Object, _cacheMock.Object);
     }
 
     [Fact]

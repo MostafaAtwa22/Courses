@@ -1,5 +1,6 @@
 using Application.Common.Exceptions;
 using Application.Common.Interfaces;
+using Application.Common.Interfaces.Cache;
 using Application.Features.Account.Queries.GetById;
 using Domain.Entities.Identity;
 using FluentAssertions;
@@ -14,13 +15,15 @@ public class GetUserByIdHandlerTests
 {
     private readonly Mock<UserManager<ApplicationUser>> _userManagerMock;
     private readonly Mock<IUrlProvider> _urlProviderMock;
+    private readonly Mock<IAppCache> _cacheMock;
     private readonly GetUserByIdQueryHandler _handler;
 
     public GetUserByIdHandlerTests()
     {
         _userManagerMock = MockHelpers.MockUserManager<ApplicationUser>();
         _urlProviderMock = new Mock<IUrlProvider>();
-        _handler = new GetUserByIdQueryHandler(_userManagerMock.Object, _urlProviderMock.Object);
+        _cacheMock = new Mock<IAppCache>();
+        _handler = new GetUserByIdQueryHandler(_userManagerMock.Object, _urlProviderMock.Object, _cacheMock.Object);
     }
 
     [Fact]

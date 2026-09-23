@@ -1,14 +1,17 @@
+using Application.Common.Interfaces.Cache;
+
 namespace Application.Features.Courses.Commands.Update
 {
     public sealed class UpdateInstructorCommandHandler(
         ICourseRepository _repo,
-        IFileService _fileService) : IRequestHandler<UpdateCourseCommand>
+        IFileService _fileService,
+        IAppCache _cache) : IRequestHandler<UpdateCourseCommand>
     {
         public async Task Handle(UpdateCourseCommand request, CancellationToken cancellationToken)
         {
             var course = await _repo.GetEntityByIdAsync(request.Id, cancellationToken)
                 ?? throw new NotFoundException(nameof(Course), request.Id);
-            
+
             string? pictureUrl = null;
             if (request.Dto.PictureUrl is not null)
             {
@@ -41,8 +44,13 @@ namespace Application.Features.Courses.Commands.Update
             }
 
             request.Dto.UpdateEntity(course, pictureUrl, introVideoUrl);
-            
+
             await _repo.UpdateAsync(course, cancellationToken);
+
+            // Invalidate related caches
+            await _cache.RemoveByTagAsync(CacheKeys.Courses(), cancellationToken);
+            await _cache.RemoveAsync(CacheKeys.Course(request.Id), cancellationToken);
+            await _cache.RemoveByTagAsync(CacheKeys.Discounts(), cancellationToken);
         }
     }
 }

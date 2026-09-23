@@ -1,3 +1,5 @@
+using Application.Common.Interfaces;
+using Application.Common.Interfaces.Cache;
 using Application.Common.Interfaces.Identity;
 using Application.DTOs.Instructor;
 using Application.Features.Instructors.Queries.GetPublicById;
@@ -9,12 +11,14 @@ namespace Application.Tests.Instructors.Queries;
 public class GetPublicInstructorByIdQueryHandlerTests
 {
     private readonly Mock<IInstructorRepository> _instructorRepositoryMock;
+    private readonly Mock<IAppCache> _cacheMock;
     private readonly GetPublicInstructorByIdQueryHandler _handler;
 
     public GetPublicInstructorByIdQueryHandlerTests()
     {
         _instructorRepositoryMock = new Mock<IInstructorRepository>();
-        _handler = new GetPublicInstructorByIdQueryHandler(_instructorRepositoryMock.Object);
+        _cacheMock = new Mock<IAppCache>();
+        _handler = new GetPublicInstructorByIdQueryHandler(_instructorRepositoryMock.Object, _cacheMock.Object);
     }
 
     [Fact]

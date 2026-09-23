@@ -1,7 +1,3 @@
-using Application.DTOs.Authorization;
-using Domain.Entities.Identity;
-using Microsoft.AspNetCore.Identity;
-
 namespace Application.Common.Mappings
 {
     public static class AuthorizationMappings

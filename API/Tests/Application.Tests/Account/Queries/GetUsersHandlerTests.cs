@@ -1,4 +1,5 @@
 using Application.Common.Interfaces;
+using Application.Common.Interfaces.Cache;
 using Application.Common.Models;
 using Application.Features.Account.Queries.GetAll;
 using Domain.Entities.Identity;
@@ -14,13 +15,15 @@ public class GetUsersHandlerTests
 {
     private readonly Mock<UserManager<ApplicationUser>> _userManagerMock;
     private readonly Mock<IUrlProvider> _urlProviderMock;
+    private readonly Mock<IAppCache> _cacheMock;
     private readonly GetUsersQueryHandler _handler;
 
     public GetUsersHandlerTests()
     {
         _userManagerMock = MockHelpers.MockUserManager<ApplicationUser>();
         _urlProviderMock = new Mock<IUrlProvider>();
-        _handler = new GetUsersQueryHandler(_userManagerMock.Object, _urlProviderMock.Object);
+        _cacheMock = new Mock<IAppCache>();
+        _handler = new GetUsersQueryHandler(_userManagerMock.Object, _urlProviderMock.Object, _cacheMock.Object);
     }
 
     [Fact]

@@ -1,5 +1,6 @@
 using Application.Common.Exceptions;
 using Application.Common.Interfaces;
+using Application.Common.Interfaces.Cache;
 using Application.DTOs.Course;
 using Application.Features.Courses.Commands.Delete;
 using Domain.Entities;
@@ -12,13 +13,15 @@ namespace Application.Tests.Courses.Command
     {
         private readonly Mock<ICourseRepository> _repoMock;
         private readonly Mock<IFileService> _fileServiceMock;
+        private readonly Mock<IAppCache> _cacheMock;
         private readonly DeleteCourseCommandHandler _handler;
 
         public DeleteCourseCommandHandlerTests()
         {
             _repoMock = new Mock<ICourseRepository>();
             _fileServiceMock = new Mock<IFileService>();
-            _handler = new DeleteCourseCommandHandler(_repoMock.Object, _fileServiceMock.Object);
+            _cacheMock = new Mock<IAppCache>();
+            _handler = new DeleteCourseCommandHandler(_repoMock.Object, _fileServiceMock.Object, _cacheMock.Object);
         }
 
         [Fact]

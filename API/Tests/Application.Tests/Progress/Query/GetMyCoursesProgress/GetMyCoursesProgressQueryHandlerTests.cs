@@ -1,4 +1,5 @@
 using Application.Common.Interfaces;
+using Application.Common.Interfaces.Cache;
 using Application.DTOs.Progress;
 using Application.Features.Progress.Queries.GetMyCoursesProgress;
 using FluentAssertions;
@@ -9,12 +10,17 @@ namespace Application.Tests.Progress.Query.GetMyCoursesProgress
     public class GetMyCoursesProgressQueryHandlerTests
     {
         private readonly Mock<IContentProgressRepository> _progressRepoMock;
+        private readonly Mock<ICurrentUserService> _currentUserServiceMock;
+        private readonly Mock<IAppCache> _cacheMock;
         private readonly GetMyCoursesProgressQueryHandler _handler;
 
         public GetMyCoursesProgressQueryHandlerTests()
         {
             _progressRepoMock = new Mock<IContentProgressRepository>();
-            _handler = new GetMyCoursesProgressQueryHandler(_progressRepoMock.Object);
+            _currentUserServiceMock = new Mock<ICurrentUserService>();
+            _cacheMock = new Mock<IAppCache>();
+            _currentUserServiceMock.Setup(x => x.UserId).Returns(Guid.NewGuid().ToString());
+            _handler = new GetMyCoursesProgressQueryHandler(_progressRepoMock.Object, _currentUserServiceMock.Object, _cacheMock.Object);
         }
 
         [Fact]

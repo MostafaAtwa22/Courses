@@ -1,17 +1,19 @@
 using Application.Common.Exceptions;
 using Application.Common.Interfaces;
+using Application.Common.Interfaces.Cache;
 using Application.Common.Mappings;
 
 namespace Application.Features.Reviews.Commands.Create
 {
     public sealed class CreateReviewCommandHandler(
         IReviewRepository _repo,
-        ICurrentUserService _currentUserService)
+        ICurrentUserService _currentUserService,
+        IAppCache _cache)
         : IRequestHandler<CreateReviewCommand, Guid>
     {
         public async Task<Guid> Handle(CreateReviewCommand request, CancellationToken cancellationToken)
         {
-            var userId = _currentUserService.UserId 
+            var userId = _currentUserService.UserId
                 ?? throw new UnauthorizedException("You must be logged in to leave a review.");
 
             var studentId = await _repo.GetStudentIdByUserIdAsync(userId, cancellationToken)
@@ -32,7 +34,14 @@ namespace Application.Features.Reviews.Commands.Create
             var review = request.Dto.ToEntity();
             review.StudentId = studentId;
 
-            return await _repo.CreateAsync(review, cancellationToken);
+            var reviewId = await _repo.CreateAsync(review, cancellationToken);
+
+            // Invalidate related caches
+            await _cache.RemoveByTagAsync(CacheKeys.Reviews(), cancellationToken);
+            await _cache.RemoveByTagAsync(CacheKeys.Courses(), cancellationToken);
+            await _cache.RemoveAsync(CacheKeys.Course(request.Dto.CourseId), cancellationToken);
+
+            return reviewId;
         }
     }
 }

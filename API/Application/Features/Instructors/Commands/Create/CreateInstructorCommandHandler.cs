@@ -1,8 +1,11 @@
+using Application.Common.Interfaces.Cache;
+
 namespace Application.Features.Instructors.Commands.Create
 {
     public sealed class CreateInstructorCommandHandler(
-        IInstructorRepository _repo, 
-        IFileService _fileService) : IRequestHandler<CreateInstructorCommand, Guid>
+        IInstructorRepository _repo,
+        IFileService _fileService,
+        IAppCache _cache) : IRequestHandler<CreateInstructorCommand, Guid>
     {
         public async Task<Guid> Handle(CreateInstructorCommand request, CancellationToken cancellationToken)
         {
@@ -14,7 +17,13 @@ namespace Application.Features.Instructors.Commands.Create
 
             var instructor = request.Dto.ToEntity(cvUrl, request.User!.Id);
 
-            return await _repo.CreateAsync(instructor, cancellationToken);
+            var instructorId = await _repo.CreateAsync(instructor, cancellationToken);
+
+            // Invalidate related caches
+            await _cache.RemoveByTagAsync(CacheKeys.Instructors(), cancellationToken);
+            await _cache.RemoveByTagAsync(CacheKeys.Courses(), cancellationToken);
+
+            return instructorId;
         }
     }
 }

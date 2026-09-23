@@ -1,4 +1,5 @@
 using Application.Common.Interfaces;
+using Application.Common.Interfaces.Cache;
 using Application.Common.Models;
 using Application.DTOs.Content;
 using Application.Features.Contents.Queries.GetBySection;
@@ -10,12 +11,14 @@ namespace Application.Tests.Contents.Queries
     public class GetContentBySectionQueryHandlerTests
     {
         private readonly Mock<IContentRepository> _repoMock;
+        private readonly Mock<IAppCache> _cacheMock;
         private readonly GetContentBySectionQueryHandler _handler;
 
         public GetContentBySectionQueryHandlerTests()
         {
             _repoMock = new Mock<IContentRepository>();
-            _handler = new GetContentBySectionQueryHandler(_repoMock.Object);
+            _cacheMock = new Mock<IAppCache>();
+            _handler = new GetContentBySectionQueryHandler(_repoMock.Object, _cacheMock.Object);
         }
 
         [Fact]

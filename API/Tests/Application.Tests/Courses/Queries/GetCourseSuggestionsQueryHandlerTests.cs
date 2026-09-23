@@ -1,4 +1,5 @@
 using Application.Common.Interfaces;
+using Application.Common.Interfaces.Cache;
 using Application.Features.Courses.Queries.GetSuggestions;
 using FluentAssertions;
 using Moq;
@@ -8,12 +9,14 @@ namespace Application.Tests.Courses.Queries;
 public class GetCourseSuggestionsQueryHandlerTests
 {
     private readonly Mock<ICourseRepository> _courseRepositoryMock;
+    private readonly Mock<IAppCache> _cacheMock;
     private readonly GetCourseSuggestionsQueryHandler _handler;
 
     public GetCourseSuggestionsQueryHandlerTests()
     {
         _courseRepositoryMock = new Mock<ICourseRepository>();
-        _handler = new GetCourseSuggestionsQueryHandler(_courseRepositoryMock.Object);
+        _cacheMock = new Mock<IAppCache>();
+        _handler = new GetCourseSuggestionsQueryHandler(_courseRepositoryMock.Object, _cacheMock.Object);
     }
 
     [Fact]

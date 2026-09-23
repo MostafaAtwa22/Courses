@@ -1,3 +1,4 @@
+using Application.Common.Interfaces.Cache;
 using Domain.Entities.Identity;
 using Microsoft.AspNetCore.Identity;
 
@@ -6,7 +7,8 @@ namespace Application.Features.Profiles.Commands.UpdateImage
     public sealed class UpdateProfileImageCommandHandler(
         UserManager<ApplicationUser> _userManager,
         ICurrentUserService _currentUserService,
-        IFileService _fileService) :
+        IFileService _fileService,
+        IAppCache _cache) :
     IRequestHandler<UpdateProfileImageCommand>
     {
         public async Task Handle(UpdateProfileImageCommand request, CancellationToken cancellationToken)
@@ -31,6 +33,11 @@ namespace Application.Features.Profiles.Commands.UpdateImage
             var result = await _userManager.UpdateAsync(user);
             if (!result.Succeeded)
                 throw new BadRequestException("Failed to update profile image");
+
+            // Invalidate related caches
+            await _cache.RemoveByTagAsync(CacheKeys.Users(), cancellationToken);
+            await _cache.RemoveByTagAsync(CacheKeys.Instructors(), cancellationToken);
+            await _cache.RemoveByTagAsync(CacheKeys.Students(), cancellationToken);
         }
     }
 }

@@ -1,5 +1,6 @@
 using Application.Features.AdminDashboard.Queries.GetEnrollmentStatistics;
 using Application.Common.Interfaces;
+using Application.Common.Interfaces.Cache;
 using Application.DTOs.AdminDashboard;
 using FluentAssertions;
 using Moq;
@@ -9,12 +10,14 @@ namespace Application.Tests.AdminDashboard.Queries.GetEnrollmentStatistics
     public class GetEnrollmentStatisticsQueryHandlerTests
     {
         private readonly Mock<IAdminDashboardRepository> _repoMock;
+        private readonly Mock<IAppCache> _cacheMock;
         private readonly GetEnrollmentStatisticsQueryHandler _handler;
 
         public GetEnrollmentStatisticsQueryHandlerTests()
         {
             _repoMock = new Mock<IAdminDashboardRepository>();
-            _handler = new GetEnrollmentStatisticsQueryHandler(_repoMock.Object);
+            _cacheMock = new Mock<IAppCache>();
+            _handler = new GetEnrollmentStatisticsQueryHandler(_repoMock.Object, _cacheMock.Object);
         }
 
         [Fact]

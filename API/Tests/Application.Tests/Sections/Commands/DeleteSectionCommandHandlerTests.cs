@@ -1,5 +1,6 @@
 using Application.Common.Exceptions;
 using Application.Common.Interfaces;
+using Application.Common.Interfaces.Cache;
 using Application.Features.Sections.Commands.Delete;
 using FluentAssertions;
 using Moq;
@@ -11,12 +12,14 @@ namespace Application.Tests.Sections.Commands
     public class DeleteSectionCommandHandlerTests
     {
         private readonly Mock<ISectionRepository> _sectionRepositoryMock;
+        private readonly Mock<IAppCache> _cacheMock;
         private readonly DeleteSectionCommandHandler _handler;
 
         public DeleteSectionCommandHandlerTests()
         {
             _sectionRepositoryMock = new Mock<ISectionRepository>();
-            _handler = new DeleteSectionCommandHandler(_sectionRepositoryMock.Object);
+            _cacheMock = new Mock<IAppCache>();
+            _handler = new DeleteSectionCommandHandler(_sectionRepositoryMock.Object, _cacheMock.Object);
         }
 
         [Fact]

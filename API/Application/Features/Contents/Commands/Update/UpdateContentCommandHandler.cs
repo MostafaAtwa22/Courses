@@ -1,4 +1,5 @@
 using Application.Common.Interfaces;
+using Application.Common.Interfaces.Cache;
 using Domain.Constants;
 
 namespace Application.Features.Contents.Commands.Update
@@ -8,7 +9,8 @@ namespace Application.Features.Contents.Commands.Update
         IFileService _fileService,
         ISectionRepository _sectionRepo,
         IVideoDurationService _videoDurationService,
-        IContentAttachmentService _attachmentService)
+        IContentAttachmentService _attachmentService,
+        IAppCache _cache)
         : IRequestHandler<UpdateContentCommand>
     {
         public async Task Handle(UpdateContentCommand request, CancellationToken cancellationToken)
@@ -51,6 +53,11 @@ namespace Application.Features.Contents.Commands.Update
 
             request.Dto.UpdateEntity(content, newUrl, newDurationInSeconds);
             await _repo.UpdateAsync(content, cancellationToken);
+
+            // Invalidate related caches
+            await _cache.RemoveByTagAsync(CacheKeys.Contents(), cancellationToken);
+            await _cache.RemoveAsync(CacheKeys.Content(request.Id), cancellationToken);
+            await _cache.RemoveByTagAsync(CacheKeys.Progress(), cancellationToken);
         }
     }
 }

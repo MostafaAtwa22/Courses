@@ -1,4 +1,5 @@
 using Application.Common.Interfaces;
+using Application.Common.Interfaces.Cache;
 using Application.DTOs.Progress;
 using Application.Features.Progress.Commands.MarkComplete;
 using FluentAssertions;
@@ -9,12 +10,17 @@ namespace Application.Tests.Progress.Command.MarkComplete
     public class MarkContentCompleteCommandHandlerTests
     {
         private readonly Mock<IContentProgressRepository> _progressRepoMock;
+        private readonly Mock<ICurrentUserService> _currentUserServiceMock;
+        private readonly Mock<IAppCache> _cacheMock;
         private readonly MarkContentCompleteCommandHandler _handler;
 
         public MarkContentCompleteCommandHandlerTests()
         {
             _progressRepoMock = new Mock<IContentProgressRepository>();
-            _handler = new MarkContentCompleteCommandHandler(_progressRepoMock.Object);
+            _currentUserServiceMock = new Mock<ICurrentUserService>();
+            _cacheMock = new Mock<IAppCache>();
+            _currentUserServiceMock.Setup(x => x.UserId).Returns(Guid.NewGuid().ToString());
+            _handler = new MarkContentCompleteCommandHandler(_progressRepoMock.Object, _currentUserServiceMock.Object, _cacheMock.Object);
         }
 
         [Fact]

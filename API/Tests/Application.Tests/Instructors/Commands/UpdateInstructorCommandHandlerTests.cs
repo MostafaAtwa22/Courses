@@ -1,5 +1,6 @@
 using Application.Common.Exceptions;
 using Application.Common.Interfaces;
+using Application.Common.Interfaces.Cache;
 using Application.Common.Interfaces.Identity;
 using Application.DTOs.Instructor;
 using Application.Features.Instructors.Commands.Update;
@@ -14,16 +15,19 @@ public class UpdateInstructorCommandHandlerTests
 {
     private readonly Mock<IInstructorRepository> _instructorRepositoryMock;
     private readonly Mock<IFileService> _fileServiceMock;
+    private readonly Mock<IAppCache> _cacheMock;
     private readonly UpdateInstructorCommandHandler _handler;
 
     public UpdateInstructorCommandHandlerTests()
     {
         _instructorRepositoryMock = new Mock<IInstructorRepository>();
         _fileServiceMock = new Mock<IFileService>();
+        _cacheMock = new Mock<IAppCache>();
 
         _handler = new UpdateInstructorCommandHandler(
             _instructorRepositoryMock.Object,
-            _fileServiceMock.Object);
+            _fileServiceMock.Object,
+            _cacheMock.Object);
     }
 
     [Fact]

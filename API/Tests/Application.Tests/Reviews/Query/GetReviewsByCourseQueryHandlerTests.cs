@@ -1,4 +1,5 @@
 using Application.Common.Interfaces;
+using Application.Common.Interfaces.Cache;
 using Application.Common.Models;
 using Application.DTOs.Review;
 using Application.Features.Reviews.Queries.GetByCourse;
@@ -10,12 +11,14 @@ namespace Application.Tests.Reviews.Query
     public class GetReviewsByCourseQueryHandlerTests
     {
         private readonly Mock<IReviewRepository> _repoMock;
+        private readonly Mock<IAppCache> _cacheMock;
         private readonly GetReviewsByCourseQueryHandler _handler;
 
         public GetReviewsByCourseQueryHandlerTests()
         {
             _repoMock = new Mock<IReviewRepository>();
-            _handler = new GetReviewsByCourseQueryHandler(_repoMock.Object);
+            _cacheMock = new Mock<IAppCache>();
+            _handler = new GetReviewsByCourseQueryHandler(_repoMock.Object, _cacheMock.Object);
         }
 
         [Fact]

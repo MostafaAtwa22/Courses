@@ -1,16 +1,19 @@
 using Application.Common.Exceptions;
 using Application.Common.Interfaces;
+using Application.Common.Interfaces.Cache;
+using Domain.Entities;
 
 namespace Application.Features.Reviews.Commands.Delete
 {
     public sealed class DeleteReviewCommandHandler(
         IReviewRepository _repo,
-        ICurrentUserService _currentUserService)
+        ICurrentUserService _currentUserService,
+        IAppCache _cache)
         : IRequestHandler<DeleteReviewCommand>
     {
         public async Task Handle(DeleteReviewCommand request, CancellationToken cancellationToken)
         {
-            var userId = _currentUserService.UserId 
+            var userId = _currentUserService.UserId
                 ?? throw new UnauthorizedException("You must be logged in to delete a review.");
 
             var studentId = await _repo.GetStudentIdByUserIdAsync(userId, cancellationToken)
@@ -23,6 +26,12 @@ namespace Application.Features.Reviews.Commands.Delete
                 throw new ForbiddenException("You can only delete your own reviews.");
 
             await _repo.DeleteAsync(review.Id, cancellationToken);
+
+            // Invalidate related caches
+            await _cache.RemoveByTagAsync(CacheKeys.Reviews(), cancellationToken);
+            await _cache.RemoveAsync(CacheKeys.Review(request.Id), cancellationToken);
+            await _cache.RemoveByTagAsync(CacheKeys.Courses(), cancellationToken);
+            await _cache.RemoveAsync(CacheKeys.Course(review.CourseId), cancellationToken);
         }
     }
 }

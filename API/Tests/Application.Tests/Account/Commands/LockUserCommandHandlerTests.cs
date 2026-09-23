@@ -1,4 +1,5 @@
 using Application.Common.Exceptions;
+using Application.Common.Interfaces.Cache;
 using Application.Common.Interfaces.Identity;
 using Application.DTOs.Account;
 using Application.Features.Account.Commands.Lock;
@@ -13,6 +14,7 @@ public class LockUserCommandHandlerTests
     private readonly Mock<IUserIdentityService> _userIdentityServiceMock;
     private readonly Mock<IPasswordService> _passwordServiceMock;
     private readonly Mock<IIdentityEmailService> _identityEmailServiceMock;
+    private readonly Mock<IAppCache> _cacheMock;
     private readonly LockUserCommandHandler _handler;
 
     public LockUserCommandHandlerTests()
@@ -20,7 +22,8 @@ public class LockUserCommandHandlerTests
         _userIdentityServiceMock = new Mock<IUserIdentityService>();
         _passwordServiceMock = new Mock<IPasswordService>();
         _identityEmailServiceMock = new Mock<IIdentityEmailService>();
-        _handler = new LockUserCommandHandler(_userIdentityServiceMock.Object, _passwordServiceMock.Object, _identityEmailServiceMock.Object);
+        _cacheMock = new Mock<IAppCache>();
+        _handler = new LockUserCommandHandler(_userIdentityServiceMock.Object, _passwordServiceMock.Object, _identityEmailServiceMock.Object, _cacheMock.Object);
     }
 
     [Fact]

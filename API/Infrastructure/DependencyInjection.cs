@@ -22,6 +22,8 @@ using ZiggyCreatures.Caching.Fusion.Serialization.SystemTextJson;
 using Microsoft.Extensions.Caching.StackExchangeRedis;
 using ZiggyCreatures.Caching.Fusion.Backplane.StackExchangeRedis;
 using Application.Common.Interfaces.Cache;
+using Microsoft.Extensions.Logging;
+using ZiggyCreatures.Caching.Fusion.Locking.Distributed.Redis;
 
 public static class DependencyInjection
 {
@@ -128,18 +130,43 @@ public static class DependencyInjection
             ?? throw new InvalidOperationException("Redis connection string is not configured");
 
         services.AddFusionCache()
+            .WithOptions(options =>
+            {
+                options.DistributedCacheCircuitBreakerDuration =
+                    TimeSpan.FromSeconds(2);
+
+                options.FailSafeActivationLogLevel             = LogLevel.Debug;
+                options.SerializationErrorsLogLevel            = LogLevel.Warning;
+                options.DistributedCacheSyntheticTimeoutsLogLevel = LogLevel.Debug;
+                options.DistributedCacheErrorsLogLevel         = LogLevel.Error;
+                options.FactorySyntheticTimeoutsLogLevel       = LogLevel.Debug;
+                options.FactoryErrorsLogLevel                  = LogLevel.Error;
+            })
             .WithDefaultEntryOptions(options => 
             {
                 options.Duration = TimeSpan.FromMinutes(2);
                 options.DistributedCacheDuration = TimeSpan.FromMinutes(5);
+                options.DistributedCacheSoftTimeout = TimeSpan.FromSeconds(1);
+                options.DistributedCacheHardTimeout = TimeSpan.FromSeconds(2);
+                options.AllowBackgroundDistributedCacheOperations = true;
+
+                options.IsFailSafeEnabled = true;
+                options.FailSafeMaxDuration = TimeSpan.FromHours(1);
+                options.FailSafeThrottleDuration = TimeSpan.FromSeconds(30);
+                options.EagerRefreshThreshold = 0.9f;
+                options.FactorySoftTimeout = TimeSpan.FromMilliseconds(100);
+                options.FactoryHardTimeout = TimeSpan.FromMilliseconds(1500);
+
+                options.JitterMaxDuration = TimeSpan.FromSeconds(2);
             })
             .WithSerializer(new FusionCacheSystemTextJsonSerializer())
             .WithDistributedCache(new RedisCache(new RedisCacheOptions { Configuration = redis }))
             .WithBackplane(new RedisBackplane(new RedisBackplaneOptions { Configuration = redis }))
+            .WithDistributedLocker(new RedisDistributedLocker(new RedisDistributedLockerOptions { Configuration = redis }))
             .AsHybridCache();
 
         services.AddSingleton<IAppCache, FusionCacheService>();
-        
+
         return services;
     }
 

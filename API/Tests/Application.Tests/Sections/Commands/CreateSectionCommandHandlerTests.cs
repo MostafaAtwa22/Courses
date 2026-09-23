@@ -1,4 +1,5 @@
 using Application.Common.Interfaces;
+using Application.Common.Interfaces.Cache;
 using Application.DTOs.Section;
 using Application.Features.Sections.Commands.Create;
 using FluentAssertions;
@@ -11,12 +12,14 @@ namespace Application.Tests.Sections.Commands
     public class CreateSectionCommandHandlerTests
     {
         private readonly Mock<ISectionRepository> _sectionRepositoryMock;
+        private readonly Mock<IAppCache> _cacheMock;
         private readonly CreateSectionCommandHandler _handler;
 
         public CreateSectionCommandHandlerTests()
         {
             _sectionRepositoryMock = new Mock<ISectionRepository>();
-            _handler = new CreateSectionCommandHandler(_sectionRepositoryMock.Object);
+            _cacheMock = new Mock<IAppCache>();
+            _handler = new CreateSectionCommandHandler(_sectionRepositoryMock.Object, _cacheMock.Object);
         }
 
         [Fact]

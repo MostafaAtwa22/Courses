@@ -1,4 +1,5 @@
 using Application.Common.Interfaces;
+using Application.Common.Interfaces.Cache;
 using Application.DTOs.Category;
 using Application.Features.Categories.Commands.Create;
 using FluentAssertions;
@@ -11,12 +12,14 @@ namespace Application.Tests.Categories.Commands
     public class CreateCategoryCommandHandlerTests
     {
         private readonly Mock<ICategoryRepository> _categoryRepositoryMock;
+        private readonly Mock<IAppCache> _cacheMock;
         private readonly CreateCategoryCommandHandler _handler;
 
         public CreateCategoryCommandHandlerTests()
         {
             _categoryRepositoryMock = new Mock<ICategoryRepository>();
-            _handler = new CreateCategoryCommandHandler(_categoryRepositoryMock.Object);
+            _cacheMock = new Mock<IAppCache>();
+            _handler = new CreateCategoryCommandHandler(_categoryRepositoryMock.Object, _cacheMock.Object);
         }
 
         [Fact]
