@@ -1,5 +1,6 @@
 using Application.Common.Exceptions;
 using Application.Common.Interfaces;
+using Application.Common.Interfaces.Cache;
 using Application.Features.Categories.Commands.Delete;
 using Domain.Entities;
 using FluentAssertions;
@@ -10,12 +11,14 @@ namespace Application.Tests.Categories.Commands;
 public class DeleteCategoryCommandHandlerTests
 {
     private readonly Mock<ICategoryRepository> _categoryRepositoryMock;
+    private readonly Mock<IAppCache> _cacheMock;
     private readonly DeleteCategoryCommandHandler _handler;
 
     public DeleteCategoryCommandHandlerTests()
     {
         _categoryRepositoryMock = new Mock<ICategoryRepository>();
-        _handler = new DeleteCategoryCommandHandler(_categoryRepositoryMock.Object);
+        _cacheMock = new Mock<IAppCache>();
+        _handler = new DeleteCategoryCommandHandler(_categoryRepositoryMock.Object, _cacheMock.Object);
     }
 
     [Fact]

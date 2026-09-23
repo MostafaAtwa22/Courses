@@ -1,4 +1,5 @@
 using Application.Common.Interfaces;
+using Application.Common.Interfaces.Cache;
 using Domain.Constants;
 
 namespace Application.Features.Contents.Commands.Create
@@ -8,7 +9,8 @@ namespace Application.Features.Contents.Commands.Create
         IFileService _fileService,
         ISectionRepository _sectionRepo,
         IVideoDurationService _videoDurationService,
-        IContentAttachmentService _attachmentService)
+        IContentAttachmentService _attachmentService,
+        IAppCache _cache)
         : IRequestHandler<CreateContentCommand, Guid>
     {
         public async Task<Guid> Handle(CreateContentCommand request, CancellationToken cancellationToken)
@@ -32,6 +34,11 @@ namespace Application.Features.Contents.Commands.Create
 
             // Upload attachments
             await _attachmentService.UploadAttachmentsAsync(createdContentId, request.Dto.Attachments, cancellationToken);
+
+            // Invalidate related caches
+            await _cache.RemoveByTagAsync(CacheKeys.Contents(), cancellationToken);
+            await _cache.RemoveByTagAsync(CacheKeys.Sections(), cancellationToken);
+            await _cache.RemoveByTagAsync(CacheKeys.Progress(), cancellationToken);
 
             return createdContentId;
         }

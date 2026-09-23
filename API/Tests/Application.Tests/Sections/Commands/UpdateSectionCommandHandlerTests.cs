@@ -1,5 +1,6 @@
 using Application.Common.Exceptions;
 using Application.Common.Interfaces;
+using Application.Common.Interfaces.Cache;
 using Application.DTOs.Section;
 using Application.Features.Sections.Commands.Update;
 using FluentAssertions;
@@ -12,12 +13,14 @@ namespace Application.Tests.Sections.Commands
     public class UpdateSectionCommandHandlerTests
     {
         private readonly Mock<ISectionRepository> _sectionRepositoryMock;
+        private readonly Mock<IAppCache> _cacheMock;
         private readonly UpdateSectionCommandHandler _handler;
 
         public UpdateSectionCommandHandlerTests()
         {
             _sectionRepositoryMock = new Mock<ISectionRepository>();
-            _handler = new UpdateSectionCommandHandler(_sectionRepositoryMock.Object);
+            _cacheMock = new Mock<IAppCache>();
+            _handler = new UpdateSectionCommandHandler(_sectionRepositoryMock.Object, _cacheMock.Object);
         }
 
         [Fact]

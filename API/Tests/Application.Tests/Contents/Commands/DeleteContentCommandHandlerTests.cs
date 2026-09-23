@@ -1,5 +1,6 @@
 using Application.Common.Exceptions;
 using Application.Common.Interfaces;
+using Application.Common.Interfaces.Cache;
 using Application.Features.Contents.Commands.Delete;
 using Domain.Entities;
 using FluentAssertions;
@@ -12,6 +13,7 @@ namespace Application.Tests.Contents.Commands
         private readonly Mock<IContentRepository> _repoMock;
         private readonly Mock<IFileService> _fileServiceMock;
         private readonly Mock<IContentAttachmentService> _attachmentServiceMock;
+        private readonly Mock<IAppCache> _cacheMock;
         private readonly DeleteContentCommandHandler _handler;
 
         public DeleteContentCommandHandlerTests()
@@ -19,7 +21,8 @@ namespace Application.Tests.Contents.Commands
             _repoMock = new Mock<IContentRepository>();
             _fileServiceMock = new Mock<IFileService>();
             _attachmentServiceMock = new Mock<IContentAttachmentService>();
-            _handler = new DeleteContentCommandHandler(_repoMock.Object, _fileServiceMock.Object, _attachmentServiceMock.Object);
+            _cacheMock = new Mock<IAppCache>();
+            _handler = new DeleteContentCommandHandler(_repoMock.Object, _fileServiceMock.Object, _attachmentServiceMock.Object, _cacheMock.Object);
         }
 
         [Fact]

@@ -1,5 +1,6 @@
 using Application.Common.Exceptions;
 using Application.Common.Interfaces;
+using Application.Common.Interfaces.Cache;
 using Application.DTOs.Review;
 using Application.Features.Reviews.Queries.GetUserReview;
 using Domain.Entities.Identity;
@@ -11,12 +12,14 @@ namespace Application.Tests.Reviews.Queries.GetUserReview;
 public class GetUserReviewQueryHandlerTests
 {
     private readonly Mock<IReviewRepository> _reviewRepositoryMock;
+    private readonly Mock<IAppCache> _cacheMock;
     private readonly GetUserReviewQueryHandler _handler;
 
     public GetUserReviewQueryHandlerTests()
     {
         _reviewRepositoryMock = new Mock<IReviewRepository>();
-        _handler = new GetUserReviewQueryHandler(_reviewRepositoryMock.Object);
+        _cacheMock = new Mock<IAppCache>();
+        _handler = new GetUserReviewQueryHandler(_reviewRepositoryMock.Object, _cacheMock.Object);
     }
 
     [Fact]

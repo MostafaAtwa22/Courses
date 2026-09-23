@@ -1,4 +1,5 @@
 using Application.Common.Interfaces;
+using Application.Common.Interfaces.Cache;
 using Application.DTOs.Content;
 using Application.Features.Contents.Queries.GetById;
 using FluentAssertions;
@@ -9,12 +10,14 @@ namespace Application.Tests.Contents.Queries
     public class GetContentByIdQueryHandlerTests
     {
         private readonly Mock<IContentRepository> _repoMock;
+        private readonly Mock<IAppCache> _cacheMock;
         private readonly GetContentByIdQueryHandler _handler;
 
         public GetContentByIdQueryHandlerTests()
         {
             _repoMock = new Mock<IContentRepository>();
-            _handler = new GetContentByIdQueryHandler(_repoMock.Object);
+            _cacheMock = new Mock<IAppCache>();
+            _handler = new GetContentByIdQueryHandler(_repoMock.Object, _cacheMock.Object);
         }
 
         [Fact]

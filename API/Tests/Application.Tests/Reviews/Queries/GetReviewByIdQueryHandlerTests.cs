@@ -1,4 +1,5 @@
 using Application.Common.Interfaces;
+using Application.Common.Interfaces.Cache;
 using Application.DTOs.Review;
 using Application.Features.Reviews.Queries.GetById;
 using FluentAssertions;
@@ -9,12 +10,14 @@ namespace Application.Tests.Reviews.Queries;
 public class GetReviewByIdQueryHandlerTests
 {
     private readonly Mock<IReviewRepository> _reviewRepositoryMock;
+    private readonly Mock<IAppCache> _cacheMock;
     private readonly GetReviewByIdQueryHandler _handler;
 
     public GetReviewByIdQueryHandlerTests()
     {
         _reviewRepositoryMock = new Mock<IReviewRepository>();
-        _handler = new GetReviewByIdQueryHandler(_reviewRepositoryMock.Object);
+        _cacheMock = new Mock<IAppCache>();
+        _handler = new GetReviewByIdQueryHandler(_reviewRepositoryMock.Object, _cacheMock.Object);
     }
 
     [Fact]

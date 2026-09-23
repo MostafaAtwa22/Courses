@@ -1,4 +1,5 @@
 using Application.Common.Interfaces;
+using Application.Common.Interfaces.Cache;
 using Application.Common.Models;
 using Application.DTOs.Course;
 using Application.Features.Courses.Queries.GetByInstructorIdPublic;
@@ -10,12 +11,14 @@ namespace Application.Tests.Courses.Queries.GetByInstructorIdPublic
     public class GetCoursesByInstructorIdPublicQueryHandlerTests
     {
         private readonly Mock<ICourseRepository> _courseRepositoryMock;
+        private readonly Mock<IAppCache> _cacheMock;
         private readonly GetCoursesByInstructorIdPublicQueryHandler _handler;
 
         public GetCoursesByInstructorIdPublicQueryHandlerTests()
         {
             _courseRepositoryMock = new Mock<ICourseRepository>();
-            _handler = new GetCoursesByInstructorIdPublicQueryHandler(_courseRepositoryMock.Object);
+            _cacheMock = new Mock<IAppCache>();
+            _handler = new GetCoursesByInstructorIdPublicQueryHandler(_courseRepositoryMock.Object, _cacheMock.Object);
         }
 
         [Fact]

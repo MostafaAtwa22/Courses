@@ -1,4 +1,5 @@
 using Application.Common.Interfaces;
+using Application.Common.Interfaces.Cache;
 using Application.DTOs.Category;
 using Application.Features.Categories.Queries.GetById;
 using FluentAssertions;
@@ -10,12 +11,14 @@ namespace Application.Tests.Categories.Queries
     public class GetCategoryByIdHandlerTests
     {
         private readonly Mock<ICategoryRepository> _repoMock;
+        private readonly Mock<IAppCache> _cacheMock;
         private readonly GetCategoryByIdQueryHandler _handler;
 
         public GetCategoryByIdHandlerTests()
         {
             _repoMock = new Mock<ICategoryRepository>();
-            _handler = new GetCategoryByIdQueryHandler(_repoMock.Object);
+            _cacheMock = new Mock<IAppCache>();
+            _handler = new GetCategoryByIdQueryHandler(_repoMock.Object, _cacheMock.Object);
         }
 
         [Fact]

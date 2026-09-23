@@ -1,5 +1,6 @@
 using Application.Common.Exceptions;
 using Application.Common.Interfaces;
+using Application.Common.Interfaces.Cache;
 using Application.DTOs.Course;
 using Application.Features.Discount.Commands.Create;
 using Domain.Entities;
@@ -12,16 +13,19 @@ public class CreateDiscountCommandHandlerTests
 {
     private readonly Mock<ICourseRepository> _courseRepositoryMock;
     private readonly Mock<ICourseDiscountRepository> _discountRepositoryMock;
+    private readonly Mock<IAppCache> _cacheMock;
     private readonly CreateDiscountCommandHandler _handler;
 
     public CreateDiscountCommandHandlerTests()
     {
         _courseRepositoryMock = new Mock<ICourseRepository>();
         _discountRepositoryMock = new Mock<ICourseDiscountRepository>();
+        _cacheMock = new Mock<IAppCache>();
 
         _handler = new CreateDiscountCommandHandler(
             _courseRepositoryMock.Object,
-            _discountRepositoryMock.Object);
+            _discountRepositoryMock.Object,
+            _cacheMock.Object);
     }
 
     [Fact]

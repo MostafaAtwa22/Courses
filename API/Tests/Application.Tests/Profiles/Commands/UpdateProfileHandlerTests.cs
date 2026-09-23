@@ -1,4 +1,5 @@
 using Application.Common.Exceptions;
+using Application.Common.Interfaces.Cache;
 using Application.Common.Interfaces.Identity;
 using Application.DTOs.Profile;
 using Application.Features.Profiles.Commands.Update;
@@ -12,14 +13,16 @@ namespace Application.Tests.Profiles.Commands;
 public class UpdateProfileHandlerTests
 {
     private readonly Mock<UserManager<ApplicationUser>> _userManagerMock;
-    private readonly Mock<IAuthService> _authServiceMock;
+    private readonly Mock<IUserIdentityService> _userIdentityServiceMock;
+    private readonly Mock<IAppCache> _cacheMock;
     private readonly UpdateUserProfileHandler _handler;
 
     public UpdateProfileHandlerTests()
     {
         _userManagerMock = MockHelpers.MockUserManager<ApplicationUser>();
-        _authServiceMock = new Mock<IAuthService>();
-        _handler = new UpdateUserProfileHandler(_userManagerMock.Object, _authServiceMock.Object);
+        _userIdentityServiceMock = new Mock<IUserIdentityService>();
+        _cacheMock = new Mock<IAppCache>();
+        _handler = new UpdateUserProfileHandler(_userManagerMock.Object, _userIdentityServiceMock.Object, _cacheMock.Object);
     }
 
     [Fact]
@@ -35,7 +38,7 @@ public class UpdateProfileHandlerTests
         };
         var command = new UpdateProfileCommand(dto) { User = user };
 
-        _authServiceMock.Setup(x => x.IsUserNameExistsAsync(dto.UserName)).ReturnsAsync(false);
+        _userIdentityServiceMock.Setup(x => x.IsUserNameExistsAsync(dto.UserName)).ReturnsAsync(false);
         _userManagerMock.Setup(x => x.UpdateAsync(user)).ReturnsAsync(IdentityResult.Success);
 
         // Act
@@ -56,7 +59,7 @@ public class UpdateProfileHandlerTests
         var dto = new UpdateProfileDto { UserName = "takenuser" };
         var command = new UpdateProfileCommand(dto) { User = user };
 
-        _authServiceMock.Setup(x => x.IsUserNameExistsAsync(dto.UserName)).ReturnsAsync(true);
+        _userIdentityServiceMock.Setup(x => x.IsUserNameExistsAsync(dto.UserName)).ReturnsAsync(true);
 
         // Act
         Func<Task> act = async () => await _handler.Handle(command, CancellationToken.None);

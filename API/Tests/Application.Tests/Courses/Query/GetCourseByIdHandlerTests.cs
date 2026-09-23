@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Application.Common.Interfaces;
+using Application.Common.Interfaces.Cache;
 using Application.DTOs.Course;
 using Application.Features.Courses.Queries.GetById;
 using Domain.Entities;
@@ -14,12 +15,14 @@ namespace Application.Tests.Courses.Query
     public class GetCourseByIdHandlerTests
     {
         private readonly Mock<ICourseRepository> _repoMock;
+        private readonly Mock<IAppCache> _cacheMock;
         private readonly GetCourseByIdQueryHandler _handler;
 
         public GetCourseByIdHandlerTests()
         {
             _repoMock = new Mock<ICourseRepository>();
-            _handler = new GetCourseByIdQueryHandler(_repoMock.Object);
+            _cacheMock = new Mock<IAppCache>();
+            _handler = new GetCourseByIdQueryHandler(_repoMock.Object, _cacheMock.Object);
         }
 
         [Fact]

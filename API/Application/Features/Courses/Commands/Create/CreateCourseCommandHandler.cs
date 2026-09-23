@@ -1,8 +1,11 @@
+using Application.Common.Interfaces.Cache;
+
 namespace Application.Features.Courses.Commands.Create
 {
     public sealed class CreateCourseCommandHandler(
         ICourseRepository _repo, 
-        IFileService _fileService) : IRequestHandler<CreateCourseCommand, Guid>
+        IFileService _fileService,
+        IAppCache _cache) : IRequestHandler<CreateCourseCommand, Guid>
     {
         public async Task<Guid> Handle(CreateCourseCommand request, CancellationToken cancellationToken)
         {
@@ -24,7 +27,13 @@ namespace Application.Features.Courses.Commands.Create
 
             var course = request.Dto.ToEntity(pictureUrl, introVideoUrl);
 
-            return await _repo.CreateAsync(course, cancellationToken);
+            var courseId = await _repo.CreateAsync(course, cancellationToken);
+
+            // Invalidate related caches
+            await _cache.RemoveByTagAsync(CacheKeys.Courses(), cancellationToken);
+            await _cache.RemoveByTagAsync(CacheKeys.Instructors(), cancellationToken);
+
+            return courseId;
         }
     }
 }

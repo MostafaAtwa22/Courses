@@ -1,3 +1,4 @@
+using Application.Common.Interfaces.Cache;
 using Application.Common.Interfaces.Identity;
 using Application.Common.Mappings;
 using Domain.Entities.Identity;
@@ -6,7 +7,8 @@ namespace Application.Features.Instructors.Commands.Update
 {
     public sealed class UpdateInstructorCommandHandler(
         IInstructorRepository _repo,
-        IFileService _fileService) : IRequestHandler<UpdateInstructorCommand>
+        IFileService _fileService,
+        IAppCache _cache) : IRequestHandler<UpdateInstructorCommand>
     {
         public async Task Handle(UpdateInstructorCommand request, CancellationToken cancellationToken)
         {
@@ -30,6 +32,11 @@ namespace Application.Features.Instructors.Commands.Update
             request.Dto.UpdateEntity(instructor, cvUrl);
 
             await _repo.UpdateAsync(instructor, cancellationToken);
+
+            // Invalidate related caches
+            await _cache.RemoveByTagAsync(CacheKeys.Instructors(), cancellationToken);
+            await _cache.RemoveAsync(CacheKeys.Instructor(request.Id), cancellationToken);
+            await _cache.RemoveByTagAsync(CacheKeys.Courses(), cancellationToken);
         }
     }
 }

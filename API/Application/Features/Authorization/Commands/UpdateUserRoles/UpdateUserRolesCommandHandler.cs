@@ -1,3 +1,4 @@
+using Application.Common.Interfaces.Cache;
 using Application.Common.Interfaces.Identity;
 using Domain.Enums.Identity;
 
@@ -6,11 +7,12 @@ namespace Application.Features.Authorization.Commands.UpdateUserRoles;
 public sealed class UpdateUserRolesCommandHandler(
     UserManager<ApplicationUser> _userManager,
     IStudentProfileService _studentProfileService,
-    IInstructorProfileService _instructorProfileService) : IRequestHandler<UpdateUserRolesCommand>
+    IInstructorProfileService _instructorProfileService,
+    IAppCache _cache) : IRequestHandler<UpdateUserRolesCommand>
 {
     public async Task Handle(UpdateUserRolesCommand request, CancellationToken cancellationToken)
     {
-        var user = await _userManager.FindByIdAsync(request.UserId) 
+        var user = await _userManager.FindByIdAsync(request.UserId)
                 ?? throw new NotFoundException(nameof(ApplicationUser), Guid.Parse(request.UserId));
 
         var currentUserRoles = await _userManager.GetRolesAsync(user);
@@ -44,5 +46,10 @@ public sealed class UpdateUserRolesCommandHandler(
             if (rolesToAdd.Contains(Role.Student.ToString()))
                 await _studentProfileService.EnsureStudentProfileAsync(user.Id, cancellationToken);
         }
+
+        // Invalidate related caches
+        await _cache.RemoveByTagAsync(CacheKeys.Users(), cancellationToken);
+        await _cache.RemoveByTagAsync(CacheKeys.Roles(), cancellationToken);
+        await _cache.RemoveAsync(CacheKeys.RoleByUser(request.UserId), cancellationToken);
     }
 }

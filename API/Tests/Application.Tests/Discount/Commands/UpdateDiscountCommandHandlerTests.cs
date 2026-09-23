@@ -1,5 +1,6 @@
 using Application.Common.Exceptions;
 using Application.Common.Interfaces;
+using Application.Common.Interfaces.Cache;
 using Application.DTOs.Course;
 using Application.Features.Discount.Commands.Update;
 using Domain.Entities;
@@ -11,12 +12,14 @@ namespace Application.Tests.Discount.Commands;
 public class UpdateDiscountCommandHandlerTests
 {
     private readonly Mock<ICourseDiscountRepository> _discountRepositoryMock;
+    private readonly Mock<IAppCache> _cacheMock;
     private readonly UpdateDiscountCommandHandler _handler;
 
     public UpdateDiscountCommandHandlerTests()
     {
         _discountRepositoryMock = new Mock<ICourseDiscountRepository>();
-        _handler = new UpdateDiscountCommandHandler(_discountRepositoryMock.Object);
+        _cacheMock = new Mock<IAppCache>();
+        _handler = new UpdateDiscountCommandHandler(_discountRepositoryMock.Object, _cacheMock.Object);
     }
 
     [Fact]

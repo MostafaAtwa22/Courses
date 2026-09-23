@@ -1,4 +1,5 @@
 using Application.Common.Interfaces;
+using Application.Common.Interfaces.Cache;
 using Application.Common.Models;
 using Application.DTOs.Category;
 using Application.Features.Categories.Queries.GetAll;
@@ -11,12 +12,14 @@ namespace Application.Tests.Categories.Queries
     public class GetCategoriesHandlerTests
     {
         private readonly Mock<ICategoryRepository> _categoryRepositoryMock;
+        private readonly Mock<IAppCache> _cacheMock;
         private readonly GetCategoriesQueryHandler _handler;
 
         public GetCategoriesHandlerTests()
         {
             _categoryRepositoryMock = new Mock<ICategoryRepository>();
-            _handler = new GetCategoriesQueryHandler(_categoryRepositoryMock.Object);
+            _cacheMock = new Mock<IAppCache>();
+            _handler = new GetCategoriesQueryHandler(_categoryRepositoryMock.Object, _cacheMock.Object);
         }
 
         [Fact]

@@ -1,5 +1,6 @@
 using Application.Common.Exceptions;
 using Application.Common.Interfaces;
+using Application.Common.Interfaces.Cache;
 using Application.DTOs.Category;
 using Application.Features.Categories.Commands.Update;
 using FluentAssertions;
@@ -12,12 +13,14 @@ namespace Application.Tests.Categories.Commands
     public class UpdateCategoryCommandHandlerTests
     {
         private readonly Mock<ICategoryRepository> _categoryRepositoryMock;
+        private readonly Mock<IAppCache> _cacheMock;
         private readonly UpdateCategoryCommandHandler _handler;
 
         public UpdateCategoryCommandHandlerTests()
         {
             _categoryRepositoryMock = new Mock<ICategoryRepository>();
-            _handler = new UpdateCategoryCommandHandler(_categoryRepositoryMock.Object);
+            _cacheMock = new Mock<IAppCache>();
+            _handler = new UpdateCategoryCommandHandler(_categoryRepositoryMock.Object, _cacheMock.Object);
         }
 
         [Fact]

@@ -1,4 +1,5 @@
 using Application.Common.Interfaces;
+using Application.Common.Interfaces.Cache;
 using Application.Features.Reviews.Commands.Delete;
 using Domain.Entities;
 using FluentAssertions;
@@ -11,13 +12,15 @@ namespace Application.Tests.Reviews.Command
     {
         private readonly Mock<IReviewRepository> _repoMock;
         private readonly Mock<ICurrentUserService> _currentUserServiceMock;
+        private readonly Mock<IAppCache> _cacheMock;
         private readonly DeleteReviewCommandHandler _handler;
 
         public DeleteReviewCommandHandlerTests()
         {
             _repoMock = new Mock<IReviewRepository>();
             _currentUserServiceMock = new Mock<ICurrentUserService>();
-            _handler = new DeleteReviewCommandHandler(_repoMock.Object, _currentUserServiceMock.Object);
+            _cacheMock = new Mock<IAppCache>();
+            _handler = new DeleteReviewCommandHandler(_repoMock.Object, _currentUserServiceMock.Object, _cacheMock.Object);
         }
 
         [Fact]

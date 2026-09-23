@@ -1,11 +1,13 @@
 using Application.Common.Interfaces;
+using Application.Common.Interfaces.Cache;
 
 namespace Application.Features.Contents.Commands.Delete
 {
     public sealed class DeleteContentCommandHandler(
         IContentRepository _repo,
         IFileService _fileService,
-        IContentAttachmentService _attachmentService)
+        IContentAttachmentService _attachmentService,
+        IAppCache _cache)
         : IRequestHandler<DeleteContentCommand>
     {
         public async Task Handle(DeleteContentCommand request, CancellationToken cancellationToken)
@@ -20,6 +22,11 @@ namespace Application.Features.Contents.Commands.Delete
             await _attachmentService.DeleteAllAttachmentsAsync(request.Id, cancellationToken);
 
             await _repo.DeleteAsync(request.Id, cancellationToken);
+
+            // Invalidate related caches
+            await _cache.RemoveByTagAsync(CacheKeys.Contents(), cancellationToken);
+            await _cache.RemoveAsync(CacheKeys.Content(request.Id), cancellationToken);
+            await _cache.RemoveByTagAsync(CacheKeys.Progress(), cancellationToken);
         }
     }
 }

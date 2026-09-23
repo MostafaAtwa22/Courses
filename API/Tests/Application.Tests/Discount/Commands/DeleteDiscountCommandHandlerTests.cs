@@ -1,5 +1,6 @@
 using Application.Common.Exceptions;
 using Application.Common.Interfaces;
+using Application.Common.Interfaces.Cache;
 using Application.Features.Discount.Commands.Delete;
 using Domain.Entities;
 using FluentAssertions;
@@ -10,12 +11,14 @@ namespace Application.Tests.Discount.Commands;
 public class DeleteDiscountCommandHandlerTests
 {
     private readonly Mock<ICourseDiscountRepository> _discountRepositoryMock;
+    private readonly Mock<IAppCache> _cacheMock;
     private readonly DeleteDiscountCommandHandler _handler;
 
     public DeleteDiscountCommandHandlerTests()
     {
         _discountRepositoryMock = new Mock<ICourseDiscountRepository>();
-        _handler = new DeleteDiscountCommandHandler(_discountRepositoryMock.Object);
+        _cacheMock = new Mock<IAppCache>();
+        _handler = new DeleteDiscountCommandHandler(_discountRepositoryMock.Object, _cacheMock.Object);
     }
 
     [Fact]

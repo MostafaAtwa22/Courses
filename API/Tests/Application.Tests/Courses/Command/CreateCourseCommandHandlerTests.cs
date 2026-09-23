@@ -1,4 +1,5 @@
 using Application.Common.Interfaces;
+using Application.Common.Interfaces.Cache;
 using Application.DTOs.Course;
 using Application.Features.Courses.Commands.Create;
 using Domain.Enums;
@@ -13,13 +14,15 @@ namespace Application.Tests.Courses.Command
     {
         private readonly Mock<ICourseRepository> _repoMock;
         private readonly Mock<IFileService> _fileServiceMock;
+        private readonly Mock<IAppCache> _cacheMock;
         private readonly CreateCourseCommandHandler _handler;
 
         public CreateCourseCommandHandlerTests()
         {
             _repoMock = new Mock<ICourseRepository>();
             _fileServiceMock = new Mock<IFileService>();
-            _handler = new CreateCourseCommandHandler(_repoMock.Object, _fileServiceMock.Object);
+            _cacheMock = new Mock<IAppCache>();
+            _handler = new CreateCourseCommandHandler(_repoMock.Object, _fileServiceMock.Object, _cacheMock.Object);
         }
 
         [Fact]

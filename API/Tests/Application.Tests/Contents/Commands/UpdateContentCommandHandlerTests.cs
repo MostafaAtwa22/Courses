@@ -1,5 +1,6 @@
 using Application.Common.Exceptions;
 using Application.Common.Interfaces;
+using Application.Common.Interfaces.Cache;
 using Application.DTOs.Content;
 using Application.Features.Contents.Commands.Update;
 using Domain.Entities;
@@ -16,6 +17,7 @@ namespace Application.Tests.Contents.Commands
         private readonly Mock<ISectionRepository> _sectionRepoMock;
         private readonly Mock<IVideoDurationService> _videoDurationServiceMock;
         private readonly Mock<IContentAttachmentService> _attachmentServiceMock;
+        private readonly Mock<IAppCache> _cacheMock;
         private readonly UpdateContentCommandHandler _handler;
 
         public UpdateContentCommandHandlerTests()
@@ -25,7 +27,8 @@ namespace Application.Tests.Contents.Commands
             _sectionRepoMock = new Mock<ISectionRepository>();
             _videoDurationServiceMock = new Mock<IVideoDurationService>();
             _attachmentServiceMock = new Mock<IContentAttachmentService>();
-            _handler = new UpdateContentCommandHandler(_repoMock.Object, _fileServiceMock.Object, _sectionRepoMock.Object, _videoDurationServiceMock.Object, _attachmentServiceMock.Object);
+            _cacheMock = new Mock<IAppCache>();
+            _handler = new UpdateContentCommandHandler(_repoMock.Object, _fileServiceMock.Object, _sectionRepoMock.Object, _videoDurationServiceMock.Object, _attachmentServiceMock.Object, _cacheMock.Object);
         }
 
         [Fact]

@@ -1,4 +1,5 @@
 using Application.Common.Interfaces;
+using Application.Common.Interfaces.Cache;
 using Application.Common.Models;
 using Application.DTOs.Section;
 using Application.Features.Sections.Queries.GetByCourseId;
@@ -11,12 +12,14 @@ namespace Application.Tests.Sections.Queries
     public class GetSectionsByCourseIdQueryHandlerTests
     {
         private readonly Mock<ISectionRepository> _sectionRepositoryMock;
+        private readonly Mock<IAppCache> _cacheMock;
         private readonly GetSectionsByCourseIdQueryHandler _handler;
 
         public GetSectionsByCourseIdQueryHandlerTests()
         {
             _sectionRepositoryMock = new Mock<ISectionRepository>();
-            _handler = new GetSectionsByCourseIdQueryHandler(_sectionRepositoryMock.Object);
+            _cacheMock = new Mock<IAppCache>();
+            _handler = new GetSectionsByCourseIdQueryHandler(_sectionRepositoryMock.Object, _cacheMock.Object);
         }
 
         [Fact]
