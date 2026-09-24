@@ -26,7 +26,7 @@ namespace Application.Features.Courses.Queries.GetByInstructorIdPublic
                 tags: new[] { CacheKeys.Courses() },
                 ct);
             
-            return result = new PaginatedResult<CourseSummaryDto>([], 0, pageNumber, pageSize);
+            return result ?? new PaginatedResult<CourseSummaryDto>([], 0, pageNumber, pageSize);
         }
     }
 }

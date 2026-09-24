@@ -43,6 +43,17 @@ public class GetUserReviewQueryHandlerTests
         _reviewRepositoryMock.Setup(x => x.GetByUserAndCourseAsync(studentId, courseId, It.IsAny<CancellationToken>()))
             .ReturnsAsync(expectedDto);
 
+        _cacheMock
+            .Setup(cache => cache.GetOrCreateAsync<ReviewResponseDto>(
+                It.IsAny<string>(),
+                It.IsAny<Func<CancellationToken, ValueTask<ReviewResponseDto?>>>(),
+                It.IsAny<CacheOptions>(),
+                It.IsAny<string[]>(),
+                It.IsAny<CancellationToken>()))
+            .Returns((string key, Func<CancellationToken, ValueTask<ReviewResponseDto?>> factory, CacheOptions options, string[] tags, CancellationToken ct) => {
+                return factory(ct);
+            });
+
         // Act
         var result = await _handler.Handle(query, CancellationToken.None);
 
@@ -67,6 +78,17 @@ public class GetUserReviewQueryHandlerTests
             .ReturnsAsync(studentId);
         _reviewRepositoryMock.Setup(x => x.GetByUserAndCourseAsync(studentId, courseId, It.IsAny<CancellationToken>()))
             .ReturnsAsync((ReviewResponseDto?)null);
+
+        _cacheMock
+            .Setup(cache => cache.GetOrCreateAsync<ReviewResponseDto>(
+                It.IsAny<string>(),
+                It.IsAny<Func<CancellationToken, ValueTask<ReviewResponseDto?>>>(),
+                It.IsAny<CacheOptions>(),
+                It.IsAny<string[]>(),
+                It.IsAny<CancellationToken>()))
+            .Returns((string key, Func<CancellationToken, ValueTask<ReviewResponseDto?>> factory, CacheOptions options, string[] tags, CancellationToken ct) => {
+                return factory(ct);
+            });
 
         // Act
         var result = await _handler.Handle(query, CancellationToken.None);

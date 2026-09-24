@@ -12,12 +12,17 @@ namespace Infrastructure.Repositories
         : BaseRepository(factory), IContentRepository
     {
         private string SelectColumns =>
-            $@"c.id, c.title, 
+            $@"c.id AS Id, 
+               c.title AS Title, 
                CASE WHEN c.content_url IS NOT NULL 
                     THEN CONCAT('{urlsOptions.Value.API}/', c.content_url) 
-                    ELSE NULL END AS content_url,
-               c.duration_in_seconds,
-               c.""order"", c.is_preview, c.section_id, c.created_at, c.updated_at";
+                    ELSE NULL END AS ContentUrl,
+               c.duration_in_seconds AS DurationInSeconds,
+               c.""order"" AS Order, 
+               c.is_preview AS IsPreview, 
+               c.section_id AS SectionId, 
+               c.created_at AS CreatedAt, 
+               c.updated_at AS UpdatedAt";
 
         private const string FromClause =
             @"FROM contents c

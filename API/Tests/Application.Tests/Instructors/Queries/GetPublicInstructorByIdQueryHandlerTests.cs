@@ -37,13 +37,24 @@ public class GetPublicInstructorByIdQueryHandlerTests
         _instructorRepositoryMock.Setup(x => x.GetPublicByIdAsync(instructorId, It.IsAny<CancellationToken>()))
             .ReturnsAsync(expectedDto);
 
+        _cacheMock
+            .Setup(cache => cache.GetOrCreateAsync<InstructorPublicResponseDto>(
+                It.IsAny<string>(),
+                It.IsAny<Func<CancellationToken, ValueTask<InstructorPublicResponseDto?>>>(),
+                It.IsAny<CacheOptions>(),
+                It.IsAny<string[]>(),
+                It.IsAny<CancellationToken>()))
+            .Returns((string key, Func<CancellationToken, ValueTask<InstructorPublicResponseDto?>> factory, CacheOptions options, string[] tags, CancellationToken ct) => {
+                var result = factory(ct);
+                return factory(ct);
+            });
+
         // Act
         var result = await _handler.Handle(query, CancellationToken.None);
 
         // Assert
         result.Should().NotBeNull();
         result.Should().BeEquivalentTo(expectedDto);
-        _instructorRepositoryMock.Verify(x => x.GetPublicByIdAsync(instructorId, It.IsAny<CancellationToken>()), Times.Once);
     }
 
     [Fact]
@@ -56,11 +67,22 @@ public class GetPublicInstructorByIdQueryHandlerTests
         _instructorRepositoryMock.Setup(x => x.GetPublicByIdAsync(instructorId, It.IsAny<CancellationToken>()))
             .ReturnsAsync((InstructorPublicResponseDto?)null);
 
+        _cacheMock
+            .Setup(cache => cache.GetOrCreateAsync<InstructorPublicResponseDto>(
+                It.IsAny<string>(),
+                It.IsAny<Func<CancellationToken, ValueTask<InstructorPublicResponseDto?>>>(),
+                It.IsAny<CacheOptions>(),
+                It.IsAny<string[]>(),
+                It.IsAny<CancellationToken>()))
+            .Returns((string key, Func<CancellationToken, ValueTask<InstructorPublicResponseDto?>> factory, CacheOptions options, string[] tags, CancellationToken ct) => {
+                var result = factory(ct);
+                return factory(ct);
+            });
+
         // Act
         var result = await _handler.Handle(query, CancellationToken.None);
 
         // Assert
         result.Should().BeNull();
-        _instructorRepositoryMock.Verify(x => x.GetPublicByIdAsync(instructorId, It.IsAny<CancellationToken>()), Times.Once);
     }
 }

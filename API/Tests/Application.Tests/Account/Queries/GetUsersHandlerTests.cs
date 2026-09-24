@@ -1,6 +1,7 @@
 using Application.Common.Interfaces;
 using Application.Common.Interfaces.Cache;
 using Application.Common.Models;
+using Application.DTOs.Account;
 using Application.Features.Account.Queries.GetAll;
 using Domain.Entities.Identity;
 using FluentAssertions;
@@ -39,6 +40,20 @@ public class GetUsersHandlerTests
         _userManagerMock.Setup(x => x.Users).Returns(users);
         _userManagerMock.Setup(x => x.GetRolesAsync(It.IsAny<ApplicationUser>()))
             .ReturnsAsync(["Student"]);
+        _urlProviderMock.Setup(x => x.GetFullUrl(It.IsAny<string>()))
+            .Returns("http://example.com/profile.jpg");
+
+        _cacheMock
+            .Setup(cache => cache.GetOrCreateAsync<PaginatedResult<UserResponseDto>>(
+                It.IsAny<string>(),
+                It.IsAny<Func<CancellationToken, ValueTask<PaginatedResult<UserResponseDto>?>>>(),
+                It.IsAny<CacheOptions>(),
+                It.IsAny<string[]>(),
+                It.IsAny<CancellationToken>()))
+            .Returns((string key, Func<CancellationToken, ValueTask<PaginatedResult<UserResponseDto>?>> factory, CacheOptions options, string[] tags, CancellationToken ct) => {
+                var result = factory(ct);
+                return factory(ct);
+            });
 
         var query = new GetUsersQuery(new UserQueryParams { PageNumber = 1, PageSize = 10 });
 
@@ -67,6 +82,20 @@ public class GetUsersHandlerTests
         _userManagerMock.Setup(x => x.Users).Returns(users);
         _userManagerMock.Setup(x => x.GetRolesAsync(It.IsAny<ApplicationUser>()))
             .ReturnsAsync([]);
+        _urlProviderMock.Setup(x => x.GetFullUrl(It.IsAny<string>()))
+            .Returns("http://example.com/profile.jpg");
+
+        _cacheMock
+            .Setup(cache => cache.GetOrCreateAsync<PaginatedResult<UserResponseDto>>(
+                It.IsAny<string>(),
+                It.IsAny<Func<CancellationToken, ValueTask<PaginatedResult<UserResponseDto>?>>>(),
+                It.IsAny<CacheOptions>(),
+                It.IsAny<string[]>(),
+                It.IsAny<CancellationToken>()))
+            .Returns((string key, Func<CancellationToken, ValueTask<PaginatedResult<UserResponseDto>?>> factory, CacheOptions options, string[] tags, CancellationToken ct) => {
+                var result = factory(ct);
+                return factory(ct);
+            });
 
         var query = new GetUsersQuery(new UserQueryParams { SearchTerm = "Jane" });
 
@@ -76,5 +105,6 @@ public class GetUsersHandlerTests
         // Assert
         result.Items.Should().HaveCount(1);
         result.Items[0].FirstName.Should().Be("Jane");
+        result.Items[0].LastName.Should().Be("Doe");
     }
 }

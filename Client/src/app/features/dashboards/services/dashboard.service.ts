@@ -74,48 +74,7 @@ export class DashboardService {
     }
   ]);
 
-  private instructorMetrics = signal<DashboardMetric[]>([
-    {
-      id: 'im1',
-      title: 'Enrolled Students',
-      value: '1,240',
-      change: '+8.4%',
-      isPositive: true,
-      icon: 'fa-solid fa-user-graduate',
-      color: 'primary',
-      description: 'across 4 active courses'
-    },
-    {
-      id: 'im2',
-      title: 'Monthly Earnings',
-      value: '$12,450',
-      change: '+15.2%',
-      isPositive: true,
-      icon: 'fa-solid fa-wallet',
-      color: 'success',
-      description: 'payout ready'
-    },
-    {
-      id: 'im3',
-      title: 'Pending Grading',
-      value: '14',
-      change: '8 Urgent',
-      isPositive: false,
-      icon: 'fa-solid fa-file-signature',
-      color: 'warning',
-      description: 'assignments submitted'
-    },
-    {
-      id: 'im4',
-      title: 'Instructor Rating',
-      value: '4.92 / 5',
-      change: '+0.05',
-      isPositive: true,
-      icon: 'fa-solid fa-star',
-      color: 'purple',
-      description: 'from 890 reviews'
-    }
-  ]);
+
 
   private pendingInstructors = signal<PendingInstructor[]>([
     { id: 'pi1', name: 'Dr. Robert Vance', email: 'robert.vance@university.edu', expertise: 'Artificial Intelligence', appliedDate: '2 hours ago', avatar: 'https://i.pravatar.cc/150?img=12' },
@@ -131,10 +90,6 @@ export class DashboardService {
 
   getAdminMetrics(): Observable<DashboardMetric[]> {
     return of(this.adminMetrics());
-  }
-
-  getInstructorMetrics(): Observable<DashboardMetric[]> {
-    return of(this.instructorMetrics());
   }
 
   getPendingInstructors(): Observable<PendingInstructor[]> {

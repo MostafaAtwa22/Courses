@@ -43,6 +43,18 @@ namespace Application.Tests.Courses.Query
             _repoMock.Setup(repo => repo.GetByIdAsync(courseId, It.IsAny<CancellationToken>()))
                      .ReturnsAsync(expectedCourse);
 
+            _cacheMock
+                .Setup(cache => cache.GetOrCreateAsync<CourseResponseDto>(
+                    It.IsAny<string>(),
+                    It.IsAny<Func<CancellationToken, ValueTask<CourseResponseDto?>>>(),
+                    It.IsAny<CacheOptions>(),
+                    It.IsAny<string[]>(),
+                    It.IsAny<CancellationToken>()))
+                .Returns((string key, Func<CancellationToken, ValueTask<CourseResponseDto?>> factory, CacheOptions options, string[] tags, CancellationToken ct) => {
+                    var result = factory(ct);
+                    return factory(ct);
+                });
+
             var query = new GetCourseByIdQuery(courseId);
 
             // Act
@@ -57,7 +69,7 @@ namespace Application.Tests.Courses.Query
             result.Status.Should().Be(expectedCourse.Status);
             result.PictureUrl.Should().Be(expectedCourse.PictureUrl);
         }
-        
+
         [Fact]
         public async Task Handle_ShouldReturnsNull_WhenCourseDoesNotExist()
         {
@@ -66,6 +78,18 @@ namespace Application.Tests.Courses.Query
 
             _repoMock.Setup(repo => repo.GetByIdAsync(courseId, It.IsAny<CancellationToken>()))
                      .ReturnsAsync((CourseResponseDto?)null);
+
+            _cacheMock
+                .Setup(cache => cache.GetOrCreateAsync<CourseResponseDto>(
+                    It.IsAny<string>(),
+                    It.IsAny<Func<CancellationToken, ValueTask<CourseResponseDto?>>>(),
+                    It.IsAny<CacheOptions>(),
+                    It.IsAny<string[]>(),
+                    It.IsAny<CancellationToken>()))
+                .Returns((string key, Func<CancellationToken, ValueTask<CourseResponseDto?>> factory, CacheOptions options, string[] tags, CancellationToken ct) => {
+                    var result = factory(ct);
+                    return factory(ct);
+                });
 
             var query = new GetCourseByIdQuery(courseId);
 

@@ -40,6 +40,17 @@ namespace Application.Tests.Contents.Queries
             _repoMock.Setup(x => x.GetByCourseAsync(courseId, queryParams, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(expected);
 
+            _cacheMock
+                .Setup(cache => cache.GetOrCreateAsync<PaginatedResult<ContentResponseDto>>(
+                    It.IsAny<string>(),
+                    It.IsAny<Func<CancellationToken, ValueTask<PaginatedResult<ContentResponseDto>?>>>(),
+                    It.IsAny<CacheOptions>(),
+                    It.IsAny<string[]>(),
+                    It.IsAny<CancellationToken>()))
+                .Returns((string key, Func<CancellationToken, ValueTask<PaginatedResult<ContentResponseDto>?>> factory, CacheOptions options, string[] tags, CancellationToken ct) => {
+                    return factory(ct);
+                });
+
             var result = await _handler.Handle(new GetContentByCourseQuery(courseId, queryParams), CancellationToken.None);
 
             result.Should().Be(expected);

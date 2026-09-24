@@ -33,6 +33,17 @@ namespace Application.Tests.Sections.Queries
                 .Setup(repo => repo.GetByIdAsync(sectionId, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(expectedSection);
 
+            _cacheMock
+                .Setup(cache => cache.GetOrCreateAsync<SectionResponseDto>(
+                    It.IsAny<string>(),
+                    It.IsAny<Func<CancellationToken, ValueTask<SectionResponseDto?>>>(),
+                    It.IsAny<CacheOptions>(),
+                    It.IsAny<string[]>(),
+                    It.IsAny<CancellationToken>()))
+                .Returns((string key, Func<CancellationToken, ValueTask<SectionResponseDto?>> factory, CacheOptions options, string[] tags, CancellationToken ct) => {
+                    return factory(ct);
+                });
+
             // Act
             var result = await _handler.Handle(query, CancellationToken.None);
 
@@ -50,6 +61,17 @@ namespace Application.Tests.Sections.Queries
             _sectionRepositoryMock
                 .Setup(repo => repo.GetByIdAsync(sectionId, It.IsAny<CancellationToken>()))
                 .ReturnsAsync((SectionResponseDto?)null);
+
+            _cacheMock
+                .Setup(cache => cache.GetOrCreateAsync<SectionResponseDto>(
+                    It.IsAny<string>(),
+                    It.IsAny<Func<CancellationToken, ValueTask<SectionResponseDto?>>>(),
+                    It.IsAny<CacheOptions>(),
+                    It.IsAny<string[]>(),
+                    It.IsAny<CancellationToken>()))
+                .Returns((string key, Func<CancellationToken, ValueTask<SectionResponseDto?>> factory, CacheOptions options, string[] tags, CancellationToken ct) => {
+                    return factory(ct);
+                });
 
             // Act
             var result = await _handler.Handle(query, CancellationToken.None);

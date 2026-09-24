@@ -1,0 +1,71 @@
+.instructor-card {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  border-radius: 16px;
+  padding: 1.25rem 1.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+
+  .card-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0;
+  }
+
+  .card-subtitle {
+    font-size: 0.78rem;
+    margin: 0;
+  }
+
+  .text-indigo { color: #4f46e5; }
+
+  .submission-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+  }
+
+  .submission-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.85rem 1rem;
+    background: #f8fafc;
+    border: 1px solid #f1f5f9;
+    border-radius: 12px;
+
+    .submission-info {
+      .assignment-title {
+        font-size: 0.9rem;
+        font-weight: 700;
+        color: #0f172a;
+        margin: 0;
+      }
+
+      .student-name {
+        font-size: 0.78rem;
+        font-weight: 600;
+        color: #4f46e5;
+      }
+
+      .course-name {
+        font-size: 0.72rem;
+      }
+    }
+  }
+}
+
+:host-context(.dark) .instructor-card {
+  background: rgba(30, 41, 59, 0.85);
+  border-color: rgba(51, 65, 85, 0.8);
+  .card-title { color: #f8fafc; }
+
+  .submission-item {
+    background: rgba(15, 23, 42, 0.5);
+    border-color: rgba(51, 65, 85, 0.5);
+    .submission-info .assignment-title { color: #f8fafc; }
+    .submission-info .student-name { color: #818cf8; }
+  }
+}

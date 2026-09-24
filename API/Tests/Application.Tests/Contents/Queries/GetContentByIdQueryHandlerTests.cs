@@ -29,6 +29,18 @@ namespace Application.Tests.Contents.Queries
             _repoMock.Setup(x => x.GetByIdAsync(id, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(expected);
 
+            _cacheMock
+                .Setup(cache => cache.GetOrCreateAsync<ContentResponseDto>(
+                    It.IsAny<string>(),
+                    It.IsAny<Func<CancellationToken, ValueTask<ContentResponseDto?>>>(),
+                    It.IsAny<CacheOptions>(),
+                    It.IsAny<string[]>(),
+                    It.IsAny<CancellationToken>()))
+                .Returns((string key, Func<CancellationToken, ValueTask<ContentResponseDto?>> factory, CacheOptions options, string[] tags, CancellationToken ct) => {
+                    var result = factory(ct);
+                    return factory(ct);
+                });
+
             var result = await _handler.Handle(new GetContentByIdQuery(id, courseId), CancellationToken.None);
 
             result.Should().Be(expected);

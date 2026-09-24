@@ -135,7 +135,22 @@ export const routes: Routes = [
     {
         path: 'instructor/dashboard',
         loadComponent: () => import('./features/dashboards/instructor-dashboard/instructor-dashboard').then(m => m.InstructorDashboardComponent),
-        canActivate: [authGuard]
+        canActivate: [authGuard],
+        children: [
+            {
+                path: '',
+                redirectTo: 'overview',
+                pathMatch: 'full'
+            },
+            {
+                path: 'overview',
+                loadComponent: () => import('./features/dashboards/instructor-dashboard/instructor-overview/instructor-overview.component').then(m => m.InstructorOverviewComponent)
+            },
+            {
+                path: 'update-profile',
+                loadComponent: () => import('./features/dashboards/instructor-dashboard/instructor-update-profile/instructor-update-profile.component').then(m => m.InstructorUpdateProfileComponent)
+            }
+        ]
     },
     {
         path: 'student/dashboard',

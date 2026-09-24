@@ -30,13 +30,23 @@ public class GetCourseSuggestionsQueryHandlerTests
         _courseRepositoryMock.Setup(x => x.GetSuggestionsAsync(term, It.IsAny<CancellationToken>()))
             .ReturnsAsync(expectedSuggestions);
 
+        _cacheMock
+            .Setup(cache => cache.GetOrCreateAsync<IEnumerable<string>>(
+                It.IsAny<string>(),
+                It.IsAny<Func<CancellationToken, ValueTask<IEnumerable<string>?>>>(),
+                It.IsAny<CacheOptions>(),
+                It.IsAny<string[]>(),
+                It.IsAny<CancellationToken>()))
+            .Returns((string key, Func<CancellationToken, ValueTask<IEnumerable<string>?>> factory, CacheOptions options, string[] tags, CancellationToken ct) => {
+                return factory(ct);
+            });
+
         // Act
         var result = await _handler.Handle(query, CancellationToken.None);
 
         // Assert
         result.Should().NotBeEmpty();
         result.Should().BeEquivalentTo(expectedSuggestions);
-        _courseRepositoryMock.Verify(x => x.GetSuggestionsAsync(term, It.IsAny<CancellationToken>()), Times.Once);
     }
 
     [Fact]

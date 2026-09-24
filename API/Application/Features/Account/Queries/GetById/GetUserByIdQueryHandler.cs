@@ -36,7 +36,7 @@ namespace Application.Features.Account.Queries.GetById
                 tags: new[] { CacheKeys.Users() },
                 cancellationToken);
             
-            return result ?? new UserResponseDto();
+            return result!;
         }
     }
 }

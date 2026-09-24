@@ -19,8 +19,12 @@ namespace Infrastructure.Repositories
             return await ExecutePaginatedQueryAsync<SectionResponseDto>(
                 queryParams,
                 countSql: "SELECT COUNT(1) FROM sections",
-                selectSql: @"SELECT id, title, ""order"", created_at, updated_at, 
-                            (SELECT COUNT(1) FROM contents WHERE section_id = sections.id) AS contents_count 
+                selectSql: @"SELECT id AS Id, 
+                            title AS Title, 
+                            ""order"" AS Order, 
+                            created_at AS CreatedAt, 
+                            updated_at AS UpdatedAt, 
+                            (SELECT COUNT(1) FROM contents WHERE section_id = sections.id) AS ContentsCount 
                             FROM sections",
                 allowedSortColumns: AllowedSortColumns,
                 defaultSortColumn: "\"order\"",
@@ -36,8 +40,12 @@ namespace Infrastructure.Repositories
             return await ExecutePaginatedQueryAsync<SectionResponseDto>(
                 queryParams,
                 countSql: "SELECT COUNT(1) FROM sections",
-                selectSql: @"SELECT id, title, ""order"", created_at, updated_at, 
-                            (SELECT COUNT(1) FROM contents WHERE section_id = sections.id) AS contents_count 
+                selectSql: @"SELECT id AS Id, 
+                            title AS Title, 
+                            ""order"" AS Order, 
+                            created_at AS CreatedAt, 
+                            updated_at AS UpdatedAt, 
+                            (SELECT COUNT(1) FROM contents WHERE section_id = sections.id) AS ContentsCount 
                             FROM sections",
                 allowedSortColumns: AllowedSortColumns,
                 defaultSortColumn: "\"order\"",
@@ -51,8 +59,12 @@ namespace Infrastructure.Repositories
         public async Task<SectionResponseDto?> GetByIdAsync(Guid id, CancellationToken ct = default)
         {
             using var connection = await CreateConnectionAsync(ct);
-            var sql = @"SELECT id, title, ""order"", created_at, updated_at,
-                               (SELECT COUNT(1) FROM contents WHERE section_id = sections.id) AS contents_count 
+            var sql = @"SELECT id AS Id, 
+                               title AS Title, 
+                               ""order"" AS Order, 
+                               created_at AS CreatedAt, 
+                               updated_at AS UpdatedAt,
+                               (SELECT COUNT(1) FROM contents WHERE section_id = sections.id) AS ContentsCount 
                         FROM sections 
                         WHERE id = @Id";
             return await connection.QueryFirstOrDefaultAsync<SectionResponseDto>(sql, new { Id = id });
