@@ -147,6 +147,10 @@ export const routes: Routes = [
                 loadComponent: () => import('./features/dashboards/instructor-dashboard/instructor-overview/instructor-overview.component').then(m => m.InstructorOverviewComponent)
             },
             {
+                path: 'courses',
+                loadComponent: () => import('./features/dashboards/instructor-dashboard/instructor-courses-list/instructor-courses-list.component').then(m => m.InstructorCoursesListComponent)
+            },
+            {
                 path: 'update-profile',
                 loadComponent: () => import('./features/dashboards/instructor-dashboard/instructor-update-profile/instructor-update-profile.component').then(m => m.InstructorUpdateProfileComponent)
             }

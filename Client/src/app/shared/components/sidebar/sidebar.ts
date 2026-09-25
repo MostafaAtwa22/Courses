@@ -10,6 +10,7 @@ export interface NavItem {
   badge?: string;
   badgeColor?: string;
   isSection?: false;
+  exactMatch?: boolean;
 }
 
 export interface NavSection {
@@ -50,11 +51,11 @@ export class SidebarComponent {
 
   instructorNavItems: NavItemOrSection[] = [
     { label: 'Overview', isSection: true },
-    { label: 'Instructor Hub', icon: 'fa-solid fa-chalkboard-user', route: '/instructor/dashboard' },
+    { label: 'Instructor Hub', icon: 'fa-solid fa-chalkboard-user', route: '/instructor/dashboard/overview', exactMatch: true },
     { label: 'Courses', isSection: true },
-    { label: 'My Courses', icon: 'fa-solid fa-laptop-code', route: '/courses' },
+    { label: 'My Courses', icon: 'fa-solid fa-book-open', route: '/instructor/dashboard/courses' },
     { label: 'Teaching', isSection: true },
-    { label: 'Class Schedules', icon: 'fa-solid fa-calendar-days', route: '/instructor/schedule' },
+    { label: 'Courses Schedules', icon: 'fa-solid fa-calendar-days', route: '/instructor/schedule' },
     { label: 'Grading & Queue', icon: 'fa-solid fa-check-to-slot', route: '/instructor/grading', badge: '8 New', badgeColor: 'bg-danger' },
     { label: 'Account', isSection: true },
     { label: 'Update Instructor', icon: 'fa-solid fa-user-pen', route: '/instructor/dashboard/update-profile' },

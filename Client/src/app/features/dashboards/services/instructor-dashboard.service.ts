@@ -16,6 +16,11 @@ export interface InstructorStatistics {
   coursesCreatedChange: number;
 }
 
+export interface EnrollmentStatistics {
+  period: string;
+  enrollmentCount: number;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -68,5 +73,9 @@ export class InstructorDashboardService {
         }
       ])
     );
+  }
+
+  getInstructorEnrollmentStatistics(): Observable<EnrollmentStatistics[]> {
+    return this.http.get<EnrollmentStatistics[]>(`${this.apiUrl}/enrollment-statistics`);
   }
 }

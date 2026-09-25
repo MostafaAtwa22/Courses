@@ -80,6 +80,10 @@ namespace Application.Common.Interfaces.Cache
         internal static string EnrollmentStatistics() => $"admin-dashboard:enrollments";
         internal static string RoleStatistics() => $"admin-dashboard:roles";
 
+        // Instructor Dashboard
+        internal static string InstructorDashboard() => "instructor-dashboard";
+        internal static string InstructorEnrollmentStatistics(Guid instructorId) => $"instructor-dashboard:enrollments:{instructorId}";
+
         // Discounts
         internal static string Discounts() => "discounts";
         internal static string DiscountsByCourse(Guid courseId) => $"discounts:course:{courseId}";

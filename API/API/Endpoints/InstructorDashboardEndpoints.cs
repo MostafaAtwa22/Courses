@@ -1,4 +1,5 @@
 using Application.DTOs.InstructorDashboard;
+using Application.Features.InstructorDashboard.Queries.GetInstructorEnrollmentStatistics;
 using Application.Features.InstructorDashboard.Queries.GetInstructorStatistics;
 using Application.Features.Instructors.Queries.GetCurrentInstructor;
 using Domain.Enums.Identity;
@@ -19,6 +20,12 @@ namespace API.Endpoints
                 .Produces<InstructorStatisticsDto>(StatusCodes.Status200OK)
                 .Produces(StatusCodes.Status401Unauthorized)
                 .Produces(StatusCodes.Status403Forbidden);
+
+            group.MapGet("/enrollment-statistics", GetInstructorEnrollmentStatistics)
+                .WithName(nameof(GetInstructorEnrollmentStatistics))
+                .Produces<IEnumerable<InstructorEnrollmentStatisticsDto>>(StatusCodes.Status200OK)
+                .Produces(StatusCodes.Status401Unauthorized)
+                .Produces(StatusCodes.Status403Forbidden);
         }
 
         public static async Task<IResult> GetInstructorStatistics(IMediator mediator)
@@ -32,6 +39,18 @@ namespace API.Endpoints
 
             // Get instructor statistics
             var result = await mediator.Send(new GetInstructorStatisticsQuery(currentInstructor.Id));
+            return TypedResults.Ok(result);
+        }
+
+        public static async Task<IResult> GetInstructorEnrollmentStatistics(IMediator mediator)
+        {
+            var currentInstructor = await mediator.Send(new GetCurrentInstructorQuery());
+            if (currentInstructor is null)
+            {
+                return TypedResults.NotFound();
+            }
+
+            var result = await mediator.Send(new GetInstructorEnrollmentStatisticsQuery(currentInstructor.Id));
             return TypedResults.Ok(result);
         }
     }

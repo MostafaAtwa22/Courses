@@ -4,8 +4,10 @@ import { ScheduleTimelineComponent } from '../../components/schedule-timeline/sc
 import { RecentActivityLogComponent } from '../../components/recent-activity-log/recent-activity-log';
 import { InstructorBannerComponent } from './instructor-banner/instructor-banner.component';
 import { InstructorStatsCardsComponent } from './instructor-stats-cards/instructor-stats-cards.component';
+import { InstructorEnrollmentChartCardComponent } from './instructor-enrollment-chart-card/instructor-enrollment-chart-card.component';
+import { InstructorEnrollmentSummaryTableComponent } from './instructor-enrollment-summary-table/instructor-enrollment-summary-table.component';
 import { DashboardService, StudentSubmission } from '../../services/dashboard.service';
-import { InstructorDashboardService } from '../../services/instructor-dashboard.service';
+import { InstructorDashboardService, EnrollmentStatistics } from '../../services/instructor-dashboard.service';
 import {
   DashboardMetric,
   ScheduleItem,
@@ -21,7 +23,9 @@ import { ToastService } from '../../../../core/services/toast.service';
     ScheduleTimelineComponent,
     RecentActivityLogComponent,
     InstructorBannerComponent,
-    InstructorStatsCardsComponent
+    InstructorStatsCardsComponent,
+    InstructorEnrollmentChartCardComponent,
+    InstructorEnrollmentSummaryTableComponent
   ],
   templateUrl: './instructor-overview.component.html',
   styleUrl: './instructor-overview.component.scss'
@@ -35,6 +39,7 @@ export class InstructorOverviewComponent implements OnInit {
   schedule: ScheduleItem[] = [];
   activities: ActivityLogItem[] = [];
   submissions: StudentSubmission[] = [];
+  enrollmentData: EnrollmentStatistics[] = [];
 
   ngOnInit() {
     this.loadInstructorData();
@@ -42,6 +47,7 @@ export class InstructorOverviewComponent implements OnInit {
 
   loadInstructorData() {
     this.instructorDashboardService.getInstructorStatistics().subscribe(m => (this.metrics = m));
+    this.instructorDashboardService.getInstructorEnrollmentStatistics().subscribe(e => (this.enrollmentData = e));
     this.dashboardService.getScheduleTimeline().subscribe(s => (this.schedule = s));
     this.dashboardService.getRecentActivity().subscribe(act => (this.activities = act));
     this.dashboardService.getStudentSubmissions().subscribe(sub => (this.submissions = sub));

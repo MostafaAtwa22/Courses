@@ -103,5 +103,34 @@ namespace Infrastructure.Repositories
 
             return await connection.QueryFirstOrDefaultAsync<InstructorStatisticsDto>(sql, new { InstructorId = instructorId });
         }
+
+        public async Task<IEnumerable<InstructorEnrollmentStatisticsDto>> GetInstructorEnrollmentStatisticsAsync(Guid instructorId, CancellationToken ct = default)
+        {
+            using var connection = await CreateConnectionAsync(ct);
+            var sql = @"
+                WITH all_months AS (
+                    SELECT 
+                        generate_series(1, 12) AS month_num,
+                        TO_CHAR(DATE_TRUNC('month', NOW() - INTERVAL '11 months') + (generate_series(1, 12) - 1) * INTERVAL '1 month', 'Mon') AS month_name
+                ),
+                enrollment_counts AS (
+                    SELECT 
+                        EXTRACT(MONTH FROM e.created_at) AS month_num,
+                        COUNT(*) AS EnrollmentCount
+                    FROM enrollments e 
+                    JOIN courses c ON e.course_id = c.id 
+                    WHERE c.instructor_id = @InstructorId 
+                    AND e.created_at >= NOW() - INTERVAL '12 months'
+                    GROUP BY EXTRACT(MONTH FROM e.created_at)
+                )
+                SELECT 
+                    am.month_name AS Period,
+                    COALESCE(ec.EnrollmentCount, 0) AS EnrollmentCount
+                FROM all_months am
+                LEFT JOIN enrollment_counts ec ON am.month_num = ec.month_num
+                ORDER BY am.month_num";
+
+            return await connection.QueryAsync<InstructorEnrollmentStatisticsDto>(sql, new { InstructorId = instructorId });
+        }
     }
 }

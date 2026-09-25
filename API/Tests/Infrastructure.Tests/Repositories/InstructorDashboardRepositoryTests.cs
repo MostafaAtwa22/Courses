@@ -134,5 +134,97 @@ namespace Infrastructure.Tests.Repositories
             result.MonthlyEarnings.Should().Be(9999.99m);
             result.InstructorRating.Should().Be(4.95m);
         }
+
+        [Fact]
+        public async Task GetInstructorEnrollmentStatisticsAsync_ShouldReturnEnrollmentData_WhenDataExists()
+        {
+            // Arrange
+            var instructorId = Guid.NewGuid();
+            var expectedData = new List<InstructorEnrollmentStatisticsDto>
+            {
+                new() { Period = "Jan", EnrollmentCount = 10 },
+                new() { Period = "Feb", EnrollmentCount = 15 },
+                new() { Period = "Mar", EnrollmentCount = 20 }
+            };
+
+            _connectionMock
+                .SetupDapperAsync(c => c.QueryAsync<InstructorEnrollmentStatisticsDto>(
+                    It.IsAny<string>(), It.IsAny<object>(), null, null, null))
+                .ReturnsAsync(expectedData);
+
+            // Act
+            var result = await _repository.GetInstructorEnrollmentStatisticsAsync(instructorId);
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Should().HaveCount(3);
+            result.Should().BeEquivalentTo(expectedData);
+        }
+
+        [Fact]
+        public async Task GetInstructorEnrollmentStatisticsAsync_ShouldReturnEmptyList_WhenNoDataExists()
+        {
+            // Arrange
+            var instructorId = Guid.NewGuid();
+            var expectedData = new List<InstructorEnrollmentStatisticsDto>();
+
+            _connectionMock
+                .SetupDapperAsync(c => c.QueryAsync<InstructorEnrollmentStatisticsDto>(
+                    It.IsAny<string>(), It.IsAny<object>(), null, null, null))
+                .ReturnsAsync(expectedData);
+
+            // Act
+            var result = await _repository.GetInstructorEnrollmentStatisticsAsync(instructorId);
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Should().BeEmpty();
+        }
+
+        [Fact]
+        public async Task GetInstructorEnrollmentStatisticsAsync_ShouldCallQueryAsync()
+        {
+            // Arrange
+            var instructorId = Guid.NewGuid();
+            var expectedData = new List<InstructorEnrollmentStatisticsDto>
+            {
+                new() { Period = "Jan", EnrollmentCount = 5 }
+            };
+
+            _connectionMock
+                .SetupDapperAsync(c => c.QueryAsync<InstructorEnrollmentStatisticsDto>(
+                    It.IsAny<string>(), It.IsAny<object>(), null, null, null))
+                .ReturnsAsync(expectedData);
+
+            // Act
+            await _repository.GetInstructorEnrollmentStatisticsAsync(instructorId);
+
+            // Assert
+            _factoryMock.Verify(f => f.CreateConnectionAsync(It.IsAny<CancellationToken>()), Times.Once);
+        }
+
+        [Fact]
+        public async Task GetInstructorEnrollmentStatisticsAsync_ShouldPassCancellationToken()
+        {
+            // Arrange
+            var instructorId = Guid.NewGuid();
+            var expectedData = new List<InstructorEnrollmentStatisticsDto>
+            {
+                new() { Period = "Jan", EnrollmentCount = 1 }
+            };
+
+            _connectionMock
+                .SetupDapperAsync(c => c.QueryAsync<InstructorEnrollmentStatisticsDto>(
+                    It.IsAny<string>(), It.IsAny<object>(), null, null, null))
+                .ReturnsAsync(expectedData);
+
+            var cancellationToken = new CancellationToken();
+
+            // Act
+            await _repository.GetInstructorEnrollmentStatisticsAsync(instructorId, cancellationToken);
+
+            // Assert
+            _factoryMock.Verify(f => f.CreateConnectionAsync(cancellationToken), Times.Once);
+        }
     }
 }

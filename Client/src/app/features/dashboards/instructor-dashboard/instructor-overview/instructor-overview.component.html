@@ -4,6 +4,16 @@
 <!-- Instructor Stat Cards -->
 <app-instructor-stats-cards [metrics]="metrics"></app-instructor-stats-cards>
 
+<!-- Enrollment Chart and Summary Row -->
+<div class="row g-4 mb-4">
+  <div class="col-12 col-lg-8">
+    <app-instructor-enrollment-chart-card [enrollmentData]="enrollmentData"></app-instructor-enrollment-chart-card>
+  </div>
+  <div class="col-12 col-lg-4">
+    <app-instructor-enrollment-summary-table [enrollmentData]="enrollmentData"></app-instructor-enrollment-summary-table>
+  </div>
+</div>
+
 <!-- Main Grid Split -->
 <div class="row g-4 mb-4">
   <!-- Left Panel: Grading Queue & Teaching Schedule -->
