@@ -40,6 +40,18 @@ namespace Application.Tests.Sections.Queries
                 .Setup(repo => repo.GetAllAsync(queryParams, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(expectedSections);
 
+            _cacheMock
+                .Setup(cache => cache.GetOrCreateAsync<PaginatedResult<SectionResponseDto>>(
+                    It.IsAny<string>(),
+                    It.IsAny<Func<CancellationToken, ValueTask<PaginatedResult<SectionResponseDto>?>>>(),
+                    It.IsAny<CacheOptions>(),
+                    It.IsAny<string[]>(),
+                    It.IsAny<CancellationToken>()))
+                .Returns((string key, Func<CancellationToken, ValueTask<PaginatedResult<SectionResponseDto>?>> factory, CacheOptions options, string[] tags, CancellationToken ct) => {
+                    var result = factory(ct);
+                    return factory(ct);
+                });
+
             // Act
             var result = await _handler.Handle(query, CancellationToken.None);
 

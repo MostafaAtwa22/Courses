@@ -36,6 +36,17 @@ namespace Application.Tests.Reviews.Query
             _repoMock.Setup(r => r.GetByCourseAsync(courseId, queryParams, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(expectedResult);
 
+            _cacheMock
+                .Setup(cache => cache.GetOrCreateAsync<PaginatedResult<ReviewResponseDto>>(
+                    It.IsAny<string>(),
+                    It.IsAny<Func<CancellationToken, ValueTask<PaginatedResult<ReviewResponseDto>?>>>(),
+                    It.IsAny<CacheOptions>(),
+                    It.IsAny<string[]>(),
+                    It.IsAny<CancellationToken>()))
+                .Returns((string key, Func<CancellationToken, ValueTask<PaginatedResult<ReviewResponseDto>?>> factory, CacheOptions options, string[] tags, CancellationToken ct) => {
+                    return factory(ct);
+                });
+
             var query = new GetReviewsByCourseQuery(courseId, queryParams);
 
             // Act

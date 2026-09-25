@@ -1,0 +1,184 @@
+<div class="modal-overlay" (click)="onClose()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2 class="modal-title">
+        <i class="fa-solid fa-book-open"></i>
+        {{ course ? 'Edit Course' : 'Create New Course' }}
+      </h2>
+      <button class="modal-close-btn" (click)="onClose()">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+
+    <div class="modal-body">
+      <form (ngSubmit)="onSubmit()">
+        <div class="form-row">
+          <div class="form-group half-width">
+            <label for="courseTitle">Course Title *</label>
+            <input 
+              type="text" 
+              id="courseTitle"
+              name="courseTitle"
+              [(ngModel)]="formData.title"
+              placeholder="e.g., Complete Web Development Bootcamp"
+              class="form-control"
+              required
+            >
+          </div>
+
+          <div class="form-group half-width">
+            <label for="courseCategory">Category *</label>
+            <select 
+              id="courseCategory"
+              name="courseCategory"
+              [(ngModel)]="formData.categoryId"
+              class="form-control"
+              required
+            >
+              <option value="">Select a category</option>
+              <option *ngFor="let category of categories" [value]="category.id">
+                {{ category.name }}
+              </option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="courseDescription">Description *</label>
+          <textarea 
+            id="courseDescription"
+            name="courseDescription"
+            [(ngModel)]="formData.description"
+            placeholder="Provide a detailed description of your course..."
+            class="form-control"
+            rows="4"
+            required
+          ></textarea>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group half-width">
+            <label for="courseCost">Price ($) *</label>
+            <input 
+              type="number" 
+              id="courseCost"
+              name="courseCost"
+              [(ngModel)]="formData.cost"
+              placeholder="e.g., 99.99"
+              class="form-control"
+              min="0"
+              step="0.01"
+              required
+            >
+          </div>
+
+          <div class="form-group half-width">
+            <label for="courseLanguage">Language *</label>
+            <select 
+              id="courseLanguage"
+              name="courseLanguage"
+              [(ngModel)]="formData.language"
+              class="form-control"
+              required
+            >
+              <option value="English">English</option>
+              <option value="Spanish">Spanish</option>
+              <option value="French">French</option>
+              <option value="German">German</option>
+              <option value="Arabic">Arabic</option>
+              <option value="Chinese">Chinese</option>
+              <option value="Japanese">Japanese</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="courseStatus">Status *</label>
+          <select 
+            id="courseStatus"
+            name="courseStatus"
+            [(ngModel)]="formData.status"
+            class="form-control"
+            required
+          >
+            <option value="0">In Progress</option>
+            <option value="1">Done</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="whatYouWillLearn">What You Will Learn</label>
+          <textarea 
+            id="whatYouWillLearn"
+            name="whatYouWillLearn"
+            [(ngModel)]="formData.whatYouWillLearn"
+            placeholder="e.g., HTML, CSS, JavaScript, React, Node.js (separate with commas)"
+            class="form-control"
+            rows="3"
+          ></textarea>
+          <small class="form-hint">Separate items with commas</small>
+        </div>
+
+        <div class="form-group">
+          <label for="requirements">Requirements</label>
+          <textarea 
+            id="requirements"
+            name="requirements"
+            [(ngModel)]="formData.requirements"
+            placeholder="e.g., Basic computer skills, No prior coding experience needed (separate with commas)"
+            class="form-control"
+            rows="3"
+          ></textarea>
+          <small class="form-hint">Separate items with commas</small>
+        </div>
+
+        <div class="form-group">
+          <label for="coursePicture">Course Picture {{ !course ? '*' : '' }}</label>
+          <input 
+            type="file" 
+            id="coursePicture"
+            name="coursePicture"
+            (change)="onPictureSelected($event)"
+            accept="image/*"
+            class="form-control"
+            [required]="!course"
+          >
+          <small class="form-hint">Recommended size: 1280x720px, Max size: 5MB</small>
+        </div>
+
+        <div class="form-group">
+          <label for="introVideo">Intro Video {{ !course ? '*' : '' }}</label>
+          <input 
+            type="file" 
+            id="introVideo"
+            name="introVideo"
+            (change)="onVideoSelected($event)"
+            accept="video/*"
+            class="form-control"
+            [required]="!course"
+          >
+          <small class="form-hint">Recommended format: MP4, Max size: 500MB</small>
+        </div>
+
+        <div class="modal-footer">
+          <button 
+            type="button" 
+            class="btn btn-secondary"
+            (click)="onClose()"
+            [disabled]="isSubmitting"
+          >
+            Cancel
+          </button>
+          <button 
+            type="submit" 
+            class="btn btn-primary"
+            [disabled]="isSubmitting"
+          >
+            <i *ngIf="isSubmitting" class="fa-solid fa-spinner fa-spin me-2"></i>
+            {{ isSubmitting ? 'Saving...' : (course ? 'Update Course' : 'Create Course') }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

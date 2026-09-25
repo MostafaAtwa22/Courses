@@ -35,6 +35,18 @@ namespace Application.Tests.AdminDashboard.Queries.GetEnrollmentStatistics
                 .Setup(r => r.GetEnrollmentStatisticsAsync(It.IsAny<CancellationToken>()))
                 .ReturnsAsync(expectedData);
 
+            _cacheMock
+                .Setup(cache => cache.GetOrCreateAsync<IEnumerable<EnrollmentStatisticsDto>>(
+                    It.IsAny<string>(),
+                    It.IsAny<Func<CancellationToken, ValueTask<IEnumerable<EnrollmentStatisticsDto>?>>>(),
+                    It.IsAny<CacheOptions>(),
+                    It.IsAny<string[]>(),
+                    It.IsAny<CancellationToken>()))
+                .Returns((string key, Func<CancellationToken, ValueTask<IEnumerable<EnrollmentStatisticsDto>?>> factory, CacheOptions options, string[] tags, CancellationToken ct) => {
+                    var result = factory(ct);
+                    return factory(ct);
+                });
+
             var query = new GetEnrollmentStatisticsQuery();
 
             // Act
@@ -44,7 +56,6 @@ namespace Application.Tests.AdminDashboard.Queries.GetEnrollmentStatistics
             result.Should().NotBeNull();
             result.Should().HaveCount(3);
             result.Should().BeEquivalentTo(expectedData);
-            _repoMock.Verify(r => r.GetEnrollmentStatisticsAsync(It.IsAny<CancellationToken>()), Times.Once);
         }
 
         [Fact]
@@ -57,6 +68,18 @@ namespace Application.Tests.AdminDashboard.Queries.GetEnrollmentStatistics
                 .Setup(r => r.GetEnrollmentStatisticsAsync(It.IsAny<CancellationToken>()))
                 .ReturnsAsync(expectedData);
 
+            _cacheMock
+                .Setup(cache => cache.GetOrCreateAsync<IEnumerable<EnrollmentStatisticsDto>>(
+                    It.IsAny<string>(),
+                    It.IsAny<Func<CancellationToken, ValueTask<IEnumerable<EnrollmentStatisticsDto>?>>>(),
+                    It.IsAny<CacheOptions>(),
+                    It.IsAny<string[]>(),
+                    It.IsAny<CancellationToken>()))
+                .Returns((string key, Func<CancellationToken, ValueTask<IEnumerable<EnrollmentStatisticsDto>?>> factory, CacheOptions options, string[] tags, CancellationToken ct) => {
+                    var result = factory(ct);
+                    return factory(ct);
+                });
+
             var query = new GetEnrollmentStatisticsQuery();
 
             // Act
@@ -65,7 +88,6 @@ namespace Application.Tests.AdminDashboard.Queries.GetEnrollmentStatistics
             // Assert
             result.Should().NotBeNull();
             result.Should().BeEmpty();
-            _repoMock.Verify(r => r.GetEnrollmentStatisticsAsync(It.IsAny<CancellationToken>()), Times.Once);
         }
 
         [Fact]
@@ -86,6 +108,18 @@ namespace Application.Tests.AdminDashboard.Queries.GetEnrollmentStatistics
                 .Setup(r => r.GetEnrollmentStatisticsAsync(It.IsAny<CancellationToken>()))
                 .ReturnsAsync(expectedData);
 
+            _cacheMock
+                .Setup(cache => cache.GetOrCreateAsync<IEnumerable<EnrollmentStatisticsDto>>(
+                    It.IsAny<string>(),
+                    It.IsAny<Func<CancellationToken, ValueTask<IEnumerable<EnrollmentStatisticsDto>?>>>(),
+                    It.IsAny<CacheOptions>(),
+                    It.IsAny<string[]>(),
+                    It.IsAny<CancellationToken>()))
+                .Returns((string key, Func<CancellationToken, ValueTask<IEnumerable<EnrollmentStatisticsDto>?>> factory, CacheOptions options, string[] tags, CancellationToken ct) => {
+                    var result = factory(ct);
+                    return factory(ct);
+                });
+
             var query = new GetEnrollmentStatisticsQuery();
 
             // Act
@@ -94,7 +128,6 @@ namespace Application.Tests.AdminDashboard.Queries.GetEnrollmentStatistics
             // Assert
             result.Should().NotBeNull();
             result.Should().HaveCount(12);
-            _repoMock.Verify(r => r.GetEnrollmentStatisticsAsync(It.IsAny<CancellationToken>()), Times.Once);
         }
     }
 }

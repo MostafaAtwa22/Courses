@@ -29,6 +29,18 @@ namespace Application.Tests.Categories.Queries
             var category = new CategoryResponseDto { Id = categoryId, Name = "Test Category" };
             _repoMock.Setup(repo => repo.GetByIdAsync(categoryId, It.IsAny<CancellationToken>())).ReturnsAsync(category);
 
+            _cacheMock
+                .Setup(cache => cache.GetOrCreateAsync<CategoryResponseDto>(
+                    It.IsAny<string>(),
+                    It.IsAny<Func<CancellationToken, ValueTask<CategoryResponseDto?>>>(),
+                    It.IsAny<CacheOptions>(),
+                    It.IsAny<string[]>(),
+                    It.IsAny<CancellationToken>()))
+                .Returns((string key, Func<CancellationToken, ValueTask<CategoryResponseDto?>> factory, CacheOptions options, string[] tags, CancellationToken ct) => {
+                    var result = factory(ct);
+                    return factory(ct);
+                });
+
             // Act
             var result = await _handler.Handle(new GetCategoryByIdQuery(categoryId), CancellationToken.None);
 
@@ -44,6 +56,18 @@ namespace Application.Tests.Categories.Queries
             // Arrange
             var categoryId = Guid.NewGuid();
             _repoMock.Setup(repo => repo.GetByIdAsync(categoryId, It.IsAny<CancellationToken>())).ReturnsAsync((CategoryResponseDto?)null);
+
+            _cacheMock
+                .Setup(cache => cache.GetOrCreateAsync<CategoryResponseDto>(
+                    It.IsAny<string>(),
+                    It.IsAny<Func<CancellationToken, ValueTask<CategoryResponseDto?>>>(),
+                    It.IsAny<CacheOptions>(),
+                    It.IsAny<string[]>(),
+                    It.IsAny<CancellationToken>()))
+                .Returns((string key, Func<CancellationToken, ValueTask<CategoryResponseDto?>> factory, CacheOptions options, string[] tags, CancellationToken ct) => {
+                    var result = factory(ct);
+                    return factory(ct);
+                });
 
             // Act
             var result = await _handler.Handle(new GetCategoryByIdQuery(categoryId), CancellationToken.None);

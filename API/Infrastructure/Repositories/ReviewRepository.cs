@@ -8,11 +8,19 @@ namespace Infrastructure.Repositories
         : BaseRepository(factory), IReviewRepository
     {
         private string SelectColumns =>
-            $@"r.id, r.headline, r.comment, r.rating, r.course_id, r.student_id, r.created_at, r.updated_at,
-               CONCAT(u.first_name, ' ', u.last_name) AS student_name,
+            $@"r.id AS Id, 
+               r.headline AS Headline, 
+               r.comment AS Comment, 
+               r.rating AS Rating, 
+               r.course_id AS CourseId, 
+               r.student_id AS StudentId, 
+               r.created_at AS CreatedAt, 
+               r.updated_at AS UpdatedAt,
+               CONCAT(u.first_name, ' ', u.last_name) AS StudentName,
+               u.gender AS StudentGender,
                CASE WHEN u.profile_picture_url IS NOT NULL 
                     THEN CONCAT('{urlsOptions.Value.API}/', u.profile_picture_url) 
-                    ELSE NULL END AS student_profile_picture";
+                    ELSE NULL END AS StudentProfilePicture";
 
         private const string FromClause =
             @"FROM reviews r

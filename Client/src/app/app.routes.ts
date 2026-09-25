@@ -3,6 +3,7 @@ import { guestGuard } from './core/guards/guest.guard';
 import { authGuard } from './core/guards/auth.guard';
 import { instructorCompletionGuard } from './core/guards/instructor-completion.guard';
 import { contentAccessGuard } from './core/guards/content-access.guard';
+import { instructorVerifiedGuard } from './core/guards/instructor-verified.guard';
 
 export const routes: Routes = [
     {
@@ -135,7 +136,27 @@ export const routes: Routes = [
     {
         path: 'instructor/dashboard',
         loadComponent: () => import('./features/dashboards/instructor-dashboard/instructor-dashboard').then(m => m.InstructorDashboardComponent),
-        canActivate: [authGuard]
+        canActivate: [authGuard],
+        children: [
+            {
+                path: '',
+                redirectTo: 'overview',
+                pathMatch: 'full'
+            },
+            {
+                path: 'overview',
+                loadComponent: () => import('./features/dashboards/instructor-dashboard/instructor-overview/instructor-overview.component').then(m => m.InstructorOverviewComponent)
+            },
+            {
+                path: 'courses',
+                loadComponent: () => import('./features/dashboards/instructor-dashboard/instructor-courses-list/instructor-courses-list.component').then(m => m.InstructorCoursesListComponent),
+                canActivate: [instructorVerifiedGuard]
+            },
+            {
+                path: 'update-profile',
+                loadComponent: () => import('./features/dashboards/instructor-dashboard/instructor-update-profile/instructor-update-profile.component').then(m => m.InstructorUpdateProfileComponent)
+            }
+        ]
     },
     {
         path: 'student/dashboard',

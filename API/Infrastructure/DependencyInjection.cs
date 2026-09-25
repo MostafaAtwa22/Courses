@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Identity;
 using Infrastructure.Email;
 using Application.Common.Interfaces.Email;
 using Application.Common.Interfaces.Identity;
+using Application.Common.Interfaces;
 using Infrastructure.Identity.Authentication.Facebook;
 using Infrastructure.Identity.Authentication.Google;
 using Infrastructure.Identity.Authentication.Github;
@@ -67,6 +68,7 @@ public static class DependencyInjection
         services.AddScoped<IContentProgressRepository, ContentProgressRepository>();
         services.AddScoped<IRoleRepository, RoleRepository>();
         services.AddScoped<IAdminDashboardRepository, AdminDashboardRepository>();
+        services.AddScoped<IInstructorDashboardRepository, InstructorDashboardRepository>();
         services.AddScoped<IExternalAuthService, ExternalAuthService>();
         
         return services;

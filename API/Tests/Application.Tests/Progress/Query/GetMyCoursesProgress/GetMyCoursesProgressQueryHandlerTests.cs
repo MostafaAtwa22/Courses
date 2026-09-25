@@ -54,6 +54,18 @@ namespace Application.Tests.Progress.Query.GetMyCoursesProgress
             _progressRepoMock.Setup(r => r.GetMyCoursesProgressAsync(studentId, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(progressSummaries);
 
+            _cacheMock
+                .Setup(cache => cache.GetOrCreateAsync<IReadOnlyList<CourseProgressSummaryDto>>(
+                    It.IsAny<string>(),
+                    It.IsAny<Func<CancellationToken, ValueTask<IReadOnlyList<CourseProgressSummaryDto>?>>>(),
+                    It.IsAny<CacheOptions>(),
+                    It.IsAny<string[]>(),
+                    It.IsAny<CancellationToken>()))
+                .Returns((string key, Func<CancellationToken, ValueTask<IReadOnlyList<CourseProgressSummaryDto>?>> factory, CacheOptions options, string[] tags, CancellationToken ct) => {
+                    var result = factory(ct);
+                    return factory(ct);
+                });
+
             // Act
             var result = await _handler.Handle(query, CancellationToken.None);
 
@@ -75,6 +87,18 @@ namespace Application.Tests.Progress.Query.GetMyCoursesProgress
 
             _progressRepoMock.Setup(r => r.GetMyCoursesProgressAsync(studentId, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new List<CourseProgressSummaryDto>());
+
+            _cacheMock
+                .Setup(cache => cache.GetOrCreateAsync<IReadOnlyList<CourseProgressSummaryDto>>(
+                    It.IsAny<string>(),
+                    It.IsAny<Func<CancellationToken, ValueTask<IReadOnlyList<CourseProgressSummaryDto>?>>>(),
+                    It.IsAny<CacheOptions>(),
+                    It.IsAny<string[]>(),
+                    It.IsAny<CancellationToken>()))
+                .Returns((string key, Func<CancellationToken, ValueTask<IReadOnlyList<CourseProgressSummaryDto>?>> factory, CacheOptions options, string[] tags, CancellationToken ct) => {
+                    var result = factory(ct);
+                    return factory(ct);
+                });
 
             // Act
             var result = await _handler.Handle(query, CancellationToken.None);
@@ -105,6 +129,18 @@ namespace Application.Tests.Progress.Query.GetMyCoursesProgress
 
             _progressRepoMock.Setup(r => r.GetMyCoursesProgressAsync(studentId, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(progressSummaries);
+
+            _cacheMock
+                .Setup(cache => cache.GetOrCreateAsync<IReadOnlyList<CourseProgressSummaryDto>>(
+                    It.IsAny<string>(),
+                    It.IsAny<Func<CancellationToken, ValueTask<IReadOnlyList<CourseProgressSummaryDto>?>>>(),
+                    It.IsAny<CacheOptions>(),
+                    It.IsAny<string[]>(),
+                    It.IsAny<CancellationToken>()))
+                .Returns((string key, Func<CancellationToken, ValueTask<IReadOnlyList<CourseProgressSummaryDto>?>> factory, CacheOptions options, string[] tags, CancellationToken ct) => {
+                    var result = factory(ct);
+                    return factory(ct);
+                });
 
             // Act
             var result = await _handler.Handle(query, CancellationToken.None);

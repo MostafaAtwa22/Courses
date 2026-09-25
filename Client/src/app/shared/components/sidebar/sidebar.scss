@@ -369,3 +369,89 @@
     }
   }
 }
+
+// Disabled nav link wrapper (outside dark mode)
+.dashboard-sidebar .nav-link-wrapper {
+  position: relative;
+  
+  &.disabled {
+    pointer-events: none;
+  }
+}
+
+// Make nav-link-item relative for absolute positioning of guard
+.dashboard-sidebar .nav-link-item {
+  position: relative;
+}
+
+// Disabled nav link styling (outside dark mode)
+.dashboard-sidebar .nav-link-item.disabled-link {
+  opacity: 0.5;
+  cursor: not-allowed;
+  color: #64748b;
+  
+  .nav-icon {
+    color: #64748b;
+  }
+  
+  &:hover {
+    background: transparent;
+    color: #64748b;
+    
+    .nav-icon {
+      color: #64748b;
+    }
+  }
+}
+
+// Collapsed sidebar verification guard
+.dashboard-sidebar.collapsed .nav-link-item .verification-guard {
+  display: none;
+}
+
+// Verification guard overlay (outside dark mode)
+.dashboard-sidebar .nav-link-item .verification-guard {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  color: #e2e8f0;
+  font-size: 0.75rem;
+  font-weight: 500;
+  border-radius: 0.5rem;
+  z-index: 10;
+  pointer-events: none;
+  
+  i {
+    font-size: 0.875rem;
+  }
+}
+
+// Dark mode verification guard
+:host-context(.dark) .dashboard-sidebar .nav-link-item .verification-guard {
+  background: rgba(15, 23, 42, 0.9);
+  color: #94a3b8;
+}
+
+// Dark mode disabled link styling
+:host-context(.dark) .dashboard-sidebar .nav-link-item.disabled-link {
+  color: #64748b;
+  
+  .nav-icon {
+    color: #64748b;
+  }
+  
+  &:hover {
+    color: #64748b;
+    
+    .nav-icon {
+      color: #64748b;
+    }
+  }
+}

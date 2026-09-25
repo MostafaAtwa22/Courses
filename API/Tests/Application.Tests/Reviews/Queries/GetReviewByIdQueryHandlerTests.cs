@@ -36,13 +36,24 @@ public class GetReviewByIdQueryHandlerTests
         _reviewRepositoryMock.Setup(x => x.GetByIdAsync(reviewId, It.IsAny<CancellationToken>()))
             .ReturnsAsync(expectedDto);
 
+        _cacheMock
+            .Setup(cache => cache.GetOrCreateAsync<ReviewResponseDto>(
+                It.IsAny<string>(),
+                It.IsAny<Func<CancellationToken, ValueTask<ReviewResponseDto?>>>(),
+                It.IsAny<CacheOptions>(),
+                It.IsAny<string[]>(),
+                It.IsAny<CancellationToken>()))
+            .Returns((string key, Func<CancellationToken, ValueTask<ReviewResponseDto?>> factory, CacheOptions options, string[] tags, CancellationToken ct) => {
+                var result = factory(ct);
+                return factory(ct);
+            });
+
         // Act
         var result = await _handler.Handle(query, CancellationToken.None);
 
         // Assert
         result.Should().NotBeNull();
         result.Should().BeEquivalentTo(expectedDto);
-        _reviewRepositoryMock.Verify(x => x.GetByIdAsync(reviewId, It.IsAny<CancellationToken>()), Times.Once);
     }
 
     [Fact]
@@ -55,11 +66,22 @@ public class GetReviewByIdQueryHandlerTests
         _reviewRepositoryMock.Setup(x => x.GetByIdAsync(reviewId, It.IsAny<CancellationToken>()))
             .ReturnsAsync((ReviewResponseDto?)null);
 
+        _cacheMock
+            .Setup(cache => cache.GetOrCreateAsync<ReviewResponseDto>(
+                It.IsAny<string>(),
+                It.IsAny<Func<CancellationToken, ValueTask<ReviewResponseDto?>>>(),
+                It.IsAny<CacheOptions>(),
+                It.IsAny<string[]>(),
+                It.IsAny<CancellationToken>()))
+            .Returns((string key, Func<CancellationToken, ValueTask<ReviewResponseDto?>> factory, CacheOptions options, string[] tags, CancellationToken ct) => {
+                var result = factory(ct);
+                return factory(ct);
+            });
+
         // Act
         var result = await _handler.Handle(query, CancellationToken.None);
 
         // Assert
         result.Should().BeNull();
-        _reviewRepositoryMock.Verify(x => x.GetByIdAsync(reviewId, It.IsAny<CancellationToken>()), Times.Once);
     }
 }

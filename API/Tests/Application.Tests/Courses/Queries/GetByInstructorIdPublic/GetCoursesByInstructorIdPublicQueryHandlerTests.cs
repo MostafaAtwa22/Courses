@@ -38,6 +38,17 @@ namespace Application.Tests.Courses.Queries.GetByInstructorIdPublic
             _courseRepositoryMock.Setup(x => x.GetPublishedCoursesByInstructorIdAsync(instructorId, queryParams, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(expectedResult);
 
+            _cacheMock
+                .Setup(cache => cache.GetOrCreateAsync<PaginatedResult<CourseSummaryDto>>(
+                    It.IsAny<string>(),
+                    It.IsAny<Func<CancellationToken, ValueTask<PaginatedResult<CourseSummaryDto>?>>>(),
+                    It.IsAny<CacheOptions>(),
+                    It.IsAny<string[]>(),
+                    It.IsAny<CancellationToken>()))
+                .Returns((string key, Func<CancellationToken, ValueTask<PaginatedResult<CourseSummaryDto>?>> factory, CacheOptions options, string[] tags, CancellationToken ct) => {
+                    return factory(ct);
+                });
+
             // Act
             var result = await _handler.Handle(query, CancellationToken.None);
 
@@ -59,6 +70,17 @@ namespace Application.Tests.Courses.Queries.GetByInstructorIdPublic
 
             _courseRepositoryMock.Setup(x => x.GetPublishedCoursesByInstructorIdAsync(instructorId, queryParams, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(expectedResult);
+
+            _cacheMock
+                .Setup(cache => cache.GetOrCreateAsync<PaginatedResult<CourseSummaryDto>>(
+                    It.IsAny<string>(),
+                    It.IsAny<Func<CancellationToken, ValueTask<PaginatedResult<CourseSummaryDto>?>>>(),
+                    It.IsAny<CacheOptions>(),
+                    It.IsAny<string[]>(),
+                    It.IsAny<CancellationToken>()))
+                .Returns((string key, Func<CancellationToken, ValueTask<PaginatedResult<CourseSummaryDto>?>> factory, CacheOptions options, string[] tags, CancellationToken ct) => {
+                    return factory(ct);
+                });
 
             // Act
             var result = await _handler.Handle(query, CancellationToken.None);
@@ -82,6 +104,17 @@ namespace Application.Tests.Courses.Queries.GetByInstructorIdPublic
             _courseRepositoryMock.Setup(x => x.GetPublishedCoursesByInstructorIdAsync(instructorId, queryParams, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(expectedResult);
 
+            _cacheMock
+                .Setup(cache => cache.GetOrCreateAsync<PaginatedResult<CourseSummaryDto>>(
+                    It.IsAny<string>(),
+                    It.IsAny<Func<CancellationToken, ValueTask<PaginatedResult<CourseSummaryDto>?>>>(),
+                    It.IsAny<CacheOptions>(),
+                    It.IsAny<string[]>(),
+                    It.IsAny<CancellationToken>()))
+                .Returns((string key, Func<CancellationToken, ValueTask<PaginatedResult<CourseSummaryDto>?>> factory, CacheOptions options, string[] tags, CancellationToken ct) => {
+                    return factory(ct);
+                });
+
             // Act
             await _handler.Handle(query, CancellationToken.None);
 
@@ -100,6 +133,17 @@ namespace Application.Tests.Courses.Queries.GetByInstructorIdPublic
 
             _courseRepositoryMock.Setup(x => x.GetPublishedCoursesByInstructorIdAsync(instructorId, queryParams, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(expectedResult);
+
+            _cacheMock
+                .Setup(cache => cache.GetOrCreateAsync<PaginatedResult<CourseSummaryDto>>(
+                    It.IsAny<string>(),
+                    It.IsAny<Func<CancellationToken, ValueTask<PaginatedResult<CourseSummaryDto>?>>>(),
+                    It.IsAny<CacheOptions>(),
+                    It.IsAny<string[]>(),
+                    It.IsAny<CancellationToken>()))
+                .Returns((string key, Func<CancellationToken, ValueTask<PaginatedResult<CourseSummaryDto>?>> factory, CacheOptions options, string[] tags, CancellationToken ct) => {
+                    return factory(ct);
+                });
 
             // Act
             await _handler.Handle(query, CancellationToken.None);

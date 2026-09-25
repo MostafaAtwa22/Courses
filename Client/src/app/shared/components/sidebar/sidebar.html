@@ -24,23 +24,36 @@
           {{ item.label }}
         </div>
         <hr *ngIf="item.isSection && !isCollapsed" class="nav-section-divider">
-        <a
+        <div
           *ngIf="!item.isSection"
-          [routerLink]="item.route"
-          routerLinkActive="active"
-          class="nav-link-item"
-          [title]="isCollapsed ? item.label : ''"
+          class="nav-link-wrapper"
+          [class.disabled]="isNavItemDisabled(item)"
         >
-          <i [class]="item.icon + ' nav-icon'"></i>
-          <span class="nav-label" *ngIf="!isCollapsed">{{ item.label }}</span>
-          <span
-            *ngIf="item.badge && !isCollapsed"
-            class="badge nav-badge"
-            [ngClass]="item.badgeColor || 'bg-primary'"
+          <a
+            [routerLink]="getNavItemRoute(item)"
+            routerLinkActive="active"
+            class="nav-link-item"
+            [class.disabled-link]="isNavItemDisabled(item)"
+            [title]="getNavItemTitle(item)"
+            [attr.aria-disabled]="isNavItemDisabled(item)"
           >
+            <i [class]="item.icon + ' nav-icon'"></i>
+            <span class="nav-label" *ngIf="!isCollapsed">{{ item.label }}</span>
+            <span
+              *ngIf="shouldShowBadge(item)"
+              class="badge nav-badge"
+              [ngClass]="item.badgeColor || 'bg-primary'"
+            >
             {{ item.badge }}
           </span>
-        </a>
+          
+          <!-- Verification Guard Overlay for Disabled Items -->
+          <div *ngIf="shouldShowGuard(item)" class="verification-guard">
+            <i class="fa-solid fa-lock"></i>
+            <span>Requires verification</span>
+          </div>
+          </a>
+        </div>
       </ng-container>
     </nav>
   </div>

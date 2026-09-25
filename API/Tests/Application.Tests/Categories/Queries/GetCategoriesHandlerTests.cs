@@ -48,6 +48,18 @@ namespace Application.Tests.Categories.Queries
                 .Setup(repo => repo.GetAllAsync(queryParams, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(expected);
 
+            _cacheMock
+                .Setup(cache => cache.GetOrCreateAsync<PaginatedResult<CategoryResponseDto>>(
+                    It.IsAny<string>(),
+                    It.IsAny<Func<CancellationToken, ValueTask<PaginatedResult<CategoryResponseDto>?>>>(),
+                    It.IsAny<CacheOptions>(),
+                    It.IsAny<string[]>(),
+                    It.IsAny<CancellationToken>()))
+                .Returns((string key, Func<CancellationToken, ValueTask<PaginatedResult<CategoryResponseDto>?>> factory, CacheOptions options, string[] tags, CancellationToken ct) => {
+                    var result = factory(ct);
+                    return factory(ct);
+                });
+
             var query = new GetCategoriesQuery(queryParams);
 
             // Act

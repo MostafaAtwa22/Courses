@@ -1,5 +1,6 @@
 using Application.Common.Interfaces;
 using Application.Common.Interfaces.Cache;
+using Application.Common.Mappings;
 using Application.DTOs.Progress;
 using Application.Features.Progress.Queries.GetCourseProgress;
 using FluentAssertions;
@@ -46,6 +47,18 @@ namespace Application.Tests.Progress.Query.GetCourseProgress
             _progressRepoMock.Setup(r => r.GetCompletedContentIdsAsync(studentId, courseId, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(completedContentIds);
 
+            _cacheMock
+                .Setup(cache => cache.GetOrCreateAsync<CourseProgressDto>(
+                    It.IsAny<string>(),
+                    It.IsAny<Func<CancellationToken, ValueTask<CourseProgressDto?>>>(),
+                    It.IsAny<CacheOptions>(),
+                    It.IsAny<string[]>(),
+                    It.IsAny<CancellationToken>()))
+                .Returns((string key, Func<CancellationToken, ValueTask<CourseProgressDto?>> factory, CacheOptions options, string[] tags, CancellationToken ct) => {
+                    var result = factory(ct);
+                    return factory(ct);
+                });
+
             // Act
             var result = await _handler.Handle(query, CancellationToken.None);
 
@@ -79,6 +92,18 @@ namespace Application.Tests.Progress.Query.GetCourseProgress
             _progressRepoMock.Setup(r => r.GetCompletedContentIdsAsync(studentId, courseId, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new HashSet<Guid>());
 
+            _cacheMock
+                .Setup(cache => cache.GetOrCreateAsync<CourseProgressDto>(
+                    It.IsAny<string>(),
+                    It.IsAny<Func<CancellationToken, ValueTask<CourseProgressDto?>>>(),
+                    It.IsAny<CacheOptions>(),
+                    It.IsAny<string[]>(),
+                    It.IsAny<CancellationToken>()))
+                .Returns((string key, Func<CancellationToken, ValueTask<CourseProgressDto?>> factory, CacheOptions options, string[] tags, CancellationToken ct) => {
+                    var result = factory(ct);
+                    return factory(ct);
+                });
+
             // Act
             var result = await _handler.Handle(query, CancellationToken.None);
 
@@ -110,6 +135,18 @@ namespace Application.Tests.Progress.Query.GetCourseProgress
                 .ReturnsAsync(summary);
             _progressRepoMock.Setup(r => r.GetCompletedContentIdsAsync(studentId, courseId, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(completedContentIds);
+
+            _cacheMock
+                .Setup(cache => cache.GetOrCreateAsync<CourseProgressDto>(
+                    It.IsAny<string>(),
+                    It.IsAny<Func<CancellationToken, ValueTask<CourseProgressDto?>>>(),
+                    It.IsAny<CacheOptions>(),
+                    It.IsAny<string[]>(),
+                    It.IsAny<CancellationToken>()))
+                .Returns((string key, Func<CancellationToken, ValueTask<CourseProgressDto?>> factory, CacheOptions options, string[] tags, CancellationToken ct) => {
+                    var result = factory(ct);
+                    return factory(ct);
+                });
 
             // Act
             var result = await _handler.Handle(query, CancellationToken.None);

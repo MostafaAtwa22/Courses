@@ -1,6 +1,7 @@
 using Application.Common.Exceptions;
 using Application.Common.Interfaces;
 using Application.Common.Interfaces.Cache;
+using Application.DTOs.Account;
 using Application.Features.Account.Queries.GetById;
 using Domain.Entities.Identity;
 using FluentAssertions;
@@ -40,6 +41,17 @@ public class GetUserByIdHandlerTests
         _userManagerMock.Setup(x => x.GetRolesAsync(It.IsAny<ApplicationUser>()))
             .ReturnsAsync(["Instructor"]);
 
+        _cacheMock
+            .Setup(cache => cache.GetOrCreateAsync<UserResponseDto>(
+                It.IsAny<string>(),
+                It.IsAny<Func<CancellationToken, ValueTask<UserResponseDto?>>>(),
+                It.IsAny<CacheOptions>(),
+                It.IsAny<string[]>(),
+                It.IsAny<CancellationToken>()))
+            .Returns((string key, Func<CancellationToken, ValueTask<UserResponseDto?>> factory, CacheOptions options, string[] tags, CancellationToken ct) => {
+                return factory(ct);
+            });
+
         var query = new GetUserByIdQuery(userId);
 
         // Act
@@ -47,7 +59,7 @@ public class GetUserByIdHandlerTests
 
         // Assert
         result.Should().NotBeNull();
-        result.Id.Should().Be(userId.ToString());
+        result.Id.Should().Be(userId);
         result.Roles.Should().Contain("Instructor");
     }
 
@@ -57,6 +69,17 @@ public class GetUserByIdHandlerTests
         // Arrange
         var users = new List<ApplicationUser>().BuildMock();
         _userManagerMock.Setup(x => x.Users).Returns(users);
+
+        _cacheMock
+            .Setup(cache => cache.GetOrCreateAsync<UserResponseDto>(
+                It.IsAny<string>(),
+                It.IsAny<Func<CancellationToken, ValueTask<UserResponseDto?>>>(),
+                It.IsAny<CacheOptions>(),
+                It.IsAny<string[]>(),
+                It.IsAny<CancellationToken>()))
+            .Returns((string key, Func<CancellationToken, ValueTask<UserResponseDto?>> factory, CacheOptions options, string[] tags, CancellationToken ct) => {
+                return factory(ct);
+            });
 
         var query = new GetUserByIdQuery(Guid.NewGuid());
 
