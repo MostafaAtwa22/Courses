@@ -126,9 +126,17 @@ export class InstructorsListComponent implements OnInit {
       params.sortBy = this.sortBy;
     }
     
+    console.log('loadInstructors - Final params:', params);
+    console.log('loadInstructors - Status filter:', this.statusFilter);
+    
     this.instructorService.getAllInstructors(params).subscribe({
       next: (res: PaginatedResultModel<InstructorPrivateResponse>) => {
+        console.log('loadInstructors - Response received:', res);
+        console.log('loadInstructors - Items count:', res.items?.length);
         this.instructorsResult = res;
+      },
+      error: (error) => {
+        console.error('loadInstructors - Error:', error);
       }
     });
   }
