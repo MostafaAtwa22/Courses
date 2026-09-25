@@ -1,5 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import { ScheduleTimelineComponent } from '../../components/schedule-timeline/schedule-timeline';
 import { RecentActivityLogComponent } from '../../components/recent-activity-log/recent-activity-log';
 import { InstructorBannerComponent } from './instructor-banner/instructor-banner.component';
@@ -14,12 +15,15 @@ import {
   ActivityLogItem
 } from '../../models/dashboard.model';
 import { ToastService } from '../../../../core/services/toast.service';
+import { InstructorService } from '../../../../features/instructors/services/instructor.service';
+import { InstructorPrivateResponse } from '../../../../features/instructors/models/instructor.models';
 
 @Component({
   selector: 'app-instructor-overview',
   standalone: true,
   imports: [
     CommonModule,
+    RouterLink,
     ScheduleTimelineComponent,
     RecentActivityLogComponent,
     InstructorBannerComponent,
@@ -34,15 +38,43 @@ export class InstructorOverviewComponent implements OnInit {
   private dashboardService = inject(DashboardService);
   private instructorDashboardService = inject(InstructorDashboardService);
   private toastService = inject(ToastService);
+  private instructorService = inject(InstructorService);
 
   metrics: DashboardMetric[] = [];
   schedule: ScheduleItem[] = [];
   activities: ActivityLogItem[] = [];
   submissions: StudentSubmission[] = [];
   enrollmentData: EnrollmentStatistics[] = [];
+  
+  instructorStatus: string = 'Pending';
+  currentInstructor: InstructorPrivateResponse | null = null;
+  isLoadingStatus = true;
 
   ngOnInit() {
-    this.loadInstructorData();
+    this.loadInstructorStatus();
+  }
+
+  loadInstructorStatus() {
+    this.instructorService.getCurrentInstructor().subscribe({
+      next: (instructor) => {
+        if (instructor) {
+          this.currentInstructor = instructor;
+          this.instructorStatus = instructor.status;
+          this.isLoadingStatus = false;
+          
+          // Only load dashboard data if instructor is verified
+          if (this.instructorStatus === 'Verfied') {
+            this.loadInstructorData();
+          }
+        } else {
+          this.isLoadingStatus = false;
+        }
+      },
+      error: (error) => {
+        console.error('Error loading instructor status:', error);
+        this.isLoadingStatus = false;
+      }
+    });
   }
 
   loadInstructorData() {
@@ -60,5 +92,9 @@ export class InstructorOverviewComponent implements OnInit {
 
   createNewLecture() {
     this.toastService.info('Opening Lecture Composer...');
+  }
+
+  getInstructorProfileUrl(): string {
+    return this.currentInstructor ? `/instructors/${this.currentInstructor.id}` : '/profile';
   }
 }

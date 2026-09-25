@@ -3,6 +3,7 @@ import { guestGuard } from './core/guards/guest.guard';
 import { authGuard } from './core/guards/auth.guard';
 import { instructorCompletionGuard } from './core/guards/instructor-completion.guard';
 import { contentAccessGuard } from './core/guards/content-access.guard';
+import { instructorVerifiedGuard } from './core/guards/instructor-verified.guard';
 
 export const routes: Routes = [
     {
@@ -148,7 +149,8 @@ export const routes: Routes = [
             },
             {
                 path: 'courses',
-                loadComponent: () => import('./features/dashboards/instructor-dashboard/instructor-courses-list/instructor-courses-list.component').then(m => m.InstructorCoursesListComponent)
+                loadComponent: () => import('./features/dashboards/instructor-dashboard/instructor-courses-list/instructor-courses-list.component').then(m => m.InstructorCoursesListComponent),
+                canActivate: [instructorVerifiedGuard]
             },
             {
                 path: 'update-profile',

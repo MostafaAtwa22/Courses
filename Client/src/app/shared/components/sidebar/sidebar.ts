@@ -1,7 +1,9 @@
-import { Component, Input, Output, EventEmitter, inject } from '@angular/core';
+import { Component, Input, Output, EventEmitter, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { AuthService } from '../../../features/auth/services/auth.service';
+import { InstructorService } from '../../../features/instructors/services/instructor.service';
+import { InstructorPrivateResponse } from '../../../features/instructors/models/instructor.models';
 
 export interface NavItem {
   label: string;
@@ -11,6 +13,8 @@ export interface NavItem {
   badgeColor?: string;
   isSection?: false;
   exactMatch?: boolean;
+  disabled?: boolean;
+  requiresVerification?: boolean;
 }
 
 export interface NavSection {
@@ -27,12 +31,17 @@ export type NavItemOrSection = NavItem | NavSection;
   templateUrl: './sidebar.html',
   styleUrl: './sidebar.scss'
 })
-export class SidebarComponent {
+export class SidebarComponent implements OnInit {
   @Input() role: 'admin' | 'instructor' | 'student' | 'general' = 'general';
   @Input() isCollapsed = false;
   @Output() toggleCollapse = new EventEmitter<boolean>();
 
   private authService = inject(AuthService);
+  private instructorService = inject(InstructorService);
+
+  instructorStatus: string = 'Pending';
+  isInstructorVerified = false;
+  isLoadingStatus = true;
 
   adminNavItems: NavItemOrSection[] = [
     { label: 'Overview', isSection: true },
@@ -51,12 +60,12 @@ export class SidebarComponent {
 
   instructorNavItems: NavItemOrSection[] = [
     { label: 'Overview', isSection: true },
-    { label: 'Instructor Hub', icon: 'fa-solid fa-chalkboard-user', route: '/instructor/dashboard/overview', exactMatch: true },
+    { label: 'Instructor Hub', icon: 'fa-solid fa-chalkboard-user', route: '/instructor/dashboard/overview', exactMatch: true, requiresVerification: true },
     { label: 'Courses', isSection: true },
-    { label: 'My Courses', icon: 'fa-solid fa-book-open', route: '/instructor/dashboard/courses' },
+    { label: 'My Courses', icon: 'fa-solid fa-book-open', route: '/instructor/dashboard/courses', requiresVerification: true },
     { label: 'Teaching', isSection: true },
-    { label: 'Courses Schedules', icon: 'fa-solid fa-calendar-days', route: '/instructor/schedule' },
-    { label: 'Grading & Queue', icon: 'fa-solid fa-check-to-slot', route: '/instructor/grading', badge: '8 New', badgeColor: 'bg-danger' },
+    { label: 'Courses Schedules', icon: 'fa-solid fa-calendar-days', route: '/instructor/schedule', requiresVerification: true },
+    { label: 'Grading & Queue', icon: 'fa-solid fa-check-to-slot', route: '/instructor/grading', badge: '8 New', badgeColor: 'bg-danger', requiresVerification: true },
     { label: 'Account', isSection: true },
     { label: 'Update Instructor', icon: 'fa-solid fa-user-pen', route: '/instructor/dashboard/update-profile' },
     { label: 'My Profile', icon: 'fa-solid fa-id-card', route: '/profile' }
@@ -76,6 +85,42 @@ export class SidebarComponent {
     { label: 'Settings', icon: 'fa-solid fa-gear', route: '/settings' }
   ];
 
+  ngOnInit() {
+    if (this.role === 'instructor') {
+      this.loadInstructorStatus();
+    } else {
+      this.isLoadingStatus = false;
+    }
+  }
+
+  loadInstructorStatus() {
+    this.instructorService.getCurrentInstructor().subscribe({
+      next: (instructor) => {
+        if (instructor) {
+          this.instructorStatus = instructor.status;
+          this.isInstructorVerified = instructor.status === 'Verfied';
+          this.updateNavItemsBasedOnStatus();
+        }
+        this.isLoadingStatus = false;
+      },
+      error: (error) => {
+        console.error('Error loading instructor status:', error);
+        this.isLoadingStatus = false;
+      }
+    });
+  }
+
+  updateNavItemsBasedOnStatus() {
+    if (!this.isInstructorVerified) {
+      this.instructorNavItems = this.instructorNavItems.map(item => {
+        if (!item.isSection && (item as NavItem).requiresVerification) {
+          return { ...(item as NavItem), disabled: true };
+        }
+        return item;
+      });
+    }
+  }
+
   get navItems(): NavItemOrSection[] {
     if (this.role === 'admin') return this.adminNavItems;
     if (this.role === 'instructor') return this.instructorNavItems;
@@ -90,5 +135,34 @@ export class SidebarComponent {
 
   onLogout() {
     this.authService.logout();
+  }
+
+  isNavItemDisabled(item: NavItemOrSection): boolean {
+    return !item.isSection && ((item as NavItem).disabled === true);
+  }
+
+  getNavItemRoute(item: NavItemOrSection): string {
+    if (item.isSection) return '';
+    const navItem = item as NavItem;
+    return navItem.disabled === true ? '' : navItem.route;
+  }
+
+  getNavItemTitle(item: NavItemOrSection): string {
+    if (item.isSection) return '';
+    const navItem = item as NavItem;
+    if (this.isCollapsed) return navItem.label;
+    return navItem.disabled === true ? 'Requires instructor verification' : navItem.label;
+  }
+
+  shouldShowBadge(item: NavItemOrSection): boolean {
+    if (item.isSection) return false;
+    const navItem = item as NavItem;
+    return !!navItem.badge && !this.isCollapsed && navItem.disabled !== true;
+  }
+
+  shouldShowGuard(item: NavItemOrSection): boolean {
+    if (item.isSection) return false;
+    const navItem = item as NavItem;
+    return navItem.disabled === true && !this.isCollapsed;
   }
 }

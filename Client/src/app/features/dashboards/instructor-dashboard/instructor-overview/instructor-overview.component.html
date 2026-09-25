@@ -1,66 +1,113 @@
-<!-- Instructor Banner -->
-<app-instructor-banner (createLecture)="createNewLecture()"></app-instructor-banner>
-
-<!-- Instructor Stat Cards -->
-<app-instructor-stats-cards [metrics]="metrics"></app-instructor-stats-cards>
-
-<!-- Enrollment Chart and Summary Row -->
-<div class="row g-4 mb-4">
-  <div class="col-12 col-lg-8">
-    <app-instructor-enrollment-chart-card [enrollmentData]="enrollmentData"></app-instructor-enrollment-chart-card>
+<!-- Loading State -->
+<div *ngIf="isLoadingStatus" class="text-center py-5">
+  <div class="spinner-border text-primary" role="status">
+    <span class="visually-hidden">Loading...</span>
   </div>
-  <div class="col-12 col-lg-4">
-    <app-instructor-enrollment-summary-table [enrollmentData]="enrollmentData"></app-instructor-enrollment-summary-table>
+  <p class="mt-3 text-muted">Loading instructor status...</p>
+</div>
+
+<!-- Pending/Rejected Status Message -->
+<div *ngIf="!isLoadingStatus && instructorStatus !== 'Verfied'" class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+      <div class="status-message-card text-center">
+        <div class="status-icon">
+          <i *ngIf="instructorStatus === 'Pending'" class="fa-solid fa-clock fa-4x"></i>
+          <i *ngIf="instructorStatus === 'Unverfied'" class="fa-solid fa-circle-xmark fa-4x"></i>
+        </div>
+        <h3 class="card-title">
+          <span *ngIf="instructorStatus === 'Pending'">Account Pending Verification</span>
+          <span *ngIf="instructorStatus === 'Unverfied'">Account Verification Rejected</span>
+        </h3>
+        <p class="card-text">
+          <span *ngIf="instructorStatus === 'Pending'">
+            Your instructor account is currently under review by our administration team. 
+            You will be able to access the full dashboard once your account is verified.
+          </span>
+          <span *ngIf="instructorStatus === 'Unverfied'">
+            Your instructor account verification was declined. Please contact support for more information 
+            or update your instructor profile and reapply.
+          </span>
+        </p>
+        <div class="d-flex justify-content-center gap-3">
+          <button *ngIf="instructorStatus === 'Unverfied'" class="btn btn-primary" routerLink="/instructor/dashboard/update-profile">
+            <i class="fa-solid fa-user-pen me-2"></i>Update Profile
+          </button>
+          <button class="btn btn-outline-secondary" [routerLink]="getInstructorProfileUrl()">
+            <i class="fa-solid fa-id-card me-2"></i>View Profile
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
-<!-- Main Grid Split -->
-<div class="row g-4 mb-4">
-  <!-- Left Panel: Grading Queue & Teaching Schedule -->
-  <div class="col-12 col-xl-8">
-    <div class="d-flex flex-column gap-4">
-      <!-- Student Submissions Grading Feed -->
-      <div class="instructor-card">
-        <div class="card-header d-flex justify-content-between align-items-center mb-3">
-          <div>
-            <h5 class="card-title">
-              <i class="fa-solid fa-pen-to-square text-indigo me-2"></i> Submissions Awaiting Grading
-            </h5>
-            <p class="card-subtitle text-muted">Review student work submissions and submit grades</p>
-          </div>
-          <span class="badge bg-danger">{{ submissions.length }} Pending</span>
-        </div>
+<!-- Dashboard Content (Only for Verified Instructors) -->
+<div *ngIf="!isLoadingStatus && instructorStatus === 'Verfied'">
+  <!-- Instructor Banner -->
+  <app-instructor-banner (createLecture)="createNewLecture()"></app-instructor-banner>
 
-        <div class="submission-list" *ngIf="submissions.length > 0; else noSubmissions">
-          <div class="submission-item" *ngFor="let sub of submissions">
-            <div class="submission-info">
-              <h6 class="assignment-title">{{ sub.assignmentTitle }}</h6>
-              <span class="student-name"><i class="fa-solid fa-user-graduate me-1"></i>{{ sub.studentName }}</span>
-              <small class="course-name text-muted d-block">{{ sub.courseTitle }} &bull; Submitted {{ sub.submittedAt }}</small>
-            </div>
-            <div class="submission-action">
-              <button class="btn btn-sm btn-primary" (click)="gradeSubmission(sub.id, sub.studentName)">
-                <i class="fa-solid fa-check me-1"></i> Grade & Feedback
-              </button>
-            </div>
-          </div>
-        </div>
+  <!-- Instructor Stat Cards -->
+  <app-instructor-stats-cards [metrics]="metrics"></app-instructor-stats-cards>
 
-        <ng-template #noSubmissions>
-          <div class="text-center py-4 text-muted">
-            <i class="fa-solid fa-circle-check text-success fs-2 mb-2 d-block"></i>
-            No pending student submissions to grade right now!
-          </div>
-        </ng-template>
-      </div>
-
-      <!-- Schedule Timeline -->
-      <app-schedule-timeline [schedule]="schedule"></app-schedule-timeline>
+  <!-- Enrollment Chart and Summary Row -->
+  <div class="row g-4 mb-4">
+    <div class="col-12 col-lg-8">
+      <app-instructor-enrollment-chart-card [enrollmentData]="enrollmentData"></app-instructor-enrollment-chart-card>
+    </div>
+    <div class="col-12 col-lg-4">
+      <app-instructor-enrollment-summary-table [enrollmentData]="enrollmentData"></app-instructor-enrollment-summary-table>
     </div>
   </div>
 
-  <!-- Right Panel: Activity Log & Feed -->
-  <div class="col-12 col-xl-4">
-    <app-recent-activity-log [activities]="activities"></app-recent-activity-log>
+  <!-- Main Grid Split -->
+  <div class="row g-4 mb-4">
+    <!-- Left Panel: Grading Queue & Teaching Schedule -->
+    <div class="col-12 col-xl-8">
+      <div class="d-flex flex-column gap-4">
+        <!-- Student Submissions Grading Feed -->
+        <div class="instructor-card">
+          <div class="card-header d-flex justify-content-between align-items-center mb-3">
+            <div>
+              <h5 class="card-title">
+                <i class="fa-solid fa-pen-to-square text-indigo me-2"></i> Submissions Awaiting Grading
+              </h5>
+              <p class="card-subtitle text-muted">Review student work submissions and submit grades</p>
+            </div>
+            <span class="badge bg-danger">{{ submissions.length }} Pending</span>
+          </div>
+
+          <div class="submission-list" *ngIf="submissions.length > 0; else noSubmissions">
+            <div class="submission-item" *ngFor="let sub of submissions">
+              <div class="submission-info">
+                <h6 class="assignment-title">{{ sub.assignmentTitle }}</h6>
+                <span class="student-name"><i class="fa-solid fa-user-graduate me-1"></i>{{ sub.studentName }}</span>
+                <small class="course-name text-muted d-block">{{ sub.courseTitle }} &bull; Submitted {{ sub.submittedAt }}</small>
+              </div>
+              <div class="submission-action">
+                <button class="btn btn-sm btn-primary" (click)="gradeSubmission(sub.id, sub.studentName)">
+                  <i class="fa-solid fa-check me-1"></i> Grade & Feedback
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <ng-template #noSubmissions>
+            <div class="text-center py-4 text-muted">
+              <i class="fa-solid fa-circle-check text-success fs-2 mb-2 d-block"></i>
+              No pending student submissions to grade right now!
+            </div>
+          </ng-template>
+        </div>
+
+        <!-- Schedule Timeline -->
+        <app-schedule-timeline [schedule]="schedule"></app-schedule-timeline>
+      </div>
+    </div>
+
+    <!-- Right Panel: Activity Log & Feed -->
+    <div class="col-12 col-xl-4">
+      <app-recent-activity-log [activities]="activities"></app-recent-activity-log>
+    </div>
   </div>
 </div>
