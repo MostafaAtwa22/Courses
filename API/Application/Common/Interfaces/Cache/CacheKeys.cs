@@ -56,8 +56,15 @@ namespace Application.Common.Interfaces.Cache
         internal static string Students() => "students";
         internal static string Student(Guid id) => $"student:{id}";
         internal static string StudentByUser(string userId) => $"student:user:{userId}";
-        internal static string Students(string searchTerm, int pageNumber, int pageSize) => 
+        internal static string Students(string searchTerm, int pageNumber, int pageSize) =>
             $"students:{searchTerm}:{pageNumber}:{pageSize}";
+
+        // Admins
+        internal static string Admins() => "admins";
+        internal static string Admin(Guid id) => $"admin:{id}";
+        internal static string AdminByUser(string userId) => $"admin:user:{userId}";
+        internal static string Admins(string searchTerm, string? role, int pageNumber, int pageSize) =>
+            $"admins:{searchTerm}:{role ?? string.Empty}:{pageNumber}:{pageSize}";
 
         // Users (Account)
         internal static string Users() => "users";

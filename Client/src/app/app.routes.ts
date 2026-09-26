@@ -112,6 +112,14 @@ export const routes: Routes = [
                 loadComponent: () => import('./features/dashboards/admin-dashboard/instructors-list/instructor-details/instructor-details.component').then(m => m.InstructorDetailsComponent)
             },
             {
+                path: 'admins',
+                loadComponent: () => import('./features/dashboards/admin-dashboard/admins-list/admins-list.component').then(m => m.AdminsListComponent)
+            },
+            {
+                path: 'admins/:id',
+                loadComponent: () => import('./features/dashboards/admin-dashboard/admin-details/admin-details.component').then(m => m.AdminDetailsComponent)
+            },
+            {
                 path: 'students',
                 loadComponent: () => import('./features/dashboards/admin-dashboard/students-list/students-list.component').then(m => m.StudentsListComponent)
             },

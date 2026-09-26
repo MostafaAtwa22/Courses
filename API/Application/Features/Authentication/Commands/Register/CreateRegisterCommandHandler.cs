@@ -1,36 +1,21 @@
-using Domain.Enums.Identity;
+using Application.Common.Interfaces.Identity;
 
 namespace Application.Features.Authentication.Commands.Register
 {
     public sealed class CreateRegisterCommandHandler(
-            UserManager<ApplicationUser> _userManager,
-            IUserIdentityService _userIdentityService,
-            IPasswordService _passwordService,
-            IIdentityEmailService _identityEmailService,
-            IStudentProfileService _studentProfileService) :
+            IUserCreationService _userCreationService) :
         IRequestHandler<CreateRegisterCommand>
     {
         public async Task Handle(CreateRegisterCommand request, CancellationToken cancellationToken)
         {
-            if (await _userIdentityService.IsEmailExistsAsync(request.Dto.Email))
-                throw new BadRequestException("Email already exists.");
+            var options = new UserCreationOptions
+            {
+                ConfirmEmail = true,
+                CreateStudentProfile = true,
+                AutoConfirmEmail = false
+            };
 
-            if (await _userIdentityService.IsUserNameExistsAsync(request.Dto.UserName))
-                throw new BadRequestException("Username already exists.");
-
-            var user = request.Dto.ToApplicationUser();
-
-            var result = await _userManager.CreateAsync(user, request.Dto.Password);
-            if (!result.Succeeded)
-                throw new BadRequestException(result.Errors.Select(e => e.Description));
-
-            await _userManager.AddToRoleAsync(user, request.Dto.Role.ToString());
-
-            if (request.Dto.Role == Role.Student)
-                await _studentProfileService.EnsureStudentProfileAsync(user.Id, cancellationToken);
-
-            var token = await _passwordService.GenerateEmailConfirmationTokenAsync(user);
-            await _identityEmailService.SendEmailConfirmationEmailAsync(user, token);
+            await _userCreationService.CreateUserAsync(request.Dto, options, cancellationToken);
         }
     }
 }

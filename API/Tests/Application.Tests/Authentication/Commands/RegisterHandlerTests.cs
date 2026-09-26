@@ -13,27 +13,15 @@ namespace Application.Tests.Authentication.Commands;
 
 public class RegisterHandlerTests
 {
-    private readonly Mock<UserManager<ApplicationUser>> _userManagerMock;
-    private readonly Mock<IUserIdentityService> _userIdentityServiceMock;
-    private readonly Mock<IPasswordService> _passwordServiceMock;
-    private readonly Mock<IIdentityEmailService> _identityEmailServiceMock;
-    private readonly Mock<IStudentProfileService> _studentProfileServiceMock;
+    private readonly Mock<IUserCreationService> _userCreationServiceMock;
     private readonly CreateRegisterCommandHandler _handler;
 
     public RegisterHandlerTests()
     {
-        _userManagerMock          = MockHelpers.MockUserManager<ApplicationUser>();
-        _userIdentityServiceMock  = new Mock<IUserIdentityService>();
-        _passwordServiceMock      = new Mock<IPasswordService>();
-        _identityEmailServiceMock = new Mock<IIdentityEmailService>();
-        _studentProfileServiceMock = new Mock<IStudentProfileService>();
+        _userCreationServiceMock = new Mock<IUserCreationService>();
 
         _handler = new CreateRegisterCommandHandler(
-            _userManagerMock.Object,
-            _userIdentityServiceMock.Object,
-            _passwordServiceMock.Object,
-            _identityEmailServiceMock.Object,
-            _studentProfileServiceMock.Object);
+            _userCreationServiceMock.Object);
     }
 
     [Fact]
@@ -51,24 +39,23 @@ public class RegisterHandlerTests
         };
         var command = new CreateRegisterCommand(dto);
 
-        _userIdentityServiceMock.Setup(x => x.IsEmailExistsAsync(dto.Email)).ReturnsAsync(false);
-        _userIdentityServiceMock.Setup(x => x.IsUserNameExistsAsync(dto.UserName)).ReturnsAsync(false);
-        _userManagerMock.Setup(x => x.CreateAsync(It.IsAny<ApplicationUser>(), dto.Password))
-            .ReturnsAsync(IdentityResult.Success);
-        _userManagerMock.Setup(x => x.AddToRoleAsync(It.IsAny<ApplicationUser>(), It.IsAny<string>()))
-            .ReturnsAsync(IdentityResult.Success);
-        _studentProfileServiceMock.Setup(x => x.EnsureStudentProfileAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
-            .Returns(Task.CompletedTask);
+        _userCreationServiceMock.Setup(x => x.CreateUserAsync(
+            It.IsAny<RegisterDto>(),
+            It.IsAny<UserCreationOptions>(),
+            It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new ApplicationUser());
 
         // Act
         await _handler.Handle(command, CancellationToken.None);
 
         // Assert
-        _userManagerMock.Verify(x => x.CreateAsync(It.IsAny<ApplicationUser>(), dto.Password), Times.Once);
-        _userManagerMock.Verify(x => x.AddToRoleAsync(It.IsAny<ApplicationUser>(), "Student"), Times.Once);
-        _studentProfileServiceMock.Verify(x => x.EnsureStudentProfileAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Once);
-        _passwordServiceMock.Verify(x => x.GenerateEmailConfirmationTokenAsync(It.IsAny<ApplicationUser>()), Times.Once);
-        _identityEmailServiceMock.Verify(x => x.SendEmailConfirmationEmailAsync(It.IsAny<ApplicationUser>(), It.IsAny<string>()), Times.Once);
+        _userCreationServiceMock.Verify(x => x.CreateUserAsync(
+            It.Is<RegisterDto>(d => d.Email == dto.Email),
+            It.Is<UserCreationOptions>(o => 
+                o.ConfirmEmail == true && 
+                o.CreateStudentProfile == true && 
+                o.AutoConfirmEmail == false),
+            It.IsAny<CancellationToken>()), Times.Once);
     }
 
     [Fact]
@@ -77,7 +64,11 @@ public class RegisterHandlerTests
         // Arrange
         var dto = new RegisterDto { Email = "exists@example.com" };
         var command = new CreateRegisterCommand(dto);
-        _userIdentityServiceMock.Setup(x => x.IsEmailExistsAsync(dto.Email)).ReturnsAsync(true);
+        _userCreationServiceMock.Setup(x => x.CreateUserAsync(
+            It.IsAny<RegisterDto>(),
+            It.IsAny<UserCreationOptions>(),
+            It.IsAny<CancellationToken>()))
+            .ThrowsAsync(new BadRequestException("Email already exists."));
 
         // Act
         Func<Task> act = async () => await _handler.Handle(command, CancellationToken.None);

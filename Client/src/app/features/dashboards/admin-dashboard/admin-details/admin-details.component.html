@@ -1,0 +1,166 @@
+<div class="admin-details-container">
+  <!-- Loading State -->
+  <div class="loading-state" *ngIf="isLoading">
+    <div class="spinner"></div>
+    <p>Loading admin details...</p>
+  </div>
+
+  <!-- Error State -->
+  <div class="error-state" *ngIf="error && !isLoading">
+    <div class="error-icon">
+      <i class="fa-solid fa-exclamation-triangle"></i>
+    </div>
+    <h3>{{ error }}</h3>
+    <button class="btn-back" (click)="goBack()">
+      <i class="fa-solid fa-arrow-left me-2"></i> Go Back
+    </button>
+  </div>
+
+  <!-- Admin Details -->
+  <div class="admin-details" *ngIf="admin && !isLoading">
+    <!-- Header with Back Button -->
+    <div class="details-header">
+      <button class="btn-back" (click)="goBack()">
+        <i class="fa-solid fa-arrow-left"></i> Back to Admins
+      </button>
+      <h1 class="page-title">Admin Details</h1>
+    </div>
+
+    <!-- Profile Card with Avatar and Name -->
+    <div class="admin-card profile-card">
+      <div class="profile-header">
+        <div class="profile-avatar">
+          <img 
+            [src]="admin.profilePicture || (admin.gender === 'Female' ? 'assets/users/default-female.png' : 'assets/users/default-male.png')" 
+            [alt]="admin.firstName + ' ' + admin.lastName" 
+          />
+        </div>
+        <div class="profile-info">
+          <h2 class="profile-name">{{ admin.firstName }} {{ admin.lastName }}</h2>
+          <span [class]="getRoleClass(admin.role)" class="role-badge" style="width: fit-content;">
+            <i class="fa-solid fa-shield-halved me-1"></i>
+            {{ admin.role }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Information Grid -->
+    <div class="info-grid">
+      <!-- Personal Information -->
+      <div class="admin-card info-section">
+        <h3 class="section-title">
+          <i class="fa-solid fa-user"></i>
+          Personal Information
+        </h3>
+        <div class="info-items">
+          <div class="info-item">
+            <span class="info-label">First Name</span>
+            <span class="info-value">{{ admin.firstName }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Last Name</span>
+            <span class="info-value">{{ admin.lastName }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Gender</span>
+            <span class="info-value">
+              <i class="fa-solid" [class.fa-mars]="admin.gender === 'Male'" [class.fa-venus]="admin.gender === 'Female'"></i>
+              {{ admin.gender }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Account Information -->
+      <div class="admin-card info-section">
+        <h3 class="section-title">
+          <i class="fa-solid fa-id-card"></i>
+          Account Information
+        </h3>
+        <div class="info-items">
+          <div class="info-item">
+            <span class="info-label">User ID</span>
+            <span class="info-value mono">{{ admin.id }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Username</span>
+            <span class="info-value">
+              <i class="fa-solid fa-at"></i>
+              {{ admin.userName }}
+            </span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Email</span>
+            <span class="info-value">
+              <i class="fa-solid fa-envelope"></i>
+              {{ admin.email }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Role & Permissions -->
+      <div class="admin-card info-section">
+        <h3 class="section-title">
+          <i class="fa-solid fa-shield-halved"></i>
+          Role & Permissions
+        </h3>
+        <div class="info-items">
+          <div class="info-item">
+            <span class="info-label">Role</span>
+            <span class="info-value">
+              <span [class]="getRoleClass(admin.role)" class="role-badge">
+                {{ admin.role }}
+              </span>
+            </span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Access Level</span>
+            <span class="info-value">
+              {{ admin.role === 'SuperAdmin' ? 'Full System Access' : 'Administrative Access' }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Timestamps -->
+      <div class="admin-card info-section">
+        <h3 class="section-title">
+          <i class="fa-solid fa-clock"></i>
+          Account Timeline
+        </h3>
+        <div class="info-items">
+          <div class="info-item">
+            <span class="info-label">Created At</span>
+            <span class="info-value">
+              <i class="fa-solid fa-calendar-plus"></i>
+              {{ admin.createdAt | date: 'medium' }}
+            </span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Last Updated</span>
+            <span class="info-value">
+              <i class="fa-solid fa-calendar-check"></i>
+              {{ admin.updatedAt | date: 'medium' }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Actions Card -->
+    <div class="admin-card actions-card">
+      <h3 class="section-title">
+        <i class="fa-solid fa-toolbox"></i>
+        Actions
+      </h3>
+      <div class="details-actions">
+        <button class="btn-danger" (click)="deleteAdmin()">
+          <i class="fa-solid fa-trash"></i>
+          Delete Admin
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

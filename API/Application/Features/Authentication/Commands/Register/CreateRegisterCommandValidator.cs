@@ -1,3 +1,5 @@
+using Application.Common.Validation;
+using Domain.Enums.Identity;
 
 namespace Application.Features.Authentication.Commands.Register
 {
@@ -6,33 +8,22 @@ namespace Application.Features.Authentication.Commands.Register
         public CreateRegisterCommandValidator()
         {
             RuleFor(v => v.Dto.FirstName)
-                .NotEmpty()
-                .MaximumLength(50);
+                .ApplyFirstNameValidation();
 
             RuleFor(v => v.Dto.LastName)
-                .NotEmpty()
-                .MaximumLength(50);
+                .ApplyLastNameValidation();
 
             RuleFor(v => v.Dto.UserName)
-                .NotEmpty()
-                .MaximumLength(50)
-                .Matches(@"^[a-zA-Z0-9\-._@+]+$");
+                .ApplyUserNameValidation();
 
             RuleFor(v => v.Dto.Email)
-                .EmailAddress().WithMessage("A valid email address is required.")
-                .NotEmpty();
+                .ApplyEmailValidation();
 
             RuleFor(v => v.Dto.Gender)
-                .IsInEnum()
-                .WithMessage("Invalid gender value. Allowed values are: Male, Female");
+                .ApplyGenderValidation();
 
             RuleFor(v => v.Dto.Password)
-                .NotEmpty()
-                .MinimumLength(6).WithMessage("Password must be at least 6 characters long")
-                .Matches(@"[A-Z]").WithMessage("Password must contain at least one uppercase letter")
-                .Matches(@"[a-z]").WithMessage("Password must contain at least one lowercase letter")
-                .Matches(@"\d").WithMessage("Password must contain at least one digit")
-                .Matches(@"[^a-zA-Z0-9]").WithMessage("Password must contain at least one special character");
+                .ApplyPasswordValidation();
 
             RuleFor(v => v.Dto.ConfirmPassword)
                 .Equal(v => v.Dto.Password)
@@ -40,8 +31,9 @@ namespace Application.Features.Authentication.Commands.Register
                 .NotEmpty();
 
             RuleFor(v => v.Dto.Role)
-                .Must(r => r == Domain.Enums.Identity.Role.Student || r == Domain.Enums.Identity.Role.Instructor)
-                .WithMessage("Registration is only allowed for Student or Instructor roles.");
+                .ApplyRoleValidation(
+                    new[] { Role.Student, Role.Instructor },
+                    "Registration is only allowed for Student or Instructor roles.");
         }
     }
 }
