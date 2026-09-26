@@ -50,7 +50,18 @@ export class AdminOverviewComponent implements OnInit {
     this.dashboardService.getAdminMetrics().subscribe(m => (this.metrics = m));
     this.adminDashboardService.getRoleStatistics().subscribe(rm => (this.roleMetrics = rm));
     this.adminDashboardService.getTopPerformingCourses().subscribe(c => (this.courses = c));
-    this.adminDashboardService.getPendingInstructors().subscribe(pi => (this.pendingInstructors = pi));
+    
+    this.adminDashboardService.getPendingInstructors().subscribe({
+      next: (pi) => {
+        console.log('AdminOverview - Pending instructors received:', pi);
+        console.log('AdminOverview - Pending instructors count:', pi.length);
+        this.pendingInstructors = pi;
+      },
+      error: (error) => {
+        console.error('AdminOverview - Error loading pending instructors:', error);
+      }
+    });
+    
     this.adminDashboardService.getTopCategoriesByCourseCount().subscribe(ch => (this.categoryHistogramData = ch));
     this.adminDashboardService.getEnrollmentStatistics().subscribe(e => (this.enrollmentData = e));
   }

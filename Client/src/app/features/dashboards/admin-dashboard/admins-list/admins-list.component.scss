@@ -1,0 +1,90 @@
+@use '../shared/admin-list-shared' as *;
+
+.admins-list-container {
+  position: relative;
+  overflow: visible;
+
+  .admin-card {
+    .table-responsive {
+      .admins-table {
+        .admin-cell {
+          display: flex;
+          align-items: center;
+          gap: 0.85rem;
+
+          .admin-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            flex-shrink: 0;
+          }
+
+          .admin-info {
+            .admin-name {
+              font-weight: 600;
+              color: #0f172a;
+              font-size: 0.9rem;
+            }
+          }
+        }
+
+        .role-badge {
+          display: inline-block;
+          padding: 0.35rem 0.85rem;
+          border-radius: 20px;
+          font-size: 0.75rem;
+          font-weight: 700;
+          text-transform: uppercase;
+          letter-spacing: 0.05em;
+
+          &.role-superadmin {
+            background: rgba(220, 38, 38, 0.1);
+            color: #dc2626;
+            border: 1px solid rgba(220, 38, 38, 0.2);
+          }
+
+          &.role-admin {
+            background: rgba(79, 70, 229, 0.1);
+            color: #4f46e5;
+            border: 1px solid rgba(79, 70, 229, 0.2);
+          }
+
+          &.role-default {
+            background: rgba(100, 116, 139, 0.1);
+            color: #64748b;
+            border: 1px solid rgba(100, 116, 139, 0.2);
+          }
+        }
+      }
+    }
+  }
+}
+
+:host-context(.dark) .admins-list-container,
+:host-context(.dark-theme) .admins-list-container {
+  .admin-card {
+    .table-responsive {
+      .admins-table {
+        .admin-cell .admin-info .admin-name { color: #f8fafc; }
+        .role-badge {
+          &.role-superadmin {
+            background: rgba(220, 38, 38, 0.15);
+            color: #f87171;
+            border-color: rgba(220, 38, 38, 0.3);
+          }
+          &.role-admin {
+            background: rgba(79, 70, 229, 0.15);
+            color: #818cf8;
+            border-color: rgba(79, 70, 229, 0.3);
+          }
+          &.role-default {
+            background: rgba(100, 116, 139, 0.15);
+            color: #cbd5e1;
+            border-color: rgba(100, 116, 139, 0.3);
+          }
+        }
+      }
+    }
+  }
+}

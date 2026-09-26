@@ -1,10 +1,13 @@
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, tap, catchError } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 import { DashboardMetric, CategoryHistogramData, CourseAnalytics } from '../models/dashboard.model';
 import { CategoryService } from '../../categories/services/category.service';
+import { InstructorService } from '../../instructors/services/instructor.service';
+import { InstructorQueryParams, createInstructorQueryParams } from '../../../shared/models/query-params.model';
+import { of } from 'rxjs';
 
 export interface EnrollmentStatistics {
   period: string;
@@ -37,38 +40,11 @@ export interface PendingInstructor {
   email: string;
   expertise: string;
   appliedDate: string;
-  avatar: string;
+  gender?: string;
+  profilePicture?: string;
 }
 
-export interface InstructorApiResponse {
-  items: InstructorItem[];
-  totalCount: number;
-  pageNumber: number;
-  pageSize: number;
-  totalPages: number;
-  hasNextPage: boolean;
-  hasPreviousPage: boolean;
-}
 
-export interface InstructorItem {
-  id: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  bio: string;
-  title: string;
-  phoneNumber: string;
-  cvUrl: string;
-  linkedInProfileUrl: string;
-  gitHubProfileUrl: string;
-  averageRate: number;
-  totalReviews: number;
-  totalStudents: number;
-  totalCourses: number;
-  status: string;
-  createdAt: string;
-  updatedAt: string;
-}
 
 @Injectable({
   providedIn: 'root'
@@ -76,6 +52,7 @@ export interface InstructorItem {
 export class AdminDashboardService {
   private http = inject(HttpClient);
   private categoryService = inject(CategoryService);
+  private instructorService = inject(InstructorService);
   private apiUrl = `${environment.apiUrl}/api/admin/dashboard`;
 
   getRoleStatistics(): Observable<DashboardMetric[]> {
@@ -126,21 +103,44 @@ export class AdminDashboardService {
   }
 
   getPendingInstructors(): Observable<PendingInstructor[]> {
-    return this.http.get<InstructorApiResponse>(`${environment.apiUrl}/instructors/admin/all`, {
-      params: {
-        status: 'Pending',
-        pageNumber: '1',
-        pageSize: '5'
-      }
-    }).pipe(
-      map((response) => response.items.map((instructor) => ({
-        id: instructor.id,
-        name: `${instructor.firstName} ${instructor.lastName}`,
-        email: instructor.email,
-        expertise: instructor.title || 'Not specified',
-        appliedDate: this.formatDate(instructor.createdAt),
-        avatar: `https://ui-avatars.com/api/?name=${instructor.firstName}+${instructor.lastName}&background=random`
-      })))
+    console.log('getPendingInstructors - Using instructor service method without status filter');
+    
+    // Don't send status parameter since backend doesn't handle it correctly
+    // We'll filter on frontend instead
+    const params: InstructorQueryParams = createInstructorQueryParams({
+      pageNumber: 1,
+      pageSize: 100 // Get more items to ensure we catch pending ones
+    });
+
+    return this.instructorService.getAllInstructors(params).pipe(
+      map((response) => {
+        console.log('getPendingInstructors - Response from instructor service:', response);
+        console.log('getPendingInstructors - Total items received:', response.items?.length);
+        
+        // Filter for pending instructors on frontend
+        const pendingInstructorsData = response.items
+          .filter((instructor: any) => instructor.status === 'Pending')
+          .slice(0, 5); // Limit to 5 for the card
+          
+        console.log('getPendingInstructors - Pending instructors found:', pendingInstructorsData.length);
+        
+        const pendingInstructors = pendingInstructorsData.map((instructor: any) => ({
+          id: instructor.id,
+          name: `${instructor.firstName} ${instructor.lastName}`,
+          email: instructor.email,
+          expertise: instructor.title || 'Not specified',
+          appliedDate: this.formatDate(instructor.createdAt),
+          gender: instructor.gender,
+          profilePicture: instructor.profilePicture
+        }));
+        
+        console.log('getPendingInstructors - Mapped result:', pendingInstructors);
+        return pendingInstructors;
+      }),
+      catchError((error) => {
+        console.error('getPendingInstructors - Error:', error);
+        return of([]);
+      })
     );
   }
 

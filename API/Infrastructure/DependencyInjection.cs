@@ -63,6 +63,7 @@ public static class DependencyInjection
         services.AddScoped<IContentFileRepository, ContentFileRepository>();
         services.AddScoped<IInstructorRepository, InstructorRepository>();
         services.AddScoped<IStudentRepository, StudentRepository>();
+        services.AddScoped<IAdminRepository, AdminRepository>();
         services.AddScoped<ICourseDiscountRepository, CourseDiscountRepository>();
         services.AddScoped<IEnrollmentRepository, EnrollmentRepository>();
         services.AddScoped<IContentProgressRepository, ContentProgressRepository>();
@@ -113,6 +114,7 @@ public static class DependencyInjection
         services.AddTransient<ITwoFactorService, TwoFactorService>();
         services.AddScoped<IStudentProfileService, StudentProfileService>();
         services.AddScoped<IInstructorProfileService, InstructorProfileService>();
+        services.AddScoped<IUserCreationService, UserCreationService>();
 
         services.Configure<GoogleOptions>(config.GetSection(GoogleOptions.SectionName));
         services.Configure<FacebookOptions>(config.GetSection(FacebookOptions.SectionName));
