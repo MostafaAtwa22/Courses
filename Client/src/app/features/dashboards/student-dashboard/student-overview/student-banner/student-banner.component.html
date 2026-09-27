@@ -1,0 +1,22 @@
+<div class="student-banner mb-4">
+  <div class="banner-content">
+    <div class="banner-header">
+      <div class="student-badge">
+        <i class="fa-solid fa-user-graduate"></i>
+        <span>Student Portal</span>
+      </div>
+      <h1 class="banner-title">Welcome to Your Learning Dashboard</h1>
+      <p class="banner-subtitle">Track your progress, continue learning, and manage your courses</p>
+    </div>
+    <div class="banner-actions">
+      <button class="action-btn action-btn--secondary" routerLink="/courses">
+        <i class="fa-solid fa-book-open"></i>
+        <span>Browse All Courses</span>
+      </button>
+      <button class="action-btn action-btn--primary" (click)="onRefreshData()">
+        <i class="fa-solid fa-arrows-rotate"></i>
+        <span>Refresh Data</span>
+      </button>
+    </div>
+  </div>
+</div>

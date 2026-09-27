@@ -169,7 +169,22 @@ export const routes: Routes = [
     {
         path: 'student/dashboard',
         loadComponent: () => import('./features/dashboards/student-dashboard/student-dashboard').then(m => m.StudentDashboardComponent),
-        canActivate: [authGuard]
+        canActivate: [authGuard],
+        children: [
+            {
+                path: '',
+                redirectTo: 'overview',
+                pathMatch: 'full'
+            },
+            {
+                path: 'overview',
+                loadComponent: () => import('./features/dashboards/student-dashboard/student-overview/student-overview').then(m => m.StudentOverviewComponent)
+            },
+            {
+                path: 'courses',
+                loadComponent: () => import('./features/dashboards/student-dashboard/student-courses/student-courses').then(m => m.StudentCoursesComponent)
+            }
+        ]
     },
     {
         path: 'settings',

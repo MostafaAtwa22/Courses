@@ -1,0 +1,45 @@
+<div class="transactions-section mb-4">
+  <div class="section-header">
+    <h5 class="section-title">
+      <i class="fa-solid fa-receipt text-primary me-2"></i> Recent Transactions
+    </h5>
+    <p class="section-subtitle text-muted">Your recent course purchases and payments</p>
+  </div>
+
+  <div *ngIf="transactions.length === 0" class="empty-state text-center py-4">
+    <i class="fa-solid fa-receipt text-muted fs-1 mb-3 d-block"></i>
+    <h6 class="text-muted">No Transactions Yet</h6>
+    <p class="text-muted small">Your payment history will appear here</p>
+  </div>
+
+  <div *ngIf="transactions.length > 0" class="table-responsive">
+    <table class="table transactions-table">
+      <thead>
+        <tr>
+          <th>Transaction ID</th>
+          <th>Date</th>
+          <th>Course</th>
+          <th>Instructor</th>
+          <th>Amount</th>
+          <th>Payment Method</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let transaction of transactions">
+          <td class="transaction-id">{{ transaction.id }}</td>
+          <td class="transaction-date">{{ formatDate(transaction.date) }}</td>
+          <td class="transaction-course">{{ transaction.courseName }}</td>
+          <td class="transaction-instructor">{{ transaction.instructor }}</td>
+          <td class="transaction-amount">${{ transaction.amount }}</td>
+          <td class="transaction-method">{{ transaction.paymentMethod }}</td>
+          <td class="transaction-status">
+            <span class="status-badge" [ngClass]="getTransactionStatusClass(transaction.status)">
+              {{ getTransactionStatusLabel(transaction.status) }}
+            </span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

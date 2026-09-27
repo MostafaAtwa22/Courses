@@ -1,0 +1,22 @@
+.dashboard-page-wrapper {
+  display: flex;
+  height: calc(100vh - 72px);
+  background: #f8fafc;
+  overflow: hidden;
+
+  .dashboard-main-content {
+    flex-grow: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    .max-width-wrapper {
+      max-width: 1440px;
+      margin: 0 auto;
+    }
+  }
+}
+
+:host-context(.dark) .dashboard-page-wrapper,
+:host-context(.dark-theme) .dashboard-page-wrapper {
+  background: #0f172a;
+}

@@ -1,0 +1,59 @@
+<div class="continue-learning-section mb-4">
+  <div class="section-header">
+    <h5 class="section-title">
+      <i class="fa-solid fa-play-circle text-primary me-2"></i> Continue Learning
+    </h5>
+    <p class="section-subtitle text-muted">Pick up where you left off with your most recent courses</p>
+  </div>
+  
+  <div *ngIf="recentCourses.length === 0" class="empty-state text-center py-4">
+    <i class="fa-solid fa-book-open text-muted fs-1 mb-3 d-block"></i>
+    <h6 class="text-muted">No Active Courses</h6>
+    <p class="text-muted small">Start learning by enrolling in a course</p>
+    <button class="btn btn-primary mt-2" routerLink="/courses">
+      <i class="fa-solid fa-plus me-2"></i> Browse Courses
+    </button>
+  </div>
+
+  <div *ngIf="recentCourses.length > 0" class="row g-4">
+    <div class="col-12 col-md-6 col-xl-4" *ngFor="let course of recentCourses">
+      <div class="course-card h-100">
+        <div class="course-image">
+          <img [src]="course.pictureUrl" [alt]="course.title" class="img-fluid" />
+          <div class="course-badge" [ngClass]="getProgressBadgeClass(course.progressPercentage || 0)">
+            {{ getProgressLabel(course.progressPercentage || 0) }}
+          </div>
+        </div>
+        <div class="course-body">
+          <h6 class="course-title">{{ course.title }}</h6>
+          <p class="course-instructor">
+            <i class="fa-solid fa-chalkboard-user me-1"></i> {{ course.instructorName }}
+          </p>
+          <div class="course-meta">
+            <span class="meta-item">
+              <i class="fa-solid fa-star text-warning me-1"></i> {{ course.averageRate | number:'1.1' }}
+            </span>
+            <span class="meta-item">
+              <i class="fa-solid fa-book me-1"></i> {{ course.category }}
+            </span>
+          </div>
+          <div class="progress-section mt-3">
+            <div class="d-flex justify-content-between mb-1">
+              <small class="progress-label">Progress</small>
+              <small class="progress-percentage">{{ course.progressPercentage || 0 }}%</small>
+            </div>
+            <div class="progress" style="height: 8px;">
+              <div class="progress-bar" 
+                   [class]="getProgressColor(course.progressPercentage || 0)"
+                   [style.width.%]="course.progressPercentage || 0"
+                   role="progressbar"></div>
+            </div>
+          </div>
+          <button class="btn btn-primary w-100 mt-3" [routerLink]="['/courses', course.id]">
+            <i class="fa-solid fa-play me-2"></i> Continue Learning
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
