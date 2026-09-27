@@ -72,8 +72,12 @@ export class SidebarComponent implements OnInit {
   ];
 
   studentNavItems: NavItemOrSection[] = [
-    { label: 'My Courses', icon: 'fa-solid fa-laptop-code', route: '/student/dashboard' },
+    { label: 'Overview', isSection: true },
+    { label: 'Student Overview', icon: 'fa-solid fa-chart-line', route: '/student/dashboard/overview' },
+    { label: 'Learning', isSection: true },
+    { label: 'My Courses', icon: 'fa-solid fa-laptop-code', route: '/student/dashboard/courses' },
     { label: 'All Courses', icon: 'fa-solid fa-book-open', route: '/courses' },
+    { label: 'Account', isSection: true },
     { label: 'My Profile', icon: 'fa-solid fa-id-card', route: '/profile' },
     { label: 'Settings', icon: 'fa-solid fa-sliders', route: '/settings' }
   ];

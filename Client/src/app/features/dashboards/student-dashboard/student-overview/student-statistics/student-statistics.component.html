@@ -1,0 +1,54 @@
+<div class="statistics-section mb-4">
+  <div class="section-header">
+    <h5 class="section-title">
+      <i class="fa-solid fa-chart-pie text-primary me-2"></i> Your Learning Statistics
+    </h5>
+    <p class="section-subtitle text-muted">Overview of your learning progress and activity</p>
+  </div>
+  <div class="row g-3">
+    <div class="col-12 col-sm-6 col-xl-3">
+      <div class="stat-card bg-primary text-white">
+        <div class="stat-icon">
+          <i class="fa-solid fa-book"></i>
+        </div>
+        <div class="stat-info">
+          <h6 class="stat-label">Total Enrolled</h6>
+          <h3 class="stat-value">{{ statistics.totalEnrolled }}</h3>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-sm-6 col-xl-3">
+      <div class="stat-card bg-success text-white">
+        <div class="stat-icon">
+          <i class="fa-solid fa-check-circle"></i>
+        </div>
+        <div class="stat-info">
+          <h6 class="stat-label">Completed</h6>
+          <h3 class="stat-value">{{ statistics.completedCourses }}</h3>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-sm-6 col-xl-3">
+      <div class="stat-card bg-warning text-white">
+        <div class="stat-icon">
+          <i class="fa-solid fa-spinner"></i>
+        </div>
+        <div class="stat-info">
+          <h6 class="stat-label">In Progress</h6>
+          <h3 class="stat-value">{{ statistics.inProgressCourses }}</h3>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-sm-6 col-xl-3">
+      <div class="stat-card bg-info text-white">
+        <div class="stat-icon">
+          <i class="fa-solid fa-dollar-sign"></i>
+        </div>
+        <div class="stat-info">
+          <h6 class="stat-label">Total Spent</h6>
+          <h3 class="stat-value">${{ statistics.totalPaid }}</h3>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,7 +1,7 @@
 .dashboard-page-wrapper {
   display: flex;
   height: calc(100vh - 72px);
-  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+  background: #f8fafc;
   overflow: hidden;
 
   .dashboard-main-content {
@@ -16,12 +16,12 @@
   }
 
   .student-banner {
-    background: rgba(255, 255, 255, 0.85);
-    backdrop-filter: blur(16px);
-    border: 1px solid rgba(226, 232, 240, 0.9);
-    border-radius: 20px;
-    padding: 1.75rem 2rem;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.9) 100%);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(226, 232, 240, 0.6);
+    border-radius: 24px;
+    padding: 2rem 2.5rem;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.04), 0 2px 8px rgba(0, 0, 0, 0.02);
 
     .banner-title {
       font-size: 1.65rem;
@@ -42,19 +42,26 @@
     background: rgba(255, 255, 255, 0.85);
     backdrop-filter: blur(12px);
     border: 1px solid rgba(226, 232, 240, 0.8);
-    border-radius: 16px;
-    padding: 1.25rem 1.5rem;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+    border-radius: 20px;
+    padding: 1.5rem 1.75rem;
+    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.04);
+    transition: box-shadow 0.3s ease, background-color 0.3s ease, border-color 0.3s ease;
+
+    &:hover {
+      box-shadow: 0 6px 28px rgba(0, 0, 0, 0.07);
+    }
 
     .card-title {
-      font-size: 1.05rem;
+      font-size: 1.1rem;
       font-weight: 700;
       color: #0f172a;
       margin: 0;
+      font-family: var(--font-heading, 'Manrope', sans-serif);
     }
 
     .card-subtitle {
-      font-size: 0.78rem;
+      font-size: 0.8rem;
+      color: #64748b;
       margin: 0;
     }
   }
@@ -97,8 +104,8 @@
     border: 1px solid rgba(226, 232, 240, 0.8);
     border-radius: 16px;
     overflow: hidden;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 
     &:hover {
       transform: translateY(-4px);
@@ -162,6 +169,10 @@
         font-size: 0.8rem;
         color: #64748b;
         margin: 0 0 0.75rem;
+        
+        i {
+          color: #94a3b8;
+        }
       }
 
       .course-meta {
@@ -172,6 +183,14 @@
         .meta-item {
           font-size: 0.75rem;
           color: #64748b;
+          
+          i {
+            color: #94a3b8;
+            
+            &.text-warning {
+              color: #f59e0b;
+            }
+          }
         }
       }
 
@@ -204,11 +223,11 @@
 
 :host-context(.dark) .dashboard-page-wrapper,
 :host-context(.dark-theme) .dashboard-page-wrapper {
-  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  background: #0f172a;
 
   .student-banner {
-    background: rgba(30, 41, 59, 0.85);
-    border-color: rgba(51, 65, 85, 0.8);
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.95) 0%, rgba(15, 23, 42, 0.9) 100%);
+    border-color: rgba(51, 65, 85, 0.6);
     .banner-title { color: #f8fafc; }
     .banner-subtitle { color: #cbd5e1; }
   }
@@ -217,6 +236,7 @@
     background: rgba(30, 41, 59, 0.85);
     border-color: rgba(51, 65, 85, 0.8);
     .card-title { color: #f8fafc; }
+    .card-subtitle { color: #cbd5e1; }
   }
 
   .course-card {
@@ -225,8 +245,29 @@
 
     .course-body {
       .course-title { color: #f8fafc; }
-      .course-instructor { color: #cbd5e1; }
-      .course-meta .meta-item { color: #cbd5e1; }
+      
+      .course-instructor { 
+        color: #cbd5e1;
+        
+        i {
+          color: #94a3b8;
+        }
+      }
+      
+      .course-meta {
+        .meta-item { 
+          color: #cbd5e1;
+          
+          i {
+            color: #94a3b8;
+            
+            &.text-warning {
+              color: #fbbf24 !important;
+            }
+          }
+        }
+      }
+      
       .progress-section {
         .progress-label { color: #cbd5e1; }
         .progress-percentage { color: #f8fafc; }
