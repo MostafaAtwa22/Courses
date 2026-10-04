@@ -1,6 +1,5 @@
-using Application.Common.Interfaces.Identity;
 using Application.DTOs.Admin;
-using Domain.Enums.Identity;
+using Role = Domain.Enums.Identity.Role;
 
 namespace Application.Features.Admin.Queries.GetById;
 

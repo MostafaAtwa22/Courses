@@ -4,6 +4,7 @@ using Application.Features.Categories.Commands.Delete;
 using Application.Features.Categories.Commands.Update;
 using Application.Features.Categories.Queries.GetAll;
 using Application.Features.Categories.Queries.GetById;
+using Role = Domain.Enums.Identity.Role;
 
 namespace API.Endpoints
 {

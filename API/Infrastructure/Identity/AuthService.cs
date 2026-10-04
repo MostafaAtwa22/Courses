@@ -6,9 +6,8 @@ using Application.Common.Interfaces.Identity;
 using Application.Common.Mappings;
 using Application.Common.Options;
 using Application.DTOs.Authentication;
-using Domain.Entities.Identity;
+using Infrastructure.Constants;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
@@ -19,20 +18,22 @@ public class AuthService : IAuthService
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly JwtOptions _jwtOptions;
     private readonly SigningCredentials _signingCredentials;
-    private readonly Infrastructure.Persistence.Data.ApplicationDbContext _context;
+    private readonly Persistence.Data.ApplicationDbContext _context;
+    private readonly IPermissionService _permissionService;
     private readonly UrlsOptions _urlsOptions;
 
     public AuthService(
         UserManager<ApplicationUser> userManager,
         IOptions<JwtOptions> jwtOptions,
         IOptions<UrlsOptions> urlsOptions,
-        Infrastructure.Persistence.Data.ApplicationDbContext context)
+        Persistence.Data.ApplicationDbContext context,
+        IPermissionService permissionService)
     {
         _userManager = userManager;
         _jwtOptions  = jwtOptions.Value;
         _urlsOptions = urlsOptions.Value;
         _context     = context;
-
+        _permissionService = permissionService;
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtOptions.Key));
         _signingCredentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
     }
@@ -43,7 +44,6 @@ public class AuthService : IAuthService
         var userClaims = await _userManager.GetClaimsAsync(user);
         var roles      = await _userManager.GetRolesAsync(user);
 
-        // Check if user has an instructor profile
         var hasInstructorProfile = await _context.Instructors
             .AnyAsync(i => i.UserId == user.Id);
 
@@ -59,8 +59,12 @@ public class AuthService : IAuthService
             new("has_instructor_profile",           hasInstructorProfile.ToString().ToLower()),
         };
 
+        var permissions = await _permissionService.GetPermissionsAsync(user.Id);
+        foreach (var permission in permissions)
+            claims.Add(new Claim(CustomClaims.Permissions, permission));
+
         claims.AddRange(userClaims);
-        claims.AddRange(roles.Select(r => new Claim("roles", r)));
+        claims.AddRange(roles.Select(r => new Claim(CustomClaims.Roles, r)));
 
         var tokenDescriptor = new SecurityTokenDescriptor
         {

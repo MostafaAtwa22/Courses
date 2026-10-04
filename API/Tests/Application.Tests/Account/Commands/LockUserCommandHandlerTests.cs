@@ -3,11 +3,12 @@ using Application.Common.Interfaces.Cache;
 using Application.Common.Interfaces.Identity;
 using Application.DTOs.Account;
 using Application.Features.Account.Commands.Lock;
-using Domain.Entities.Identity;
-using Domain.Enums.Identity;
+using Role = Domain.Entities.Identity.Role;
 using FluentAssertions;
 using Microsoft.AspNetCore.Identity;
-using Moq;namespace Application.Tests.Account.Commands;
+using Moq;
+using Domain.Entities.Identity;
+namespace Application.Tests.Account.Commands;
 
 public class LockUserCommandHandlerTests
 {

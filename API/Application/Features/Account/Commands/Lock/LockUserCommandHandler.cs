@@ -1,7 +1,5 @@
 using Application.Common.Interfaces.Cache;
-using Application.Common.Interfaces.Identity;
-using Domain.Entities.Identity;
-using Domain.Enums.Identity;
+using Role = Domain.Enums.Identity.Role;
 
 namespace Application.Features.Account.Commands.Lock
 {

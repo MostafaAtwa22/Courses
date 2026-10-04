@@ -25,6 +25,8 @@ using ZiggyCreatures.Caching.Fusion.Backplane.StackExchangeRedis;
 using Application.Common.Interfaces.Cache;
 using Microsoft.Extensions.Logging;
 using ZiggyCreatures.Caching.Fusion.Locking.Distributed.Redis;
+using Microsoft.AspNetCore.Authorization;
+using Infrastructure.Permissions;
 
 public static class DependencyInjection
 {
@@ -41,11 +43,20 @@ public static class DependencyInjection
             .AddCaching(config)
             .AddInfrastructureServices()
             .AddBackgroundJobs(config)
+            .AddPermissionService()
             .AddHealthCheckServices(connectionString, config);
 
         return services;
     }
 
+    private static IServiceCollection AddPermissionService(this IServiceCollection services)
+    {
+        services.AddScoped<IAuthorizationHandler, PermissionAuthorizationHandler>();
+        services.AddSingleton<IAuthorizationPolicyProvider, PermissionAuthorizationPolicyProvider>();
+        services.AddScoped<IPermissionService, PermissionService>();
+
+        return services;
+    }
     private static IServiceCollection AddPersistence(this IServiceCollection services, string connectionString)
     {
         DefaultTypeMap.MatchNamesWithUnderscores = true;

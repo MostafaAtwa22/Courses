@@ -2,7 +2,7 @@ using Application.Common.Exceptions;
 using Application.Common.Interfaces.Identity;
 using Application.Common.Mappings;
 using Application.DTOs.Authentication;
-using Domain.Enums.Identity;
+using Role = Domain.Enums.Identity.Role;
 using Microsoft.AspNetCore.Identity;
 
 namespace Infrastructure.Identity;

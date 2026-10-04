@@ -3,11 +3,7 @@ using Application.Features.Discount.Commands.Create;
 using Application.Features.Discount.Commands.Update;
 using Application.Features.Discount.Commands.Delete;
 using Application.Features.Discount.Queries.GetDiscounts;
-using Carter;
-using Domain.Enums;
-using MediatR;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Mvc;
+using Role = Domain.Enums.Identity.Role;
 
 namespace API.Endpoints
 {

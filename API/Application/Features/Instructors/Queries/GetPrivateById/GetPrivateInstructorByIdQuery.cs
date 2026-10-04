@@ -1,6 +1,5 @@
-using Application.Common.Interfaces.Identity;
 using Application.DTOs.Instructor;
-using Domain.Enums.Identity;
+using Role = Domain.Enums.Identity.Role;
 
 namespace Application.Features.Instructors.Queries.GetPrivateById
 {

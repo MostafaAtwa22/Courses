@@ -1,4 +1,4 @@
-using Application.Common.Models;
+using Role = Domain.Enums.Identity.Role;
 using Application.DTOs.Account;
 using Application.Features.Account.Commands.Lock;
 using Application.Features.Account.Commands.UnLock;

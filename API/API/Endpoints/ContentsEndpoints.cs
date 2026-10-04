@@ -5,6 +5,7 @@ using Application.Features.Contents.Commands.Update;
 using Application.Features.Contents.Queries.GetById;
 using Application.Features.Contents.Queries.GetByCourse;
 using Application.Features.Contents.Queries.GetBySection;
+using Role = Domain.Enums.Identity.Role;
 
 namespace API.Endpoints
 {

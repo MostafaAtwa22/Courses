@@ -8,7 +8,7 @@ using Application.Features.Instructors.Queries.GetPublicByCourseId;
 using Application.Features.Instructors.Queries.GetPrivateById;
 using Application.Features.Instructors.Queries.GetCurrentInstructor;
 using Application.Features.Instructors.Commands.Delete;
-
+using Role = Domain.Enums.Identity.Role;
 
 namespace API.Endpoints
 {

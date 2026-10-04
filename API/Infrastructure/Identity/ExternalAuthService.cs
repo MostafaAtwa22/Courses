@@ -1,11 +1,10 @@
-using Application.Common.Exceptions;
 using Application.Common.Extensions;
 using Application.Common.Interfaces.Identity;
 using Application.Common.Models.Identity;
 using Application.DTOs.Authentication;
-using Domain.Enums.Identity;
+using Role = Domain.Enums.Identity.Role;
 using Microsoft.AspNetCore.Identity;
-using IdentityConstants = Domain.Constants.IdentityConstants;
+using Domain.Enums.Identity;
 
 namespace Infrastructure.Identity;
 

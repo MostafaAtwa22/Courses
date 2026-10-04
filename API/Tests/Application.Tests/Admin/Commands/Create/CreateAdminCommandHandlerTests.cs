@@ -1,6 +1,6 @@
 using Application.DTOs.Admin;
 using Application.Features.Admin.Commands.Create;
-using Domain.Enums.Identity;
+using Role = Domain.Enums.Identity.Role;
 using FluentAssertions;
 
 namespace Application.Tests.Admin.Commands.Create;

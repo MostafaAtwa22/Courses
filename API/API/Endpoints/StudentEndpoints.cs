@@ -3,6 +3,7 @@ using Application.Features.Student.Commands.DeleteStudent;
 using Application.Features.Student.Queries.GetAll;
 using Application.Features.Student.Queries.GetById;
 using Application.Features.Student.Queries.GetByUserId;
+using Role = Domain.Enums.Identity.Role;
 
 namespace API.Endpoints;
 

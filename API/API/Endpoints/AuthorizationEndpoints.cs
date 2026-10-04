@@ -2,6 +2,7 @@ using Application.DTOs.Authorization;
 using Application.Features.Authorization.Commands.UpdateUserRoles;
 using Application.Features.Authorization.Queries.GetAll;
 using Application.Features.Authorization.Queries.GetRoleByUserId;
+using Role = Domain.Enums.Identity.Role;
 
 namespace API.Endpoints;
 

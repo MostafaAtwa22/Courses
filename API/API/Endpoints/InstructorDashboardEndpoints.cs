@@ -2,7 +2,7 @@ using Application.DTOs.InstructorDashboard;
 using Application.Features.InstructorDashboard.Queries.GetInstructorEnrollmentStatistics;
 using Application.Features.InstructorDashboard.Queries.GetInstructorStatistics;
 using Application.Features.Instructors.Queries.GetCurrentInstructor;
-using Domain.Enums.Identity;
+using Role =  Domain.Enums.Identity.Role;
 
 namespace API.Endpoints
 {

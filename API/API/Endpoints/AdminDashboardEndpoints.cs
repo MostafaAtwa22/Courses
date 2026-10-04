@@ -3,7 +3,7 @@ using Application.DTOs.Course;
 using Application.Features.AdminDashboard.Queries.GetEnrollmentStatistics;
 using Application.Features.AdminDashboard.Queries.GetRoleStatistics;
 using Application.Features.Courses.Queries.GetTopPerformingCourses;
-using Domain.Enums.Identity;
+using Role = Domain.Enums.Identity.Role;
 
 namespace API.Endpoints
 {
