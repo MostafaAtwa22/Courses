@@ -60,9 +60,8 @@ public class AuthService : IAuthService
         };
 
         var permissions = await _permissionService.GetPermissionsAsync(user.Id);
-        foreach (var permission in permissions)
-            claims.Add(new Claim(CustomClaims.Permissions, permission));
-
+        
+        claims.AddRange(permissions.Select(p => new Claim(CustomClaims.Permissions, p)));
         claims.AddRange(userClaims);
         claims.AddRange(roles.Select(r => new Claim(CustomClaims.Roles, r)));
 

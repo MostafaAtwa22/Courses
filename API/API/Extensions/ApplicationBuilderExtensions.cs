@@ -31,6 +31,7 @@ namespace API.Extensions
             var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
 
             await ApplicationIdentityDbContextSeed.SeedAsync(context, userManager, roleManager, loggerFactory);
+            await ApplicationRolePermissionsSeed.SeedAsync(roleManager, loggerFactory);
             await ApplicationDbContextSeed.SeedAsync(context, loggerFactory);
 
             return app;

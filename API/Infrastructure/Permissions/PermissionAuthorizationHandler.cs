@@ -9,11 +9,9 @@ namespace Infrastructure.Permissions
             AuthorizationHandlerContext context, 
             PermissionRequirement requirement)
         {
-            HashSet<string> permissions = [.. context.User.Claims
-                .Where(c => c.Type == PermissionConstants.Permissions)
-                .Select(c => c.Value)];
-            
-            if (permissions.Contains(requirement.Permission))
+            if (context.User.Claims
+                .Any(c => c.Type == CustomClaims.Permissions &&
+                        c.Value == requirement.Permission))
                 context.Succeed(requirement);
 
             return Task.CompletedTask; 

@@ -1,4 +1,5 @@
 using Application.Common.Interfaces.Identity;
+using Infrastructure.Constants;
 using Infrastructure.Persistence.Data;
 
 namespace Infrastructure.Permissions
@@ -7,17 +8,16 @@ namespace Infrastructure.Permissions
     {
         public async Task<HashSet<string>> GetPermissionsAsync(string userId)
         {
-            var user = await _context.Users
-                .Include(u => u.Roles)
-                    .ThenInclude(r => r.Permissions)
-                .FirstOrDefaultAsync(u => u.Id == userId);
+            var permissions = await _context.UserRoles
+                .Where(ur => ur.UserId == userId)
+                .SelectMany(ur => _context.RoleClaims
+                    .Where(rc => rc.RoleId == ur.RoleId && rc.ClaimValue != null))
+                .Where(cv => cv.ClaimValue!.StartsWith(PermissionConstants.PermissionClaimValuePrefix))
+                .Select(cv => cv.ClaimValue!)
+                .Distinct()
+                .ToListAsync();
             
-            if (user is null) return [];
-
-            return user.Roles
-                .SelectMany(r => r.Permissions)
-                .Select(p => p.Name)
-                .ToHashSet();
+            return permissions.ToHashSet()!;
         }
     }
 }

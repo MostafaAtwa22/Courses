@@ -13,6 +13,5 @@ namespace Domain.Entities.Identity
         public Instructor? InstructorProfile { get; set; }
         
         public ICollection<RefreshToken> RefreshTokens { get; set; } = [];
-        public ICollection<Role> Roles { get; set; } = [];
     }
 }
