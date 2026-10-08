@@ -3,7 +3,9 @@ using Application.Features.Admin.Commands.Delete;
 using Application.Features.Admin.Commands.Create;
 using Application.Features.Admin.Queries.GetAll;
 using Application.Features.Admin.Queries.GetById;
-using Role = Domain.Enums.Identity.Role;
+using Infrastructure.Constants;
+using Infrastructure.Enums;
+using Infrastructure.Permissions;
 
 namespace API.Endpoints;
 
@@ -12,29 +14,29 @@ public class AdminEndpoints : ICarterModule
     public void AddRoutes(IEndpointRouteBuilder app)
     {
         var group = app.MapGroup("/admins")
-            .WithTags("Admins")
-            .RequireAuthorization(policy =>
-                policy.RequireRole(
-                    Role.Admin.ToString(),
-                    Role.SuperAdmin.ToString()));
+            .WithTags("Admins");
 
         group.MapGet("/", GetAllAdmins)
             .WithName(nameof(GetAllAdmins))
+            .RequireAuthorization(PermissionConstants.Build(Module.Admin, CRUD.Read))
             .Produces<PaginatedResult<AdminResponseDto>>(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status400BadRequest);
 
         group.MapGet("/{id:guid}", GetAdminById)
             .WithName(nameof(GetAdminById))
+            .RequireAuthorization(PermissionConstants.Build(Module.Admin, CRUD.Read))
             .Produces<AdminResponseDto>(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status404NotFound);
-        
+
         group.MapPost("/", CreateAdmin)
             .WithName(nameof(CreateAdmin))
+            .RequireAuthorization(PermissionConstants.Build(Module.Admin, CRUD.Create))
             .Produces(StatusCodes.Status204NoContent)
             .Produces(StatusCodes.Status400BadRequest);
 
         group.MapDelete("/{id:guid}", DeleteAdmin)
             .WithName(nameof(DeleteAdmin))
+            .RequireAuthorization(PermissionConstants.Build(Module.Admin, CRUD.Delete))
             .Produces(StatusCodes.Status204NoContent)
             .Produces(StatusCodes.Status404NotFound);
     }

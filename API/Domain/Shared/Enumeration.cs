@@ -2,19 +2,13 @@ using System.Reflection;
 
 namespace Domain.Shared
 {
-    public abstract class Enumeration<TEnum> : IEquatable<Enumeration<TEnum>>
+    public abstract class Enumeration<TEnum>(int value, string name) : IEquatable<Enumeration<TEnum>>
         where TEnum : Enumeration<TEnum>
     {
         private static readonly Dictionary<int, TEnum> _enumerations = CreateEnumerations();
 
-        public int Value { get; protected init; }
-        public string Name { get; protected init; } = string.Empty;
-
-        protected Enumeration(int value, string name)
-        {
-            Value = value;
-            Name = name;
-        }
+        public int Value { get; protected init; } = value;
+        public string Name { get; protected init; } = name;
 
         public static TEnum? FromValue(int value)
             => _enumerations.TryGetValue(value, out var enumeration) ? enumeration : null;

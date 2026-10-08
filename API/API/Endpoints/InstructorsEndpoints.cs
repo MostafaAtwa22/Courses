@@ -8,7 +8,9 @@ using Application.Features.Instructors.Queries.GetPublicByCourseId;
 using Application.Features.Instructors.Queries.GetPrivateById;
 using Application.Features.Instructors.Queries.GetCurrentInstructor;
 using Application.Features.Instructors.Commands.Delete;
-using Role = Domain.Enums.Identity.Role;
+using Domain.Enums.Identity;
+using Infrastructure.Constants;
+using Infrastructure.Enums;
 
 namespace API.Endpoints
 {
@@ -31,20 +33,15 @@ namespace API.Endpoints
 
             group.MapGet("/private/me", GetCurrentInstructor)
                 .WithName(nameof(GetCurrentInstructor))
+                .RequireAuthorization(policy => policy.RequireRole(Role.Instructor.ToString()))
                 .Produces<InstructorPrivateResponseDto>(StatusCodes.Status200OK)
-                .Produces(StatusCodes.Status404NotFound)
-                .RequireAuthorization(policy =>
-                    policy.RequireRole(Role.Instructor.ToString()));
+                .Produces(StatusCodes.Status404NotFound);
 
             group.MapGet("/private/{id:guid}", GetPrivateInstructor)
                 .WithName(nameof(GetPrivateInstructor))
+                .RequireAuthorization(PermissionConstants.Build(Module.Instructor, CRUD.Read))
                 .Produces<InstructorPrivateResponseDto>(StatusCodes.Status200OK)
-                .Produces(StatusCodes.Status404NotFound)
-                .RequireAuthorization(policy =>
-                    policy.RequireRole(
-                        Role.Instructor.ToString(),
-                        Role.Admin.ToString(),
-                        Role.SuperAdmin.ToString()));
+                .Produces(StatusCodes.Status404NotFound);
 
             group.MapPost("/", CreateInstructor)
                 .WithName(nameof(CreateInstructor))
@@ -65,29 +62,20 @@ namespace API.Endpoints
 
             group.MapGet("/admin/all", GetAllInstructors)
                 .WithName(nameof(GetAllInstructors))
-                .Produces<PaginatedResult<InstructorPrivateResponseDto>>(StatusCodes.Status200OK)
-                .RequireAuthorization(policy =>
-                    policy.RequireRole(
-                        Role.Admin.ToString(),
-                        Role.SuperAdmin.ToString()));
+                .RequireAuthorization(PermissionConstants.Build(Module.Instructor, CRUD.Read))
+                .Produces<PaginatedResult<InstructorPrivateResponseDto>>(StatusCodes.Status200OK);
 
             group.MapPut("/admin/{id:guid}/status", ChangeInstructorStatus)
                 .WithName(nameof(ChangeInstructorStatus))
+                .RequireAuthorization(PermissionConstants.Build(Module.Instructor, CRUD.Update))
                 .Produces(StatusCodes.Status204NoContent)
-                .Produces(StatusCodes.Status404NotFound)
-                .RequireAuthorization(policy =>
-                    policy.RequireRole(
-                        Role.Admin.ToString(),
-                        Role.SuperAdmin.ToString()));
+                .Produces(StatusCodes.Status404NotFound);
 
             group.MapDelete("/{id:guid}", DeleteInstructor)
                 .WithName(nameof(DeleteInstructor))
+                .RequireAuthorization(PermissionConstants.Build(Module.Instructor, CRUD.Delete))
                 .Produces(StatusCodes.Status204NoContent)
-                .Produces(StatusCodes.Status404NotFound)
-                .RequireAuthorization(policy =>
-                    policy.RequireRole(
-                        Role.Admin.ToString(),
-                        Role.SuperAdmin.ToString()));
+                .Produces(StatusCodes.Status404NotFound);
         }
 
         public static async Task<Results<Ok<InstructorPublicResponseDto>, NotFound>> GetPublicInstructor(

@@ -4,7 +4,8 @@ using Application.Features.Categories.Commands.Delete;
 using Application.Features.Categories.Commands.Update;
 using Application.Features.Categories.Queries.GetAll;
 using Application.Features.Categories.Queries.GetById;
-using Role = Domain.Enums.Identity.Role;
+using Infrastructure.Constants;
+using Infrastructure.Enums;
 
 namespace API.Endpoints
 {
@@ -14,7 +15,7 @@ namespace API.Endpoints
         {
             var group = app.MapGroup("/categories")
                 .WithTags("Categories");
-            
+
             group.MapGet("/", GetCategories)
                 .WithName(nameof(GetCategories))
                 .Produces<PaginatedResult<CategoryResponseDto>>(StatusCodes.Status200OK)
@@ -27,30 +28,21 @@ namespace API.Endpoints
 
             group.MapPost("/", CreateCategory)
                 .WithName(nameof(CreateCategory))
+                .RequireAuthorization(PermissionConstants.Build(Module.Category, CRUD.Create))
                 .Produces(StatusCodes.Status201Created)
-                .Produces(StatusCodes.Status400BadRequest)
-                .RequireAuthorization(policy =>
-                        policy.RequireRole(
-                            Role.Admin.ToString(),
-                            Role.SuperAdmin.ToString()));
-            
+                .Produces(StatusCodes.Status400BadRequest);
+
             group.MapPut("/{id:guid}", UpdateCategory)
                 .WithName(nameof(UpdateCategory))
+                .RequireAuthorization(PermissionConstants.Build(Module.Category, CRUD.Update))
                 .Produces(StatusCodes.Status204NoContent)
-                .Produces(StatusCodes.Status404NotFound)
-                .RequireAuthorization(policy =>
-                        policy.RequireRole(
-                            Role.Admin.ToString(),
-                            Role.SuperAdmin.ToString()));
-            
+                .Produces(StatusCodes.Status404NotFound);
+
             group.MapDelete("/{id:guid}", DeleteCategory)
                 .WithName(nameof(DeleteCategory))
+                .RequireAuthorization(PermissionConstants.Build(Module.Category, CRUD.Delete))
                 .Produces(StatusCodes.Status204NoContent)
-                .Produces(StatusCodes.Status404NotFound)
-                .RequireAuthorization(policy =>
-                        policy.RequireRole(
-                            Role.Admin.ToString(),
-                            Role.SuperAdmin.ToString()));
+                .Produces(StatusCodes.Status404NotFound);
         }
 
         public static async Task<Results<Ok<PaginatedResult<CategoryResponseDto>>, BadRequest>> GetCategories(

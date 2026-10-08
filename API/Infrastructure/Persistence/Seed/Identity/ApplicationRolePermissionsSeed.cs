@@ -8,6 +8,20 @@ using Microsoft.Extensions.Logging;
 
 namespace Infrastructure.Persistence.Seed.Identity
 {
+    /// <summary>
+    /// Seeds permission claims for roles.
+    /// 
+    /// Permission-based authorization is used for:
+    /// - SuperAdmin: All permissions (Create, Read, Update, Delete)
+    /// - Admin: Read and Update permissions only
+    /// 
+    /// Role-based authorization is used for:
+    /// - Instructor: Role-based checks only
+    /// - Student: Role-based checks only
+    /// 
+    /// This separation keeps the permission system focused on administrative operations
+    /// while using simpler role-based checks for regular users.
+    /// </summary>
     public static class ApplicationRolePermissionsSeed
     {
         public static async Task SeedAsync(
@@ -51,11 +65,10 @@ namespace Infrastructure.Persistence.Seed.Identity
                 return;
             }
 
-            var permissions = PermissionConstants.GenerateAllPermissions()
-                .Where(p =>
-                    !p.EndsWith(CRUD.Create.ToString()) &&
-                    !p.EndsWith(CRUD.Delete.ToString()))
-                .ToList();
+            var permissions = PermissionConstants.FilterByActions(
+                PermissionConstants.GenerateAllPermissions(),
+                CRUD.Read,
+                CRUD.Update);
 
             await AddPermissionsAsync(
                 roleManager,

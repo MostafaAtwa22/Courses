@@ -2,7 +2,8 @@ using Application.DTOs.Authorization;
 using Application.Features.Authorization.Commands.UpdateUserRoles;
 using Application.Features.Authorization.Queries.GetAll;
 using Application.Features.Authorization.Queries.GetRoleByUserId;
-using Role = Domain.Enums.Identity.Role;
+using Infrastructure.Constants;
+using Infrastructure.Enums;
 
 namespace API.Endpoints;
 
@@ -11,27 +12,23 @@ public class AuthorizationEndpoints : ICarterModule
     public void AddRoutes(IEndpointRouteBuilder app)
     {
         var group = app.MapGroup("/authorization")
-            .WithTags("Authorization")
-            .RequireAuthorization(policy =>
-                policy.RequireRole(
-                    Role.Admin.ToString(),
-                    Role.SuperAdmin.ToString()));
-            
+            .WithTags("Authorization");
+
         group.MapGet("/roles", GetRoles)
             .WithName(nameof(GetRoles))
-            .WithTags(nameof(GetRoles))
+            .RequireAuthorization(PermissionConstants.Build(Module.Role, CRUD.Read))
             .Produces<IReadOnlyCollection<RolesResponseDto>>(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status400BadRequest);
 
         group.MapGet("/users/{userId}/roles", GetRoleByUserId)
             .WithName(nameof(GetRoleByUserId))
-            .WithTags(nameof(GetRoleByUserId))
+            .RequireAuthorization(PermissionConstants.Build(Module.User, CRUD.Read))
             .Produces<UserRolesResponseDto>(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status404NotFound);
 
         group.MapPatch("/users/{userId}/roles", UpdateUserRoles)
             .WithName(nameof(UpdateUserRoles))
-            .WithTags(nameof(UpdateUserRoles))
+            .RequireAuthorization(PermissionConstants.Build(Module.User, CRUD.Update))
             .Produces(StatusCodes.Status204NoContent)
             .Produces(StatusCodes.Status400BadRequest)
             .Produces(StatusCodes.Status404NotFound);

@@ -1,4 +1,3 @@
-using Role = Domain.Enums.Identity.Role;
 using Application.DTOs.Account;
 using Application.Features.Account.Commands.Lock;
 using Application.Features.Account.Commands.UnLock;
@@ -6,6 +5,8 @@ using Application.Features.Account.Queries.GetAll;
 using Application.Features.Account.Queries.GetById;
 using Application.Features.Account.Commands.ForgetPassword;
 using Application.Features.Account.Commands.ResetPassword;
+using Infrastructure.Constants;
+using Infrastructure.Enums;
 
 namespace API.Endpoints
 {
@@ -14,30 +15,30 @@ namespace API.Endpoints
         public void AddRoutes(IEndpointRouteBuilder app)
         {
             var group = app.MapGroup("/account")
-                .WithTags("Account")
-                .RequireAuthorization(policy =>
-                    policy.RequireRole(
-                        Role.Admin.ToString(),
-                        Role.SuperAdmin.ToString()));
+                .WithTags("Account");
 
             group.MapGet("/users", GetUsers)
                 .WithName(nameof(GetUsers))
+                .RequireAuthorization(PermissionConstants.Build(Module.User, CRUD.Read))
                 .Produces<PaginatedResult<UserResponseDto>>(StatusCodes.Status200OK)
                 .Produces(StatusCodes.Status400BadRequest);
 
             group.MapGet("/users/{id:guid}", GetUserById)
                 .WithName(nameof(GetUserById))
+                .RequireAuthorization(PermissionConstants.Build(Module.User, CRUD.Read))
                 .Produces<UserResponseDto>(StatusCodes.Status200OK)
                 .Produces(StatusCodes.Status404NotFound);
 
             group.MapPost("/users/{id:guid}/lock", LockUser)
                 .WithName(nameof(LockUser))
+                .RequireAuthorization(PermissionConstants.Build(Module.User, CRUD.Update))
                 .Produces(StatusCodes.Status204NoContent)
                 .Produces(StatusCodes.Status404NotFound)
                 .Produces(StatusCodes.Status400BadRequest);
-            
+
             group.MapPost("/users/{id:guid}/unlock", UnlockUser)
                 .WithName(nameof(UnlockUser))
+                .RequireAuthorization(PermissionConstants.Build(Module.User, CRUD.Update))
                 .Produces(StatusCodes.Status204NoContent)
                 .Produces(StatusCodes.Status404NotFound)
                 .Produces(StatusCodes.Status400BadRequest);

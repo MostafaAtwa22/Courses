@@ -3,7 +3,8 @@ using Application.Features.Student.Commands.DeleteStudent;
 using Application.Features.Student.Queries.GetAll;
 using Application.Features.Student.Queries.GetById;
 using Application.Features.Student.Queries.GetByUserId;
-using Role = Domain.Enums.Identity.Role;
+using Infrastructure.Constants;
+using Infrastructure.Enums;
 
 namespace API.Endpoints;
 
@@ -12,29 +13,29 @@ public class StudentEndpoints : ICarterModule
     public void AddRoutes(IEndpointRouteBuilder app)
     {
         var group = app.MapGroup("/students")
-            .WithTags("Students")
-            .RequireAuthorization(policy =>
-                policy.RequireRole(
-                    Role.Admin.ToString(),
-                    Role.SuperAdmin.ToString()));
+            .WithTags("Students");
 
         group.MapGet("/", GetAllStudents)
             .WithName(nameof(GetAllStudents))
+            .RequireAuthorization(PermissionConstants.Build(Module.Student, CRUD.Read))
             .Produces<PaginatedResult<StudentResponseDto>>(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status400BadRequest);
 
         group.MapGet("/{id:guid}", GetStudentById)
             .WithName(nameof(GetStudentById))
+            .RequireAuthorization(PermissionConstants.Build(Module.Student, CRUD.Read))
             .Produces<StudentResponseDto>(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status404NotFound);
 
         group.MapGet("/by-user/{userId}", GetStudentByUserId)
             .WithName(nameof(GetStudentByUserId))
+            .RequireAuthorization(PermissionConstants.Build(Module.Student, CRUD.Read))
             .Produces<StudentResponseDto>(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status404NotFound);
 
         group.MapDelete("/{id:guid}", DeleteStudent)
             .WithName(nameof(DeleteStudent))
+            .RequireAuthorization(PermissionConstants.Build(Module.Student, CRUD.Delete))
             .Produces(StatusCodes.Status204NoContent)
             .Produces(StatusCodes.Status404NotFound);
     }
