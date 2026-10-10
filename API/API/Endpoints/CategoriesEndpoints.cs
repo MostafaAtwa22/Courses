@@ -4,8 +4,7 @@ using Application.Features.Categories.Commands.Delete;
 using Application.Features.Categories.Commands.Update;
 using Application.Features.Categories.Queries.GetAll;
 using Application.Features.Categories.Queries.GetById;
-using Infrastructure.Constants;
-using Infrastructure.Enums;
+using Domain.Constants;
 
 namespace API.Endpoints
 {

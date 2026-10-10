@@ -1,4 +1,4 @@
-using Infrastructure.Constants;
+using Domain.Constants;
 using Microsoft.AspNetCore.Authorization;
 namespace Infrastructure.Permissions
 {

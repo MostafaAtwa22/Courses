@@ -94,5 +94,9 @@ namespace Application.Common.Interfaces.Cache
         // Discounts
         internal static string Discounts() => "discounts";
         internal static string DiscountsByCourse(Guid courseId) => $"discounts:course:{courseId}";
+
+        // Permissions
+        internal static string Permissions() => "permissions";
+        internal static string PermissionsByRole(string roleId) => $"permissions:role:{roleId}";
     }
 }

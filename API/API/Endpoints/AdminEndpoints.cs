@@ -3,9 +3,7 @@ using Application.Features.Admin.Commands.Delete;
 using Application.Features.Admin.Commands.Create;
 using Application.Features.Admin.Queries.GetAll;
 using Application.Features.Admin.Queries.GetById;
-using Infrastructure.Constants;
-using Infrastructure.Enums;
-using Infrastructure.Permissions;
+using Domain.Constants;
 
 namespace API.Endpoints;
 

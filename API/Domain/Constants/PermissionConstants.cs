@@ -1,6 +1,6 @@
-using Infrastructure.Enums;
+using Domain.Enums.Identity;
 
-namespace Infrastructure.Constants
+namespace Domain.Constants
 {
     public static class PermissionConstants
     {

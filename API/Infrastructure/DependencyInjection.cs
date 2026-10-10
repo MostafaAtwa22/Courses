@@ -79,6 +79,7 @@ public static class DependencyInjection
         services.AddScoped<IEnrollmentRepository, EnrollmentRepository>();
         services.AddScoped<IContentProgressRepository, ContentProgressRepository>();
         services.AddScoped<IRoleRepository, RoleRepository>();
+        services.AddScoped<IPermissionRepository, PermissionRepository>();
         services.AddScoped<IAdminDashboardRepository, AdminDashboardRepository>();
         services.AddScoped<IInstructorDashboardRepository, InstructorDashboardRepository>();
         services.AddScoped<IExternalAuthService, ExternalAuthService>();

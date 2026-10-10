@@ -6,7 +6,7 @@ using Application.Common.Interfaces.Identity;
 using Application.Common.Mappings;
 using Application.Common.Options;
 using Application.DTOs.Authentication;
-using Infrastructure.Constants;
+using Domain.Constants;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -86,7 +86,7 @@ public class AuthService : IAuthService
 
         var token    = await CreateTokenAsync(user);
         var roles    = await _userManager.GetRolesAsync(user);
-        var response = user.ToAuthResponseDto(roles, _urlsOptions.API);
+        var response = user.ToAuthResponseDto(roles, _urlsOptions.API, _permissionService);
         response.Token = token;
 
         return response;

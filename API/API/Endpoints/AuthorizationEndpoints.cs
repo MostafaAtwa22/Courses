@@ -1,9 +1,10 @@
 using Application.DTOs.Authorization;
+using Application.DTOs.Authorization.Permissions;
 using Application.Features.Authorization.Commands.UpdateUserRoles;
 using Application.Features.Authorization.Queries.GetAll;
 using Application.Features.Authorization.Queries.GetRoleByUserId;
-using Infrastructure.Constants;
-using Infrastructure.Enums;
+using Application.Features.Permissions.Queries.GetAll;
+using Domain.Constants;
 
 namespace API.Endpoints;
 
@@ -19,6 +20,12 @@ public class AuthorizationEndpoints : ICarterModule
             .RequireAuthorization(PermissionConstants.Build(Module.Role, CRUD.Read))
             .Produces<IReadOnlyCollection<RolesResponseDto>>(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status400BadRequest);
+
+        group.MapGet("/roles/{roleId}/permissions", GetPermissions)
+            .WithName(nameof(GetPermissions))
+            .RequireAuthorization(PermissionConstants.Build(Module.Role, CRUD.Read))
+            .Produces<PermissionRoleDto>(StatusCodes.Status200OK)
+            .Produces(StatusCodes.Status404NotFound);
 
         group.MapGet("/users/{userId}/roles", GetRoleByUserId)
             .WithName(nameof(GetRoleByUserId))
@@ -37,6 +44,12 @@ public class AuthorizationEndpoints : ICarterModule
     public static async Task<Results<Ok<IReadOnlyCollection<RolesResponseDto>>, BadRequest>> GetRoles(IMediator mediator)
     {
         var result = await mediator.Send(new GetRolesQuery());
+        return TypedResults.Ok(result);
+    }
+
+    public static async Task<Results<Ok<PermissionRoleDto>, NotFound>> GetPermissions(string roleId, IMediator mediator)
+    {
+        var result = await mediator.Send(new GetPermissionsQuery(roleId));
         return TypedResults.Ok(result);
     }
 

@@ -5,8 +5,7 @@ using Application.Features.Account.Queries.GetAll;
 using Application.Features.Account.Queries.GetById;
 using Application.Features.Account.Commands.ForgetPassword;
 using Application.Features.Account.Commands.ResetPassword;
-using Infrastructure.Constants;
-using Infrastructure.Enums;
+using Domain.Constants;
 
 namespace API.Endpoints
 {

@@ -26,6 +26,7 @@ export interface BaseIdentityResponse {
   hasPassword: boolean;
   gender: Gender;
   roles: string[];
+  permissions: string[];
   createdAt?: string;
 }
 

@@ -6,5 +6,6 @@ namespace Application.DTOs
         public bool Is2FAEnable { get; set; }
         public bool HasPassword { get; set; }
         public ICollection<string> Roles { get; set; } = [];
+        public ICollection<string> Permissions { get; set; } = [];
     }
 }

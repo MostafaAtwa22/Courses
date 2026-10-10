@@ -8,9 +8,7 @@ using Application.Features.Instructors.Queries.GetPublicByCourseId;
 using Application.Features.Instructors.Queries.GetPrivateById;
 using Application.Features.Instructors.Queries.GetCurrentInstructor;
 using Application.Features.Instructors.Commands.Delete;
-using Domain.Enums.Identity;
-using Infrastructure.Constants;
-using Infrastructure.Enums;
+using Domain.Constants;
 
 namespace API.Endpoints
 {
@@ -39,7 +37,6 @@ namespace API.Endpoints
 
             group.MapGet("/private/{id:guid}", GetPrivateInstructor)
                 .WithName(nameof(GetPrivateInstructor))
-                .RequireAuthorization(PermissionConstants.Build(Module.Instructor, CRUD.Read))
                 .Produces<InstructorPrivateResponseDto>(StatusCodes.Status200OK)
                 .Produces(StatusCodes.Status404NotFound);
 

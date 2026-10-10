@@ -1,6 +1,5 @@
+using Domain.Constants;
 using Domain.Enums.Identity;
-using Infrastructure.Constants;
-using Infrastructure.Enums;
 using Microsoft.AspNetCore.Authorization;
 namespace Infrastructure.Permissions
 {

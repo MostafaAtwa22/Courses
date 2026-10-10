@@ -3,8 +3,7 @@ using Application.Features.Student.Commands.DeleteStudent;
 using Application.Features.Student.Queries.GetAll;
 using Application.Features.Student.Queries.GetById;
 using Application.Features.Student.Queries.GetByUserId;
-using Infrastructure.Constants;
-using Infrastructure.Enums;
+using Domain.Constants;
 
 namespace API.Endpoints;
 

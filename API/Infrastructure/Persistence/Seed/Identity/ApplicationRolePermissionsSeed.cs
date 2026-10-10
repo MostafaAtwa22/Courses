@@ -1,7 +1,6 @@
 using System.Security.Claims;
+using Domain.Constants;
 using Domain.Enums.Identity;
-using Infrastructure.Constants;
-using Infrastructure.Enums;
 using Infrastructure.Persistence.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
