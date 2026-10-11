@@ -4,6 +4,7 @@ namespace Application.Common.Interfaces
 {
     public interface IPermissionRepository
     {
-        Task<PermissionRoleDto> GetRolePermissionsAsync(string roleId, CancellationToken cancellationToken = default);
+        Task<PermissionRoleDto> GetRolePermissionsAsync(IdentityRole role, CancellationToken cancellationToken = default);
+        Task UpdateRolePermissionsAsync(IdentityRole role, IEnumerable<string> selectedPermissions, CancellationToken cancellationToken = default);
     }
 }

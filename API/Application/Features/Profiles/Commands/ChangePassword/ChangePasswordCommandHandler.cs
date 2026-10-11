@@ -1,5 +1,3 @@
-using Application.Common.Interfaces.Identity;
-
 namespace Application.Features.Profiles.Commands.ChangePassword
 {
     public sealed class ChangePasswordCommandHandler(
