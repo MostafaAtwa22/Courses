@@ -20,10 +20,10 @@ namespace Application.Tests.Permissions.Commands
         {
             _roleManagerMock = new Mock<RoleManager<IdentityRole>>(
                 Mock.Of<IRoleStore<IdentityRole>>(),
-                null,
-                null,
-                null,
-                null
+                null!,
+                null!,
+                null!,
+                null!
             );
             _permissionRepositoryMock = new Mock<IPermissionRepository>();
             _cacheMock = new Mock<IAppCache>();

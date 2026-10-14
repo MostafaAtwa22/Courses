@@ -5,15 +5,18 @@ import { Router } from '@angular/router';
 import { StudentService } from '../../../students/services/student.service';
 import { StudentResponse, StudentQueryParams } from '../../../students/models/student.models';
 import { PaginatedResultModel } from '../../../../shared/models/paginated-result.model';
+import { DirectivesModule } from '../../../../shared/directives/directives.module';
+import { Module } from '../../../../shared/constants/permissions.constant';
 
 @Component({
   selector: 'app-students-list',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, DirectivesModule],
   templateUrl: './students-list.component.html',
   styleUrl: './students-list.component.scss'
 })
 export class StudentsListComponent implements OnInit {
+  Module = Module;
   private studentService = inject(StudentService);
   private router = inject(Router);
 

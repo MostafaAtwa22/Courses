@@ -10,15 +10,18 @@ import { InstructorQueryParams, createInstructorQueryParams } from '../../../../
 import { StatCardComponent } from '../../../../shared/components/stat-card/stat-card';
 import { DashboardMetric } from '../../../dashboards/models/dashboard.model';
 import { environment } from '../../../../../environments/environment';
+import { DirectivesModule } from '../../../../shared/directives/directives.module';
+import { Module } from '../../../../shared/constants/permissions.constant';
 
 @Component({
   selector: 'app-instructors-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, StatCardComponent],
+  imports: [CommonModule, FormsModule, StatCardComponent, DirectivesModule],
   templateUrl: './instructors-list.component.html',
   styleUrl: './instructors-list.component.scss'
 })
 export class InstructorsListComponent implements OnInit {
+  Module = Module;
   private instructorService = inject(InstructorService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);

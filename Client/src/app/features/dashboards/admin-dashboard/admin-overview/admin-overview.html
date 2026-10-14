@@ -48,7 +48,9 @@
       <app-category-histogram-card [categoryData]="categoryHistogramData"></app-category-histogram-card>
 
       <!-- Pending Instructor Verification Card -->
-      <app-pending-instructors-card [pendingInstructors]="pendingInstructors"></app-pending-instructors-card>
+      <div *canUpdate="Module.Instructor">
+        <app-pending-instructors-card [pendingInstructors]="pendingInstructors"></app-pending-instructors-card>
+      </div>
 
       <!-- Top Courses Performance Table -->
       <app-course-analytics [courses]="courses"></app-course-analytics>

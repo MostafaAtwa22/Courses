@@ -178,6 +178,7 @@
             <td>
               <div class="actions">
                 <button 
+                  *canRead="Module.Admin"
                   class="btn-action btn-view"
                   (click)="viewAdminDetails(admin.id)"
                   title="View Details"
@@ -185,6 +186,7 @@
                   <i class="fa-solid fa-eye"></i>
                 </button>
                 <button 
+                  *canDelete="Module.Admin"
                   class="btn-action btn-delete"
                   (click)="deleteAdmin(admin.id)"
                   title="Delete Admin"

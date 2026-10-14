@@ -5,15 +5,18 @@ import { Router } from '@angular/router';
 import { AdminService } from '../../../admin/services/admin.service';
 import { AdminResponse, AdminQueryParams } from '../../../admin/models/admin.models';
 import { PaginatedResultModel } from '../../../../shared/models/paginated-result.model';
+import { DirectivesModule } from '../../../../shared/directives/directives.module';
+import { Module } from '../../../../shared/constants/permissions.constant';
 
 @Component({
   selector: 'app-admins-list',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, DirectivesModule],
   templateUrl: './admins-list.component.html',
   styleUrl: './admins-list.component.scss'
 })
 export class AdminsListComponent implements OnInit {
+  Module = Module;
   private adminService = inject(AdminService);
   private router = inject(Router);
 

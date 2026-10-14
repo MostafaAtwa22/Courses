@@ -8,13 +8,15 @@
     </div>
     <div class="d-flex align-items-center gap-2">
       <span class="action-badge">{{ pendingInstructors.length }} Action Required</span>
-      <button
-        class="btn btn-sm btn-outline-primary"
-        (click)="viewAllPending()"
-        *ngIf="pendingInstructors.length > 0"
-      >
-        <i class="fa-solid fa-list me-1"></i> View All Pending
-      </button>
+      <ng-container *canUpdate="Module.Instructor">
+        <button
+          class="btn btn-sm btn-outline-primary"
+          (click)="viewAllPending()"
+          *ngIf="pendingInstructors.length > 0"
+        >
+          <i class="fa-solid fa-list me-1"></i> View All Pending
+        </button>
+      </ng-container>
     </div>
   </div>
 
@@ -27,12 +29,14 @@
         <small class="applicant-email d-block">{{ item.email }} &bull; Applied {{ item.appliedDate }}</small>
       </div>
       <div class="applicant-actions">
-        <button class="btn btn-sm btn-success me-2" (click)="approveInstructor(item.id, item.name)">
-          <i class="fa-solid fa-check me-1"></i> Approve
-        </button>
-        <button class="btn btn-sm btn-outline-danger" (click)="rejectInstructor(item.id, item.name)">
-          <i class="fa-solid fa-xmark me-1"></i> Decline
-        </button>
+        <ng-container *canUpdate="Module.Instructor">
+          <button class="btn btn-sm btn-success me-2" (click)="approveInstructor(item.id, item.name)">
+            <i class="fa-solid fa-check me-1"></i> Approve
+          </button>
+          <button class="btn btn-sm btn-outline-danger" (click)="rejectInstructor(item.id, item.name)">
+            <i class="fa-solid fa-xmark me-1"></i> Decline
+          </button>
+        </ng-container>
       </div>
     </div>
   </div>
