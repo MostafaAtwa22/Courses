@@ -1,4 +1,5 @@
 using Application.Common.Exceptions;
+using Application.Common.Interfaces.Identity;
 using Application.DTOs.Profile;
 using Application.Features.Profiles.Commands.Delete;
 using Domain.Entities.Identity;
@@ -11,12 +12,14 @@ namespace Application.Tests.Profiles.Commands;
 public class DeleteProfileHandlerTests
 {
     private readonly Mock<UserManager<ApplicationUser>> _userManagerMock;
+    private readonly Mock<IRefreshTokenRepository> _refreshTokenRepositoryMock;
     private readonly DeleteProfileHandler _handler;
 
     public DeleteProfileHandlerTests()
     {
         _userManagerMock = MockHelpers.MockUserManager<ApplicationUser>();
-        _handler = new DeleteProfileHandler(_userManagerMock.Object);
+        _refreshTokenRepositoryMock = new Mock<IRefreshTokenRepository>();
+        _handler = new DeleteProfileHandler(_userManagerMock.Object, _refreshTokenRepositoryMock.Object);
     }
 
     [Fact]

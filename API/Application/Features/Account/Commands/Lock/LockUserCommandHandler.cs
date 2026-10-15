@@ -1,4 +1,5 @@
 using Application.Common.Interfaces.Cache;
+using Application.Common.Interfaces.Identity;
 using Role = Domain.Enums.Identity.Role;
 
 namespace Application.Features.Account.Commands.Lock
@@ -7,6 +8,7 @@ namespace Application.Features.Account.Commands.Lock
         IUserIdentityService _userIdentityService,
         IPasswordService _passwordService,
         IIdentityEmailService _identityEmailService,
+        IRefreshTokenRepository _refreshTokenRepository,
         IAppCache _cache)
         : IRequestHandler<LockUserCommand>
     {
@@ -28,7 +30,17 @@ namespace Application.Features.Account.Commands.Lock
 
             await _identityEmailService.SendAccountLockedEmailAsync(user, request.Dto);
 
-            // Invalidate related caches
+            await _refreshTokenRepository.RevokeAllUserTokensAsync(user.Id, cancellationToken);
+            await _userIdentityService.UpdateSecurityStampAsync(user);
+
+            await _cache.SetAsync(
+                CacheKeys.UserLockout(user.Id),
+                true,
+                new CacheOptions(
+                    Expiration: TimeSpan.FromMinutes(5),
+                    LocalCacheExpiration: TimeSpan.FromSeconds(30)),
+                cancellationToken: cancellationToken);
+
             await _cache.RemoveByTagAsync(CacheKeys.Users(), cancellationToken);
             await _cache.RemoveByTagAsync(CacheKeys.Instructors(), cancellationToken);
             await _cache.RemoveByTagAsync(CacheKeys.Students(), cancellationToken);

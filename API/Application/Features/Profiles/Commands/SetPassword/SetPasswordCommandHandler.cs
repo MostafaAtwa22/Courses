@@ -4,7 +4,8 @@ namespace Application.Features.Profiles.Commands.SetPassword
 {
     public sealed class SetPasswordCommandHandler(
         IPasswordService _passwordService,
-        IUserIdentityService _userIdentityService) 
+        IUserIdentityService _userIdentityService,
+        IRefreshTokenRepository _refreshTokenRepository) 
         : IRequestHandler<SetPasswordCommand>
     {
         public async Task Handle(SetPasswordCommand request, CancellationToken cancellationToken)
@@ -18,6 +19,8 @@ namespace Application.Features.Profiles.Commands.SetPassword
                 throw new BadRequestException(result.Errors.FirstOrDefault()?.Description ?? "Failed to set password");
 
             await _userIdentityService.UpdateSecurityStampAsync(user);
+            
+            await _refreshTokenRepository.RevokeAllUserTokensAsync(user.Id, cancellationToken);
         }
     }
 }

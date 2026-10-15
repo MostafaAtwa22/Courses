@@ -72,8 +72,9 @@ namespace Application.Tests.Permissions.Commands
         }
 
         [Fact]
-        public void Should_HaveError_When_NoPermissionIsSelected()
+        public void Should_NotHaveError_When_NoPermissionIsSelected()
         {
+            // Zero permissions is now a valid state (e.g., for a "Readonly" or "Suspended" role)
             var command = new UpdateRolePermissionsCommand(
                 Guid.NewGuid().ToString(),
                 [
@@ -82,7 +83,7 @@ namespace Application.Tests.Permissions.Commands
                 ]
             );
             var result = _validator.TestValidate(command);
-            result.ShouldHaveValidationErrorFor(x => x.PermissionsDto);
+            result.ShouldNotHaveValidationErrorFor(x => x.PermissionsDto);
         }
 
     }

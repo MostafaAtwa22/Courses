@@ -153,7 +153,7 @@ export class SidebarComponent implements OnInit {
   }
 
   onLogout() {
-    this.authService.logout();
+    this.authService.logoutAll();
   }
 
   isNavItemDisabled(item: NavItemOrSection): boolean {

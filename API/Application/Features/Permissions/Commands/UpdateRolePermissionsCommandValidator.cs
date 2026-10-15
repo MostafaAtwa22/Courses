@@ -14,8 +14,7 @@ namespace Application.Features.Permissions.Commands
 
             RuleFor(x => x.PermissionsDto)
                 .NotEmpty()
-                .WithMessage("At least one permission must be provided.")
-                .Must(HaveAtLeastOneSelectedPermission).WithMessage("At least one permission must be selected.");
+                .WithMessage("At least one permission must be provided.");
 
             RuleForEach(x => x.PermissionsDto)
                 .ChildRules(permission =>
@@ -31,11 +30,6 @@ namespace Application.Features.Permissions.Commands
         private bool BeAValidGuid(string id)
         {
             return Guid.TryParse(id, out _);
-        }
-
-        private bool HaveAtLeastOneSelectedPermission(ICollection<PermissionCheckboxDto> permissions)
-        {
-            return permissions != null && permissions.Any(p => p.IsSelected);
         }
 
         private bool BeAValidPermissionFormat(string permissionName)

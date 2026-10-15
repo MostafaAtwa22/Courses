@@ -46,9 +46,14 @@ public sealed class UpdateUserRolesCommandHandler(
                 await _studentProfileService.EnsureStudentProfileAsync(user.Id, cancellationToken);
         }
 
+        // Invalidate this user's session if roles changed
+        if (rolesToAdd.Any() || rolesToRemove.Any())
+            await _userManager.UpdateSecurityStampAsync(user);
+
         // Invalidate related caches
         await _cache.RemoveByTagAsync(CacheKeys.Users(), cancellationToken);
         await _cache.RemoveByTagAsync(CacheKeys.Roles(), cancellationToken);
+        await _cache.RemoveByTagAsync(CacheKeys.Permissions(), cancellationToken);
         await _cache.RemoveAsync(CacheKeys.RoleByUser(request.UserId), cancellationToken);
     }
 }

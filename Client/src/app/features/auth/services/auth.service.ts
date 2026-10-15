@@ -65,7 +65,14 @@ export class AuthService {
   }
 
   logout(): void {
-    this.http.post(`${this.apiUrl}/revoke-token`, {}, { withCredentials: true }).subscribe({
+    this.http.post(`${this.apiUrl}/logout`, {}, { withCredentials: true }).subscribe({
+      next:  () => this.sessionService.clearSession(),
+      error: () => this.sessionService.clearSession()
+    });
+  }
+
+  logoutAll(): void {
+    this.http.post(`${this.apiUrl}/logout-all`, {}, { withCredentials: true }).subscribe({
       next:  () => this.sessionService.clearSession(),
       error: () => this.sessionService.clearSession()
     });

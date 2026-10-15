@@ -136,6 +136,15 @@ public class AuthService : IAuthService
             .SingleOrDefaultAsync(r => r.Token == token);
     }
 
+    public async Task RevokeAllUserTokensAsync(string userId, CancellationToken cancellationToken = default)
+    {
+        await _context.RefreshTokens
+            .Where(rt => rt.UserId == userId && !rt.IsRevoked && !rt.IsUsed)
+            .ExecuteUpdateAsync(
+                rt => rt.SetProperty(t => t.IsRevoked, true),
+                cancellationToken);
+    }
+
     public async Task<bool> IsEmailExistsAsync(string email)
         => await _userManager.FindByEmailAsync(email) is not null;
 

@@ -2,7 +2,8 @@ namespace Application.Features.Profiles.Commands.ChangePassword
 {
     public sealed class ChangePasswordCommandHandler(
         IPasswordService _passwordService,
-        IUserIdentityService _userIdentityService) 
+        IUserIdentityService _userIdentityService,
+        IRefreshTokenRepository _refreshTokenRepository) 
         : IRequestHandler<ChangePasswordCommand>
     {
         public async Task Handle(ChangePasswordCommand request, CancellationToken cancellationToken)
@@ -14,6 +15,8 @@ namespace Application.Features.Profiles.Commands.ChangePassword
                 throw new BadRequestException(result.Errors.FirstOrDefault()?.Description ?? "Failed to change password");
             
             await _userIdentityService.UpdateSecurityStampAsync(user);
+            
+            await _refreshTokenRepository.RevokeAllUserTokensAsync(user.Id, cancellationToken);
         }
     }
 }

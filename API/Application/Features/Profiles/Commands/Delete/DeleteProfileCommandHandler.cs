@@ -4,7 +4,8 @@ using Microsoft.AspNetCore.Identity;
 namespace Application.Features.Profiles.Commands.Delete
 {
     public sealed class DeleteProfileHandler(
-        UserManager<ApplicationUser> _userManager) :
+        UserManager<ApplicationUser> _userManager,
+        IRefreshTokenRepository _refreshTokenRepository) :
     IRequestHandler<DeleteProfileCommand>
     {
         public async Task Handle(DeleteProfileCommand request, CancellationToken cancellationToken)
@@ -15,8 +16,9 @@ namespace Application.Features.Profiles.Commands.Delete
             if (!result)
                 throw new BadRequestException("Invalid password");
 
-            // Update security stamp to invalidate existing tokens/sessions
             await _userManager.UpdateSecurityStampAsync(user);
+            
+            await _refreshTokenRepository.RevokeAllUserTokensAsync(user.Id, cancellationToken);
             
             var deletedResult = await _userManager.DeleteAsync(user);
 

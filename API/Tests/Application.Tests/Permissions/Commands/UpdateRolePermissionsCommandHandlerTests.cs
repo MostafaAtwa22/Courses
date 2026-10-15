@@ -3,6 +3,7 @@ using Application.Common.Interfaces.Cache;
 using Application.Common.Interfaces;
 using Application.DTOs.Authorization.Permissions;
 using Application.Features.Permissions.Commands;
+using Domain.Entities.Identity;
 using FluentAssertions;
 using Microsoft.AspNetCore.Identity;
 using Moq;
@@ -12,6 +13,7 @@ namespace Application.Tests.Permissions.Commands
     public class UpdateRolePermissionsCommandHandlerTests
     {
         private readonly Mock<RoleManager<IdentityRole>> _roleManagerMock;
+        private readonly Mock<UserManager<ApplicationUser>> _userManagerMock;
         private readonly Mock<IPermissionRepository> _permissionRepositoryMock;
         private readonly Mock<IAppCache> _cacheMock;
         private readonly UpdateRolePermissionsCommandHandler _handler;
@@ -25,10 +27,22 @@ namespace Application.Tests.Permissions.Commands
                 null!,
                 null!
             );
+            _userManagerMock = new Mock<UserManager<ApplicationUser>>(
+                Mock.Of<IUserStore<ApplicationUser>>(),
+                null!,
+                null!,
+                null!,
+                null!,
+                null!,
+                null!,
+                null!,
+                null!
+            );
             _permissionRepositoryMock = new Mock<IPermissionRepository>();
             _cacheMock = new Mock<IAppCache>();
             _handler = new UpdateRolePermissionsCommandHandler(
                 _roleManagerMock.Object,
+                _userManagerMock.Object,
                 _permissionRepositoryMock.Object,
                 _cacheMock.Object
             );
@@ -46,8 +60,14 @@ namespace Application.Tests.Permissions.Commands
                 new() { Name = "Permission:Role:Update", IsSelected = true }
             };
             var command = new UpdateRolePermissionsCommand(roleId, permissions);
+            var usersInRole = new List<ApplicationUser>
+            {
+                new() { Id = "user1", Email = "user1@example.com" },
+                new() { Id = "user2", Email = "user2@example.com" }
+            };
 
             _roleManagerMock.Setup(x => x.FindByIdAsync(roleId)).ReturnsAsync(role);
+            _userManagerMock.Setup(x => x.GetUsersInRoleAsync(role.Name!)).ReturnsAsync(usersInRole);
 
             // Act
             await _handler.Handle(command, CancellationToken.None);
@@ -59,6 +79,7 @@ namespace Application.Tests.Permissions.Commands
                     It.Is<IEnumerable<string>>(p => p.Count() == 2),
                     It.IsAny<CancellationToken>()),
                 Times.Once);
+            _userManagerMock.Verify(x => x.UpdateSecurityStampAsync(It.IsAny<ApplicationUser>()), Times.Exactly(2));
         }
 
         [Fact]
@@ -72,8 +93,10 @@ namespace Application.Tests.Permissions.Commands
                 new() { Name = "Permission:Role:Read", IsSelected = true }
             };
             var command = new UpdateRolePermissionsCommand(roleId, permissions);
+            var usersInRole = new List<ApplicationUser>();
 
             _roleManagerMock.Setup(x => x.FindByIdAsync(roleId)).ReturnsAsync(role);
+            _userManagerMock.Setup(x => x.GetUsersInRoleAsync(role.Name!)).ReturnsAsync(usersInRole);
 
             // Act
             await _handler.Handle(command, CancellationToken.None);
@@ -119,8 +142,10 @@ namespace Application.Tests.Permissions.Commands
                 new() { Name = "Permission:Role:Delete", IsSelected = true }
             };
             var command = new UpdateRolePermissionsCommand(roleId, permissions);
+            var usersInRole = new List<ApplicationUser>();
 
             _roleManagerMock.Setup(x => x.FindByIdAsync(roleId)).ReturnsAsync(role);
+            _userManagerMock.Setup(x => x.GetUsersInRoleAsync(role.Name!)).ReturnsAsync(usersInRole);
 
             // Act
             await _handler.Handle(command, CancellationToken.None);

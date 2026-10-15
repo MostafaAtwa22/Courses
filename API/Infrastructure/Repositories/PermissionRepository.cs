@@ -1,13 +1,15 @@
 using Application.DTOs.Authorization.Permissions;
 using Domain.Constants;
+using Infrastructure.Persistence.Data;
 using Microsoft.AspNetCore.Identity;
-using System.Security.Claims;
 
 namespace Infrastructure.Repositories
 {
-    public class PermissionRepository(RoleManager<IdentityRole> roleManager) : IPermissionRepository
+    public class PermissionRepository(
+        RoleManager<IdentityRole> roleManager,
+        ApplicationDbContext dbContext) : IPermissionRepository
     {
-        public async Task<PermissionRoleDto> GetRolePermissionsAsync(IdentityRole role, CancellationToken cancellationToken)
+        public async Task<PermissionRoleDto> GetRolePermissionsAsync(IdentityRole role, CancellationToken cancellationToken = default)
         {
             var claims = await roleManager.GetClaimsAsync(role);
             var rolePermissions = claims
@@ -27,37 +29,33 @@ namespace Infrastructure.Repositories
 
         public async Task UpdateRolePermissionsAsync(IdentityRole role, IEnumerable<string> selectedPermissions, CancellationToken cancellationToken = default)
         {
-            var claims = await roleManager.GetClaimsAsync(role);
-            var currentPermissions = claims
-                .Where(c => c.Type == CustomClaims.Permissions)
-                .Select(c => c.Value)
-                .ToHashSet();
-
-            var selectedPermissionsSet = selectedPermissions.ToHashSet();
-
-            var permissionsToAdd = selectedPermissionsSet.Except(currentPermissions).ToList();
-            var permissionsToRemove = currentPermissions.Except(selectedPermissionsSet).ToList();
-
-            foreach (var permission in permissionsToRemove)
+            await using var transaction = await dbContext.Database.BeginTransactionAsync(cancellationToken);
+            try
             {
-                var claim = claims.FirstOrDefault(c => c.Type == CustomClaims.Permissions && c.Value == permission);
-                if (claim != null)
+                await dbContext.RoleClaims
+                    .Where(rc => rc.RoleId == role.Id && rc.ClaimType == CustomClaims.Permissions)
+                    .ExecuteDeleteAsync(cancellationToken);
+
+                // Bulk insert the new ones
+                var newClaims = selectedPermissions.Select(p => new IdentityRoleClaim<string>
                 {
-                    var result = await roleManager.RemoveClaimAsync(role, claim);
-                    if (!result.Succeeded)
-                        throw new InvalidOperationException($"Failed to remove the permission `{permission}` from the role: {role.Name}");
+                    RoleId = role.Id,
+                    ClaimType = CustomClaims.Permissions,
+                    ClaimValue = p
+                }).ToList();
+
+                if (newClaims.Count > 0)
+                {
+                    await dbContext.RoleClaims.AddRangeAsync(newClaims, cancellationToken);
+                    await dbContext.SaveChangesAsync(cancellationToken);
                 }
+
+                await transaction.CommitAsync(cancellationToken);
             }
-
-            foreach (var permission in permissionsToAdd)
+            catch
             {
-                var result = await roleManager.AddClaimAsync(
-                    role,
-                    new Claim(CustomClaims.Permissions, permission)
-                );
-
-                if (!result.Succeeded)
-                    throw new InvalidOperationException($"Failed to add the permission `{permission}` to the role: {role.Name}");
+                await transaction.RollbackAsync(cancellationToken);
+                throw;
             }
         }
 

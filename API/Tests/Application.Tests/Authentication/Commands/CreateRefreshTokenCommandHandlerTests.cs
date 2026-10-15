@@ -5,6 +5,8 @@ using Application.Features.Authentication.Commands.RefreshToken;
 using Domain.Entities.Identity;
 using FluentAssertions;
 using Moq;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 
 namespace Application.Tests.Authentication.Commands;
 
@@ -29,13 +31,14 @@ public class CreateRefreshTokenCommandHandlerTests
     {
         // Arrange
         var token = "valid_refresh_token";
-        var command = new CreateRefreshTokenCommand(token);
-        var user = new ApplicationUser { Email = "test@example.com" };
-        var storedToken = new RefreshToken 
-        { 
-            Token = token, 
-            IsUsed = false, 
-            IsRevoked = false, 
+        var accessToken = CreateMockJwtToken("stamp123");
+        var command = new CreateRefreshTokenCommand(token, accessToken);
+        var user = new ApplicationUser { Email = "test@example.com", SecurityStamp = "stamp123" };
+        var storedToken = new RefreshToken
+        {
+            Token = token,
+            IsUsed = false,
+            IsRevoked = false,
             ExpiryDate = DateTime.UtcNow.AddDays(1),
             User = user
         };
@@ -60,7 +63,8 @@ public class CreateRefreshTokenCommandHandlerTests
     {
         // Arrange
         var token = "invalid_token";
-        var command = new CreateRefreshTokenCommand(token);
+        var accessToken = CreateMockJwtToken("stamp123");
+        var command = new CreateRefreshTokenCommand(token, accessToken);
 
         _refreshTokenRepositoryMock.Setup(x => x.GetByTokenAsync(token))
             .ReturnsAsync((RefreshToken?)null);
@@ -78,13 +82,14 @@ public class CreateRefreshTokenCommandHandlerTests
     {
         // Arrange
         var token = "expired_token";
-        var command = new CreateRefreshTokenCommand(token);
-        var user = new ApplicationUser { Email = "test@example.com" };
-        var storedToken = new RefreshToken 
-        { 
-            Token = token, 
-            IsUsed = false, 
-            IsRevoked = false, 
+        var accessToken = CreateMockJwtToken("stamp123");
+        var command = new CreateRefreshTokenCommand(token, accessToken);
+        var user = new ApplicationUser { Email = "test@example.com", SecurityStamp = "stamp123" };
+        var storedToken = new RefreshToken
+        {
+            Token = token,
+            IsUsed = false,
+            IsRevoked = false,
             ExpiryDate = DateTime.UtcNow.AddDays(-1),
             User = user
         };
@@ -107,13 +112,14 @@ public class CreateRefreshTokenCommandHandlerTests
     {
         // Arrange
         var token = "revoked_token";
-        var command = new CreateRefreshTokenCommand(token);
-        var user = new ApplicationUser { Email = "test@example.com" };
-        var storedToken = new RefreshToken 
-        { 
-            Token = token, 
-            IsUsed = false, 
-            IsRevoked = true, 
+        var accessToken = CreateMockJwtToken("stamp123");
+        var command = new CreateRefreshTokenCommand(token, accessToken);
+        var user = new ApplicationUser { Email = "test@example.com", SecurityStamp = "stamp123" };
+        var storedToken = new RefreshToken
+        {
+            Token = token,
+            IsUsed = false,
+            IsRevoked = true,
             ExpiryDate = DateTime.UtcNow.AddDays(1),
             User = user
         };
@@ -134,12 +140,13 @@ public class CreateRefreshTokenCommandHandlerTests
     {
         // Arrange
         var token = "token_without_user";
-        var command = new CreateRefreshTokenCommand(token);
-        var storedToken = new RefreshToken 
-        { 
-            Token = token, 
-            IsUsed = false, 
-            IsRevoked = false, 
+        var accessToken = CreateMockJwtToken("stamp123");
+        var command = new CreateRefreshTokenCommand(token, accessToken);
+        var storedToken = new RefreshToken
+        {
+            Token = token,
+            IsUsed = false,
+            IsRevoked = false,
             ExpiryDate = DateTime.UtcNow.AddDays(1),
             User = null!
         };
@@ -153,5 +160,59 @@ public class CreateRefreshTokenCommandHandlerTests
         // Assert
         await act.Should().ThrowAsync<UnauthorizedException>()
             .WithMessage("Invalid refresh token");
+    }
+
+    [Fact]
+    public async Task Handle_ShouldThrowUnauthorized_WhenSecurityStampMismatch()
+    {
+        // Arrange
+        var token = "valid_token";
+        var accessToken = CreateMockJwtToken("old_stamp");
+        var command = new CreateRefreshTokenCommand(token, accessToken);
+        var user = new ApplicationUser { Email = "test@example.com", SecurityStamp = "new_stamp" };
+        var storedToken = new RefreshToken
+        {
+            Token = token,
+            IsUsed = false,
+            IsRevoked = false,
+            ExpiryDate = DateTime.UtcNow.AddDays(1),
+            User = user
+        };
+
+        _refreshTokenRepositoryMock.Setup(x => x.GetByTokenAsync(token))
+            .ReturnsAsync(storedToken);
+
+        // Act
+        Func<Task> act = async () => await _handler.Handle(command, CancellationToken.None);
+
+        // Assert
+        await act.Should().ThrowAsync<UnauthorizedException>()
+            .WithMessage("Session has been invalidated. Please log in again.");
+        storedToken.IsRevoked.Should().BeTrue();
+        _refreshTokenRepositoryMock.Verify(x => x.UpdateAsync(storedToken), Times.Once);
+    }
+
+    private string CreateMockJwtToken(string securityStamp)
+    {
+        var claims = new List<Claim>
+        {
+            new Claim("security_stamp", securityStamp),
+            new Claim(JwtRegisteredClaimNames.Sub, "user123"),
+            new Claim(JwtRegisteredClaimNames.Email, "test@example.com")
+        };
+
+        var key = new Microsoft.IdentityModel.Tokens.SymmetricSecurityKey(
+            System.Text.Encoding.UTF8.GetBytes("super_secret_key_for_testing_12345678"));
+        var creds = new Microsoft.IdentityModel.Tokens.SigningCredentials(
+            key, Microsoft.IdentityModel.Tokens.SecurityAlgorithms.HmacSha256);
+
+        var token = new JwtSecurityToken(
+            issuer: "test",
+            audience: "test",
+            claims: claims,
+            expires: DateTime.UtcNow.AddMinutes(5),
+            signingCredentials: creds);
+
+        return new JwtSecurityTokenHandler().WriteToken(token);
     }
 }
