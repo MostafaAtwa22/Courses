@@ -48,7 +48,6 @@ export class HeaderComponent {
   logout(): void {
     this.isDropdownOpen = false;
     this.authService.logoutAll();
-    this.router.navigate(['/auth/login']);
   }
 
   switchRole(): void {

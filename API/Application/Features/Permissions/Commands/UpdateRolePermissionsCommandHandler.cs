@@ -1,7 +1,4 @@
 using Application.Common.Interfaces.Cache;
-using Application.Common.Exceptions;
-using Domain.Entities.Identity;
-using Microsoft.AspNetCore.Identity;
 
 namespace Application.Features.Permissions.Commands
 {

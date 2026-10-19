@@ -1,6 +1,3 @@
-using Application.DTOs.Authorization.Permissions;
-using Domain.Constants;
-
 namespace Application.Features.Permissions.Commands
 {
     public class UpdateRolePermissionsCommandValidator : AbstractValidator<UpdateRolePermissionsCommand>

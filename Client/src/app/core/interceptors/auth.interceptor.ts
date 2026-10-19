@@ -35,6 +35,13 @@ const addToken = (request: HttpRequest<any>, token: string): HttpRequest<any> =>
 };
 
 const handle401Error = (request: HttpRequest<any>, next: HttpHandlerFn, authService: AuthService, router: Router): Observable<HttpEvent<any>> => {
+  // Skip token refresh for logout requests - just clear session and redirect
+  if (request.url.includes('/logout') || request.url.includes('/logout-all')) {
+    authService.clearSession();
+    router.navigate(['/auth/login']);
+    return throwError(() => new Error('Logout failed'));
+  }
+
   if (!isRefreshing) {
     isRefreshing = true;
     refreshTokenSubject.next(null);
@@ -48,16 +55,7 @@ const handle401Error = (request: HttpRequest<any>, next: HttpHandlerFn, authServ
       catchError((err) => {
         isRefreshing = false;
         refreshTokenSubject.next(null);
-
-        const isSessionInvalidated = err?.error?.message?.includes('Session has been invalidated') ||
-                                     err?.error?.message?.includes('Please log in again');
-
-        if (isSessionInvalidated) {
-          authService.logoutAll();
-        } else {
-          authService.clearSession();
-        }
-
+        authService.clearSession();
         router.navigate(['/auth/login']);
         return throwError(() => err);
       })
