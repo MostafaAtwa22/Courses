@@ -1,4 +1,4 @@
-using Domain.Enums.Identity;
+using Role = Domain.Enums.Identity.Role;
 
 namespace Application.DTOs.Admin;
 

@@ -6,9 +6,8 @@ using Application.Common.Interfaces.Identity;
 using Application.Common.Mappings;
 using Application.Common.Options;
 using Application.DTOs.Authentication;
-using Domain.Entities.Identity;
+using Domain.Constants;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
@@ -19,20 +18,22 @@ public class AuthService : IAuthService
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly JwtOptions _jwtOptions;
     private readonly SigningCredentials _signingCredentials;
-    private readonly Infrastructure.Persistence.Data.ApplicationDbContext _context;
+    private readonly Persistence.Data.ApplicationDbContext _context;
+    private readonly IPermissionService _permissionService;
     private readonly UrlsOptions _urlsOptions;
 
     public AuthService(
         UserManager<ApplicationUser> userManager,
         IOptions<JwtOptions> jwtOptions,
         IOptions<UrlsOptions> urlsOptions,
-        Infrastructure.Persistence.Data.ApplicationDbContext context)
+        Persistence.Data.ApplicationDbContext context,
+        IPermissionService permissionService)
     {
         _userManager = userManager;
         _jwtOptions  = jwtOptions.Value;
         _urlsOptions = urlsOptions.Value;
         _context     = context;
-
+        _permissionService = permissionService;
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtOptions.Key));
         _signingCredentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
     }
@@ -43,7 +44,6 @@ public class AuthService : IAuthService
         var userClaims = await _userManager.GetClaimsAsync(user);
         var roles      = await _userManager.GetRolesAsync(user);
 
-        // Check if user has an instructor profile
         var hasInstructorProfile = await _context.Instructors
             .AnyAsync(i => i.UserId == user.Id);
 
@@ -59,8 +59,11 @@ public class AuthService : IAuthService
             new("has_instructor_profile",           hasInstructorProfile.ToString().ToLower()),
         };
 
+        var permissions = await _permissionService.GetPermissionsAsync(user.Id);
+        
+        claims.AddRange(permissions.Select(p => new Claim(CustomClaims.Permissions, p)));
         claims.AddRange(userClaims);
-        claims.AddRange(roles.Select(r => new Claim("roles", r)));
+        claims.AddRange(roles.Select(r => new Claim(CustomClaims.Roles, r)));
 
         var tokenDescriptor = new SecurityTokenDescriptor
         {
@@ -83,7 +86,7 @@ public class AuthService : IAuthService
 
         var token    = await CreateTokenAsync(user);
         var roles    = await _userManager.GetRolesAsync(user);
-        var response = user.ToAuthResponseDto(roles, _urlsOptions.API);
+        var response = user.ToAuthResponseDto(roles, _urlsOptions.API, _permissionService);
         response.Token = token;
 
         return response;
@@ -131,6 +134,15 @@ public class AuthService : IAuthService
         return await _context.RefreshTokens
             .Include(r => r.User)
             .SingleOrDefaultAsync(r => r.Token == token);
+    }
+
+    public async Task RevokeAllUserTokensAsync(string userId, CancellationToken cancellationToken = default)
+    {
+        await _context.RefreshTokens
+            .Where(rt => rt.UserId == userId && !rt.IsRevoked && !rt.IsUsed)
+            .ExecuteUpdateAsync(
+                rt => rt.SetProperty(t => t.IsRevoked, true),
+                cancellationToken);
     }
 
     public async Task<bool> IsEmailExistsAsync(string email)

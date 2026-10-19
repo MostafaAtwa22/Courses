@@ -1,8 +1,7 @@
 using Application.Common.Interfaces.Identity;
 using Application.Common.Options;
 using Application.DTOs.Admin;
-using Dapper;
-using Domain.Enums.Identity;
+using Role = Domain.Enums.Identity.Role;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 

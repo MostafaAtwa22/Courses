@@ -3,6 +3,7 @@ using Application.Features.Progress.Commands.MarkIncomplete;
 using Application.Features.Progress.Queries.GetCourseProgress;
 using Application.Features.Progress.Queries.GetMyCoursesProgress;
 using Application.DTOs.Progress;
+using Role = Domain.Enums.Identity.Role;
 
 namespace API.Endpoints
 {

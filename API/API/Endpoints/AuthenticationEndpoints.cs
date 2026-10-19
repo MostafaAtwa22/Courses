@@ -4,7 +4,8 @@ using Application.Features.Authentication.Commands.ExternalLogin.Google;
 using Application.Features.Authentication.Commands.Login;
 using Application.Features.Authentication.Commands.Register;
 using Application.Features.Authentication.Commands.RefreshToken;
-using Application.Features.Authentication.Commands.RevokeToken;
+using Application.Features.Authentication.Commands.Logout;
+using Application.Features.Authentication.Commands.LogoutAll;
 
 namespace API.Endpoints;
 
@@ -62,8 +63,14 @@ public class AuthenticationEndpoints : ICarterModule
             .Produces<AuthResponseDto>()
             .Produces(StatusCodes.Status401Unauthorized);
 
-        group.MapPost("/revoke-token", RevokeToken)
-            .WithName(nameof(RevokeToken))
+        group.MapPost("/logout", Logout)
+            .WithName(nameof(Logout))
+            .RequireAuthorization()
+            .Produces(StatusCodes.Status200OK)
+            .Produces(StatusCodes.Status401Unauthorized);
+
+        group.MapPost("/logout-all", LogoutAll)
+            .WithName(nameof(LogoutAll))
             .RequireAuthorization()
             .Produces(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status401Unauthorized);
@@ -110,18 +117,37 @@ public class AuthenticationEndpoints : ICarterModule
         if (!context.Request.Cookies.TryGetValue(RefreshTokenCookieName, out var refreshToken) || string.IsNullOrEmpty(refreshToken))
             return TypedResults.Unauthorized();
 
-        var result = await mediator.Send(new CreateRefreshTokenCommand(refreshToken));
+        var accessToken = context.Request.Headers.Authorization.ToString().Replace("Bearer ", "");
+        if (string.IsNullOrEmpty(accessToken))
+            return TypedResults.Unauthorized();
+
+        var result = await mediator.Send(new CreateRefreshTokenCommand(refreshToken, accessToken));
         return ProcessTokenResponse(context, result);
     }
 
-    public static async Task<Results<Ok, UnauthorizedHttpResult>> RevokeToken(
+    public static async Task<Results<Ok, UnauthorizedHttpResult>> Logout(
         HttpContext context, IMediator mediator)
     {
         if (!context.Request.Cookies.TryGetValue(RefreshTokenCookieName, out var refreshToken) || string.IsNullOrEmpty(refreshToken))
             return TypedResults.Unauthorized();
 
-        await mediator.Send(new CreateRevokeTokenCommand(refreshToken));
+        await mediator.Send(new LogoutCommand(refreshToken));
         
+        context.Response.Cookies.Delete(RefreshTokenCookieName, new CookieOptions
+        {
+            HttpOnly = true,
+            SameSite = SameSiteMode.None,
+            Secure = true
+        });
+
+        return TypedResults.Ok();
+    }
+
+    public static async Task<Results<Ok, UnauthorizedHttpResult>> LogoutAll(
+        HttpContext context, IMediator mediator)
+    {
+        await mediator.Send(new LogoutAllCommand());
+
         context.Response.Cookies.Delete(RefreshTokenCookieName, new CookieOptions
         {
             HttpOnly = true,

@@ -24,7 +24,8 @@ namespace Application.Features.Account.Commands.UnLock
 
             await _identityEmailService.SendAccountUnlockedEmailAsync(user);
 
-            // Invalidate related caches
+            await _cache.RemoveAsync(CacheKeys.UserLockout(user.Id), cancellationToken);
+
             await _cache.RemoveByTagAsync(CacheKeys.Users(), cancellationToken);
             await _cache.RemoveByTagAsync(CacheKeys.Instructors(), cancellationToken);
             await _cache.RemoveByTagAsync(CacheKeys.Students(), cancellationToken);

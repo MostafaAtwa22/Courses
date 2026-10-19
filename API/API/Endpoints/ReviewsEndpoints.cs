@@ -5,6 +5,7 @@ using Application.Features.Reviews.Commands.Create;
 using Application.Features.Reviews.Commands.Update;
 using Application.Features.Reviews.Commands.Delete;
 using Application.DTOs.Review;
+using Role = Domain.Enums.Identity.Role;
 
 namespace API.Endpoints
 {

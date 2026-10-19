@@ -3,5 +3,5 @@ using MediatR;
 
 namespace Application.Features.Authentication.Commands.RefreshToken
 {
-    public sealed record CreateRefreshTokenCommand(string Token) : IRequest<AuthResponseDto>;
+    public sealed record CreateRefreshTokenCommand(string Token, string AccessToken) : IRequest<AuthResponseDto>;
 }

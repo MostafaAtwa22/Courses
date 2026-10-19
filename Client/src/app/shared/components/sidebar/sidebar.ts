@@ -4,6 +4,7 @@ import { RouterModule } from '@angular/router';
 import { AuthService } from '../../../features/auth/services/auth.service';
 import { InstructorService } from '../../../features/instructors/services/instructor.service';
 import { InstructorPrivateResponse } from '../../../features/instructors/models/instructor.models';
+import { PERMISSIONS } from '../../constants/permissions.constant';
 
 export interface NavItem {
   label: string;
@@ -15,6 +16,7 @@ export interface NavItem {
   exactMatch?: boolean;
   disabled?: boolean;
   requiresVerification?: boolean;
+  requiredPermission?: string;
 }
 
 export interface NavSection {
@@ -47,14 +49,15 @@ export class SidebarComponent implements OnInit {
     { label: 'Overview', isSection: true },
     { label: 'Admin Overview', icon: 'fa-solid fa-chart-line', route: '/admin/dashboard/overview' },
     { label: 'Users', isSection: true },
-    { label: 'Admins', icon: 'fa-solid fa-user-shield', route: '/admin/dashboard/admins' },
-    { label: 'Instructors', icon: 'fa-solid fa-user-tie', route: '/admin/dashboard/instructors'},
-    { label: 'Students', icon: 'fa-solid fa-user-graduate', route: '/admin/dashboard/students' },
-    { label: 'System Users', icon: 'fa-solid fa-users-gear', route: '/admin/dashboard/users' },
+    { label: 'Admins', icon: 'fa-solid fa-user-shield', route: '/admin/dashboard/admins', requiredPermission: PERMISSIONS.ADMIN.READ },
+    { label: 'Instructors', icon: 'fa-solid fa-user-tie', route: '/admin/dashboard/instructors', requiredPermission: PERMISSIONS.INSTRUCTOR.READ },
+    { label: 'Students', icon: 'fa-solid fa-user-graduate', route: '/admin/dashboard/students', requiredPermission: PERMISSIONS.STUDENT.READ },
+    { label: 'System Users', icon: 'fa-solid fa-users-gear', route: '/admin/dashboard/users', requiredPermission: PERMISSIONS.USER.READ },
     { label: 'Content', isSection: true },
-    { label: 'Categories', icon: 'fa-solid fa-tags', route: '/admin/dashboard/categories' },
     { label: 'Courses', icon: 'fa-solid fa-graduation-cap', route: '/admin/dashboard/courses' },
+    { label: 'Categories', icon: 'fa-solid fa-tags', route: '/admin/dashboard/categories', requiredPermission: PERMISSIONS.CATEGORY.READ },
     { label: 'System', isSection: true },
+    { label: 'Permissions', icon: 'fa-solid fa-shield-halved', route: '/admin/dashboard/permissions', requiredPermission: PERMISSIONS.ROLE.READ },
     { label: 'System Settings', icon: 'fa-solid fa-sliders', route: '/settings' }
   ];
 
@@ -90,11 +93,23 @@ export class SidebarComponent implements OnInit {
   ];
 
   ngOnInit() {
+    if (this.role === 'admin') {
+      this.filterNavItemsByPermissions();
+    }
     if (this.role === 'instructor') {
       this.loadInstructorStatus();
     } else {
       this.isLoadingStatus = false;
     }
+  }
+
+  filterNavItemsByPermissions() {
+    this.adminNavItems = this.adminNavItems.filter(item => {
+      if (item.isSection) return true;
+      const navItem = item as NavItem;
+      if (!navItem.requiredPermission) return true;
+      return this.authService.hasPermission(navItem.requiredPermission);
+    });
   }
 
   loadInstructorStatus() {
@@ -138,7 +153,7 @@ export class SidebarComponent implements OnInit {
   }
 
   onLogout() {
-    this.authService.logout();
+    this.authService.logoutAll();
   }
 
   isNavItemDisabled(item: NavItemOrSection): boolean {

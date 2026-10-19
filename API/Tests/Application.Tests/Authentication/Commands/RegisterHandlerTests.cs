@@ -2,12 +2,10 @@ using Application.Common.Exceptions;
 using Application.Common.Interfaces.Identity;
 using Application.DTOs.Authentication;
 using Application.Features.Authentication.Commands.Register;
-using Domain.Entities.Identity;
-using Domain.Enums;
-using Domain.Enums.Identity;
+using Role = Domain.Enums.Identity.Role;
 using FluentAssertions;
-using Microsoft.AspNetCore.Identity;
 using Moq;
+using Domain.Entities.Identity;
 
 namespace Application.Tests.Authentication.Commands;
 

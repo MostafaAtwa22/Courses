@@ -1,0 +1,117 @@
+<div class="permissions-matrix-container">
+  <!-- Page Header -->
+  <div class="admin-banner mb-4">
+    <div class="banner-content">
+      <div class="banner-header">
+        <div class="admin-badge badge-purple">
+          <i class="fa-solid fa-shield-halved"></i>
+          <span>Permissions Console</span>
+        </div>
+        <h1 class="banner-title">Permissions Matrix</h1>
+        <p class="banner-subtitle">Manage role permissions for different modules and actions</p>
+      </div>
+      <div class="banner-actions">
+        <button class="action-btn action-btn--secondary" (click)="refreshPermissions()" [disabled]="isLoading">
+          <i class="fa-solid fa-arrows-rotate" [class.fa-spin]="isLoading"></i>
+          <span>Refresh</span>
+        </button>
+        <button 
+          *ngIf="canUpdatePermissions"
+          class="action-btn action-btn--primary" 
+          (click)="savePermissions()" 
+          [disabled]="isSaving || !currentPermissions">
+          <i class="fa-solid fa-floppy-disk" [class.fa-spin]="isSaving"></i>
+          <span>{{ isSaving ? 'Saving...' : 'Save Changes' }}</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Role Selector -->
+  <div class="admin-card mb-4">
+    <div class="role-selector-wrapper">
+      <label for="role-select" class="role-selector-label">
+        <i class="fa-solid fa-user-shield"></i>
+        Select Role
+      </label>
+      <select
+        id="role-select"
+        class="role-select"
+        [(ngModel)]="selectedRoleId"
+        (ngModelChange)="onRoleChange()"
+        [disabled]="isLoading || roles.length === 0"
+      >
+        <option [ngValue]="''" disabled>Select a role...</option>
+        <option *ngFor="let role of roles" [ngValue]="role.id">
+          {{ role.name }}
+        </option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div class="admin-card" *ngIf="isLoading">
+    <div class="loading-state">
+      <i class="fa-solid fa-spinner fa-spin"></i>
+      <span>Loading permissions...</span>
+    </div>
+  </div>
+
+  <!-- Permissions Matrix Table -->
+  <div class="admin-card" *ngIf="!isLoading && currentPermissions">
+    <div class="table-responsive">
+      <table class="permissions-table">
+        <thead>
+          <tr>
+            <th class="module-column">MODULE</th>
+            <th class="action-column">CREATE</th>
+            <th class="action-column">READ</th>
+            <th class="action-column">UPDATE</th>
+            <th class="action-column">DELETE</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let module of modules">
+            <td class="module-name">
+              <div class="module-cell">
+                <i [class]="module.icon + ' module-icon'"></i>
+                <span>{{ module.displayName }}</span>
+              </div>
+            </td>
+            <td *ngFor="let action of actions" class="action-cell">
+              <div class="checkbox-wrapper">
+                <input
+                  type="checkbox"
+                  class="permission-checkbox"
+                  [id]="'perm-' + module.name + '-' + action"
+                  [checked]="getPermissionForModuleAction(module.name, action)?.isSelected"
+                  [disabled]="!canUpdatePermissions"
+                  (change)="onPermissionChange(getPermissionForModuleAction(module.name, action)!)"
+                >
+                <label [for]="'perm-' + module.name + '-' + action" class="checkbox-label"></label>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div class="admin-card" *ngIf="!isLoading && !currentPermissions">
+    <div class="empty-state">
+      <div class="empty-state-icon">
+        <i class="fa-solid fa-shield-halved"></i>
+      </div>
+      <h3 class="empty-state-title">No Permissions Data</h3>
+      <p class="empty-state-message">
+        <span *ngIf="!selectedRoleId">
+          Please select a role to view and manage permissions.
+        </span>
+        <span *ngIf="selectedRoleId">
+          No permissions data available for the selected role.
+        </span>
+      </p>
+    </div>
+  </div>
+</div>

@@ -4,6 +4,8 @@ import { authGuard } from './core/guards/auth.guard';
 import { instructorCompletionGuard } from './core/guards/instructor-completion.guard';
 import { contentAccessGuard } from './core/guards/content-access.guard';
 import { instructorVerifiedGuard } from './core/guards/instructor-verified.guard';
+import { permissionGuard } from './core/guards/permission.guard';
+import { PERMISSIONS } from './shared/constants/permissions.constant';
 
 export const routes: Routes = [
     {
@@ -105,31 +107,38 @@ export const routes: Routes = [
             },
             {
                 path: 'instructors',
-                loadComponent: () => import('./features/dashboards/admin-dashboard/instructors-list/instructors-list.component').then(m => m.InstructorsListComponent)
+                loadComponent: () => import('./features/dashboards/admin-dashboard/instructors-list/instructors-list.component').then(m => m.InstructorsListComponent),
+                canActivate: [permissionGuard(PERMISSIONS.INSTRUCTOR.READ)]
             },
             {
                 path: 'instructors/:id',
-                loadComponent: () => import('./features/dashboards/admin-dashboard/instructors-list/instructor-details/instructor-details.component').then(m => m.InstructorDetailsComponent)
+                loadComponent: () => import('./features/dashboards/admin-dashboard/instructors-list/instructor-details/instructor-details.component').then(m => m.InstructorDetailsComponent),
+                canActivate: [permissionGuard(PERMISSIONS.INSTRUCTOR.READ)]
             },
             {
                 path: 'admins',
-                loadComponent: () => import('./features/dashboards/admin-dashboard/admins-list/admins-list.component').then(m => m.AdminsListComponent)
+                loadComponent: () => import('./features/dashboards/admin-dashboard/admins-list/admins-list.component').then(m => m.AdminsListComponent),
+                canActivate: [permissionGuard(PERMISSIONS.ADMIN.READ)]
             },
             {
                 path: 'admins/:id',
-                loadComponent: () => import('./features/dashboards/admin-dashboard/admin-details/admin-details.component').then(m => m.AdminDetailsComponent)
+                loadComponent: () => import('./features/dashboards/admin-dashboard/admin-details/admin-details.component').then(m => m.AdminDetailsComponent),
+                canActivate: [permissionGuard(PERMISSIONS.ADMIN.READ)]
             },
             {
                 path: 'students',
-                loadComponent: () => import('./features/dashboards/admin-dashboard/students-list/students-list.component').then(m => m.StudentsListComponent)
+                loadComponent: () => import('./features/dashboards/admin-dashboard/students-list/students-list.component').then(m => m.StudentsListComponent),
+                canActivate: [permissionGuard(PERMISSIONS.STUDENT.READ)]
             },
             {
                 path: 'students/:id',
-                loadComponent: () => import('./features/dashboards/admin-dashboard/students-list/student-details/student-details.component').then(m => m.StudentDetailsComponent)
+                loadComponent: () => import('./features/dashboards/admin-dashboard/students-list/student-details/student-details.component').then(m => m.StudentDetailsComponent),
+                canActivate: [permissionGuard(PERMISSIONS.STUDENT.READ)]
             },
             {
                 path: 'categories',
-                loadComponent: () => import('./features/dashboards/admin-dashboard/categories-list/categories-list.component').then(m => m.CategoriesListComponent)
+                loadComponent: () => import('./features/dashboards/admin-dashboard/categories-list/categories-list.component').then(m => m.CategoriesListComponent),
+                canActivate: [permissionGuard(PERMISSIONS.CATEGORY.READ)]
             },
             {
                 path: 'courses',
@@ -137,7 +146,13 @@ export const routes: Routes = [
             },
             {
                 path: 'users',
-                loadComponent: () => import('./features/dashboards/admin-dashboard/user-management/user-management.component').then(m => m.UserManagementComponent)
+                loadComponent: () => import('./features/dashboards/admin-dashboard/user-management/user-management.component').then(m => m.UserManagementComponent),
+                canActivate: [permissionGuard(PERMISSIONS.USER.READ)]
+            },
+            {
+                path: 'permissions',
+                loadComponent: () => import('./features/authorization/permissions-matrix/permissions-matrix.component').then(m => m.PermissionsMatrixComponent),
+                canActivate: [permissionGuard(PERMISSIONS.ROLE.READ)]
             }
         ]
     },

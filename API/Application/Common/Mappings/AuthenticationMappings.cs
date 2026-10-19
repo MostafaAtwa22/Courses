@@ -1,3 +1,4 @@
+using Application.Common.Interfaces.Identity;
 using Domain.Entities.Identity;
 
 namespace Application.Common.Mappings
@@ -19,8 +20,10 @@ namespace Application.Common.Mappings
             };
         }
 
-        public static AuthResponseDto ToAuthResponseDto(this ApplicationUser user, IList<string> roles, string apiUrl)
+        public static AuthResponseDto ToAuthResponseDto(this ApplicationUser user, IList<string> roles, string apiUrl, IPermissionService permissionService)
         {
+            var permissions = permissionService.GetPermissionsAsync(user.Id).GetAwaiter().GetResult();
+
             return new AuthResponseDto
             {
                 Id             = Guid.Parse(user.Id),
@@ -33,7 +36,8 @@ namespace Application.Common.Mappings
                 ProfilePicture = string.IsNullOrEmpty(user.ProfilePictureUrl) ? string.Empty : $"{apiUrl}/{user.ProfilePictureUrl}",
                 Is2FAEnable    = user.TwoFactorEnabled,
                 HasPassword    = !string.IsNullOrEmpty(user.PasswordHash),
-                Roles          = [..roles]
+                Roles          = [..roles],
+                Permissions    = [..permissions]
             };
         }
     }

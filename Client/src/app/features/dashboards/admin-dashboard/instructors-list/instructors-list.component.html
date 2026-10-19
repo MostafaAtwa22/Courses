@@ -167,28 +167,31 @@
             <td>
               <div class="actions">
                 <button 
+                  *canRead="Module.Instructor"
                   class="btn-action btn-view"
                   (click)="viewInstructorDetails(instructor.id)"
                   title="View Details"
                 >
                   <i class="fa-solid fa-eye"></i>
                 </button>
-                <button 
-                  *ngIf="instructor.status !== 'Verfied'"
-                  class="btn-action btn-verify"
-                  (click)="changeStatus(instructor.id, 'Verfied')"
-                  title="Verify Instructor"
-                >
-                  <i class="fa-solid fa-check"></i>
-                </button>
-                <button 
-                  *ngIf="instructor.status !== 'Unverfied'"
-                  class="btn-action btn-unverify"
-                  (click)="changeStatus(instructor.id, 'Unverfied')"
-                  title="Unverify Instructor"
-                >
-                  <i class="fa-solid fa-xmark"></i>
-                </button>
+                <ng-container *canUpdate="Module.Instructor">
+                  <button 
+                    *ngIf="instructor.status !== 'Verfied'"
+                    class="btn-action btn-verify"
+                    (click)="changeStatus(instructor.id, 'Verfied')"
+                    title="Verify Instructor"
+                  >
+                    <i class="fa-solid fa-check"></i>
+                  </button>
+                  <button 
+                    *ngIf="instructor.status !== 'Unverfied'"
+                    class="btn-action btn-unverify"
+                    (click)="changeStatus(instructor.id, 'Unverfied')"
+                    title="Unverify Instructor"
+                  >
+                    <i class="fa-solid fa-xmark"></i>
+                  </button>
+                </ng-container>
               </div>
             </td>
           </tr>

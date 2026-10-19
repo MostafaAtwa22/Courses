@@ -5,7 +5,7 @@ using Application.Features.Authentication.Commands.ExternalLogin.Google;
 using Application.Features.Authentication.Commands.Login;
 using Application.Features.Authentication.Commands.Register;
 using Application.Features.Authentication.Commands.RefreshToken;
-using Application.Features.Authentication.Commands.RevokeToken;
+using Application.Features.Authentication.Commands.Logout;
 using FluentAssertions;
 using MediatR;
 using Microsoft.AspNetCore.Http;
@@ -126,12 +126,14 @@ namespace API.Tests.Endpoints
         {
             // Arrange
             var refreshToken = "valid-refresh-token";
+            var accessToken = "valid-access-token";
             var expectedResponse = new AuthResponseDto { Token = "new-test-token", RefreshToken = "new-refresh-token" };
-            
+
             var cookiesMock = new Mock<IRequestCookieCollection>();
             cookiesMock.Setup(c => c.TryGetValue("refreshToken", out refreshToken)).Returns(true);
             _httpContextMock.Setup(x => x.Request.Cookies).Returns(cookiesMock.Object);
-            
+            _httpContextMock.Setup(x => x.Request.Headers.Authorization).Returns($"Bearer {accessToken}");
+
             _mediatorMock.Setup(m => m.Send(It.IsAny<CreateRefreshTokenCommand>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(expectedResponse);
 
@@ -170,11 +172,11 @@ namespace API.Tests.Endpoints
             cookiesMock.Setup(c => c.TryGetValue("refreshToken", out refreshToken)).Returns(true);
             _httpContextMock.Setup(x => x.Request.Cookies).Returns(cookiesMock.Object);
             
-            _mediatorMock.Setup(m => m.Send(It.IsAny<CreateRevokeTokenCommand>(), It.IsAny<CancellationToken>()))
+            _mediatorMock.Setup(m => m.Send(It.IsAny<LogoutCommand>(), It.IsAny<CancellationToken>()))
                 .Returns(Task.CompletedTask);
 
             // Act
-            var result = await AuthenticationEndpoints.RevokeToken(_httpContextMock.Object, _mediatorMock.Object);
+            var result = await AuthenticationEndpoints.Logout(_httpContextMock.Object, _mediatorMock.Object);
 
             // Assert
             var okResult = result.Result as Ok;
@@ -182,7 +184,7 @@ namespace API.Tests.Endpoints
         }
 
         [Fact]
-        public async Task RevokeToken_ShouldReturnUnauthorized_WhenTokenIsMissing()
+        public async Task Logout_ShouldReturnUnauthorized_WhenTokenIsMissing()
         {
             // Arrange
             var cookiesMock = new Mock<IRequestCookieCollection>();
@@ -190,7 +192,7 @@ namespace API.Tests.Endpoints
             _httpContextMock.Setup(x => x.Request.Cookies).Returns(cookiesMock.Object);
 
             // Act
-            var result = await AuthenticationEndpoints.RevokeToken(_httpContextMock.Object, _mediatorMock.Object);
+            var result = await AuthenticationEndpoints.Logout(_httpContextMock.Object, _mediatorMock.Object);
 
             // Assert
             var unauthorizedResult = result.Result as UnauthorizedHttpResult;

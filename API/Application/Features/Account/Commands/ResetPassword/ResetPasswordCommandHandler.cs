@@ -6,7 +6,8 @@ namespace Application.Features.Account.Commands.ResetPassword
 {
     public sealed class ResetPasswordCommandHandler(
             IUserIdentityService _userIdentityService,
-            IPasswordService _passwordService) :
+            IPasswordService _passwordService,
+            IRefreshTokenRepository _refreshTokenRepository) :
         IRequestHandler<ResetPasswordCommand>
     {
         public async Task Handle(ResetPasswordCommand request, CancellationToken cancellationToken)
@@ -23,6 +24,8 @@ namespace Application.Features.Account.Commands.ResetPassword
                 throw new BadRequestException(result.Errors.FirstOrDefault()?.Description ?? "Password reset failed. Please ensure the token is valid and try again.");
             
             await _userIdentityService.UpdateSecurityStampAsync(user);
+            
+            await _refreshTokenRepository.RevokeAllUserTokensAsync(user.Id, cancellationToken);
         }
     }
 }

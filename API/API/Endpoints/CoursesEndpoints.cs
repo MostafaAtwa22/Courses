@@ -8,6 +8,7 @@ using Application.DTOs.Course;
 using Application.Features.Courses.Commands.Create;
 using Application.Features.Courses.Commands.Update;
 using Application.Features.Courses.Commands.Delete;
+using Role = Domain.Enums.Identity.Role;
 
 namespace API.Endpoints
 {

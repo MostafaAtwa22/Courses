@@ -123,7 +123,7 @@
             <th>Phone</th>
             <th>Roles</th>
             <th>Status</th>
-            <th>Actions</th>
+            <th *ngIf="canUpdateUser">Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -151,9 +151,10 @@
                 {{ isUserLocked(user) ? 'Locked' : 'Active' }}
               </span>
             </td>
-            <td>
+            <td *ngIf="canUpdateUser">
               <div class="actions">
                 <button 
+                  *canUpdate="Module.User"
                   class="btn-action btn-lock"
                   [class.btn-unlock]="isUserLocked(user)"
                   (click)="isUserLocked(user) ? unlockUser(user) : lockUser(user)"
@@ -163,6 +164,7 @@
                   <i [class]="isUserLocked(user) ? 'fa-solid fa-unlock' : 'fa-solid fa-lock'"></i>
                 </button>
                 <button 
+                  *canUpdate="Module.User"
                   class="btn-action btn-role"
                   (click)="changeRoles(user)"
                   title="Change Roles"

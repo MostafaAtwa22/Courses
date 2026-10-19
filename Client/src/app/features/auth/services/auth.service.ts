@@ -17,6 +17,7 @@ export class AuthService {
   private apiUrl         = `${environment.apiUrl}/authentication`;
 
   get currentUser()             { return this.sessionService.currentUser; }
+  get permissions()             { return this.sessionService.permissions; }
   getToken(): string | null     { return this.sessionService.getToken(); }
   isLoggedIn(): boolean         { return this.sessionService.isLoggedIn(); }
   clearSession(): void          { this.sessionService.clearSession(); }
@@ -25,6 +26,8 @@ export class AuthService {
   }
   getSelectedRole(): string | null { return this.sessionService.getSelectedRole(); }
   setSelectedRole(role: string): void { this.sessionService.setSelectedRole(role); }
+  hasPermission(permission: string): boolean { return this.sessionService.hasPermission(permission); }
+  hasAnyPermission(permissions: string[]): boolean { return this.sessionService.hasAnyPermission(permissions); }
 
 
   register(request: RegisterDto): Observable<void> {
@@ -62,7 +65,14 @@ export class AuthService {
   }
 
   logout(): void {
-    this.http.post(`${this.apiUrl}/revoke-token`, {}, { withCredentials: true }).subscribe({
+    this.http.post(`${this.apiUrl}/logout`, {}, { withCredentials: true }).subscribe({
+      next:  () => this.sessionService.clearSession(),
+      error: () => this.sessionService.clearSession()
+    });
+  }
+
+  logoutAll(): void {
+    this.http.post(`${this.apiUrl}/logout-all`, {}, { withCredentials: true }).subscribe({
       next:  () => this.sessionService.clearSession(),
       error: () => this.sessionService.clearSession()
     });

@@ -1,4 +1,5 @@
 using Application.Features.Admin.Commands.Delete;
+using Domain.Constants;
 using FluentAssertions;
 
 namespace Application.Tests.Admin.Commands.Delete;
@@ -23,8 +24,8 @@ public class DeleteAdminCommandHandlerTests
         var command = new DeleteAdminCommand(Guid.NewGuid());
 
         // Assert
-        command.RequiredRoles.Should().Contain("Admin");
-        command.RequiredRoles.Should().Contain("SuperAdmin");
+        command.RequiredPermissions.Should().Contain(PermissionConstants.Build(Domain.Enums.Identity.Module.Admin, Domain.Enums.Identity.CRUD.Delete));
+        command.RequiredRoles.Should().BeEmpty();
         command.RequireOwnership.Should().BeFalse();
     }
 }

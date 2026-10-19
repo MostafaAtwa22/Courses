@@ -1,14 +1,14 @@
-using Application.Common.Interfaces.Identity;
-using Application.Common.Models;
 using Application.DTOs.Instructor;
 using Domain.Enums.Identity;
+using Domain.Constants;
 
 namespace Application.Features.Instructors.Queries.GetAll
 {
-    public sealed record GetAllInstructorsQuery(InstructorQueryParams Params) 
+    public sealed record GetAllInstructorsQuery(InstructorQueryParams Params)
         : IRequest<PaginatedResult<InstructorPrivateResponseDto>>, IRequireAuthorization
     {
-        public string[] RequiredRoles => [Role.Admin.ToString(), Role.SuperAdmin.ToString()];
+        public string[] RequiredRoles => [];
+        public string[] RequiredPermissions => [PermissionConstants.Build(Module.Instructor, CRUD.Read)];
         public bool RequireOwnership => false;
         public Guid ResourceId => Guid.Empty;
     }

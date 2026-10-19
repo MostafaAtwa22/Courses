@@ -8,18 +8,27 @@ import { QueryParams, UserQueryParams } from '../../../../shared/models/query-pa
 import Swal from 'sweetalert2';
 import { ToastrService } from 'ngx-toastr';
 import { RoleAssignmentModalComponent } from './role-assignment-modal/role-assignment-modal.component';
+import { DirectivesModule } from '../../../../shared/directives/directives.module';
+import { Module, buildPermission, CRUD } from '../../../../shared/constants/permissions.constant';
+import { AuthService } from '../../../auth/services/auth.service';
 
 @Component({
   selector: 'app-user-management',
   standalone: true,
-  imports: [CommonModule, FormsModule, RoleAssignmentModalComponent],
+  imports: [CommonModule, FormsModule, RoleAssignmentModalComponent, DirectivesModule],
   templateUrl: './user-management.component.html',
   styleUrl: './user-management.component.scss'
 })
 export class UserManagementComponent implements OnInit {
+  Module = Module;
   private userService = inject(UserService);
   private toastr = inject(ToastrService);
   private cdr = inject(ChangeDetectorRef);
+  private authService = inject(AuthService);
+
+  get canUpdateUser(): boolean {
+    return this.authService.hasPermission(buildPermission(Module.User, CRUD.Update));
+  }
 
   @ViewChild(RoleAssignmentModalComponent) roleModal!: RoleAssignmentModalComponent;
 

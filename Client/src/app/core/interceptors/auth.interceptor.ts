@@ -11,10 +11,6 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const authService = inject(AuthService);
   const router = inject(Router);
 
-  if (req.url.includes('/refresh-token')) {
-    return next(req);
-  }
-
   const token = authService.getToken();
   if (token) {
     req = addToken(req, token);
@@ -52,7 +48,16 @@ const handle401Error = (request: HttpRequest<any>, next: HttpHandlerFn, authServ
       catchError((err) => {
         isRefreshing = false;
         refreshTokenSubject.next(null);
-        authService.clearSession();
+
+        const isSessionInvalidated = err?.error?.message?.includes('Session has been invalidated') ||
+                                     err?.error?.message?.includes('Please log in again');
+
+        if (isSessionInvalidated) {
+          authService.logoutAll();
+        } else {
+          authService.clearSession();
+        }
+
         router.navigate(['/auth/login']);
         return throwError(() => err);
       })

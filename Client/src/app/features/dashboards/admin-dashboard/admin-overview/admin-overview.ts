@@ -14,6 +14,8 @@ import {
   CourseAnalytics,
   CategoryHistogramData
 } from '../../models/dashboard.model';
+import { DirectivesModule } from '../../../../shared/directives/directives.module';
+import { Module } from '../../../../shared/constants/permissions.constant';
 
 @Component({
   selector: 'app-admin-overview',
@@ -26,12 +28,14 @@ import {
     CategoryHistogramCardComponent,
     EnrollmentChartCardComponent,
     EnrollmentSummaryTableComponent,
-    PendingInstructorsCardComponent
+    PendingInstructorsCardComponent,
+    DirectivesModule
   ],
   templateUrl: './admin-overview.html',
   styleUrl: './admin-overview.scss'
 })
 export class AdminOverviewComponent implements OnInit {
+  Module = Module;
   private dashboardService = inject(DashboardService);
   private adminDashboardService = inject(AdminDashboardService);
 

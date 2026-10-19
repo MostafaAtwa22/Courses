@@ -1,98 +1,107 @@
 namespace Application.Common.Interfaces.Cache
 {
-    internal static class CacheKeys
+    public static class CacheKeys
     {
         // Courses
-        internal static string Courses() => "courses";
-        internal static string Course(Guid id) => $"course:{id}";
-        internal static string CoursesByStudent(string userId, int pageNumber, int pageSize) => 
+        public static string Courses() => "courses";
+        public static string Course(Guid id) => $"course:{id}";
+        public static string CoursesByStudent(string userId, int pageNumber, int pageSize) =>
             $"courses:student:{userId}:{pageNumber}:{pageSize}";
-        internal static string CoursesByInstructor(Guid instructorId, int pageNumber, int pageSize) => 
+        public static string CoursesByInstructor(Guid instructorId, int pageNumber, int pageSize) =>
             $"courses:instructor:{instructorId}:{pageNumber}:{pageSize}";
-        internal static string CoursesByInstructorPublic(Guid instructorId, int pageNumber, int pageSize) => 
+        public static string CoursesByInstructorPublic(Guid instructorId, int pageNumber, int pageSize) =>
             $"courses:instructor:public:{instructorId}:{pageNumber}:{pageSize}";
-        internal static string CourseSuggestions(string term) => $"courses:suggestions:{term}";
-        internal static string TopPerformingCourses(int limit) => $"courses:top:{limit}";
+        public static string CourseSuggestions(string term) => $"courses:suggestions:{term}";
+        public static string TopPerformingCourses(int limit) => $"courses:top:{limit}";
 
         // Categories
-        internal static string Categories() => "categories";
-        internal static string Category(Guid id) => $"category:{id}";
-        internal static string Categories(string searchTerm, int pageNumber, int pageSize) => 
+        public static string Categories() => "categories";
+        public static string Category(Guid id) => $"category:{id}";
+        public static string Categories(string searchTerm, int pageNumber, int pageSize) =>
             $"categories:{searchTerm}:{pageNumber}:{pageSize}";
 
         // Instructors
-        internal static string Instructors() => "instructors";
-        internal static string Instructor(Guid id) => $"instructor:{id}";
-        internal static string InstructorPublic(Guid id) => $"instructor:public:{id}";
-        internal static string InstructorByCourse(Guid courseId) => $"instructor:course:{courseId}";
-        internal static string InstructorByUser(string userId) => $"instructor:user:{userId}";
-        internal static string Instructors(string searchTerm, int pageNumber, int pageSize) => 
+        public static string Instructors() => "instructors";
+        public static string Instructor(Guid id) => $"instructor:{id}";
+        public static string InstructorPublic(Guid id) => $"instructor:public:{id}";
+        public static string InstructorByCourse(Guid courseId) => $"instructor:course:{courseId}";
+        public static string InstructorByUser(string userId) => $"instructor:user:{userId}";
+        public static string Instructors(string searchTerm, int pageNumber, int pageSize) =>
             $"instructors:{searchTerm}:{pageNumber}:{pageSize}";
 
         // Contents
-        internal static string Contents() => "contents";
-        internal static string Content(Guid id) => $"content:{id}";
-        internal static string ContentsBySection(Guid sectionId) => $"contents:section:{sectionId}";
-        internal static string ContentsByCourse(Guid courseId, int pageNumber, int pageSize) => 
+        public static string Contents() => "contents";
+        public static string Content(Guid id) => $"content:{id}";
+        public static string ContentsBySection(Guid sectionId) => $"contents:section:{sectionId}";
+        public static string ContentsByCourse(Guid courseId, int pageNumber, int pageSize) =>
             $"contents:course:{courseId}:{pageNumber}:{pageSize}";
 
         // Sections
-        internal static string Sections() => "sections";
-        internal static string Section(Guid id) => $"section:{id}";
-        internal static string SectionsByCourse(Guid courseId, int pageNumber, int pageSize) => 
+        public static string Sections() => "sections";
+        public static string Section(Guid id) => $"section:{id}";
+        public static string SectionsByCourse(Guid courseId, int pageNumber, int pageSize) =>
             $"sections:course:{courseId}:{pageNumber}:{pageSize}";
-        internal static string Sections(string searchTerm, int pageNumber, int pageSize) => 
+        public static string Sections(string searchTerm, int pageNumber, int pageSize) =>
             $"sections:{searchTerm}:{pageNumber}:{pageSize}";
 
         // Reviews
-        internal static string Reviews() => "reviews";
-        internal static string Review(Guid id) => $"review:{id}";
-        internal static string ReviewsByCourse(Guid courseId, int pageNumber, int pageSize) => 
+        public static string Reviews() => "reviews";
+        public static string Review(Guid id) => $"review:{id}";
+        public static string ReviewsByCourse(Guid courseId, int pageNumber, int pageSize) =>
             $"reviews:course:{courseId}:{pageNumber}:{pageSize}";
-        internal static string ReviewByUserCourse(string userId, Guid courseId) => 
+        public static string ReviewByUserCourse(string userId, Guid courseId) =>
             $"review:user:{userId}:course:{courseId}";
 
         // Students
-        internal static string Students() => "students";
-        internal static string Student(Guid id) => $"student:{id}";
-        internal static string StudentByUser(string userId) => $"student:user:{userId}";
-        internal static string Students(string searchTerm, int pageNumber, int pageSize) =>
+        public static string Students() => "students";
+        public static string Student(Guid id) => $"student:{id}";
+        public static string StudentByUser(string userId) => $"student:user:{userId}";
+        public static string Students(string searchTerm, int pageNumber, int pageSize) =>
             $"students:{searchTerm}:{pageNumber}:{pageSize}";
 
         // Admins
-        internal static string Admins() => "admins";
-        internal static string Admin(Guid id) => $"admin:{id}";
-        internal static string AdminByUser(string userId) => $"admin:user:{userId}";
-        internal static string Admins(string searchTerm, string? role, int pageNumber, int pageSize) =>
+        public static string Admins() => "admins";
+        public static string Admin(Guid id) => $"admin:{id}";
+        public static string AdminByUser(string userId) => $"admin:user:{userId}";
+        public static string Admins(string searchTerm, string? role, int pageNumber, int pageSize) =>
             $"admins:{searchTerm}:{role ?? string.Empty}:{pageNumber}:{pageSize}";
 
         // Users (Account)
-        internal static string Users() => "users";
-        internal static string User(Guid id) => $"user:{id}";
-        internal static string Users(string searchTerm, string? gender, string? role, int pageNumber, int pageSize) => 
+        public static string Users() => "users";
+        public static string User(Guid id) => $"user:{id}";
+        public static string Users(string searchTerm, string? gender, string? role, int pageNumber, int pageSize) =>
             $"users:{searchTerm}:{gender}:{role}:{pageNumber}:{pageSize}";
 
         // Roles (Authorization)
-        internal static string Roles() => "roles";
-        internal static string RoleByUser(string userId) => $"roles:user:{userId}";
+        public static string Roles() => "roles";
+        public static string AllRoles() => "roles:all";
+        public static string RoleByUser(string userId) => $"roles:user:{userId}";
 
         // Progress
-        internal static string Progress() => "progress";
-        internal static string ProgressByUserCourse(string userId, Guid courseId) => 
+        public static string Progress() => "progress";
+        public static string ProgressByUserCourse(string userId, Guid courseId) =>
             $"progress:user:{userId}:course:{courseId}";
-        internal static string ProgressByUser(string userId) => $"progress:user:{userId}";
+        public static string ProgressByUser(string userId) => $"progress:user:{userId}";
 
         // Admin Dashboard
-        internal static string AdminDashboard() => "admin-dashboard";
-        internal static string EnrollmentStatistics() => $"admin-dashboard:enrollments";
-        internal static string RoleStatistics() => $"admin-dashboard:roles";
+        public static string AdminDashboard() => "admin-dashboard";
+        public static string EnrollmentStatistics() => $"admin-dashboard:enrollments";
+        public static string RoleStatistics() => $"admin-dashboard:roles";
 
         // Instructor Dashboard
-        internal static string InstructorDashboard() => "instructor-dashboard";
-        internal static string InstructorEnrollmentStatistics(Guid instructorId) => $"instructor-dashboard:enrollments:{instructorId}";
+        public static string InstructorDashboard() => "instructor-dashboard";
+        public static string InstructorEnrollmentStatistics(Guid instructorId) => $"instructor-dashboard:enrollments:{instructorId}";
 
         // Discounts
-        internal static string Discounts() => "discounts";
-        internal static string DiscountsByCourse(Guid courseId) => $"discounts:course:{courseId}";
+        public static string Discounts() => "discounts";
+        public static string DiscountsByCourse(Guid courseId) => $"discounts:course:{courseId}";
+
+        // Permissions
+        public static string Permissions() => "permissions";
+        public static string PermissionsByRole(string roleId) => $"permissions:role:{roleId}";
+        public static string PermissionsByUser(string userId) => $"permissions:user:{userId}";
+
+        // Lockout
+        public static string UserLockout(string userId) => $"lockout:{userId}";
     }
 }

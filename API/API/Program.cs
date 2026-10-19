@@ -4,6 +4,7 @@ using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using API.Extensions;
 using API.Cors;
+using API.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -42,6 +43,7 @@ app.UseCors("DefaultPolicy");
 
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseMiddleware<LockoutCheckMiddleware>();
 
 app.UseRateLimiter();
 app.UseScheduledBackgroundJobs();

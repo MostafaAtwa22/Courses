@@ -13,13 +13,15 @@ public class ResetPasswordCommandHandlerTests
 {
     private readonly Mock<IUserIdentityService> _userIdentityServiceMock;
     private readonly Mock<IPasswordService> _passwordServiceMock;
+    private readonly Mock<IRefreshTokenRepository> _refreshTokenRepositoryMock;
     private readonly ResetPasswordCommandHandler _handler;
 
     public ResetPasswordCommandHandlerTests()
     {
         _userIdentityServiceMock = new Mock<IUserIdentityService>();
         _passwordServiceMock = new Mock<IPasswordService>();
-        _handler = new ResetPasswordCommandHandler(_userIdentityServiceMock.Object, _passwordServiceMock.Object);
+        _refreshTokenRepositoryMock = new Mock<IRefreshTokenRepository>();
+        _handler = new ResetPasswordCommandHandler(_userIdentityServiceMock.Object, _passwordServiceMock.Object, _refreshTokenRepositoryMock.Object);
     }
 
     [Fact]

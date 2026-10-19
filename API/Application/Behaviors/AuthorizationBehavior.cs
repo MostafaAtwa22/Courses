@@ -1,25 +1,31 @@
-using Domain.Entities.Identity;
+using Domain.Constants;
+using System.Security.Claims;
 
 namespace Application.Behaviors
 {
     public class AuthorizationBehavior<TRequest, TResponse>(
         ICurrentUserService _currentUserService,
-        IUserIdentityService _userIdentityService,
-        IInstructorRepository _instructorRepo)
+        IInstructorRepository _instructorRepo,
+        IHttpContextAccessor _httpContextAccessor)
         : IPipelineBehavior<TRequest, TResponse>
         where TRequest : IRequireAuthorization
     {
+
         public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
         {
             var userId = _currentUserService.UserId;
             if (string.IsNullOrEmpty(userId))
                 throw new UnauthorizedException("User is not authenticated.");
 
-            var user = await _userIdentityService.FindUserByIdAsync(userId)
-                ?? throw new UnauthorizedException("User not found.");
+            // Check if user has any of the required permissions
+            bool hasRequiredPermission = HasAnyRequiredPermission(request.RequiredPermissions);
+
+            // If user has required permission, allow access
+            if (hasRequiredPermission)
+                return await next();
 
             // Check if user has any of the required roles
-            bool hasRequiredRole = await HasAnyRequiredRoleAsync(user, request.RequiredRoles);
+            bool hasRequiredRole = HasAnyRequiredRole(request.RequiredRoles);
 
             // If user has required role, allow access
             if (hasRequiredRole)
@@ -36,22 +42,36 @@ namespace Application.Behaviors
                 return await next();
             }
 
-            // User doesn't have required role and ownership is not required/relevant
+            // User doesn't have required role/permission and ownership is not required/relevant
             throw new ForbiddenException("You are not authorized to access this resource.");
         }
 
-        private async Task<bool> HasAnyRequiredRoleAsync(ApplicationUser user, string[] requiredRoles)
+        private bool HasAnyRequiredPermission(string[] requiredPermissions)
+        {
+            if (requiredPermissions == null || requiredPermissions.Length == 0)
+                return false;
+
+            var httpContext = _httpContextAccessor.HttpContext;
+            if (httpContext == null)
+                return false;
+
+            var userPermissions = httpContext.User.Claims
+                .Where(c => c.Type == CustomClaims.Permissions)
+                .Select(c => c.Value)
+                .ToHashSet();
+
+            return requiredPermissions.Any(userPermissions.Contains);
+        }
+
+        private bool HasAnyRequiredRole(string[] requiredRoles)
         {
             if (requiredRoles == null || requiredRoles.Length == 0)
                 return false;
 
-            foreach (var role in requiredRoles)
-            {
-                if (await _userIdentityService.IsInRoleAsync(user, role))
-                    return true;
-            }
+            var httpContext = _httpContextAccessor.HttpContext;
+            if (httpContext == null) return false;
 
-            return false;
+            return requiredRoles.Any(role => httpContext.User.IsInRole(role));
         }
     }
 }

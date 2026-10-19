@@ -9,7 +9,7 @@ public sealed record GetRolesQueryHandler(
 {
     public async Task<IReadOnlyCollection<RolesResponseDto>> Handle(GetRolesQuery request, CancellationToken cancellationToken)
     {
-        var cacheKey = CacheKeys.Roles();
+        var cacheKey = CacheKeys.AllRoles();
         var cacheOptions = new CacheOptions(
             Expiration: TimeSpan.FromMinutes(15),
             LocalCacheExpiration: TimeSpan.FromMinutes(5));
@@ -20,7 +20,7 @@ public sealed record GetRolesQueryHandler(
             cacheOptions,
             tags: new[] { CacheKeys.Roles() },
             cancellationToken);
-        
+
         return result ?? [];
     }
 }

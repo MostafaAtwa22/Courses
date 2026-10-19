@@ -1,8 +1,11 @@
 using API.Endpoints;
 using Application.DTOs.Authorization;
+using Application.DTOs.Authorization.Permissions;
 using Application.Features.Authorization.Commands.UpdateUserRoles;
 using Application.Features.Authorization.Queries.GetAll;
 using Application.Features.Authorization.Queries.GetRoleByUserId;
+using Application.Features.Permissions.Commands;
+using Application.Features.Permissions.Queries.GetAll;
 using FluentAssertions;
 using MediatR;
 using Microsoft.AspNetCore.Http;
@@ -57,6 +60,54 @@ namespace API.Tests.Endpoints
             var okResult = result.Result as Ok<IReadOnlyCollection<RolesResponseDto>>;
             okResult.Should().NotBeNull();
             okResult!.Value.Should().BeEmpty();
+        }
+
+        [Fact]
+        public async Task GetPermissions_ShouldReturnOk_WithPermissions_WhenRoleExists()
+        {
+            // Arrange
+            var roleId = Guid.NewGuid().ToString();
+            var expectedPermissions = new PermissionRoleDto
+            {
+                RoleId = Guid.Parse(roleId),
+                RoleName = "Admin",
+                Permissions =
+                [
+                    new() { Name = "Permission:Role:Read", IsSelected = true },
+                    new() { Name = "Permission:Role:Update", IsSelected = true },
+                    new() { Name = "Permission:Role:Delete", IsSelected = false }
+                ]
+            };
+            _mediatorMock.Setup(m => m.Send(It.IsAny<GetPermissionsQuery>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(expectedPermissions);
+
+            // Act
+            var result = await AuthorizationEndpoints.GetPermissions(roleId, _mediatorMock.Object);
+
+            // Assert
+            result.Should().BeOfType<Results<Ok<PermissionRoleDto>, NotFound>>();
+            _mediatorMock.Verify(m => m.Send(It.IsAny<GetPermissionsQuery>(), It.IsAny<CancellationToken>()), Times.Once);
+        }
+
+        [Fact]
+        public async Task GetPermissions_ShouldCallMediator_WithCorrectQuery()
+        {
+            // Arrange
+            var roleId = Guid.NewGuid().ToString();
+            var expectedPermissions = new PermissionRoleDto
+            {
+                RoleId = Guid.Parse(roleId),
+                RoleName = "Student",
+                Permissions = []
+            };
+            _mediatorMock.Setup(m => m.Send(It.IsAny<GetPermissionsQuery>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(expectedPermissions);
+
+            // Act
+            await AuthorizationEndpoints.GetPermissions(roleId, _mediatorMock.Object);
+
+            // Assert
+            _mediatorMock.Verify(m => m.Send(It.Is<GetPermissionsQuery>(q => q.Id == roleId), It.IsAny<CancellationToken>()), Times.Once);
         }
 
         [Fact]
@@ -145,6 +196,47 @@ namespace API.Tests.Endpoints
 
             // Assert
             _mediatorMock.Verify(m => m.Send(It.Is<UpdateUserRolesCommand>(c => c.Dto == userRolesDto), It.IsAny<CancellationToken>()), Times.Once);
+        }
+
+        [Fact]
+        public async Task UpdateRolePermissions_ShouldReturnNoContent_WhenSuccessful()
+        {
+            // Arrange
+            var roleId = Guid.NewGuid().ToString();
+            var permissions = new List<PermissionCheckboxDto>
+            {
+                new() { Name = "Permission:Role:Read", IsSelected = true },
+                new() { Name = "Permission:Role:Update", IsSelected = true }
+            };
+            _mediatorMock.Setup(m => m.Send(It.IsAny<UpdateRolePermissionsCommand>(), It.IsAny<CancellationToken>()))
+                .Returns(Task.CompletedTask);
+
+            // Act
+            var result = await AuthorizationEndpoints.UpdateRolePermissions(roleId, permissions, _mediatorMock.Object);
+
+            // Assert
+            result.Should().BeOfType<Results<NoContent, BadRequest, NotFound>>();
+            _mediatorMock.Verify(m => m.Send(It.IsAny<UpdateRolePermissionsCommand>(), It.IsAny<CancellationToken>()), Times.Once);
+        }
+
+        [Fact]
+        public async Task UpdateRolePermissions_ShouldCallMediator_WithCorrectCommand()
+        {
+            // Arrange
+            var roleId = Guid.NewGuid().ToString();
+            var permissions = new List<PermissionCheckboxDto>
+            {
+                new() { Name = "Permission:Role:Read", IsSelected = true },
+                new() { Name = "Permission:Role:Update", IsSelected = false }
+            };
+            _mediatorMock.Setup(m => m.Send(It.IsAny<UpdateRolePermissionsCommand>(), It.IsAny<CancellationToken>()))
+                .Returns(Task.CompletedTask);
+
+            // Act
+            await AuthorizationEndpoints.UpdateRolePermissions(roleId, permissions, _mediatorMock.Object);
+
+            // Assert
+            _mediatorMock.Verify(m => m.Send(It.Is<UpdateRolePermissionsCommand>(c => c.Id == roleId && c.PermissionsDto == permissions), It.IsAny<CancellationToken>()), Times.Once);
         }
     }
 }

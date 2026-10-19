@@ -8,15 +8,18 @@ import { QueryParams } from '../../../../shared/models/query-params.model';
 import Swal from 'sweetalert2';
 import { ToastrService } from 'ngx-toastr';
 import { CategoryModalComponent } from './category-modal/category-modal.component';
+import { DirectivesModule } from '../../../../shared/directives/directives.module';
+import { Module } from '../../../../shared/constants/permissions.constant';
 
 @Component({
   selector: 'app-categories-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, CategoryModalComponent],
+  imports: [CommonModule, FormsModule, CategoryModalComponent, DirectivesModule],
   templateUrl: './categories-list.component.html',
   styleUrl: './categories-list.component.scss'
 })
 export class CategoriesListComponent implements OnInit {
+  Module = Module;
   private categoryService = inject(CategoryService);
   private toastr = inject(ToastrService);
   private cdr = inject(ChangeDetectorRef);

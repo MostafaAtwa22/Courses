@@ -3,7 +3,7 @@ using Application.DTOs.Course;
 using Application.Features.AdminDashboard.Queries.GetEnrollmentStatistics;
 using Application.Features.AdminDashboard.Queries.GetRoleStatistics;
 using Application.Features.Courses.Queries.GetTopPerformingCourses;
-using Domain.Enums.Identity;
+using Domain.Constants;
 
 namespace API.Endpoints
 {
@@ -12,26 +12,25 @@ namespace API.Endpoints
         public void AddRoutes(IEndpointRouteBuilder app)
         {
             var group = app.MapGroup("/api/admin/dashboard")
-                .WithTags("AdminDashboard")
-                .RequireAuthorization(policy =>
-                    policy.RequireRole(
-                        Role.Admin.ToString(),
-                        Role.SuperAdmin.ToString()));
+                .WithTags("AdminDashboard");
 
             group.MapGet("/role-statistics", GetRoleStatistics)
                 .WithName(nameof(GetRoleStatistics))
+                .RequireAuthorization(PermissionConstants.Build(Module.Admin, CRUD.Read))
                 .Produces<RoleStatisticsDto>(StatusCodes.Status200OK)
                 .Produces(StatusCodes.Status401Unauthorized)
                 .Produces(StatusCodes.Status403Forbidden);
 
             group.MapGet("/courses/top-performing", GetTopPerformingCourses)
                 .WithName(nameof(GetTopPerformingCourses))
+                .RequireAuthorization(PermissionConstants.Build(Module.Admin, CRUD.Read))
                 .Produces<IEnumerable<AdminCourseAnalyticsDto>>(StatusCodes.Status200OK)
                 .Produces(StatusCodes.Status401Unauthorized)
                 .Produces(StatusCodes.Status403Forbidden);
 
             group.MapGet("/enrollment-statistics", GetEnrollmentStatistics)
                 .WithName(nameof(GetEnrollmentStatistics))
+                .RequireAuthorization(PermissionConstants.Build(Module.Admin, CRUD.Read))
                 .Produces<IEnumerable<EnrollmentStatisticsDto>>(StatusCodes.Status200OK)
                 .Produces(StatusCodes.Status401Unauthorized)
                 .Produces(StatusCodes.Status403Forbidden);

@@ -3,15 +3,18 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { AdminDashboardService, PendingInstructor } from '../../../services/admin-dashboard.service';
 import { ToastService } from '../../../../../core/services/toast.service';
+import { DirectivesModule } from '../../../../../shared/directives/directives.module';
+import { Module } from '../../../../../shared/constants/permissions.constant';
 
 @Component({
   selector: 'app-pending-instructors-card',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, DirectivesModule],
   templateUrl: './pending-instructors-card.component.html',
   styleUrl: './pending-instructors-card.component.scss'
 })
 export class PendingInstructorsCardComponent {
+  Module = Module;
   @Input() pendingInstructors: PendingInstructor[] = [];
   
   private adminDashboardService = inject(AdminDashboardService);
