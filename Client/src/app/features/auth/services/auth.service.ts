@@ -66,15 +66,29 @@ export class AuthService {
 
   logout(): void {
     this.http.post(`${this.apiUrl}/logout`, {}, { withCredentials: true }).subscribe({
-      next:  () => this.sessionService.clearSession(),
-      error: () => this.sessionService.clearSession()
+      next: () => {
+        this.sessionService.clearSession();
+        this.router.navigate(['/auth/login']);
+      },
+      error: (err) => {
+        console.error('Logout API call failed:', err);
+        this.sessionService.clearSession();
+        this.router.navigate(['/auth/login']);
+      }
     });
   }
 
   logoutAll(): void {
     this.http.post(`${this.apiUrl}/logout-all`, {}, { withCredentials: true }).subscribe({
-      next:  () => this.sessionService.clearSession(),
-      error: () => this.sessionService.clearSession()
+      next: () => {
+        this.sessionService.clearSession();
+        this.router.navigate(['/auth/login']);
+      },
+      error: (err) => {
+        console.error('Logout-all API call failed:', err);
+        this.sessionService.clearSession();
+        this.router.navigate(['/auth/login']);
+      }
     });
   }
 
@@ -82,7 +96,6 @@ export class AuthService {
     return tap<AuthResponseDto>(response => {
       if (response.token) {
         this.sessionService.saveSession(response.token, response);
-        // Use setTimeout to ensure session is saved before role selection
         setTimeout(() => {
           this.handleRoleSelection();
         }, 0);
